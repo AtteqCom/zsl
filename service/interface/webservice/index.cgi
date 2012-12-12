@@ -16,7 +16,7 @@ app = service_application
 @app.route("/", defaults={'path': ''})
 @app.route("/<path:path>")
 def mapping(path):
-    return "Hello World! Using path '{0}'.".format(path);
+    return "Hello World! Using path '{0}' and {1}.".format(path, app.config['BLAA']);
 
 # Run it!.
 if __name__ == "__main__":
