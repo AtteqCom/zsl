@@ -9,6 +9,8 @@ sys.path.append(os.path.abspath('../../'))
 from application import service_application
 from wsgiref.handlers import CGIHandler
 
+import interface.webservice.web_task_tester
+
 # Shortcut
 app = service_application
 
