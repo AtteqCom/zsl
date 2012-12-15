@@ -1,4 +1,5 @@
 import importlib
+from utils.string_helper import underscore_to_camelcase
 
 class Router:
     def __init__(self, app):
@@ -25,7 +26,7 @@ class Router:
         # Split the path into arrays - package names in the sportky.tasks package.
         path = path.split("/")
         module_name = "{0}.{1}".format(self.get_task_package(), ".".join(path))
-        class_name = path[-1]
+        class_name = underscore_to_camelcase(path[-1])
         self.__app.logger.debug("Module name '%s' and class name '%s'.", module_name, class_name)
 
         module = self.__load_module(module_name)
