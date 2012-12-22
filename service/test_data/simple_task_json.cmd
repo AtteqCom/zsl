@@ -1,2 +1,2 @@
-curl -v -uatteq:bozemoj -X POST -d@%1 -H "Content-Type: application/json" http://service.sportky.babky.dev.atteq.com/task/test/simple_task
+curl -v -uatteq:bozemoj -H"Content-Type: application/json" -X POST -d@%1 http://service.sportky.babky.dev.atteq.com/task/test/simple_task
 
