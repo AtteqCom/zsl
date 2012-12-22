@@ -17,5 +17,4 @@ app = service_application
 if __name__ == "__main__":
     print "Initializing Gearman worker."
     w = Worker(app)
-
-
+    w.run()

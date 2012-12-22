@@ -51,8 +51,12 @@ class JsonInput:
             if task_data == None:
                 app.logger.error("Task data is empty during JSON decoding.")
 
-            if request.headers.get("Content-Type") != "application/json" and task_data != None:
-                task_data.transform_data(json.loads)
+            try:
+                # We transform the data only in the case of plain POST requests.
+                if request.headers.get("Content-Type") != "application/json" and task_data != None:
+                    task_data.transform_data(json.loads)
+            except:
+                pass
             return fn(*a)
 
         return wrapped_fn

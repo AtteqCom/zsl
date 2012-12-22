@@ -5,6 +5,7 @@ class Router:
     def __init__(self, app):
         self.__mappings = {}
         # self.__task_package = app.config['TASK_PACKAGE']
+
 	self.set_task_package("sportky.tasks")
         self.__app = app
 
