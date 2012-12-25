@@ -11,7 +11,7 @@ class WebTaskTester:
         (task, task_callable) = router.route(path)
 
         data = request.data
-        if request.headers["Content-Type"] == "application/json":
+        if request.headers.has_key("Content-Type") and request.headers["Content-Type"] == "application/json":
             data = request.json
 
         app.logger.debug("Data found '%s'.", data)

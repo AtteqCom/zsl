@@ -31,8 +31,11 @@ class Router:
         self.__app.logger.debug("Module name '%s' and class name '%s'.", module_name, class_name)
 
         module = self.__load_module(module_name)
-        task = getattr(module, class_name)()
-        task_callable = getattr(getattr(module, class_name)(), "perform")
+        injector = self.__app.get_injector()
 
+        # Create the task using the injector initialization.
+        task = injector.create_object(getattr(module, class_name))
+
+        self.__app.logger.debug("Task object {0} created [{1}].".format(class_name, task))
+        task_callable = getattr(task, "perform")
         return (task, task_callable)
-

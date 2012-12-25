@@ -18,8 +18,10 @@ app = service_application
 @app.route("/", defaults={'path': ''})
 @app.route("/<path:path>")
 def mapping(path):
-    return "Hello World! Using path '{0}'.".format(path);
+    app.logger.debug("Hello wording!")
+    return "Hello World! Using path '{0}'.".format(path)
 
-# Run it!.
+# Run it!
 if __name__ == "__main__":
+    app.initialize_dependencies()
     CGIHandler().run(app)
