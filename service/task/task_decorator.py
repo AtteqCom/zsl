@@ -7,6 +7,7 @@ import json
 from flask import request
 from application.service_application import service_application
 from task.task_data import TaskData
+from db.models.app import AppModelJSONEncoder
 
 app = service_application
 
@@ -71,7 +72,7 @@ class JsonOutputDecorator:
     def __call__(self, fn):
         def wrapped_fn(*args):
             ret_val = fn(*args)
-            return json.dumps(ret_val)
+            return json.dumps(ret_val, cls = AppModelJSONEncoder)
 
         return wrapped_fn
 

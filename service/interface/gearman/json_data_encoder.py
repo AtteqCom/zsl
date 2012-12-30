@@ -5,11 +5,12 @@ Created on 22.12.2012
 '''
 import json
 import gearman
+from db.models.app import AppModelJSONEncoder
 
 class JSONDataEncoder(gearman.DataEncoder):
     @classmethod
     def encode(cls, encodable_object):
-        return json.dumps(encodable_object)
+        return json.dumps(encodable_object, cls = AppModelJSONEncoder)
 
     @classmethod
     def decode(cls, decodable_string):
