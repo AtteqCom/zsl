@@ -1,6 +1,7 @@
 from task.task_decorator import json_input, json_output
 
-class SimpleTask(object):
+class SimpleTask:
+
     @json_input
     @json_output
     def perform(self, data):

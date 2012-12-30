@@ -34,7 +34,11 @@ class Router:
         injector = self.__app.get_injector()
 
         # Create the task using the injector initialization.
-        task = injector.create_object(getattr(module, class_name))
+        cls = getattr(module, class_name);
+        if hasattr(cls, "__new__"):
+            task = injector.create_object()
+        else:
+            task = cls()
 
         self.__app.logger.debug("Task object {0} created [{1}].".format(class_name, task))
         task_callable = getattr(task, "perform")
