@@ -5,11 +5,23 @@ vendor.do_init()
 from flask_injector import FlaskInjector
 
 class SportkyFlask(Flask):
+    def __init__(self, import_name, static_path=None, static_url_path=None,
+                 static_folder='static', template_folder='templates',
+                 instance_path=None, instance_relative_config=False):
+        Flask.__init__(self, import_name, static_path, static_url_path,
+                       static_folder, template_folder, instance_path,
+                       instance_relative_config)
+        self.__dependencies_initialized = False
+
     def initialize_dependencies(self):
         from application.initializers import injection_views, injection_modules
         self.__flask_injector = FlaskInjector(injection_views, injection_modules)
         self.__injector = self.__flask_injector.init_app(self)
         self.logger.debug("Injector configuration {0}, {1}.".format(injection_views, injection_modules))
+        self.__dependencies_initialized = True
+
+    def is_initialized(self):
+        return self.__dependencies_initialized
 
     def get_injector(self):
         return self.__injector

@@ -5,7 +5,7 @@ Created on 24.12.2012
 '''
 
 from injector import inject
-import sqlalchemy
+import sqlalchemy.engine
 from application import service_application
 
 class DbTestTask(object):

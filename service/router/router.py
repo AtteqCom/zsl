@@ -36,7 +36,7 @@ class Router:
         # Create the task using the injector initialization.
         cls = getattr(module, class_name);
         if hasattr(cls, "__new__"):
-            task = injector.create_object()
+            task = injector.create_object(cls)
         else:
             task = cls()
 
