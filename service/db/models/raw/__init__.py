@@ -4,7 +4,6 @@ import sqlalchemy.engine
 from application import service_application
 import db.models.app
 from sqlalchemy.orm import relationship, backref
-from sqlalchemy.schema import ForeignKey
 
 if not service_application.is_initialized():
     print "Application is not initialized."
