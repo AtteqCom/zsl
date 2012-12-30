@@ -19,7 +19,7 @@ def executeTask(worker, job):
     try:
         (task, task_callable) = router.route(job.data['path'])
         data = worker.logical_worker.executeTask(task, task_callable, job.data['data'])
-        print "Executed successfully, return value '{0}'.".format(data)
+        print "Task {0} executed successfully.".format(job.data['path'])
         return {'task_name': job.data['path'], 'data': data}
     except Exception as e:
         print e

@@ -3,6 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy.engine
 from application import service_application
 import db.models.app
+from sqlalchemy.orm import relationship, backref
+from sqlalchemy.schema import ForeignKey
 
 if not service_application.is_initialized():
     print "Application is not initialized."
@@ -11,19 +13,6 @@ if not service_application.is_initialized():
 DeclarativeBase = declarative_base()
 metadata = DeclarativeBase.metadata
 metadata.bind = service_application.get_injector().get(sqlalchemy.engine.Engine)
-
-
-
-class Sport(DeclarativeBase):
-    __tablename__ = 'sport'
-
-    __table_args__ = {}
-
-    #column definitions
-    id = Column(u'id', INTEGER(), primary_key=True, nullable=False)
-    name = Column(u'name', VARCHAR(length=255), nullable=False)
-
-    #relation definitions
 
 
 class SportClub(DeclarativeBase):
@@ -48,15 +37,17 @@ class SportClub(DeclarativeBase):
     name = Column(u'name', VARCHAR(length=255), nullable=False)
     president = Column(u'president', VARCHAR(length=255), nullable=False)
     regexp = Column(u'regexp', TEXT(), nullable=False)
-    sport_id = Column(u'sport_id', INTEGER(), nullable=False)
+    sport_id = Column(u'sport_id', INTEGER(), ForeignKey('sport.id'), nullable=False)
     stadium = Column(u'stadium', VARCHAR(length=255), nullable=False)
-    state_id = Column(u'state_id', INTEGER(), nullable=False)
+    state_id = Column(u'state_id', INTEGER(), ForeignKey('state.id'), nullable=False)
     url = Column(u'url', VARCHAR(length=255), nullable=False)
+
+    #relation definitions
+    sport = relationship("Sport", backref=backref("sport_clubs", order_by=id))
+    state = relationship("State", backref=backref("sport_clubs", order_by=id))
 
     def get_app_model(self):
         return db.models.app.SportClub(self.__dict__)
-
-    #relation definitions
 
 
 class State(DeclarativeBase):
@@ -71,4 +62,20 @@ class State(DeclarativeBase):
 
     #relation definitions
 
+    def get_app_model(self):
+        return db.models.app.State(self.__dict__)
 
+
+class Sport(DeclarativeBase):
+    __tablename__ = 'sport'
+
+    __table_args__ = {}
+
+    #column definitions
+    id = Column(u'id', INTEGER(), primary_key=True, nullable=False)
+    name = Column(u'name', VARCHAR(length=255), nullable=False)
+
+    #relation definitions
+
+    def get_app_model(self):
+        return db.models.app.Sport(self.__dict__)

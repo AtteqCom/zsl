@@ -57,7 +57,8 @@ class JsonInput:
                 if request.headers.get("Content-Type") != "application/json" and task_data != None:
                     task_data.transform_data(json.loads)
             except:
-                pass
+                app.logger.error("Exception while processing JSON input decorator.")
+                task_data.transform_data(json.loads)
             return fn(*a)
 
         return wrapped_fn
