@@ -35,10 +35,10 @@ class SportClub(DeclarativeBase):
     magazine_id = Column(u'magazine_id', INTEGER(), nullable=False)
     name = Column(u'name', VARCHAR(length=255), nullable=False)
     president = Column(u'president', VARCHAR(length=255), nullable=False)
-    regexp = Column(u'regexp', TEXT(), nullable=False)
-    sport_id = Column(u'sport_id', INTEGER(), ForeignKey('sport.id'), nullable=False)
+    regexp = Column(u'regexp', TEXT(), nullable=True)
+    sport_id = Column(u'sport_id', INTEGER(), ForeignKey('sport.id'), nullable=True)
     stadium = Column(u'stadium', VARCHAR(length=255), nullable=False)
-    state_id = Column(u'state_id', INTEGER(), ForeignKey('state.id'), nullable=False)
+    state_id = Column(u'state_id', INTEGER(), ForeignKey('state.id'), nullable=True)
     url = Column(u'url', VARCHAR(length=255), nullable=False)
 
     #relation definitions
@@ -46,7 +46,12 @@ class SportClub(DeclarativeBase):
     state = relationship("State", backref=backref("sport_clubs", order_by=id))
 
     def get_app_model(self):
-        return db.models.app.SportClub(self.__dict__)
+        m = db.models.app.SportClub(self.__dict__)
+        m.created = self.created.strftime("%d. %m. %Y")
+        return m
+
+    def update_url(self):
+        self.url = "/clubs/{0}/{1}".format(self.id, self.name)
 
 
 class State(DeclarativeBase):
