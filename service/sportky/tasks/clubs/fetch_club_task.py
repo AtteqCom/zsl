@@ -4,7 +4,7 @@ import sqlalchemy.orm
 from db.models.raw import SportClub
 import logging
 
-class DeleteTask(object):
+class FetchClubTask(object):
 
     @inject(session=sqlalchemy.orm.Session, logger=logging.Logger)
     def __init__(self, session, logger):
@@ -14,11 +14,5 @@ class DeleteTask(object):
     @json_input
     @json_output
     def perform(self, data):
-        try:
-            self.__orm.query(SportClub).filter(SportClub.id == data.get_data()['id']).delete()
-            res = True
-        except Exception as e:
-            res = False
-            self.__logger.error(e)
-
-        return {'result': res}
+        club = self.__orm.query(SportClub).filter(SportClub.id == data.get_data()['id']).one()
+        return club.get_app_model()

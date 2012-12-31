@@ -11,9 +11,9 @@ from db.models.raw import SportClub
 
 class FetchClubListTask(object):
 
-    @inject(Session=sqlalchemy.orm.Session)
-    def __init__(self, Session):
-        self.__orm = Session
+    @inject(session=sqlalchemy.orm.Session)
+    def __init__(self, session):
+        self.__orm = session
 
     @json_input
     @json_output
