@@ -48,7 +48,7 @@ class SportClub(DeclarativeBase):
     def get_app_model(self):
         m = db.models.app.SportClub(self.__dict__)
         if self.created != None:
-            m.created = self.created.strftime("%d. %m. %Y")
+            m.created = '{0.day:{1}}. {0.month:{1}}. {0.year}'.format(self.created, '02');
         return m
 
     def update_url(self):
