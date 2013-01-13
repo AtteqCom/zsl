@@ -22,6 +22,7 @@ def executeTask(worker, job):
         print "Task {0} executed successfully.".format(job.data['path'])
         return {'task_name': job.data['path'], 'data': data}
     except Exception as e:
+        return {'task_name': job.data['path'], 'data': None, 'error': str(e0)}
         print e
 
 '''
