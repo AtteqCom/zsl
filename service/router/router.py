@@ -1,5 +1,6 @@
 import importlib
 from utils.string_helper import underscore_to_camelcase
+from imp import reload
 
 class Router:
     def __init__(self, app):
@@ -8,6 +9,7 @@ class Router:
 
 	self.set_task_package("sportky.tasks")
         self.__app = app
+        self.__task_reloading = app.config['RELOAD']
 
     def get_task_package(self):
         return self.__task_package
@@ -17,6 +19,12 @@ class Router:
 
     def __load_module(self, module_name):
         return importlib.import_module(module_name)
+
+    def is_task_reloading(self):
+        return self.__task_reloading
+
+    def set_task_reloading(self, value):
+        self.__task_reloading = value
 
     '''
     Returns the task handling the given request path.
@@ -31,6 +39,9 @@ class Router:
         self.__app.logger.debug("Module name '%s' and class name '%s'.", module_name, class_name)
 
         module = self.__load_module(module_name)
+
+        if self.is_task_reloading():
+            reload(module)
         injector = self.__app.get_injector()
 
         # Create the task using the injector initialization.

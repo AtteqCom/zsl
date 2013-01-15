@@ -33,10 +33,17 @@ class FetchClubListTask(object):
         qh = QueryHelper(SportClub, f, d['pagination'], d['sorter'])
 
         clubs = []
-        for c in qh.execute(self.__orm.query(SportClub).join(SportClub.sport).join(SportClub.state)):
+        for c in qh.execute(self.__orm.query(SportClub).outerjoin(SportClub.sport).outerjoin(SportClub.state)):
             club = c.get_app_model()
-            club.sport = c.sport.name
-            club.state = c.state.name_sk
+            if c.sport != None:
+                club.sport = c.sport.name
+            else:
+                club.sport = None
+
+            if c.state != None:
+                club.state = c.state.name_sk
+            else:
+                club.state = None
             clubs.append(club)
 
         return { 'clubs': clubs, 'count': qh.get_pagination().get_record_count() }

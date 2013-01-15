@@ -10,6 +10,9 @@ class AppModel:
 class SportClub(AppModel):
     pass
 
+class SportClubField(AppModel):
+    pass
+
 class Sport(AppModel):
     pass
 

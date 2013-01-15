@@ -33,6 +33,8 @@ class Worker:
     def __init__(self, app):
         self.app = app
         self.app.initialize_dependencies()
+
+        router.set_task_reloading(router.is_task_reloading() or app.config['RELOAD_GEARMAN'])
         self.gearman_worker = gearman.GearmanWorker(["{0}:{1}".format(app.config['GEARMAN']['host'], app.config['GEARMAN']['port'])])
         self.gearman_worker.set_client_id("sportky-client-%s".format(socket.gethostname()))
         self.gearman_worker.data_encoder = JSONDataEncoder

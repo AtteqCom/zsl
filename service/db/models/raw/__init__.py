@@ -5,7 +5,8 @@ from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy.engine
 from application import service_application
 import db.models.app
-from sqlalchemy.orm import relation, backref
+from sqlalchemy.orm import relation, backref, relationship
+from sqlalchemy.dialects.mysql.base import BIT
 
 if not service_application.is_initialized():
     print "Application is not initialized."
@@ -14,28 +15,6 @@ if not service_application.is_initialized():
 DeclarativeBase = declarative_base()
 metadata = DeclarativeBase.metadata
 metadata.bind = service_application.get_injector().get(sqlalchemy.engine.Engine)
-
-sport_club = Table(u'sport_club', metadata,
-    Column(u'id', INTEGER(), primary_key=True, nullable=False),
-    Column(u'magazine_id', INTEGER(), nullable=False),
-    Column(u'name', VARCHAR(length=255), nullable=False),
-    Column(u'url', VARCHAR(length=255), nullable=False),
-    Column(u'regexp', TEXT()),
-    Column(u'added', DATETIME(), nullable=False),
-    Column(u'created', DATETIME()),
-    Column(u'flag_created_year', INTEGER(length=1), nullable=False),
-    Column(u'sport_id', INTEGER(), ForeignKey('sport.id')),
-    Column(u'stadium', VARCHAR(length=255), nullable=False),
-    Column(u'president', VARCHAR(length=255), nullable=False),
-    Column(u'coach', VARCHAR(length=255), nullable=False),
-    Column(u'league', VARCHAR(length=255), nullable=False),
-    Column(u'state_id', INTEGER(), ForeignKey('state.id')),
-    Column(u'city', VARCHAR(length=255), nullable=False),
-    Column(u'achievements', TEXT()),
-    Column(u'homepage', VARCHAR(length=255), nullable=False),
-    Column(u'active', INTEGER(length=1), nullable=False),
-    Column(u'current_squad', INTEGER(length=1), nullable=False),
-)
 
 class Sport(DeclarativeBase):
     __tablename__ = 'sport'
@@ -47,24 +26,58 @@ class Sport(DeclarativeBase):
     name = Column(u'name', VARCHAR(length=255), nullable=False)
 
     #relation definitions
-    states = relation('State', primaryjoin='Sport.id==SportClub.sport_id', secondary=sport_club, secondaryjoin='SportClub.state_id==State.id')
 
     def get_app_model(self):
         return db.models.app.Sport(self.__dict__)
 
 
 class SportClub(DeclarativeBase):
-    __table__ = sport_club
+    __tablename__ = "sport_club"
 
+    __table_args__ = {}
+
+    #column definitions
+    id = Column(u'id', INTEGER(), primary_key=True, nullable=False)
+    magazine_id = Column(u'magazine_id', INTEGER(), nullable=False)
+    name = Column(u'name', VARCHAR(length=255), nullable=False)
+    url = Column(u'url', VARCHAR(length=255), nullable=False)
+    regexp = Column(u'regexp', TEXT())
+    added = Column(u'added', DATETIME(), nullable=False)
+    created = Column(u'created', DATETIME())
+    flag_created_year = Column(u'flag_created_year', BIT(), nullable=False)
+    sport_id = Column(u'sport_id', INTEGER(), ForeignKey('sport.id'))
+    stadium = Column(u'stadium', VARCHAR(length=255), nullable=False)
+    president = Column(u'president', VARCHAR(length=255), nullable=False)
+    coach = Column(u'coach', VARCHAR(length=255), nullable=False)
+    league = Column(u'league', VARCHAR(length=255), nullable=False)
+    state_id = Column(u'state_id', INTEGER(), ForeignKey('state.id'))
+    city = Column(u'city', VARCHAR(length=255), nullable=False)
+    achievements = Column(u'achievements', TEXT())
+    homepage = Column(u'homepage', VARCHAR(length=255), nullable=False)
+    active = Column(u'active', BIT(), nullable=False)
+    current_squad = Column(u'current_squad', BIT(), nullable=False)
 
     #relation definitions
     sport = relation('Sport', primaryjoin='SportClub.sport_id==Sport.id')
     state = relation('State', primaryjoin='SportClub.state_id==State.id')
+    sport_club_fields = relationship("SportClubField", order_by="SportClubField.id", backref="sport_club")
+
 
     def get_app_model(self):
         m = db.models.app.SportClub(self.__dict__)
         if self.created != None:
             m.created = '{0.day:{1}}. {0.month:{1}}. {0.year}'.format(self.created, '02');
+
+        if self.created != None and self.flag_created_year:
+            m.presentation_created = '{0.year}'.format(self.created)
+        else:
+            m.presentation_created = self.created
+
+        m.sport_club_fields = []
+        if self.sport_club_fields != None:
+            for scf in self.sport_club_fields:
+                m.sport_club_fields.append(scf.get_app_model())
+
         return m
 
     def update_url(self):
@@ -82,8 +95,10 @@ class SportClubField(DeclarativeBase):
     value = Column(u'value', VARCHAR(length=256), nullable=False)
 
     #relation definitions
-    sport_club = relation('SportClub', primaryjoin='SportClubField.sport_club_id==SportClub.id')
+    #sport_club = relationship("SportClub", backref=backref('sport_club_fields', order_by=id))
 
+    def get_app_model(self):
+        return db.models.app.SportClubField(self.__dict__)
 
 class State(DeclarativeBase):
     __tablename__ = 'state'
@@ -96,7 +111,6 @@ class State(DeclarativeBase):
     name_sk = Column(u'name_sk', VARCHAR(length=64), nullable=False)
 
     #relation definitions
-    sports = relation('Sport', primaryjoin='State.id==SportClub.state_id', secondary=sport_club, secondaryjoin='SportClub.sport_id==Sport.id')
 
     def get_app_model(self):
         return db.models.app.State(self.__dict__)
