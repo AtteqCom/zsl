@@ -7,6 +7,7 @@ from application import service_application
 import db.models.app
 from sqlalchemy.orm import relation, backref, relationship
 from sqlalchemy.dialects.mysql.base import BIT
+from db.models.raw.model_helper import ModelHelper
 
 if not service_application.is_initialized():
     print "Application is not initialized."
@@ -16,7 +17,11 @@ DeclarativeBase = declarative_base()
 metadata = DeclarativeBase.metadata
 metadata.bind = service_application.get_injector().get(sqlalchemy.engine.Engine)
 
-class Sport(DeclarativeBase):
+class ModelBase:
+    def update(self, app_model, forbidden_keys = [], inverse = False):
+        ModelHelper.update_model(self, app_model, forbidden_keys, inverse)
+
+class Sport(DeclarativeBase, ModelBase):
     __tablename__ = 'sport'
 
     __table_args__ = {}
@@ -31,7 +36,7 @@ class Sport(DeclarativeBase):
         return db.models.app.Sport(self.__dict__)
 
 
-class SportClub(DeclarativeBase):
+class SportClub(DeclarativeBase, ModelBase):
     __tablename__ = "sport_club"
 
     __table_args__ = {}
@@ -85,7 +90,7 @@ class SportClub(DeclarativeBase):
     def update_url(self):
         self.url = "/sportove-kluby/{0}/{1}".format(self.id, self.name)
 
-class SportClubField(DeclarativeBase):
+class SportClubField(DeclarativeBase, ModelBase):
     __tablename__ = 'sport_club_field'
 
     __table_args__ = {}
@@ -102,7 +107,7 @@ class SportClubField(DeclarativeBase):
     def get_app_model(self):
         return db.models.app.SportClubField(self.__dict__)
 
-class State(DeclarativeBase):
+class State(DeclarativeBase, ModelBase):
     __tablename__ = 'state'
 
     __table_args__ = {}

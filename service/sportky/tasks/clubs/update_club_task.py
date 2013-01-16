@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 from db.models.validators import SportClubForm
 from werkzeug.datastructures import MultiDict
-from application import service_application
+from db.models.raw.model_helper import ModelHelper
 
 class UpdateClubTask(object):
 
@@ -19,10 +19,8 @@ class UpdateClubTask(object):
     @json_output
     def perform(self, data):
         try:
+            self.__logger.debug("Updating club.")
             club_data = data.get_data()['club']
-
-            app = service_application
-            app.logger.debug("Update club task with data '{0}'.".format(club_data))
 
             f = SportClubForm(MultiDict(club_data))
             if not f.validate():
@@ -34,27 +32,42 @@ class UpdateClubTask(object):
                 pass
             club_db = self.__orm.query(SportClub).outerjoin(SportClubField).filter(SportClub.id == club_data['id']).one()
 
+            ModelHelper.update_model(club_db, club_data, ["sport_club_fields"])
 
-            app.logger.debug("Active flag. {0}".format(club_data['active']))
-
-            for k in club_db.__dict__.keys():
-                if k in club_data and k != "sport_club_fields":
-                    app.logger.debug("Setting property {0}.".format(k));
-                    setattr(club_db, k, club_data[k])
-
+            # TODO: As a general helper.
             data_fields = {}
+            new = []
             for f in club_data['sport_club_fields']:
                 if f['id']:
+                    self.__logger.debug("Updating field {0}.".format(f['id']))
                     data_fields[int(f['id'])] = f
+                else:
+                    self.__logger.debug("New field created {0}.".format(f['name']))
+                    scf = SportClubField()
+                    scf.sport_club_id = club_db.id
+                    scf.update(f, [], True)
+                    new.append(scf)
 
-            app.logger.debug("Update club fields '{0}'.".format(data_fields))
+            db_fields = club_db.sport_club_fields
+            for f in db_fields:
+                fid = int(f.id)
+                if not fid in data_fields:
+                    if fid:
+                        self.__logger.debug("Deleting field {0}.".format(fid))
+                        self.__orm.delete(f)
+                else:
+                    self.__logger.debug("Updating field {0} to raw model.".format(fid))
+                    f.update(data_fields[fid])
+
+            for f in new:
+                self.__orm.add(f)
 
             club_db.update_url()
             self.__orm.commit()
 
             res = True
         except Exception as e:
-            app.logger.error(e)
+            self.__logger.error(e)
             res = False
 
         return {"result": res}
