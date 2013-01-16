@@ -67,11 +67,13 @@ class SportClub(DeclarativeBase):
         m = db.models.app.SportClub(self.__dict__)
         if self.created != None:
             m.created = '{0.day:{1}}. {0.month:{1}}. {0.year}'.format(self.created, '02');
+        else:
+            m.presentation_created = None
 
         if self.created != None and self.flag_created_year:
             m.presentation_created = '{0.year}'.format(self.created)
         else:
-            m.presentation_created = self.created
+            m.presentation_created = m.created
 
         m.sport_club_fields = []
         if self.sport_club_fields != None:
@@ -114,5 +116,3 @@ class State(DeclarativeBase):
 
     def get_app_model(self):
         return db.models.app.State(self.__dict__)
-
-

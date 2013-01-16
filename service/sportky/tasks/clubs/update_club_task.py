@@ -34,6 +34,9 @@ class UpdateClubTask(object):
                 pass
             club_db = self.__orm.query(SportClub).outerjoin(SportClubField).filter(SportClub.id == club_data['id']).one()
 
+
+            app.logger.debug("Active flag. {0}".format(club_data['active']))
+
             for k in club_db.__dict__.keys():
                 if k in club_data and k != "sport_club_fields":
                     app.logger.debug("Setting property {0}.".format(k));
