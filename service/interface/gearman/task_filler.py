@@ -19,7 +19,7 @@ if __name__ == "__main__":
     print "Initializing client."
     gm_client = gearman.GearmanClient(["{0}:{1}".format(app.config['GEARMAN']['host'], app.config['GEARMAN']['port'])])
     print "Client initialized."
-    ret_val = gm_client.submit_job(interface.gearman.SPORTKY_TASK_NAME, json.dumps({ 'path': sys.argv[1], 'data': json.loads(sys.argv[2]) }))
+    ret_val = gm_client.submit_job(self.app.config['GEARMAN_TASK_NAME'], json.dumps({ 'path': sys.argv[1], 'data': json.loads(sys.argv[2]) }))
     print "Returned value '{0}'.".format(ret_val)
     output = json.loads(ret_val.result)['data']
     print "Returned data '{0}' of type '{1}'.".format(output, type(output))

@@ -1,1 +1,0 @@
-SPORTKY_TASK_NAME = 'task'
