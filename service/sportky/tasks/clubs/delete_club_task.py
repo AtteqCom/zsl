@@ -4,7 +4,7 @@ import sqlalchemy.orm
 from db.models.raw import SportClub
 import logging
 
-class DeleteTask(object):
+class DeleteClubTask(object):
 
     @inject(session=sqlalchemy.orm.Session, logger=logging.Logger)
     def __init__(self, session, logger):

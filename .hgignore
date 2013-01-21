@@ -11,4 +11,5 @@ syntax: regexp
 syntax: regexp
 service/vendor/flask_injector/
 service/vendor/injector/
-
+syntax: regexp
+^service/docs
