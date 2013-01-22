@@ -1,6 +1,7 @@
 import importlib
 from utils.string_helper import underscore_to_camelcase
 from imp import reload
+from utils.task_helper import TaskHelper
 
 class Router:
     def __init__(self, app):
@@ -42,15 +43,10 @@ class Router:
 
         if self.is_task_reloading():
             reload(module)
-        injector = self.__app.get_injector()
 
         # Create the task using the injector initialization.
-        cls = getattr(module, class_name);
-        if hasattr(cls, "__new__"):
-            task = injector.create_object(cls)
-        else:
-            task = cls()
+        cls = getattr(module, class_name)
+        task = TaskHelper.instantiate(cls)
 
         self.__app.logger.debug("Task object {0} created [{1}].".format(class_name, task))
-        task_callable = getattr(task, "perform")
-        return (task, task_callable)
+        return (task, TaskHelper.get_callable(task))

@@ -23,7 +23,9 @@ class UpdateClubTask(object):
             club_data = data.get_data()['club']
 
             f = SportClubForm(MultiDict(club_data))
+            self.__logger.info("Club: {0}.".format(club_data))
             if not f.validate():
+                self.__logger.info("Validation failed.");
                 return {"result": False, "errors": f.errors}
 
             try:

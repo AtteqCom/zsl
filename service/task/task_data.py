@@ -7,6 +7,7 @@ class TaskData:
     def __init__(self, app, data):
         self.__app = app
         self.__data = data
+        self.__is_skipping_json = False
 
     def get_data(self):
         return self.__data;
@@ -16,3 +17,9 @@ class TaskData:
 
     def transform_data(self, f):
         self.__data = f(self.__data)
+
+    def is_skipping_json(self):
+        return self.__is_skipping_json
+
+    def set_skipping_json(self, value):
+        self.__is_skipping_json = value

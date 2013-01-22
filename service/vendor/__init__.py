@@ -13,7 +13,7 @@ def do_init():
     if os.path.exists('../../vendor/'):
         path = os.path.abspath('../../vendor/')
 
-    vendor_modules = ['flask_injector', 'injector']
+    vendor_modules = ['flask_injector', 'injector', 'redis']
     for v in vendor_modules:
         sys.path.append(path + os.sep + v)
 

@@ -54,7 +54,7 @@ class JsonInput:
 
             try:
                 # We transform the data only in the case of plain POST requests.
-                if request.headers.get("Content-Type") != "application/json" and task_data != None:
+                if request.headers.get("Content-Type") != "application/json" and task_data != None and not task_data.is_skipping_json():
                     task_data.transform_data(json.loads)
             except:
                 app.logger.error("Exception while processing JSON input decorator.")
@@ -73,7 +73,16 @@ class JsonOutputDecorator:
     def __call__(self, fn):
         def wrapped_fn(*args):
             ret_val = fn(*args)
-            return json.dumps(ret_val, cls = AppModelJSONEncoder)
+
+            skip_encode = False
+            for d in args:
+                if isinstance(d, TaskData):
+                    skip_encode = d.is_skipping_json()
+
+            if not skip_encode:
+                return json.dumps(ret_val, cls = AppModelJSONEncoder)
+            else:
+                return ret_val
 
         return wrapped_fn
 
