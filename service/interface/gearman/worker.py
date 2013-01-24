@@ -7,7 +7,6 @@ Created on 12.12.2012
 from application.service_application import service_application
 from router import router
 import gearman
-import interface.gearman
 from interface.gearman.json_data_encoder import JSONDataEncoder
 from task.task_data import TaskData
 import socket
@@ -19,11 +18,11 @@ def executeTask(worker, job):
     try:
         (task, task_callable) = router.route(job.data['path'])
         data = worker.logical_worker.executeTask(task, task_callable, job.data['data'])
-        print "Task {0} executed successfully.".format(job.data['path'])
+        app.logger.info("Task {0} executed successfully.".format(job.data['path']))
         return {'task_name': job.data['path'], 'data': data}
     except Exception as e:
-        return {'task_name': job.data['path'], 'data': None, 'error': str(e0)}
-        print e
+        app.logger.error(str(e))
+        return {'task_name': job.data['path'], 'data': None, 'error': str(e)}
 
 '''
 Class responsible for connecting to the Gearman server and grabbing tasks.
@@ -42,9 +41,9 @@ class Worker:
         self.gearman_worker.logical_worker = self
 
     def executeTask(self, task, task_callable, data):
-        print "Executing task."
+        self.app.logger.info("Executing task.")
         return task_callable(TaskData(app, data))
 
     def run(self):
-        print "Running the worker."
+        self.app.logger.info("Running the worker.")
         self.gearman_worker.work()

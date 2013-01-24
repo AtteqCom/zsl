@@ -44,7 +44,7 @@ class SportClub(DeclarativeBase, ModelBase):
 
     #column definitions
     id = Column(u'id', INTEGER(), primary_key=True, nullable=False)
-    magazine_id = Column(u'magazine_id', INTEGER(), nullable=False)
+    magazine_id = Column(u'magazine_id', INTEGER(), nullable=True)
     name = Column(u'name', VARCHAR(length=255), nullable=False)
     url = Column(u'url', VARCHAR(length=255), nullable=False)
     regexp = Column(u'regexp', TEXT())

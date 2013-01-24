@@ -5,21 +5,21 @@ Created on 14.12.2012
 '''
 class TaskData:
     def __init__(self, app, data):
-        self.__app = app
-        self.__data = data
-        self.__is_skipping_json = False
+        self._app = app
+        self._data = data
+        self._is_skipping_json = False
 
     def get_data(self):
-        return self.__data;
+        return self._data;
 
     def get_service_application(self):
-        return self.__app
+        return self._app
 
     def transform_data(self, f):
-        self.__data = f(self.__data)
+        self._data = f(self._data)
 
     def is_skipping_json(self):
-        return self.__is_skipping_json
+        return self._is_skipping_json
 
     def set_skipping_json(self, value):
-        self.__is_skipping_json = value
+        self._is_skipping_json = value

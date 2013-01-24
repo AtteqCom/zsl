@@ -6,25 +6,25 @@ class Sorter(object):
 
     def __init__(self, sorter):
         if 'sortby' in sorter:
-            self.__field = sorter['sortby']
+            self._field = sorter['sortby']
 
             if 'sort' in sorter:
-                self.__order = sorter['sort']
+                self._order = sorter['sort']
             else:
-                self.__order = DEFAULT_SORT_ORDER
+                self._order = DEFAULT_SORT_ORDER
 
-            self.__enabled = True
+            self._enabled = True
         else:
-            self.__enabled = False
+            self._enabled = False
 
     def is_enabled(self):
-        return self.__enabled
+        return self._enabled
 
     def get_order(self):
-        return self.__order
+        return self._order
 
     def get_field(self):
-        return self.__field
+        return self._field
 
     def apply_sorter(self, q, cls):
         if self.is_enabled():

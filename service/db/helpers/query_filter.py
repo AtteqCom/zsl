@@ -12,11 +12,11 @@ FILTER_VALUES = 'values'
 class QueryFilter(object):
 
     def __init__(self, query_filter):
-        self.__query_filter = query_filter
+        self._query_filter = query_filter
 
     def apply_query_filter(self, q, cls):
-        hints = self.__query_filter[FILTER_HINT]
-        values = self.__query_filter[FILTER_VALUES]
+        hints = self._query_filter[FILTER_HINT]
+        values = self._query_filter[FILTER_VALUES]
 
         for (k, v) in values.items():
             if v == None:

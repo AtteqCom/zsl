@@ -1,16 +1,16 @@
 from task.task_decorator import json_input, json_output
 from injector import inject
-import sqlalchemy.orm
 from db.models.raw import SportClub
-import logging
 from datetime import datetime
+from sportky.service.club_service import ClubService
+from application.service_application import SportkyFlask
 
 class CreateEmptyClubTask(object):
 
-    @inject(session=sqlalchemy.orm.Session, logger=logging.Logger)
-    def __init__(self, session, logger):
-        self.__orm = session
-        self.__logger = logger
+    @inject(club_service=ClubService, app=SportkyFlask)
+    def __init__(self, club_service, app):
+        self._app = app
+        self._club_service = club_service
 
     @json_input
     @json_output
@@ -29,10 +29,5 @@ class CreateEmptyClubTask(object):
         c.stadium = ''
         c.magazine_id = data.get_data()['magazine_id']
         c.url = ''
-        self.__orm.add(c)
-        self.__orm.commit()
-
-        c.update_url()
-        self.__orm.commit()
-
+        self._club_service.save(c)
         return { 'id': c.id }

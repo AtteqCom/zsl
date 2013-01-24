@@ -26,7 +26,7 @@ def get_athletes_xml():
 
     return XML_FILE
 
-    
+
 
 def athletes_profile_from_xml():
     """
@@ -41,7 +41,7 @@ def athletes_profile_from_xml():
     for profile in root.iter('profile'):
         athlete = {}
 
-        athlete['name'] = unicode(profile.find('name').text) 
+        athlete['name'] = unicode(profile.find('name').text)
         athlete['img'] = unicode(profile.find('img').text)
         athlete['url'] = unicode(profile.find('url').text)
 
@@ -53,17 +53,17 @@ class FetchListTask(object):
 
     @inject(session=sqlalchemy.orm.Session, logger=logging.Logger)
     def __init__(self, session, logger):
-        self.__orm = session
-        self.__logger = logger
-    
+        self._orm = session
+        self._logger = logger
+
     def get_random_clubs(self, count):
-        club_count = self.__orm.query(SportClub).count()
+        club_count = self._orm.query(SportClub).count()
 
         clubs = []
         for i in random.sample(xrange(club_count), min(count, club_count)):
-            club = self.__orm.query(SportClub).order_by(asc(SportClub.id)).limit(1).offset(i).one()
-            
-            club = self.__orm.query(SportClub).outerjoin(SportClubField).outerjoin(State).outerjoin(Sport).filter(SportClub.id == club.id).one()
+            club = self._orm.query(SportClub).order_by(asc(SportClub.id)).limit(1).offset(i).one()
+
+            club = self._orm.query(SportClub).outerjoin(SportClubField).outerjoin(State).outerjoin(Sport).filter(SportClub.id == club.id).one()
 
             clubs.append({
                 'name': club.name,
@@ -78,9 +78,9 @@ class FetchListTask(object):
     @json_output
     def perform(self, data):
         athletes = random.sample(athletes_profile_from_xml(), 2)
-        
+
         clubs = []
-        
+
         return {
             'players': athletes,
             'clubs': self.get_random_clubs(2)

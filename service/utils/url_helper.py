@@ -17,4 +17,4 @@ def slugify(value):
 
 
 def club(club):
-    return '/sportove-kluby/{id}/{name}'.format(id=club.id, name=club.url)
+    return '/sportove-kluby/{id}/{name}'.format(id=club.id, name=club.name)

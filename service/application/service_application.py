@@ -11,20 +11,20 @@ class SportkyFlask(Flask):
         Flask.__init__(self, import_name, static_path, static_url_path,
                        static_folder, template_folder, instance_path,
                        instance_relative_config)
-        self.__dependencies_initialized = False
+        self._dependencies_initialized = False
 
     def initialize_dependencies(self):
         from application.initializers import injection_views, injection_modules
-        self.__flask_injector = FlaskInjector(injection_views, injection_modules)
-        self.__injector = self.__flask_injector.init_app(self)
+        self._flask_injector = FlaskInjector(injection_views, injection_modules)
+        self._injector = self._flask_injector.init_app(self)
         self.logger.debug("Injector configuration {0}, {1}.".format(injection_views, injection_modules))
-        self.__dependencies_initialized = True
+        self._dependencies_initialized = True
 
     def is_initialized(self):
-        return self.__dependencies_initialized
+        return self._dependencies_initialized
 
     def get_injector(self):
-        return self.__injector
+        return self._injector
 
 service_application = SportkyFlask("application")
 
