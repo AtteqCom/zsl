@@ -8,6 +8,7 @@ import db.models.app
 from sqlalchemy.orm import relation, backref, relationship
 from sqlalchemy.dialects.mysql.base import BIT
 from db.models.raw.model_helper import ModelHelper
+from utils import url_helper
 
 if not service_application.is_initialized():
     print "Application is not initialized."
@@ -88,7 +89,7 @@ class SportClub(DeclarativeBase, ModelBase):
         return m
 
     def update_url(self):
-        self.url = "/sportove-kluby/{0}/{1}".format(self.id, self.name)
+        self.url = url_helper.club(self)
 
 class SportClubField(DeclarativeBase, ModelBase):
     __tablename__ = 'sport_club_field'
