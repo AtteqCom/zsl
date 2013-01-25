@@ -6,7 +6,7 @@ Created on 24.12.2012
 
 from injector import inject
 import sqlalchemy.engine
-from application import service_application
+from application.service_application import SportkyFlask
 
 class DbTestTask(object):
     '''
@@ -21,10 +21,11 @@ class DbTestTask(object):
     @author: Martin Babka
     '''
 
-    @inject(db=sqlalchemy.engine.Engine)
-    def __init__(self, db):
+    @inject(db=sqlalchemy.engine.Engine, app=SportkyFlask)
+    def __init__(self, db, app):
         self._db = db
-        service_application.logger.debug("Call from DbTestTesk.__init__, db {0}".format(db))
+        self._app = app
+        self._app.logger.debug("Call from DbTestTesk.__init__, db {0}".format(db))
 
     def perform(self, data):
         return "{0}".format(self._db.execute("select 1 * 2 * 3").scalar())

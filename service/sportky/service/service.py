@@ -21,8 +21,6 @@ class Service(object):
         self._orm = session
         self._app = app
 
-        print self._app
-
 def transactional(f):
     def transactional_f(*a):
         try:

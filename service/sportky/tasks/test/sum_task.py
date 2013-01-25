@@ -4,14 +4,18 @@ Created on 22.12.2012
 @author: Martin Babka
 '''
 
-from application.service_application import service_application
 from task.task_decorator import json_input, json_output
+from application.service_application import SportkyFlask
+from injector import inject
 
-app = service_application
+class SumTask(object):
 
-class SumTask:
+    @inject(app=SportkyFlask)
+    def __init__(self, app):
+        self._app = app
+
     @json_input
     @json_output
     def perform(self, data):
-        app.logger.debug("Sum task with data '{0}'.".format(data.get_data()))
+        self._app.logger.debug("Sum task with data '{0}'.".format(data.get_data()))
         return {"input": data.get_data(), "result": sum(data.get_data())}

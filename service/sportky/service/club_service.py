@@ -4,6 +4,7 @@ Created on 24.1.2013
 @author: Martin Babka
 '''
 from sportky.service.service import Service, transactional
+from db.models.raw import SportClub
 
 class ClubService(Service):
 
@@ -24,8 +25,9 @@ class ClubService(Service):
     def fetch(self, id):
         pass
 
+    @transactional
     def delete(self, id):
-        pass
+        self._orm.query(SportClub).filter(SportClub.id == id).delete()
 
     def fetch_list(self, filter, pagination, sorter):
         pass

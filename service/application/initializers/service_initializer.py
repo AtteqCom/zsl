@@ -4,13 +4,11 @@ Created on 24.1.2013
 @author: Martin Babka
 '''
 import vendor
-import logging
-from sportky.service.club_service import ClubService
-from sportky.service.sport_service import SportService
-from sportky.service.state_service import StateService
-vendor.do_init()
 from injector import singleton
+import logging
 from application.initializers import injection_module
+from utils.string_helper import camelcase_to_underscore
+vendor.do_init()
 
 class ServiceInitializer(object):
     '''
@@ -21,9 +19,14 @@ class ServiceInitializer(object):
         '''
         Initialization method.
         '''
-        services = [ClubService, SportService, StateService]
+        services = ['ClubService', 'SportService', 'StateService']
 
-        for cls in services:
+        for cls_name in services:
+            module_name = camelcase_to_underscore(cls_name)
+            package_name = "sportky.service.{0}".format(module_name)
+            module = getattr(__import__(package_name).service, module_name)
+            cls = getattr(module, cls_name)
+
             binder.bind(
                 cls,
                 to = binder.injector.create_object(cls),

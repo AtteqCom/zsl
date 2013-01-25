@@ -10,10 +10,6 @@ from sqlalchemy.dialects.mysql.base import BIT
 from db.models.raw.model_helper import ModelHelper
 from utils import url_helper
 
-if not service_application.is_initialized():
-    print "Application is not initialized."
-    quit()
-
 DeclarativeBase = declarative_base()
 metadata = DeclarativeBase.metadata
 metadata.bind = service_application.get_injector().get(sqlalchemy.engine.Engine)

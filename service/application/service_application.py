@@ -16,7 +16,7 @@ class SportkyFlask(Flask):
     def initialize_dependencies(self):
         from application.initializers import injection_views, injection_modules
         self._flask_injector = FlaskInjector(injection_views, injection_modules)
-        self._injector = self._flask_injector.init_app(self)
+        self.set_injector(self._flask_injector.init_app(self))
         self.logger.debug("Injector configuration {0}, {1}.".format(injection_views, injection_modules))
         self._dependencies_initialized = True
 
@@ -25,6 +25,9 @@ class SportkyFlask(Flask):
 
     def get_injector(self):
         return self._injector
+
+    def set_injector(self, injector):
+        self._injector = injector
 
 service_application = SportkyFlask("application")
 
