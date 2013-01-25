@@ -4,7 +4,7 @@ Created on 24.1.2013
 @author: Martin Babka
 '''
 from sportky.service.service import Service, transactional
-from db.models.raw import SportClub
+from db.models.raw import SportClub, SportClubField, State, Sport
 
 class ClubService(Service):
 
@@ -22,8 +22,9 @@ class ClubService(Service):
 
         club.update_url()
 
+    @transactional
     def fetch(self, id):
-        pass
+        return self._orm.query(SportClub).outerjoin(SportClubField).outerjoin(State).outerjoin(Sport).filter(SportClub.id == id).one()
 
     @transactional
     def delete(self, id):

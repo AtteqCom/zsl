@@ -1,18 +1,16 @@
 from task.task_decorator import json_input, json_output
 from injector import inject
-import sqlalchemy.orm
-from db.models.raw import SportClub, SportClubField, Sport, State
-import logging
+from application.service_application import SportkyFlask
+from sportky.service.club_service import ClubService
 
 class FetchClubTask(object):
 
-    @inject(session=sqlalchemy.orm.Session, logger=logging.Logger)
-    def __init__(self, session, logger):
-        self.__orm = session
-        self.__logger = logger
+    @inject(club_service=ClubService, app=SportkyFlask)
+    def __init__(self, club_service, app):
+        self._club_service = club_service
+        self._app = app
 
     @json_input
     @json_output
     def perform(self, data):
-        club = self.__orm.query(SportClub).outerjoin(SportClubField).outerjoin(State).outerjoin(Sport).filter(SportClub.id == data.get_data()['id']).one()
-        return club.get_app_model()
+        return self._club_service.fetch(data.get_data()['id']).get_app_model()
