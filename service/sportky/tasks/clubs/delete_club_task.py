@@ -14,7 +14,7 @@ class DeleteClubTask(object):
     @json_output
     def perform(self, data):
         try:
-            self._club_service.delete(data.get_data()['id'])
+            self._club_service.delete_sport_club_by_id(data.get_data()['id'])
             res = True
         except Exception as e:
             res = False

@@ -1,25 +1,23 @@
 from task.task_decorator import json_input, json_output
 from injector import inject
-import sqlalchemy.orm
 
-from application.service_application import service_application
-from db.helpers.query_helper import QueryHelper
+from application.service_application import SportkyFlask
 from db.helpers.query_filter import FILTER_VALUES,\
     FILTER_HINT, OperatorEq, OperatorLike
-app = service_application
-from db.models.raw import SportClub
+from sportky.service.club_service import ClubService
 
 class FetchClubListTask(object):
 
-    @inject(session=sqlalchemy.orm.Session)
-    def __init__(self, session):
-        self.__orm = session
+    @inject(club_service=ClubService, app=SportkyFlask)
+    def __init__(self, club_service, app):
+        self._app = app
+        self._club_service = club_service
 
     @json_input
     @json_output
     def perform(self, data):
         d = data.get_data()
-        app.logger.debug("Fetch clubs called with data {0}.".format(d))
+        self._app.logger.debug("Fetch clubs called with data {0}.".format(d))
 
         f = {
             FILTER_VALUES: d['filter'],
@@ -30,10 +28,10 @@ class FetchClubListTask(object):
                  'name': OperatorLike
             }
         }
-        qh = QueryHelper(SportClub, f, d['pagination'], d['sorter'])
 
         clubs = []
-        for c in qh.execute(self.__orm.query(SportClub).outerjoin(SportClub.sport).outerjoin(SportClub.state)):
+        (raw_clubs, qh) = self._club_service.fetch_list(f, d['pagination'], d['sorter'])
+        for c in raw_clubs:
             club = c.get_app_model()
             if c.sport != None:
                 club.sport = c.sport.name

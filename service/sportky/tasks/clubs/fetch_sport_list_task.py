@@ -1,21 +1,17 @@
 from injector import inject
-import sqlalchemy.orm
-
-from application.service_application import service_application
 from task.task_decorator import json_output
-app = service_application
-from db.models.raw import Sport
+from sportky.service.sport_service import SportService
 
 class FetchSportListTask(object):
 
-    @inject(session=sqlalchemy.orm.Session)
-    def __init__(self, session):
-        self.__orm = session
+    @inject(sport_service=SportService)
+    def __init__(self, sport_service):
+        self._sport_service = sport_service
 
     @json_output
     def perform(self, data):
         sports = []
-        for s in self.__orm.query(Sport).all():
+        for s in self._sport_service.fetch_list():
             sports.append(s.get_app_model())
 
         return sports

@@ -2,11 +2,18 @@ from flask import Config
 import vendor
 import logging
 from sqlalchemy import create_engine
-import sqlalchemy.orm
-import sqlalchemy.engine
+from sqlalchemy.orm.session import sessionmaker
+from sqlalchemy.engine.base import Engine
 vendor.do_init()
 from injector import singleton
 from application.initializers import injection_module
+
+class SessionHolder:
+    def __init__(self, sess_cls):
+        self._sess_cls = sess_cls
+
+    def __call__(self):
+        return self._sess_cls()
 
 class DatabaseInitializer:
     def initialize(self, binder):
@@ -14,16 +21,17 @@ class DatabaseInitializer:
         engine = create_engine(config['DATABASE_URI'])
 
         binder.bind(
-            sqlalchemy.engine.Engine,
+            Engine,
             to = engine,
             scope = singleton
         )
         logger = binder.injector.get(logging.Logger)
         logger.debug("Created DB configuration to {0}.".format(config['DATABASE_URI']))
 
+        session = SessionHolder(sessionmaker(engine, autocommit=False, expire_on_commit=False))
         binder.bind(
-            sqlalchemy.orm.Session,
-            to = sqlalchemy.orm.sessionmaker(engine),
+            SessionHolder,
+            to = session,
             scope = singleton
         )
         logger.debug("Created ORM session")
