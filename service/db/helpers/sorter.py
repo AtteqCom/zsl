@@ -4,7 +4,7 @@ DEFAULT_SORT_ORDER = 'ASC' # If changed, look at the condition in apply_sorter i
 
 class Sorter(object):
 
-    def __init__(self, sorter):
+    def __init__(self, sorter, mappings = []):
         if 'sortby' in sorter:
             self._field = sorter['sortby']
 
@@ -17,6 +17,8 @@ class Sorter(object):
         else:
             self._enabled = False
 
+        self._mappings = mappings
+
     def is_enabled(self):
         return self._enabled
 
@@ -28,7 +30,11 @@ class Sorter(object):
 
     def apply_sorter(self, q, cls):
         if self.is_enabled():
-            attr = getattr(cls, self.get_field())
+            if self.get_field() in self._mappings:
+                (cls, field) = self._mappings[self.get_field()]
+                attr = getattr(cls, field)
+            else:
+                attr = getattr(cls, self.get_field())
             if self.get_order() == "DESC": # If changed, look at the DEFAULT_SORT_ORDER definition.
                 return q.order_by(desc(attr))
             else:

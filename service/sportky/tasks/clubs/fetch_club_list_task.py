@@ -5,6 +5,8 @@ from application.service_application import SportkyFlask
 from db.helpers.query_filter import FILTER_VALUES,\
     FILTER_HINT, OperatorEq, OperatorLike
 from sportky.service.club_service import ClubService
+from db.helpers.sorter import Sorter
+from db.models.raw import State, Sport
 
 class FetchClubListTask(object):
 
@@ -29,8 +31,13 @@ class FetchClubListTask(object):
             }
         }
 
+        mappings = {
+            'state': (State, 'name_sk'),
+            'sport': (Sport, 'name'),
+        }
+
         clubs = []
-        (raw_clubs, qh) = self._club_service.fetch_list(f, d['pagination'], d['sorter'])
+        (raw_clubs, qh) = self._club_service.fetch_list(f, d['pagination'], Sorter(d['sorter'], mappings))
         for c in raw_clubs:
             club = c.get_app_model()
             if c.sport != None:

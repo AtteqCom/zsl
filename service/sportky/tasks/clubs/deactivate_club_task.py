@@ -3,7 +3,7 @@ from injector import inject
 from application.service_application import SportkyFlask
 from sportky.service.club_service import ClubService
 
-class DeleteClubTask(object):
+class DeactivateClubTask(object):
 
     @inject(club_service=ClubService, app=SportkyFlask)
     def __init__(self, club_service, app):
@@ -14,7 +14,7 @@ class DeleteClubTask(object):
     @json_output
     def perform(self, data):
         try:
-            self._club_service.delete_sport_club_by_id(data.get_data()['id'])
+            self._club_service.deactivate_sport_club_by_id(data.get_data()['id'])
             res = True
         except Exception as e:
             res = False

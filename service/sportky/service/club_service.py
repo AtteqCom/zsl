@@ -38,6 +38,18 @@ class ClubService(Service):
         self._orm.query(SportClub).filter(SportClub.id == id).delete()
 
     @transactional
+    def deactivate_sport_club_by_id(self, id):
+        club = self._orm.query(SportClub).filter(SportClub.id == id).one()
+        club.active = False
+        self.save(club)
+
+    @transactional
+    def activate_sport_club_by_id(self, id):
+        club = self._orm.query(SportClub).filter(SportClub.id == id).one()
+        club.active = True
+        self.save(club)
+
+    @transactional
     def delete_sport_club_field(self, f):
         self._orm.delete(f)
 
