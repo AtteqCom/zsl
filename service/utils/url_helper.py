@@ -3,6 +3,8 @@ Created on 21.01.2013
 
 @author: Peter Morihladko
 '''
+import unicodedata
+import re
 
 def slugify(value):
     """
@@ -13,8 +15,8 @@ def slugify(value):
     """
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
     value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
-    return mark_safe(re.sub('[-\s]+', '-', value))
+    return re.sub('[-\s]+', '-', value)
 
 
 def club(club):
-    return '/sportove-kluby/{id}/{name}'.format(id=club.id, name=club.name)
+    return '/sportove-kluby/{id}/{name}'.format(id=club.id, name=slugify(club.name))
