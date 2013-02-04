@@ -19,6 +19,9 @@ class Sport(AppModel):
 class State(AppModel):
     pass
 
+class Image(AppModel):
+    pass
+
 class AppModelJSONEncoder(JSONEncoder):
     def default(self, o):
         if isinstance(o, AppModel):

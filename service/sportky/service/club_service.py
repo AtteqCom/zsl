@@ -4,7 +4,7 @@ Created on 24.1.2013
 @author: Martin Babka
 '''
 from sportky.service.service import Service, transactional
-from db.models.raw import SportClub, SportClubField, State, Sport
+from db.models.raw import SportClub, SportClubField, State, Sport, Image
 from db.helpers.query_helper import QueryHelper
 import random
 from sqlalchemy.sql.expression import asc
@@ -31,7 +31,7 @@ class ClubService(Service):
 
     @transactional
     def fetch(self, id):
-        return self._orm.query(SportClub).outerjoin(SportClubField).outerjoin(State).outerjoin(Sport).filter(SportClub.id == id).one()
+        return self._orm.query(SportClub).outerjoin(SportClubField).outerjoin(Image).outerjoin(State).outerjoin(Sport).filter(SportClub.id == id).one()
 
     @transactional
     def delete_sport_club_by_id(self, id):

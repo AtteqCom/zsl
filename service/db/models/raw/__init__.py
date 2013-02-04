@@ -18,6 +18,104 @@ class ModelBase:
     def update(self, app_model, forbidden_keys = [], inverse = False):
         ModelHelper.update_model(self, app_model, forbidden_keys, inverse)
 
+sport_club = Table(u'sport_club', metadata,
+    Column(u'id', INTEGER(), primary_key=True, nullable=False),
+    Column(u'magazine_id', INTEGER()),
+    Column(u'name', VARCHAR(length=255), nullable=False),
+    Column(u'url', VARCHAR(length=255), nullable=False),
+    Column(u'regexp', TEXT()),
+    Column(u'added', DATETIME(), nullable=False),
+    Column(u'created', DATETIME()),
+    Column(u'flag_created_year', BIT(length=1), nullable=False),
+    Column(u'sport_id', INTEGER(), ForeignKey('sport.id')),
+    Column(u'stadium', VARCHAR(length=255), nullable=False),
+    Column(u'president', VARCHAR(length=255), nullable=False),
+    Column(u'coach', VARCHAR(length=255), nullable=False),
+    Column(u'league', VARCHAR(length=255), nullable=False),
+    Column(u'state_id', INTEGER(), ForeignKey('state.id')),
+    Column(u'city', VARCHAR(length=255), nullable=False),
+    Column(u'achievements', TEXT()),
+    Column(u'homepage', VARCHAR(length=255), nullable=False),
+    Column(u'active', BIT(length=1), nullable=False),
+    Column(u'current_squad', BIT(length=1), nullable=False),
+    Column(u'top', BIT(length=1), nullable=False),
+    Column(u'image_id', INTEGER(), ForeignKey('image.iid')),
+    Column(u'gallery_id', INTEGER(), ForeignKey('gallery.gid')),
+)
+
+gallery_image = Table(u'gallery_image', metadata,
+    Column(u'gid', INTEGER(), ForeignKey('gallery.gid'), primary_key=True, nullable=False),
+    Column(u'iid', INTEGER(), ForeignKey('image.iid'), primary_key=True, nullable=False),
+    Column(u'description', VARCHAR(length=1000)),
+    Column(u'order', INTEGER(), nullable=False),
+)
+
+class Gallery(DeclarativeBase, ModelBase):
+    __tablename__ = 'gallery'
+
+    __table_args__ = {}
+
+    #column definitions
+    aid = Column(u'aid', INTEGER(), ForeignKey('article.aid'))
+    created = Column(u'created', TIMESTAMP(), nullable=False)
+    gid = Column(u'gid', INTEGER(), primary_key=True, nullable=False)
+    images_count = Column(u'images_count', SMALLINT(), nullable=False)
+    name = Column(u'name', VARCHAR(length=255), nullable=False)
+
+    #relation definitions
+    images = relation('Image', primaryjoin='Gallery.gid==GalleryImage.gid', secondary=gallery_image, secondaryjoin='GalleryImage.iid==Image.iid')
+
+
+class GalleryImage(DeclarativeBase, ModelBase):
+    __table__ = gallery_image
+
+
+    #relation definitions
+    image = relation('Image', primaryjoin='GalleryImage.iid==Image.iid')
+    gallery = relation('Gallery', primaryjoin='GalleryImage.gid==Gallery.gid')
+
+
+class Image(DeclarativeBase, ModelBase):
+    __tablename__ = 'image'
+
+    __table_args__ = {}
+
+    #column definitions
+    big = Column(u'big', Integer(), nullable=False)
+    created = Column(u'created', TIMESTAMP(), nullable=False)
+    description = Column(u'description', VARCHAR(length=1000))
+    extension = Column(u'extension', VARCHAR(length=20))
+    height = Column(u'height', INTEGER())
+    iid = Column(u'iid', INTEGER(), primary_key=True, nullable=False)
+    rid = Column(u'rid', INTEGER(), ForeignKey('resource.rid'))
+    watermark = Column(u'watermark', Enum(u'none', u'light', u'dark'), nullable=False)
+    width = Column(u'width', INTEGER())
+
+    #relation definitions
+    resource = relation('Resource', primaryjoin='Image.rid==Resource.rid')
+    galleries = relation('Gallery', primaryjoin='Image.iid==GalleryImage.iid', secondary=gallery_image, secondaryjoin='GalleryImage.gid==Gallery.gid')
+
+    def get_url(self, dim):
+        return url_helper.image(self, dim)
+
+    def get_app_model(self):
+        return db.models.app.Image(self.__dict__)
+
+class Resource(DeclarativeBase):
+    __tablename__ = 'resource'
+
+    __table_args__ = {}
+
+    #column definitions
+    contact = Column(u'contact', VARCHAR(length=255))
+    homepage = Column(u'homepage', VARCHAR(length=255))
+    name = Column(u'name', VARCHAR(length=255), nullable=False)
+    rid = Column(u'rid', INTEGER(), primary_key=True, nullable=False)
+    type = Column(u'type', String(length=1), nullable=False)
+
+    #relation definitions
+
+
 class Sport(DeclarativeBase, ModelBase):
     __tablename__ = 'sport'
 
@@ -28,42 +126,21 @@ class Sport(DeclarativeBase, ModelBase):
     name = Column(u'name', VARCHAR(length=255), nullable=False)
 
     #relation definitions
+    states = relation('State', primaryjoin='Sport.id==SportClub.sport_id', secondary=sport_club, secondaryjoin='SportClub.state_id==State.id')
 
     def get_app_model(self):
         return db.models.app.Sport(self.__dict__)
 
-
 class SportClub(DeclarativeBase, ModelBase):
-    __tablename__ = "sport_club"
+    __table__ = sport_club
 
-    __table_args__ = {}
-
-    #column definitions
-    id = Column(u'id', INTEGER(), primary_key=True, nullable=False)
-    magazine_id = Column(u'magazine_id', INTEGER(), nullable=True)
-    name = Column(u'name', VARCHAR(length=255), nullable=False)
-    url = Column(u'url', VARCHAR(length=255), nullable=False)
-    regexp = Column(u'regexp', TEXT())
-    added = Column(u'added', DATETIME(), nullable=False)
-    created = Column(u'created', DATETIME())
-    flag_created_year = Column(u'flag_created_year', BIT(), nullable=False)
-    sport_id = Column(u'sport_id', INTEGER(), ForeignKey('sport.id'))
-    stadium = Column(u'stadium', VARCHAR(length=255), nullable=False)
-    president = Column(u'president', VARCHAR(length=255), nullable=False)
-    coach = Column(u'coach', VARCHAR(length=255), nullable=False)
-    league = Column(u'league', VARCHAR(length=255), nullable=False)
-    state_id = Column(u'state_id', INTEGER(), ForeignKey('state.id'))
-    city = Column(u'city', VARCHAR(length=255), nullable=False)
-    achievements = Column(u'achievements', TEXT())
-    homepage = Column(u'homepage', VARCHAR(length=255), nullable=False)
-    active = Column(u'active', BIT(), nullable=False)
-    current_squad = Column(u'current_squad', BIT(), nullable=False)
 
     #relation definitions
     sport = relation('Sport', primaryjoin='SportClub.sport_id==Sport.id')
     state = relation('State', primaryjoin='SportClub.state_id==State.id')
     sport_club_fields = relationship("SportClubField", order_by="SportClubField.id", backref="sport_club")
-
+    image = relation('Image', primaryjoin='SportClub.image_id==Image.iid')
+    gallery = relation('Gallery', primaryjoin='SportClub.gallery_id==Gallery.gid')
 
     def get_app_model(self):
         m = db.models.app.SportClub(self.__dict__)
@@ -82,6 +159,9 @@ class SportClub(DeclarativeBase, ModelBase):
             for scf in self.sport_club_fields:
                 m.sport_club_fields.append(scf.get_app_model())
 
+        if self.image != None:
+            m.image = self.image.get_app_model()
+
         return m
 
     def update_url(self):
@@ -99,7 +179,7 @@ class SportClubField(DeclarativeBase, ModelBase):
     value = Column(u'value', VARCHAR(length=256), nullable=False)
 
     #relation definitions
-    #sport_club = relationship("SportClub", backref=backref('sport_club_fields', order_by=id))
+    #sport_club = relation('SportClub', primaryjoin='SportClubField.sport_club_id==SportClub.id')
 
     def get_app_model(self):
         return db.models.app.SportClubField(self.__dict__)
@@ -115,6 +195,8 @@ class State(DeclarativeBase, ModelBase):
     name_sk = Column(u'name_sk', VARCHAR(length=64), nullable=False)
 
     #relation definitions
+    sports = relation('Sport', primaryjoin='State.id==SportClub.state_id', secondary=sport_club, secondaryjoin='SportClub.sport_id==Sport.id')
+
 
     def get_app_model(self):
         return db.models.app.State(self.__dict__)

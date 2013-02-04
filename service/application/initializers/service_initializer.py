@@ -19,7 +19,8 @@ class ServiceInitializer(object):
         '''
         Initialization method.
         '''
-        services = ['ClubService', 'SportService', 'StateService']
+        # TODO: Automatically?
+        services = ['ClubService', 'SportService', 'StateService', 'ImageService']
 
         for cls_name in services:
             module_name = camelcase_to_underscore(cls_name)

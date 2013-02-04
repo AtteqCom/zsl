@@ -2,6 +2,7 @@ from application.service_application import service_application
 from router import router
 from flask import request
 from task.task_data import TaskData
+from flask.helpers import make_response
 
 app = service_application
 
@@ -16,7 +17,19 @@ class WebTaskTester:
 
         app.logger.debug("Data found '%s'.", data)
         data = TaskData(app, data)
-        return task_callable(data)
+
+        response = make_response(task_callable(data))
+
+        # TODO: How to hanle this?
+        # if 'Origin' in request.headers:
+        #    response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
+        #else:
+        #    response.headers['Access-Control-Allow-Origin'] = '*'
+
+        response.headers['Sportky-Flask-Layer'] = '1.00aa0'
+        response.headers['Cache-Control'] = 'no-cache';
+
+        return response
 
 @app.route("/task/<path:path>", methods=["POST", "GET"])
 def performWebTask(path):
