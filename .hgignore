@@ -14,3 +14,6 @@ service/vendor/injector/
 service/vendor/redis/
 syntax: regexp
 ^service/docs
+
+syntax: regexp
+^service/db/models/raw/models\.py$
