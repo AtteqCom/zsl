@@ -1,1 +1,1 @@
-{"count":8}
+{"count":8, "only_topped":1}
