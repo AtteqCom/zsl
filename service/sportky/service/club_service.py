@@ -59,12 +59,29 @@ class ClubService(Service):
         return (qh.execute(self._orm.query(SportClub).outerjoin(SportClub.sport).outerjoin(SportClub.state)), qh)
 
     @transactional
-    def fetch_random_club_ids(self, count):
-        club_count = self._orm.query(SportClub).count()
+    def fetch_random_club_ids(self, count, only_toppped, only_active):
+        q = self._orm.query(SportClub)
+        if only_toppped:
+            self._app.logger.info("Fetching only topped clubs.")
+            q = q.filter(SportClub.top == 1)
+        if only_active:
+            self._app.logger.info("Fetching only active clubs.")
+            q = q.filter(SportClub.active == 1)
 
+        club_count = q.count()
+        self._app.logger.info("Relevant club count {0}.".format(club_count))
         ids = []
+
         for i in random.sample(xrange(club_count), min(count, club_count)):
-            club = self._orm.query(SportClub).order_by(asc(SportClub.id)).limit(1).offset(i).one()
+            q = self._orm.query(SportClub)
+
+            if only_toppped:
+                q = q.filter(SportClub.top == 1)
+            if only_active:
+                q = q.filter(SportClub.active == 1)
+
+            club = q.order_by(asc(SportClub.id)).limit(1).offset(i).one()
             ids.append(club.id)
+
         return ids
 

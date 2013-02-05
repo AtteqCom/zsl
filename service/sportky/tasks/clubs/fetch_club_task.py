@@ -5,6 +5,8 @@ from sportky.service.club_service import ClubService
 
 class FetchClubTask(object):
 
+    DEFAULT_IMAGE_DIM = 135;
+
     @inject(club_service=ClubService, app=SportkyFlask)
     def __init__(self, club_service, app):
         self._club_service = club_service
@@ -13,11 +15,15 @@ class FetchClubTask(object):
     @json_input
     @json_output
     def perform(self, data):
-        rm = self._club_service.fetch(data.get_data()['id'])
+        d = data.get_data();
+        rm = self._club_service.fetch(d['id'])
         m = rm.get_app_model()
         if rm.image != None:
             self._app.logger.info("Having the image.")
-            m.image.url = rm.image.get_url(135) # TODO: Nicely.
+            dim = FetchClubTask.DEFAULT_IMAGE_DIM
+            if 'image_dimension' in d:
+                dim = d['image_dimension']
+            m.image.url = rm.image.get_url(dim)
         else:
             self._app.logger.info("Not having the image.")
         return m
