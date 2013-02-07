@@ -1,7 +1,7 @@
-RewriteEngine on
+#RewriteEngine on
 
-RewriteBase /
+#RewriteBase /
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ interface/webservice/index.cgi/$1 [QSA]
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteRule ^(.*)$ interface/webservice/index.cgi/$1 [QSA]
 

@@ -21,7 +21,10 @@ def mapping(path):
     app.logger.debug("Hello wording!")
     return "Hello World! Using path '{0}'.".format(path)
 
+# For WSGI.
+application = app
+app.initialize_dependencies()
+
 # Run it!
 if __name__ == "__main__":
-    app.initialize_dependencies()
     CGIHandler().run(app)
