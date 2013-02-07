@@ -9,9 +9,11 @@ def do_init():
         return
 
     __vendor_initialized = True
-    path = os.path.abspath('.')
-    if os.path.exists('../../vendor/'):
-        path = os.path.abspath('../../vendor/')
+    path = "."
+    for p in sys.path:
+        if os.path.exists(p + '/vendor/'):
+            path = os.path.abspath(p + '/vendor/')
+            break
 
     vendor_modules = ['flask_injector', 'injector', 'redis']
     for v in vendor_modules:
