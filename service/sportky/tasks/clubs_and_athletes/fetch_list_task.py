@@ -38,7 +38,7 @@ def athletes_profile_from_xml():
     root = tree.getroot()
 
     athletes = []
-    for profile in root.iter('profile'):
+    for profile in root.findall('profile'):
         athlete = {}
 
         athlete['name'] = unicode(profile.find('name').text)
