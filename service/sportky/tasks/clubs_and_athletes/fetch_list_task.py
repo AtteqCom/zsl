@@ -14,7 +14,7 @@ from sqlalchemy.sql.expression import asc
 from utils import url_helper
 
 XML_URL = 'http://feminity.zoznam.sk/exp/sportovci/xml'
-XML_FILE = '/tmp/sportovci_profily.xml'
+XML_FILE = '/www-cache/nove.sportky.sk/cacheXml/sportovci_profily.xml'
 
 def get_athletes_xml():
     if not os.path.exists(XML_FILE):
@@ -28,7 +28,7 @@ def get_athletes_xml():
 
 
 
-def athletes_profile_from_xml():
+def athletes_profile_from_xml(logger):
     """
     Vyparsuje profili sportovcou z xml
     """
@@ -38,7 +38,7 @@ def athletes_profile_from_xml():
     root = tree.getroot()
 
     athletes = []
-    for profile in root.findall('profile'):
+    for profile in root.findall('profiles/profile'):
         athlete = {}
 
         athlete['name'] = unicode(profile.find('name').text)
@@ -77,7 +77,7 @@ class FetchListTask(object):
 
     @json_output
     def perform(self, data):
-        athletes = random.sample(athletes_profile_from_xml(), 2)
+        athletes = random.sample(athletes_profile_from_xml(self._logger), 2)
 
         clubs = []
 
