@@ -7,6 +7,9 @@ LOG_LEVEL = 'DEBUG'
 DATABASE_URI = 'mysql://robot_wr:robot_wr@localhost:3306/sportkynew?charset=utf8'
 GEARMAN_TASK_NAME = None
 
+ATHLETES_XML_FILE = '/tmp/sportovci_profily.xml'
+ATHLETES_XML_URL = 'http://feminity.zoznam.sk/exp/sportovci/xml'
+
 DEBUG = True
 
 RELOAD_GEARMAN = True

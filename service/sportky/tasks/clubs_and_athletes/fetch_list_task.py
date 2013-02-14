@@ -8,13 +8,15 @@ import random
 import urllib2
 import os.path
 
-from db.models.raw import SportClub, SportClubField, Sport, State
+from db.models.raw import SportClub, SportClubField, Sport, State, Image
 from sqlalchemy.sql.expression import asc
 
 from utils import url_helper
+from sportky.tasks.clubs.fetch_club_task import FetchClubTask
+from application.service_application import service_application
 
-XML_URL = 'http://feminity.zoznam.sk/exp/sportovci/xml'
-XML_FILE = '/www-cache/nove.sportky.sk/cacheXml/sportovci_profily.xml'
+XML_URL = service_application.config['ATHLETES_XML_URL']
+XML_FILE = service_application.config['ATHLETES_XML_FILE']
 
 def get_athletes_xml():
     if not os.path.exists(XML_FILE):
@@ -30,7 +32,7 @@ def get_athletes_xml():
 
 def athletes_profile_from_xml(logger):
     """
-    Vyparsuje profili sportovcou z xml
+    Vyparsuje profily sportovcov z xml.
     """
 
     tree = xml.parse(get_athletes_xml())
@@ -56,19 +58,23 @@ class FetchListTask(object):
         self._orm = session
         self._logger = logger
 
-    def get_random_clubs(self, count):
+    #TODO: Pouzi service.
+    def get_random_clubs(self, count, dim):
         club_count = self._orm.query(SportClub).count()
 
         clubs = []
         for i in random.sample(xrange(club_count), min(count, club_count)):
             club = self._orm.query(SportClub).order_by(asc(SportClub.id)).limit(1).offset(i).one()
+            club = self._orm.query(SportClub).outerjoin(Image).outerjoin(SportClubField).outerjoin(State).outerjoin(Sport).filter(SportClub.id == club.id).one()
 
-            club = self._orm.query(SportClub).outerjoin(SportClubField).outerjoin(State).outerjoin(Sport).filter(SportClub.id == club.id).one()
+            img_url = '#'
+            if club.Image != None:
+                img_url = url_helper.image(club.Image, dim)
 
             clubs.append({
                 'name': club.name,
                 'url': url_helper.club(club),
-                'img': '/img/dummy-club.png'
+                'img': img_url
             })
 
         return clubs
@@ -77,11 +83,17 @@ class FetchListTask(object):
 
     @json_output
     def perform(self, data):
+        # TODO: Co ta 2.
         athletes = random.sample(athletes_profile_from_xml(self._logger), 2)
+
+        dim = FetchClubTask.DEFAULT_IMAGE_DIM
+        d = data.get_data()
+        if 'image_dimension' in d:
+            dim = d['image_dimension']
 
         clubs = []
 
         return {
             'players': athletes,
-            'clubs': self.get_random_clubs(2)
+            'clubs': self.get_random_clubs(2, dim)
         }

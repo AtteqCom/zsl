@@ -15,7 +15,7 @@ class FetchClubTask(object):
     @json_input
     @json_output
     def perform(self, data):
-        d = data.get_data();
+        d = data.get_data()
         rm = self._club_service.fetch(d['id'])
         m = rm.get_app_model()
         if rm.image != None:
