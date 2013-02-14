@@ -68,8 +68,9 @@ class FetchListTask(object):
             club = self._orm.query(SportClub).outerjoin(Image).outerjoin(SportClubField).outerjoin(State).outerjoin(Sport).filter(SportClub.id == club.id).one()
 
             img_url = '#'
-            if club.Image != None:
-                img_url = url_helper.image(club.Image, dim)
+            if club.image != None:
+                self._logger.debug("Having image {0}.", club.image)
+                img_url = url_helper.image(club.image, dim)
 
             clubs.append({
                 'name': club.name,
