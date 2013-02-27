@@ -200,3 +200,22 @@ class State(DeclarativeBase, ModelBase):
 
     def get_app_model(self):
         return db.models.app.State(self.__dict__)
+
+class VideoDaily(DeclarativeBase):
+    __tablename__ = 'video_daily'
+
+    __table_args__ = {}
+
+    #column definitions
+    created = Column(u'created', TIMESTAMP(), nullable=False)
+    description = Column(u'description', VARCHAR(length=1000), nullable=False)
+    embed_code = Column(u'embed_code', TEXT(), nullable=False)
+    name = Column(u'name', VARCHAR(length=255), nullable=False)
+    vdid = Column(u'vdid', INTEGER(), primary_key=True, nullable=False)
+
+    #relation definitions
+
+
+    def get_app_model(self):
+        return db.models.app.VideoDaily(self.__dict__)
+

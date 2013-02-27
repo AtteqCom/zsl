@@ -22,6 +22,9 @@ class State(AppModel):
 class Image(AppModel):
     pass
 
+class VideoDaily(AppModel):
+    pass
+
 class AppModelJSONEncoder(JSONEncoder):
     def default(self, o):
         if isinstance(o, AppModel):
