@@ -8,18 +8,8 @@ import sys
 from application import service_application
 from wsgiref.handlers import CGIHandler
 
-import interface.webservice.web_task_tester
-
-# Shortcut
-app = service_application
-
-# Do the mapping.
-@app.route("/", defaults={'path': ''})
-@app.route("/<path:path>")
-def mapping(path):
-    app.logger.debug("Hello wording!")
-    return "Hello World! Using path '{0}'.".format(path)
+import interface.webservice.load_app
 
 # For WSGI.
-application = app
-app.initialize_dependencies()
+application = service_application
+service_application.initialize_dependencies()
