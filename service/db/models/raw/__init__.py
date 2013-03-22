@@ -209,13 +209,23 @@ class VideoDaily(DeclarativeBase):
     #column definitions
     created = Column(u'created', TIMESTAMP(), nullable=False)
     description = Column(u'description', VARCHAR(length=1000), nullable=False)
-    embed_code = Column(u'embed_code', TEXT(), nullable=False)
+    embedded_code = Column(u'embedded_code', TEXT(), nullable=False)
     name = Column(u'name', VARCHAR(length=255), nullable=False)
     vdid = Column(u'vdid', INTEGER(), primary_key=True, nullable=False)
+    date = Column(u'date', DATE(), nullable=False)
+    magazine_id = Column(u'magazine_id', INTEGER(), nullable=False)
 
     #relation definitions
 
 
     def get_app_model(self):
-        return db.models.app.VideoDaily(self.__dict__)
+        m = db.models.app.VideoDaily(self.__dict__)
+
+        if self.created != None:
+            m.created = '{0.day:{1}}. {0.month:{1}}. {0.year} {0.hour:{1}}:{0.minute:{1}}:{0.second:{1}}'.format(self.created, '02');
+        
+        if self.date != None:
+            m.date = '{0.day:{1}}. {0.month:{1}}. {0.year}'.format(self.date,'02')
+        
+        return m
 
