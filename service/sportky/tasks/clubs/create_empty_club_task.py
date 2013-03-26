@@ -19,15 +19,16 @@ class CreateEmptyClubTask(object):
         c.added = datetime.now()
         c.active = False
         c.flag_created_year = False
-        c.city = ''
-        c.coach = ''
+        c.city = u''
+        c.coach = u''
         c.current_squad = False
-        c.homepage = ''
-        c.league = ''
-        c.name = ''
-        c.president = ''
-        c.stadium = ''
+        c.homepage = u''
+        c.league = u''
+        c.name = u''
+        c.president = u''
+        c.stadium = u''
         c.magazine_id = data.get_data()['magazine_id']
-        c.url = ''
+        c.url = u''
+        c.top = False
         self._club_service.save(c)
         return { 'id': c.id }
