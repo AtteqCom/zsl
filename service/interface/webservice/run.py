@@ -10,9 +10,14 @@ from application import service_application
 
 import interface.webservice.load_app
 
-# Shortcut
 service_application.initialize_dependencies()
+
 
 # Run it!
 if __name__ == "__main__":
-    service_application.run()
+	if len(sys.argv) > 1 and sys.argv[1] == 'shell':
+		import bpython
+		bpython.embed()
+
+	else:
+	    service_application.run()

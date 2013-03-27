@@ -10,7 +10,6 @@ FILTER_HINT = 'hint'
 FILTER_VALUES = 'values'
 
 class QueryFilter(object):
-
     def __init__(self, query_filter):
         self._query_filter = query_filter
 

@@ -7,8 +7,10 @@ Created on 28.2.2013
 from sportky.service.service import Service, transactional
 from db.models.raw import VideoDaily
 from db.helpers.query_helper import QueryHelper
+
 #import random
-#from sqlalchemy.sql.expression import asc
+from sqlalchemy.sql.expression import desc
+from sqlalchemy.sql import func
 
 class VideoDailyService(Service):
     '''
@@ -32,6 +34,13 @@ class VideoDailyService(Service):
     def fetch_list(self, filter, pagination, sorter):
         qh = QueryHelper(VideoDaily, filter, pagination, sorter)
         return (qh.execute(self._orm.query(VideoDaily)),qh)
+    
+    @transactional
+    def fetch_latest(self, count):
+        '''
+        Fetch last active videos  
+        '''
+        return self._orm.query(VideoDaily).filter(VideoDaily.date < func.now()).order_by(desc(VideoDaily.date)).limit(count).all()
 
     @transactional
     def fetch_for_date(self, date):

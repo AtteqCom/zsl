@@ -22,6 +22,11 @@ class LoggerInitializer:
         file_handler.setLevel(config['LOG_LEVEL'])
         app.logger.addHandler(file_handler)
 
+        db_logger = logging.getLogger('sqlalchemy.engine')
+        db_logger.setLevel(config['DATABASE_LOG_LEVEL'])
+        db_logger.addHandler(file_handler)
+	
+
 @injection_module
 def logger_initializer_module(binder):
     LoggerInitializer().initialize(binder)
