@@ -1,6 +1,4 @@
 syntax: regexp
-^sportky$
-syntax: regexp
 ^service/\.project$
 syntax: regexp
 ^service/\.settings
