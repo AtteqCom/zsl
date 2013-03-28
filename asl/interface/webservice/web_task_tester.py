@@ -1,7 +1,7 @@
-from application.service_application import service_application
-from router import router
+from asl.application.service_application import service_application
+from asl.router import router
 from flask import request
-from task.task_data import TaskData
+from asl.task.task_data import TaskData
 from flask.helpers import make_response
 
 app = service_application

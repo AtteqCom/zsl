@@ -1,10 +1,10 @@
 # Now import the application and the remaining stuff.
-from application import service_application
+from asl.application import service_application
 
 def load_testers():
     # TODO: A better configuration.
-    __import__('interface.webservice.resource_tester')
-    __import__('interface.webservice.web_task_tester')
+    __import__('asl.interface.webservice.resource_tester')
+    __import__('asl.interface.webservice.web_task_tester')
 
 def load():
     load_testers()
