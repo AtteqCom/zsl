@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
 # Append the right path to the PYTHONPATH for the CGI script to work.
-import os
 import sys
+from asl.interface import importer
+importer.append_pythonpath()
 
 # Now import the application and the remaining stuff.
 from asl.application import service_application
