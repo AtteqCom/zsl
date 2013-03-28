@@ -4,6 +4,7 @@ Created on 15.12.2012
 @author: Martin Babka
 '''
 import re
+
 def underscore_to_camelcase(value):
     def camelcase():
         while True:

@@ -20,8 +20,8 @@ class WebTaskTester:
 
         response = make_response(task_callable(data))
 
-        # TODO: How to hanle this?
-        # if 'Origin' in request.headers:
+        # TODO: How to handle this?
+        #if 'Origin' in request.headers:
         #    response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
         #else:
         #    response.headers['Access-Control-Allow-Origin'] = '*'
@@ -32,5 +32,5 @@ class WebTaskTester:
         return response
 
 @app.route("/task/<path:path>", methods=["POST", "GET"])
-def performWebTask(path):
+def perform_web_task(path):
     return WebTaskTester().performTask(path)
