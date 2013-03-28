@@ -1,7 +1,0 @@
-RewriteEngine on
-
-RewriteBase /
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ interface/webservice/index.cgi/$1 [QSA]
-
