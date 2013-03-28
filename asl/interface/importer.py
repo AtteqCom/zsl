@@ -8,7 +8,7 @@ import os
 import sys
 
 def append_application_pythonpath():
-    sys.path.append(os.environ['APPLICATION_PACKAGE_PATH'])
+    sys.path.append(os.environ.get('APPLICATION_PACKAGE_PATH'))
 
 def append_pythonpath():
     append_application_pythonpath()
