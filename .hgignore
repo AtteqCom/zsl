@@ -10,3 +10,9 @@ syntax: regexp
 vendor/flask_injector/
 vendor/injector/
 vendor/redis/
+syntax: regexp
+^\.settings
+syntax: regexp
+^\.project$
+syntax: regexp
+^\.pydevproject$
