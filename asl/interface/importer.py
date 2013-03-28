@@ -6,9 +6,13 @@ Created on 28.3.2013
 
 import os
 import sys
+from flask import request
 
 def append_application_pythonpath():
     app_package_path = os.environ.get('APPLICATION_PACKAGE_PATH')
+    if app_package_path is None:
+        request.environ.get('APPLICATION_PACKAGE_PATH')
+
     if app_package_path is None:
         raise Exception("Application path is not set. Set it using the APPLICATION_PACKAGE_PATH environment variable.")
 

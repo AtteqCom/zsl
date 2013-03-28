@@ -1,6 +1,7 @@
 from flask import Flask
 import os
 import asl.vendor
+from flask import request
 asl.vendor.do_init()
 from flask_injector import FlaskInjector
 
@@ -32,5 +33,8 @@ class AtteqServiceFlask(Flask):
 service_application = AtteqServiceFlask("asl.application")
 
 service_application.config.from_object('settings.default_settings')
-if os.environ.get('ASL_SETTINGS', None) != None:
+asl_settings = os.environ.get('ASL_SETTINGS');
+if asl_settings is None:
+    asl_settings = request.environ.get('APPLICATION_PACKAGE_PATH')
+if not asl_settings is None:
     service_application.config.from_envvar('ASL_SETTINGS')
