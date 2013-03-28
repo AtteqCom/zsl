@@ -1,0 +1,12 @@
+syntax: regexp
+^service/\.project$
+syntax: regexp
+^service/\.settings
+syntax: regexp
+^service/\.pydevproject
+syntax: regexp
+\.pyc$
+syntax: regexp
+vendor/flask_injector/
+vendor/injector/
+vendor/redis/
