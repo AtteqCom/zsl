@@ -7,7 +7,7 @@ import json
 from flask import request
 from asl.application.service_application import service_application
 from asl.task.task_data import TaskData
-from asl.db.models.app import AppModelJSONEncoder
+from asl.db.model import AppModelJSONEncoder
 
 app = service_application
 
