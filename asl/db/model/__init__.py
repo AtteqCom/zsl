@@ -1,3 +1,2 @@
 from AppModel import AppModel
-from AppModelJSONEncoder import JSONEncoder
-
+from AppModelJSONEncoder import AppModelJSONEncoder
