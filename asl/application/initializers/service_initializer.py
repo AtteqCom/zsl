@@ -10,6 +10,7 @@ import logging
 from asl.application.initializers import injection_module
 from asl.utils.string_helper import camelcase_to_underscore
 asl.vendor.do_init()
+from asl.application import service_application
 
 class ServiceInitializer(object):
     '''
@@ -20,12 +21,13 @@ class ServiceInitializer(object):
         '''
         Initialization method.
         '''
-        # TODO: Automatically?
-        services = ['ClubService', 'SportService', 'StateService', 'ImageService', 'VideoDailyService']
+        service_injection_config = service_application.config['SERVICE_INJECTION']
+        services = service_injection_config['list']
+        service_package = service_injection_config['package']
 
         for cls_name in services:
             module_name = camelcase_to_underscore(cls_name)
-            package_name = "sportky.service.{0}".format(module_name)
+            package_name = "{0}.{1}".format(service_package, module_name)
             module = getattr(__import__(package_name).service, module_name)
             cls = getattr(module, cls_name)
 

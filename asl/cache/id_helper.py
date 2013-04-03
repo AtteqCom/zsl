@@ -21,3 +21,11 @@ class IdHelper:
     @abc.abstractmethod
     def check_page(self, key, page_no):
         pass
+
+    @abc.abstractmethod
+    def save(self, key, value):
+        pass
+
+    @abc.abstractmethod
+    def create_key(self, value):
+        pass

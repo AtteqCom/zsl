@@ -1,7 +1,6 @@
 from flask import Flask
 import os
 import asl.vendor
-from flask import request
 asl.vendor.do_init()
 from flask_injector import FlaskInjector
 
@@ -13,6 +12,10 @@ class AtteqServiceFlask(Flask):
                        static_folder, template_folder, instance_path,
                        instance_relative_config)
         self._dependencies_initialized = False
+        self.config.from_object('settings.default_settings')
+        asl_settings = os.environ.get('ASL_SETTINGS');
+        if not asl_settings is None:
+            self.config.from_envvar('ASL_SETTINGS')
 
     def initialize_dependencies(self):
         from asl.application.initializers import injection_views, injection_modules
@@ -31,8 +34,3 @@ class AtteqServiceFlask(Flask):
         self._injector = injector
 
 service_application = AtteqServiceFlask("asl.application")
-
-service_application.config.from_object('settings.default_settings')
-asl_settings = os.environ.get('ASL_SETTINGS');
-if not asl_settings is None:
-    service_application.config.from_envvar('ASL_SETTINGS')

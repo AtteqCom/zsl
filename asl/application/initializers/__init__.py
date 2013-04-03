@@ -15,3 +15,4 @@ from .logger_initializer import LoggerInitializer
 from .database_initializer import DatabaseInitializer
 from .application_initializer import ApplicationInitializer
 from .service_initializer import ServiceInitializer
+from .cache_initializer import CacheInitializer
