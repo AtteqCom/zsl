@@ -6,6 +6,10 @@ class OperatorLike:
     def apply(self, q, attr, v):
         return q.filter(attr.like('%{0}%'.format(v)))
 
+class OperatorBetween:
+    def apply(self, q, attr, v):
+        return q.filter(attr.between(v[0], v[1]))
+
 FILTER_HINT = 'hint'
 FILTER_VALUES = 'values'
 
