@@ -21,14 +21,8 @@ def run_task_json(task_cls, task_data):
     return task_callable(td)
 
 def get_callable(task):
+    # TODO: Make perform into a constant!
     return getattr(task, "perform")
 
-def instantiate(cls):
-    injector = _app.get_injector()
+from injection_helper import instantiate
 
-    if hasattr(cls, "__new__"):
-        task = injector.create_object(cls)
-    else:
-        task = cls()
-
-    return task
