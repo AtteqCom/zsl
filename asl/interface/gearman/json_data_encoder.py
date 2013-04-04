@@ -5,7 +5,7 @@ Created on 22.12.2012
 '''
 import json
 import gearman
-from asl.db.models.app import AppModelJSONEncoder
+from asl.db.model.app_model_json_encoder import AppModelJSONEncoder
 
 class JSONDataEncoder(gearman.DataEncoder):
     @classmethod

@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
-# Append the right path to the PYTHONPATH for the CGI script to work.
-
 import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'));
+
 from asl.interface.importer import append_pythonpath
 append_pythonpath()
 from asl.interface.webservice import web_application_loader
