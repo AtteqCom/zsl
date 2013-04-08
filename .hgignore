@@ -19,3 +19,7 @@ syntax: regexp
 
 syntax: regexp
 ^asl/interface/webservice/run\.cmd$
+syntax: regexp
+^asl/interface/webservice/run_shell\.cmd$
+syntax: regexp
+^asl/interface/webservice/run_webapp\.cmd$

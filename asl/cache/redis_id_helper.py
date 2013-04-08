@@ -35,11 +35,8 @@ class RedisIdHelper(IdHelper):
             self._redis_cache_module.append_to_list(page_key, key)
             self._redis_cache_module.set_key(key, d)
 
-    def check_key(self, key):
-        return self._redis_cache_client.contains_key()
-
     def check_page(self, page_key):
-        page_keys = self._redis_cache_client.get_list(page_key)
+        page_keys = self._redis_cache_module.get_list(page_key)
         if page_keys == None:
             return False
 
@@ -49,8 +46,17 @@ class RedisIdHelper(IdHelper):
 
         return True
 
-    def save(self, key, value):
-        self._redis_cache_client.save_key(key, value, self.get_timeout(key, value))
+    def check_key(self, key):
+        return self._redis_cache_module.contains_key(key)
+
+    def get_key(self, key):
+        return self._redis_cache_module.get_key(key)
+
+    def invalidate_key(self, key):
+        return self._redis_cache_module.invalidate_key(key)
+
+    def set_key(self, key, value):
+        self._redis_cache_module.set_key(key, value, self.get_timeout(key, value))
 
     def create_key(self, value):
         return "{0}.{1}-{2}".format(value.__class__.__module__, value.__class__.name, value.get_id())

@@ -15,19 +15,23 @@ class IdHelper:
         pass
 
     @abc.abstractmethod
-    def check_key(self, key):
-        pass
-
-    @abc.abstractmethod
     def check_page(self, page_key):
         pass
 
     @abc.abstractmethod
-    def save(self, key, value):
+    def check_key(self, key):
         pass
 
     @abc.abstractmethod
-    def create_key(self, value):
+    def get_key(self, key):
+        pass
+
+    @abc.abstractmethod
+    def invalidate_key(self, key):
+        pass
+
+    @abc.abstractmethod
+    def set_key(self, key, value):
         pass
 
     @abc.abstractmethod
