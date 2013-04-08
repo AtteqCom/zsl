@@ -1,8 +1,8 @@
 from asl.application.service_application import service_application
 from asl.router import router
 from flask import request
-from asl.task.task_data import TaskData
 from flask.helpers import make_response
+from asl.task.job_context import JobContext, WebJobContext
 
 app = service_application
 
@@ -16,9 +16,9 @@ class WebTaskTester:
             data = request.json
 
         app.logger.debug("Data found '%s'.", data)
-        data = TaskData(app, data)
-
-        response = make_response(task_callable(data))
+        jc = WebJobContext(path, data, task, task_callable)
+        JobContext.set_current_context(jc)
+        response = make_response(task_callable(jc.task_data))
 
         # TODO: How to handle this?
         #if 'Origin' in request.headers:

@@ -10,6 +10,7 @@ import gearman
 from asl.interface.gearman.json_data_encoder import JSONDataEncoder
 from asl.task.task_data import TaskData
 import socket
+from asl.task.job_context import JobContext
 
 app = service_application
 
@@ -17,7 +18,9 @@ def executeTask(worker, job):
     print "Job fetched, preparing the task."
     try:
         (task, task_callable) = router.route(job.data['path'])
-        data = worker.logical_worker.executeTask(task, task_callable, job.data['data'])
+        jc = JobContext(job, task, task_callable)
+        JobContext.set_current_context(jc)
+        data = worker.logical_worker.executeTask(jc)
         app.logger.info("Task {0} executed successfully.".format(job.data['path']))
         return {'task_name': job.data['path'], 'data': data}
     except Exception as e:
@@ -38,9 +41,9 @@ class Worker:
         self.gearman_worker.register_task(self._app.config['GEARMAN_TASK_NAME'], executeTask)
         self.gearman_worker.logical_worker = self
 
-    def executeTask(self, task, task_callable, data):
+    def executeTask(self, job_context):
         self._app.logger.info("Executing task.")
-        return task_callable(TaskData(app, data))
+        return job_context.task_callable(job_context.task_data)
 
     def run(self):
         self._app.logger.info("Running the worker.")

@@ -10,6 +10,7 @@ from asl.db.model.app_model_json_encoder import AppModelJSONEncoder
 import json
 from asl.db.model.app_model_json_decoder import get_json_decoder
 import abc
+from asl.task.job_context import JobContext
 
 class CacheDecorator:
     @inject(id_helper = IdHelper)
@@ -22,6 +23,16 @@ class CacheDecorator:
         self._fn = fn
 
         return self.get_wrapped_fn()
+
+    def is_caching(self, *args):
+        jc = JobContext.get_current_context()
+        if 'cache' not in jc.job.data:
+            cs = True # TODO: Default
+        else:
+            cs = bool(jc.job.data['cache'])
+
+        service_application.logger.debug("Cache status: '%s'.", cs)
+        return cs
 
     @abc.abstractmethod
     def get_wrapped_fn(self):
@@ -48,6 +59,9 @@ class CacheDecorator:
 class CacheOutputDecorator(CacheDecorator):
     def get_wrapped_fn(self):
         def wrapped_fn(*args):
+            if not self.is_caching(*args):
+                return self._fn(*args)
+
             key = self.get_data_key(*args)
             service_application.logger.debug("Initializing CacheOutputDecorator - key %s.", key)
 
@@ -71,6 +85,9 @@ def cache_output(key_params):
 class CacheModelDecorator(CacheDecorator):
     def get_wrapped_fn(self):
         def wrapped_fn(*args):
+            if not self.is_caching(*args):
+                return self._fn(*args)
+
             key = self.get_data_key(*args)
             service_application.logger.debug("Initializing CacheModelDecorator - key %s.", key)
 
@@ -99,6 +116,9 @@ def cache_model(key_params):
 class CachePageDecorator(CacheDecorator):
     def get_wrapped_fn(self):
         def wrapped_fn(*args):
+            if not self.is_caching(*args):
+                return self._fn(*args)
+
             page_key = self.get_data_key(*args)
             service_application.logger.debug("Initializing CachePageDecorator - key %s.", page_key)
 
