@@ -7,8 +7,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
 # For WSGI.
 def application(environ, start_response):
-	os.putenv('ASL_SETTINGS', environ['ASL_SETTINGS'])
-	os.putenv('APPLICATION_PACKAGE_PATH', environ['APPLICATION_PACKAGE_PATH'])
+	os.environ['ASL_SETTINGS'] = environ['ASL_SETTINGS']
+	os.environ['APPLICATION_PACKAGE_PATH'] = environ['APPLICATION_PACKAGE_PATH']
 
 	from asl.interface import importer
 	importer.append_pythonpath()
@@ -19,4 +19,4 @@ def application(environ, start_response):
 
 	web_application_loader.load()
 	service_application.initialize_dependencies()
-	service_application.wsgi_app(environ, start_response)
+	return service_application.wsgi_app(environ, start_response)
