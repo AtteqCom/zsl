@@ -15,6 +15,7 @@ from asl.application.service_application import service_application
 from asl.interface.gearman.worker import Worker
 
 app = service_application
+app.initialize_dependencies()
 
 if __name__ == "__main__":
     print "Initializing Gearman worker."
