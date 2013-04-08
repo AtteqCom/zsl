@@ -21,4 +21,4 @@ def application(environ, start_response):
 	web_application_loader.load()
 
 	service_application.initialize_dependencies()
-	service_application(environ, start_response)
+	service_application.wsgi_app(environ, start_response)
