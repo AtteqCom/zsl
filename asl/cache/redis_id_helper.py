@@ -3,12 +3,12 @@ Created on 12.12.2012
 
 @author: Martin Babka
 '''
-from asl.cache.id_helper import IdHelper
+from asl.cache.id_helper import IdHelper, decoder_identity, encoder_identity
 from asl.utils.injection_helper import inject
 from asl.cache.redis_cache_module import RedisCacheModule
+from asl.utils.cache_helper import create_key_object_prefix
 
 class RedisIdHelper(IdHelper):
-
     @inject(redis_cache_module = RedisCacheModule)
     def __init__(self, redis_cache_module):
         '''
@@ -20,26 +20,28 @@ class RedisIdHelper(IdHelper):
         # TODO: Nejak lepsie.
         return 3600
 
-    def gather_page(self, page_key):
+    def gather_page(self, page_key, decoder = decoder_identity):
         page_keys = self._redis_cache_module.get_list(page_key)
 
         p = []
         for k in page_keys:
-            p += self.get_gey(k)
+            p.append(decoder(k, self.get_key(k)))
 
-    def fill_page(self, page_key, data):
+        return p
+
+    def fill_page(self, page_key, data, encoder = encoder_identity):
         self._redis_cache_module.invalidate_key(page_key)
 
         for d in data:
             key = self.create_key(d)
             self._redis_cache_module.append_to_list(page_key, key)
-            self._redis_cache_module.set_key(key, d)
+            self._redis_cache_module.set_key(key, encoder(d), self.get_timeout(key, d))
 
     def check_page(self, page_key):
-        page_keys = self._redis_cache_module.get_list(page_key)
-        if page_keys == None:
+        if not self._redis_cache_module.contains_list(page_key):
             return False
 
+        page_keys = self._redis_cache_module.get_list(page_key)
         for k in page_keys:
             if not self.check_key(k):
                 return False
@@ -59,7 +61,4 @@ class RedisIdHelper(IdHelper):
         self._redis_cache_module.set_key(key, value, self.get_timeout(key, value))
 
     def create_key(self, value):
-        return "{0}.{1}-{2}".format(value.__class__.__module__, value.__class__.name, value.get_id())
-
-    def create_page_key(self, value, page_no):
-        return "{0}.{1}-page-{2}".format(value.__class__.__module__, value.__class__.name, page_no)
+        return "{0}-{1}".format(create_key_object_prefix(value), value.get_id())

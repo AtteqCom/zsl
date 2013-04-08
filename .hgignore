@@ -16,9 +16,6 @@ syntax: regexp
 ^\.project$
 syntax: regexp
 ^\.pydevproject$
-
-syntax: regexp
-^asl/interface/webservice/run\.cmd$
 syntax: regexp
 ^asl/interface/webservice/run_shell\.cmd$
 syntax: regexp

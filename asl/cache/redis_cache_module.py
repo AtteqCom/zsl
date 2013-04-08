@@ -35,6 +35,9 @@ class RedisCacheModule(CacheModule):
     def contains_key(self, key):
         return self._client.exists(key)
 
+    def contains_list(self, key):
+        return self._client.exists(key)
+
     def get_key(self, key):
         return self._client.get(key)
 
@@ -43,4 +46,4 @@ class RedisCacheModule(CacheModule):
 
     def get_list(self, key):
         llen = self._client.llen(key)
-        return self._client.getrange(key, 0, llen - 1)
+        return self._client.lrange(key, 0, llen - 1)

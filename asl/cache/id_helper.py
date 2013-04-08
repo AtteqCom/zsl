@@ -5,13 +5,19 @@ Created on 12.12.2012
 '''
 import abc
 
+def encoder_identity(x):
+    return x
+
+def decoder_identity(module_name, x):
+    return x
+
 class IdHelper:
     @abc.abstractmethod
-    def gather_page(self, page_key):
+    def gather_page(self, page_key, decoder = decoder_identity):
         pass
 
     @abc.abstractmethod
-    def fill_page(self, page_key, data):
+    def fill_page(self, page_key, data, encoder = encoder_identity):
         pass
 
     @abc.abstractmethod
@@ -36,8 +42,4 @@ class IdHelper:
 
     @abc.abstractmethod
     def create_key(self, value):
-        pass
-
-    @abc.abstractmethod
-    def create_page_key(self, value, page_no):
         pass

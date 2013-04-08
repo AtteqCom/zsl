@@ -39,6 +39,14 @@ class CacheModule(object):
         '''
         pass
 
+
+    @abc.abstractmethod
+    def contains_list(self, key):
+        '''
+        Check if the ``key`` is in the cache.
+        '''
+        pass
+
     @abc.abstractmethod
     def get_list(self, key):
         '''

@@ -11,36 +11,7 @@ from asl.db.model import AppModelJSONEncoder
 
 app = service_application
 
-class CompundTask:
-    def __init__(self):
-        pass
-
-    def __call__(self, fn):
-        def wrapped_fn(*args):
-            return fn(*args)
-
-        return wrapped_fn
-
-def compound_task(*a):
-    return CompundTask(*a)
-
-class IdCacheVerifier:
-    def __init__(self):
-        pass
-
-    def __call__(self, fn):
-        def wrapped_fn(*args):
-            return fn(*args)
-
-        return wrapped_fn
-
-def id_cache_verifier(*a):
-    return IdCacheVerifier(*a)
-
 class JsonInput:
-    def __init__(self):
-        pass
-
     def __call__(self, fn):
         def wrapped_fn(*a):
             # If the data is already transformed, we do not transform it any further.
@@ -69,9 +40,6 @@ def json_input(f):
     return JsonInput()(f)
 
 class JsonOutputDecorator:
-    def __init__(self):
-        pass
-
     def __call__(self, fn):
         def wrapped_fn(*args):
             ret_val = fn(*args)
@@ -91,3 +59,21 @@ class JsonOutputDecorator:
 def json_output(f):
     return JsonOutputDecorator()(f)
 
+class ErrorAndResultDecorator:
+    def __call__(self, fn):
+        def wrapped_fn(*args):
+            try:
+                ret_val = fn(*args)
+
+                return {
+                    'data': ret_val
+                }
+            except Exception as e:
+                return {
+                    'error': e.to_string()
+                }
+
+        return wrapped_fn
+
+def error_and_result(f):
+    return ErrorAndResultDecorator()(f)

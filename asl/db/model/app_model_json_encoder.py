@@ -12,3 +12,5 @@ class AppModelJSONEncoder(JSONEncoder):
             return o.__dict__
         else:
             return JSONEncoder.default(self, o)
+
+
