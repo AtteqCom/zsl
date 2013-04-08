@@ -13,10 +13,32 @@ web_application_loader.load()
 from asl.application import service_application
 service_application.initialize_dependencies()
 
+def run_shell():
+    import bpython
+    bpython.embed()
+
+def run_task(args):
+    if len(args) == 0:
+        raise Exception('I need a task path to run')
+
+    # TODO
+
+def run_webapp():
+    service_application.run()
+
 # Run it!
 if __name__ == "__main__":
-	if len(sys.argv) > 1 and sys.argv[1] == 'shell':
-		import bpython
-		bpython.embed()
-	else:
-		service_application.run()
+    if len(sys.argv) > 1:
+        cmd = sys.argv[1]
+
+        if cmd == 'shell':
+            run_shell()
+
+        elif cmd == 'task':
+            run_task(sys.argv[1:])
+
+        else:
+            run_webapp()
+
+    else:
+        run_webapp()
