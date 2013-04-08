@@ -3,7 +3,7 @@
 # Append the right path to the PYTHONPATH for the CGI script to work.
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'));
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
 from asl.interface import importer
 importer.append_pythonpath()
