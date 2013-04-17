@@ -30,7 +30,7 @@ class Service(object):
         self._transaction_callback.append(callback)
 
 def transactional(f):
-    def transactional_f(*a):
+    def transactional_f(*a, **kwargs):
         trans_close = False
         try:
             service_application.logger.debug("Entering transactional method.")
@@ -41,7 +41,7 @@ def transactional(f):
                 trans_close = True
                 service_application.logger.debug("Transaction opened.")
 
-            rv = f(*a)
+            rv = f(*a, **kwargs)
 
             if trans_close:
                 if a[0]._transaction_callback != None:

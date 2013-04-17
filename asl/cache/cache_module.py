@@ -36,6 +36,8 @@ class CacheModule(object):
     def get_key(self, key):
         '''
         Returns the value associated with the ``key``.
+        
+        TODO morihladko sa pyta: nemalo by sa skor volat get_by_key, ci simple get(self, key), lebo get_key mi asociujuje ze to vrati kluc
         '''
         pass
 

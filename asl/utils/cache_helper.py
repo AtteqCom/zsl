@@ -94,6 +94,7 @@ class CacheModelDecorator(CacheDecorator):
             if self._id_helper.check_key(key):
                 model_key = self._id_helper.get_key(key)
                 service_application.logger.debug("Retrieved from cache %s.", model_key)
+                
                 if self._id_helper.check_key(model_key):
                     return self.get_decoder()(model_key, self._id_helper.get_key(model_key))
 
@@ -108,6 +109,11 @@ class CacheModelDecorator(CacheDecorator):
         return wrapped_fn
 
 def cache_model(key_params):
+    '''
+    Caching decorator for app models in task.perform
+    
+    
+    '''
     def decorator_fn(fn):
         return CacheModelDecorator().decorate(key_params, fn)
 
@@ -134,11 +140,17 @@ class CachePageDecorator(CacheDecorator):
         return wrapped_fn
 
 def cache_page(key_params):
+    '''
+    Cache a page (slice) of a list of appmodels
+    '''
     def decorator_fn(fn):
         d = CachePageDecorator()
         return d.decorate(key_params, fn)
 
     return decorator_fn
+
+# alias
+cache_list = cache_page
 
 def cache_filtered_page(filter_param = 'filter', pagination_param = 'pagination', sorter_param = 'sorter'):
     def decorator_fn(fn):
@@ -151,11 +163,16 @@ def create_key_object_prefix(obj):
     return "{0}.{1}".format(obj.__class__.__module__, obj.__class__.__name__)
 
 def create_key_for_data(prefix, data, key_params):
+    '''
+    From ``data`` params in task create corresponding key with help of ``key_params`` (defined in decorator) 
+    '''
     d = data.get_data()
     values = []
     for k in key_params:
-        if type(d[k]) is list:
-            values.append("-".join(d[k]))
+        if k in d and type(d[k]) is list:
+            values.append("{0}:{1}".format(k, " -".join(d[k])))
         else:
-            values.append(d[k])
+            value = d[k] if k in d else ''
+            values.append("{0}:{1}".format(k, value))
+            
     return "{0}-{1}".format(prefix, "-".join(values))

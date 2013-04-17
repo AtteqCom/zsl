@@ -17,7 +17,7 @@ class RedisIdHelper(IdHelper):
         self._redis_cache_module = redis_cache_module
 
     def get_timeout(self, key, value):
-        # TODO: Nejak lepsie.
+        # TODO: Nejak lepsie. peto suhlasi
         return 3600
 
     def gather_page(self, page_key, decoder = decoder_identity):
