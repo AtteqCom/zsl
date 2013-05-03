@@ -10,7 +10,7 @@ import json
 class NginxPusher:
     def __init__(self, server_path, channel_prefix=None):
         self._server_path = server_path
-        self._channel_prefix = (channel_prefix + ':') if channel_prefix is not None else ''
+        self._channel_prefix = (channel_prefix + '.') if channel_prefix is not None else ''
         
     def channel_path(self, channel_id):
         return '{0}?id={1}{2}'.format(self._server_path, self._channel_prefix, channel_id)
@@ -30,7 +30,7 @@ class NginxPusher:
         Push ``obj`` for ``channel_id``. ``obj`` will be encoded as JSON in the request.
         '''
         
-        return self.push(channel_id, json.dumps(obj))
+        return self.push(channel_id, json.dumps(obj).replace('"', '\\"'))
         
     def push(self, channel_id, data):
         '''
