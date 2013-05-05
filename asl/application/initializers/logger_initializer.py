@@ -22,7 +22,7 @@ class LoggerInitializer:
             config['LOG_HANDLER'] = 'file'
 
         if config['LOG_HANDLER'] == "syslog":
-            handler = logging.handlers.SysLogHandler(**config['SYSLOG_PARAMS'])
+            handler = logging.SysLogHandler(**config['SYSLOG_PARAMS'])
         else:
             handler = logging.FileHandler(config['LOG_FILE'])
 
