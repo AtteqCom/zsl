@@ -15,7 +15,7 @@ class WebTaskTester:
         if request.headers.has_key("Content-Type") and request.headers["Content-Type"] == "application/json":
             data = request.json
 
-        app.logger.debug("Data found '%s'.", data)
+        app.logger.debug("Data found '%s'.", str(data))
         jc = WebJobContext(path, data, task, task_callable)
         JobContext.set_current_context(jc)
         response = make_response(task_callable(jc.task_data))
