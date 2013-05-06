@@ -1,6 +1,7 @@
 from asl.application.service_application import service_application
 from flask import Config
 import logging
+from logging.handlers import SysLogHandler
 import asl.vendor
 asl.vendor.do_init()
 from injector import singleton
@@ -22,7 +23,7 @@ class LoggerInitializer:
             config['LOG_HANDLER'] = 'file'
 
         if config['LOG_HANDLER'] == "syslog":
-            handler = logging.SysLogHandler(**config['SYSLOG_PARAMS'])
+            handler = SysLogHandler(**config['SYSLOG_PARAMS'])
         elif config['LOG_HANDLER'] == "file":
             handler = logging.FileHandler(config['LOG_FILE'])
         elif config['LONG_HANDLER'] == None or config['LONG_HANDLER'] == 'none':
