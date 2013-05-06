@@ -26,7 +26,7 @@ class LoggerInitializer:
             handler = SysLogHandler(**config['SYSLOG_PARAMS'])
         elif config['LOG_HANDLER'] == "file":
             handler = logging.FileHandler(config['LOG_FILE'])
-        elif config['LONG_HANDLER'] == None or config['LONG_HANDLER'] == 'none':
+        elif config['LOG_HANDLER'] == None or config['LOG_HANDLER'] == 'none':
             return
 
         handler.setLevel(config['LOG_LEVEL'])
