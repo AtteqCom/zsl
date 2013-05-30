@@ -8,7 +8,7 @@ from functools import partial
 
 
 def redis_key(*args):
-    return 'sportky:' + ':'.join(args);
+    return 'sportky:' + ':'.join(map(str, args));
 
 class Keymaker:
     '''

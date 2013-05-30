@@ -37,7 +37,8 @@ class NginxPusher:
         Push message with POST ``data`` for ``channel_id``
         '''
         
-        response = urllib2.urlopen(self.channel_path(channel_id), data)
+        channel_path = self.channel_path(channel_id)
+        response = urllib2.urlopen(channel_path, data)
         
         return json.dumps(response.read())
     
