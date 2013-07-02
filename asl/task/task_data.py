@@ -16,7 +16,7 @@ class TaskData:
         return self._app
 
     def transform_data(self, f):
-        self._data = f(self._data)
+        self._data = f(self._data) if self._data != None else {}
 
     def is_skipping_json(self):
         return self._is_skipping_json

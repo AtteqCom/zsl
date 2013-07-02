@@ -8,11 +8,12 @@ import urllib2
 import json
 
 class NginxPusher:
-    def __init__(self, server_path):
+    def __init__(self, server_path, channel_prefix=None):
         self._server_path = server_path
+        self._channel_prefix = (channel_prefix + '.') if channel_prefix is not None else ''
         
     def channel_path(self, channel_id):
-        return '{0}?id={1}'.format(self._server_path, channel_id)
+        return '{0}?id={1}{2}'.format(self._server_path, self._channel_prefix, channel_id)
 
     def push_msg(self, channel_id, msg):
         '''
@@ -29,14 +30,15 @@ class NginxPusher:
         Push ``obj`` for ``channel_id``. ``obj`` will be encoded as JSON in the request.
         '''
         
-        return self.push(channel_id, json.dumps(obj))
+        return self.push(channel_id, json.dumps(obj).replace('"', '\\"'))
         
     def push(self, channel_id, data):
         '''
         Push message with POST ``data`` for ``channel_id``
         '''
         
-        response = urllib2.urlopen(self.channel_path(channel_id), data)
+        channel_path = self.channel_path(channel_id)
+        response = urllib2.urlopen(channel_path, data)
         
         return json.dumps(response.read())
     

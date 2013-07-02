@@ -16,6 +16,7 @@ app = service_application
 
 def executeTask(worker, job):
     print "Job fetched, preparing the task."
+
     try:
         (task, task_callable) = router.route(job.data['path'])
         jc = JobContext(job, task, task_callable)
@@ -36,7 +37,7 @@ class Worker:
         self._app = app
         router.set_task_reloading(router.is_task_reloading() or app.config['RELOAD_GEARMAN'])
         self.gearman_worker = gearman.GearmanWorker(["{0}:{1}".format(app.config['GEARMAN']['host'], app.config['GEARMAN']['port'])])
-        self.gearman_worker.set_client_id("asl-client-%s".format(socket.gethostname()))
+        self.gearman_worker.set_client_id("asl-client-{0}".format(socket.gethostname()))
         self.gearman_worker.data_encoder = JSONDataEncoder
         self.gearman_worker.register_task(self._app.config['GEARMAN_TASK_NAME'], executeTask)
         self.gearman_worker.logical_worker = self
