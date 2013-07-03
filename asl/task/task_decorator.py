@@ -11,14 +11,19 @@ from asl.db.model import AppModelJSONEncoder
 
 app = service_application
 
+def get_data(a):
+    task_data = None
+    for d in a:
+        if isinstance(d, TaskData):
+            task_data = d
+
+    return task_data
+
 class JsonInput:
     def __call__(self, fn):
         def wrapped_fn(*a):
             # If the data is already transformed, we do not transform it any further.
-            task_data = None
-            for d in a:
-                if isinstance(d, TaskData):
-                    task_data = d
+            task_data = get_data(a)
 
             if task_data == None:
                 app.logger.error("Task data is empty during JSON decoding.")
@@ -77,3 +82,23 @@ class ErrorAndResultDecorator:
 
 def error_and_result(f):
     return ErrorAndResultDecorator()(f)
+
+class RequiredDataDecorator:
+    '''
+    Task decorator which checks if the given variables (indices) are stored inside the task data.
+    '''
+
+    def __init__(self, data):
+        self.data = data
+
+    def __call__(self, fn):
+        def wrapped_fn(*args):
+            task_data = get_data(args)
+            for i in self.data:
+                if not i in task_data:
+                    raise KeyError(i)
+
+            return fn(*args)
+
+def required_data(*data):
+    return RequiredDataDecorator(data)

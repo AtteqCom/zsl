@@ -1,6 +1,16 @@
 from asl.application import service_application
 
 def update_model(raw_model, app_model, forbidden_keys = [], inverse = False):
+    '''
+    Updates the `raw_model` according to the values in the `app_model`.
+
+    @param raw_model: Raw model which gets updated.
+    @param app_model: App model holding the data.
+    @param forbidden_keys: Data/attributes which will not be updated.
+    @param inverse: If the value is `True` all `app_model` attributes which are contained in the `raw_model` are
+                    updated. If the value is `False` all `raw_model` properties which are in the `app_model` will be
+                    updated.
+    '''
     app = service_application
 
     if type(app_model) != dict:

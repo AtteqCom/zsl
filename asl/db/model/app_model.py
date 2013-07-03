@@ -10,8 +10,14 @@ class AppModel:
     '''
 
     def __init__(self, raw, id_name = 'id'):
-        self.set_from_raw_data(raw)
+        '''
+        The application model model constructor.
 
+        @param raw: Dictionary of properties of the raw data.
+        @param id_name: Name of the identifier property.
+        '''
+
+        self.set_from_raw_data(raw)
         self._id_name = id_name
 
     def set_from_raw_data(self, raw):
