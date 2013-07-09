@@ -37,6 +37,9 @@ class Responder:
     def respond(self):
         pass
 
+def web_task_redirect(location):
+    return {'headers': {'Location': location}, 'status_code': 301}
+
 class WebJobContext(JobContext):
     def __init__(self, path, data, task, task_callable, request):
         '''
