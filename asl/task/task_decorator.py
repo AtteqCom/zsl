@@ -69,20 +69,32 @@ def json_output(f):
     return JsonOutputDecorator()(f)
 
 class ErrorAndResultDecorator:
+    def __init__(self, web_only = False):
+        self._web_only = web_only
+
     def __call__(self, fn):
-        def wrapped_fn(*args):
+        def inner_wrapped_fn(*args):
             try:
                 ret_val = fn(*args)
+                if self._web_only and not isinstance(JobContext.get_current_context(), WebJobContext):
+                    return ret_val
 
                 return {
                     'data': ret_val
                 }
             except Exception as e:
                 return {
-                    'error': e.to_string()
+                    'error': "{0}".format(e)
                 }
 
+        def wrapped_fn(*args):
+            result = inner_wrapped_fn(*args)
+            return json.dumps(result)
+
         return wrapped_fn
+
+def web_error_and_result(f):
+    return ErrorAndResultDecorator(True)(f)
 
 def error_and_result(f):
     return ErrorAndResultDecorator()(f)
