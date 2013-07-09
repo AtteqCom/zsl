@@ -139,7 +139,11 @@ class WebTaskResponder(Responder):
 
     def respond(self, response):
         for k in self.data:
-            setattr(response, k, self.data[k])
+            if k == 'headers':
+                for header_name in self.data[k]:
+                    response.headers[header_name] = self.data[k][header_name]
+            else:
+                setattr(response, k, self.data[k])
 
 class WebTaskDecorator:
     '''
@@ -153,7 +157,7 @@ class WebTaskDecorator:
                 raise Exception("The WebTask is not called through the web interface.")
             data = fn(*args)
             jc.add_responder(WebTaskResponder(data))
-            return data['data'] if data in data else ""
+            return data['data'] if 'data' in data else ""
 
         return wrapped_fn
 
