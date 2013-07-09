@@ -21,8 +21,6 @@ def run_task(args):
     if len(args) == 0:
         raise Exception('I need a task path to run')
 
-    # TODO
-
 def run_webapp():
     service_application.run()
 

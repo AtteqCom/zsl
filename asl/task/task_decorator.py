@@ -3,11 +3,13 @@ Created on 12.12.2012
 
 @author: Martin Babka
 '''
+
 import json
 from flask import request
 from asl.application.service_application import service_application
 from asl.task.task_data import TaskData
 from asl.db.model import AppModelJSONEncoder
+from asl.task.job_context import JobContext, WebJobContext, Responder
 
 app = service_application
 
@@ -36,6 +38,8 @@ class JsonInput:
                 except:
                     # app.logger.error("Exception while processing JSON input decorator.")
                     task_data.transform_data(json.loads)
+            else:
+                task_data.transform_data(lambda _: {})
 
             return fn(*a)
 
@@ -93,12 +97,65 @@ class RequiredDataDecorator:
 
     def __call__(self, fn):
         def wrapped_fn(*args):
-            task_data = get_data(args)
+            task_data = get_data(args).get_data()
             for i in self.data:
                 if not i in task_data:
                     raise KeyError(i)
 
             return fn(*args)
 
+        return wrapped_fn
+
 def required_data(*data):
     return RequiredDataDecorator(data)
+
+class AppendGetParametersDecorator:
+    '''
+    Task decorator which appends the GET data to the task data.
+    '''
+
+    def __call__(self, fn):
+        def wrapped_fn(*args):
+            task_data = get_data(args)
+            jc = JobContext.get_current_context()
+            if not isinstance(jc, WebJobContext):
+                raise Exception("AppendGetDataDecorator may be used with GET requests only.")
+
+            request = jc.get_web_request()
+            data = task_data.get_data()
+            for k in request.args:
+                # Maybe getlist could be a better alternative.
+                data[k] = request.args.get(k)
+            return fn(*args)
+
+        return wrapped_fn
+
+def append_get_parameters(f):
+    return AppendGetParametersDecorator()(f)
+
+class WebTaskResponder(Responder):
+    def __init__(self, data):
+        self.data = data
+
+    def respond(self, response):
+        for k in self.data:
+            setattr(response, k, self.data[k])
+
+class WebTaskDecorator:
+    '''
+    Checks if the task is called through the web interface.
+    '''
+
+    def __call__(self, fn):
+        def wrapped_fn(*args):
+            jc = JobContext.get_current_context()
+            if not isinstance(jc, WebJobContext):
+                raise Exception("The WebTask is not called through the web interface.")
+            data = fn(*args)
+            jc.add_responder(WebTaskResponder(data))
+            return data['data'] if data in data else ""
+
+        return wrapped_fn
+
+def web_task(f):
+    return WebTaskDecorator()(f)
