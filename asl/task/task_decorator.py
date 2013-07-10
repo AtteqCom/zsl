@@ -83,7 +83,7 @@ class ErrorAndResultDecorator:
                 return {
                     'data': ret_val
                 }
-            except Exception as e:
+            except Exception:
                 exc = traceback.format_exc()
                 app.logger.error(exc)
                 return {
