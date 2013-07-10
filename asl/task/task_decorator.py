@@ -10,6 +10,7 @@ from asl.application.service_application import service_application
 from asl.task.task_data import TaskData
 from asl.db.model import AppModelJSONEncoder
 from asl.task.job_context import JobContext, WebJobContext, Responder
+import traceback
 
 app = service_application
 
@@ -83,8 +84,10 @@ class ErrorAndResultDecorator:
                     'data': ret_val
                 }
             except Exception as e:
+                exc = traceback.format_exc()
+                app.logger.error(exc)
                 return {
-                    'error': "{0}".format(e)
+                    'error': "{0}".format(exc)
                 }
 
         def wrapped_fn(*args):
