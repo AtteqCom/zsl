@@ -11,6 +11,7 @@ from asl.task.task_data import TaskData
 from asl.db.model import AppModelJSONEncoder
 from asl.task.job_context import JobContext, WebJobContext, Responder
 import traceback
+import hashlib
 
 app = service_application
 
@@ -178,3 +179,43 @@ class WebTaskDecorator:
 
 def web_task(f):
     return WebTaskDecorator()(f)
+
+
+class SecurityException(Exception):
+
+    def __init__(self, hashed_token):
+        Exception.__init__(self, "Invalid hashed token '{0}'.".format(hashed_token))
+        self._hashed_token = hashed_token
+
+    def get_hashed_token(self):
+        return self._hashed_token
+
+class SecuredTaskDecorator:
+    '''
+    Checks if the task is called through the web interface.
+    '''
+
+    def __init__(self):
+        self._secure_token = service_application.config['SERVICE_SECURITY_TOKEN']
+
+    def __call__(self, fn):
+        def wrapped_fn(*args):
+            task_data = get_data(args)
+            assert isinstance(task_data, TaskData)
+            random_token = task_data.get_data()['security']['random_token']
+            hashed_token = task_data.get_data()['security']['hashed_token']
+            task_data.transform_data(lambda x: x['data'])
+            if unicode(hashed_token) != unicode(self.compute_token(random_token)):
+                raise SecurityException(hashed_token)
+
+            return fn(*args)
+
+        return wrapped_fn
+
+    def compute_token(self, random_token):
+        sha1hash = hashlib.sha1()
+        sha1hash.update(random_token + self._secure_token)
+        return sha1hash.hexdigest().upper()
+
+def secured_task(f):
+    return SecuredTaskDecorator()(f)
