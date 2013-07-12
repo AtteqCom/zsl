@@ -15,6 +15,8 @@ class AppModel:
     ``AppModel``s are used as a thin and simple communication objects. Also they can be saved into cache.
     '''
 
+    _not_serialized_properties = ['_not_serialized_properties', '_hints', '_id_name']
+
     def __init__(self, raw, id_name = 'id', hints = None):
         '''
         The application model model constructor.
