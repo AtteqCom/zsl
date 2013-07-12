@@ -11,7 +11,8 @@ class AppModelJSONEncoder(JSONEncoder):
         if isinstance(o, AppModel):
             d = dict(o.__dict__)
             for k in o._not_serialized_attributes:
-                d.pop(k)
+                if k in d:
+                    d.pop(k)
             return d
         else:
             return JSONEncoder.default(self, o)
