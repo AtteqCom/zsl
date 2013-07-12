@@ -13,7 +13,7 @@ class validators:
             wtforms.validators.Required.__init__(self, message)
 
     class URL(wtforms.validators.URL):
-        def __init__(self, require_tld=True, message=u'Neplatná URL adresa.'):
+        def __init__(self, require_tld=True, message=u'Neplatná URL adresa. URL adresa musí začínať s "http://". Napríklad "http://www.zoznam.sk"'):
             wtforms.validators.URL.__init__(self, require_tld, message)
 
     class Date(object):
@@ -24,7 +24,7 @@ class validators:
             self.format = format
             self.message = message
 
-        def __call__(self, form,field):
+        def __call__(self, form, field):
             try:
                 strptime(field.data, self.format)
             except ValueError:
@@ -42,3 +42,7 @@ class validators:
                     msg += u'Maximálny počet znakov textu: %(max)d.'
 
             wtforms.validators.Length.__init__(self,min,max,msg)
+
+    class Regexp(wtforms.validators.Regexp):
+        def __init__(self, regex, flags=0, message=u'Nesprávny formát dát.'):
+            wtforms.validators.Regexp.__init__(self, regex, flags, message)
