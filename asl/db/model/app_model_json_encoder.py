@@ -9,7 +9,7 @@ from asl.db.model import AppModel
 class AppModelJSONEncoder(JSONEncoder):
     def default(self, o):
         if isinstance(o, AppModel):
-            d = dict(o.__dict_)
+            d = dict(o.__dict__)
             for k in o._not_serialized_attributes:
                 d.pop(k)
             return d
