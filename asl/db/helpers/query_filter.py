@@ -10,12 +10,17 @@ class OperatorBetween:
     def apply(self, q, attr, v):
         return q.filter(attr.between(v[0], v[1]))
 
+class RelationshipOperatorContains:
+    def apply(self, q, attr, v):
+        return q.filter(attr.contains(v))
+
 FILTER_HINT = 'hint'
 FILTER_VALUES = 'values'
 
 class QueryFilter(object):
-    def __init__(self, query_filter):
+    def __init__(self, query_filter, mappings = []):
         self._query_filter = query_filter
+        self._mappings = mappings
 
     def apply_query_filter(self, q, cls):
         hints = self._query_filter[FILTER_HINT]
@@ -25,7 +30,12 @@ class QueryFilter(object):
             if v == None:
                 continue
 
-            attr = getattr(cls, k)
+            if k in self._mappings:
+                (cls, field) = self._mappings[k]
+                attr = getattr(cls, field)
+            else:
+                attr = getattr(cls, k)
+
             q = hints[k]().apply(q, attr, v)
 
         return q

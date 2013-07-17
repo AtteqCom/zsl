@@ -6,7 +6,8 @@ from time import strptime
 
 class validators:
     class Optional(wtforms.validators.Optional):
-        pass
+        def __init__(self, strip_whitespace=True):
+            wtforms.validators.Optional.__init__(self, strip_whitespace)
 
     class Required(wtforms.validators.Required):
         def __init__(self, message=u'Toto pole je povinné.'):

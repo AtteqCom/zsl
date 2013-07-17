@@ -43,10 +43,10 @@ class AppModel:
     def set_from_raw_data(self, raw):
         for (k, v) in raw.items():
             if isinstance(v, (type(None), str, int, long, float, bool, unicode)):
-                if k in self._hints[DATE_DATA]:
+                if k in self._hints[DATE_DATA] and v != None:
                     d = datetime.strptime(v, self._hints[DATE_DATA][k]).date()
                     setattr(self, k, format_date_portable(d))
-                elif k in self._hints[DATETIME_DATA]:
+                elif k in self._hints[DATETIME_DATA] and v != None:
                     d = datetime.strptime(v, self._hints[DATETIME_DATA][k])
                     setattr(self, k, format_datetime_portable(d))
                 else:
@@ -62,3 +62,31 @@ class AppModel:
     def _set_id_name(self, id_name):
         self._id_name = id_name
 
+    def get_attributes(self):
+        def convert(v):
+            if isinstance(v, AppModel):
+                return v.get_attributes()
+            else:
+                return v
+
+        d = dict(self.__dict__)
+
+        for k in self.__dict__:
+            if k in self._not_serialized_attributes:
+                d.pop(k)
+
+            elif isinstance(d[k], AppModel):
+                d[k] = d[k].get_attributes()
+
+            elif isinstance(d[k], list):
+                d[k] = map(convert, d[k])
+
+            elif isinstance(d[k], tuple):
+                d[k] = map(convert, d[k])
+                d[k] = tuple(d[k])
+
+            elif isinstance(d[k], dict):
+                for key, value in getattr(self, k).iteritems():
+                    d[k][key] = convert(value)
+
+        return d
