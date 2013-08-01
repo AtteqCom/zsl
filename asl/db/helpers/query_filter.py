@@ -2,6 +2,10 @@ class OperatorEq:
     def apply(self, q, attr, v):
         return q.filter(attr == v)
 
+class OperatorNeq:
+    def apply(self, q, attr, v):
+        return q.filter(attr != v)
+
 class OperatorLike:
     def apply(self, q, attr, v):
         return q.filter(attr.like('%{0}%'.format(v)))
