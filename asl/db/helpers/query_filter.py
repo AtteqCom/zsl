@@ -1,8 +1,10 @@
 from asl.db.sqlalchemy.extensions.function import function
 import sqlalchemy
+from asl.application.service_application import service_application
 
 class OperatorEq:
     def apply(self, q, attr, v):
+        service_application.logger.debug('\n\nEqOperator attr: {}, value: {}\n\n'.format(attr, v));
         return q.filter(attr == v)
 
 class OperatorNeq:
@@ -55,8 +57,43 @@ FILTER_HINT = 'hint'
 FILTER_VALUES = 'values'
 
 class QueryFilter(object):
-    def __init__(self, query_filter, mappings = []):
+    '''
+    Apply filter criteria to query (consult asl.db.helpers.query_helper.QueryHelper)
+    '''
+
+    def __init__(self, query_filter, mappings = [], allow_null = False):
+        '''
+        query_filter = {FILTER_VALUES: dict, FILTER_HINT: dict}
+                - FILTER_VALUES dictionary (see example)
+                - FILTER_HINTS dictionary - tells which operator (OperatorEq, OperatorBetween, ...)
+                    use to which key from FILTER_VALUES dictionary
+        mappings dict - maps keys from FILTER_VALUES to column attributes of objects (see example)
+                      - if the key from FILTER_VALUES is equal to the name of column attribute,
+                        it doesn`t have to be mentioned in mappings
+        allow_null boolean - if False (default value), None values from FILTER_VALUES will be ignored
+
+        Example:
+            query_filter = {
+                FILTER_VALUES: {'fullname': 'jessica', 'lastname_initial': None},
+                FILTER_HINT: {
+                    'fullname': OperatorLike,
+                    'lastname_initial': OperatorLeftLike,
+                    'exclude_cid': OperatorNeq,
+                }
+            }
+            mappings = {
+                'lastname_initial': (Celebrity, 'lastname'),
+                'exclude_cid': (Celebrity, 'cid'),
+            }
+
+            Notes: - 'fullname' key from FILTER_VALUES corresponds to column attribute Celebrity.fullname,
+                    it doesn`t have to be mentioned in mappings
+                  - if allow_null == False, key 'lastname_initial' from FILTER_VALUES will be ignored
+                  - Celebrity is a sqlalechemy db model
+        '''
+
         self._query_filter = query_filter
+        self._allow_null = allow_null
         self._mappings = mappings
 
     def apply_query_filter(self, q, cls):
@@ -64,7 +101,7 @@ class QueryFilter(object):
         values = self._query_filter[FILTER_VALUES]
 
         for (k, v) in values.items():
-            if v == None:
+            if v == None and not self._allow_null:
                 continue
 
             if k in self._mappings:
