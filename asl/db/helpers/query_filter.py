@@ -58,7 +58,7 @@ FILTER_VALUES = 'values'
 
 class QueryFilter(object):
     '''
-    Apply filter criteria to query (consult asl.db.helpers.query_helper.QueryHelper)
+    Helper class for applying filter criteria to query.
     '''
 
     def __init__(self, query_filter, mappings = [], allow_null = False):
@@ -67,7 +67,7 @@ class QueryFilter(object):
                 - FILTER_VALUES dictionary (see example)
                 - FILTER_HINTS dictionary - tells which operator (OperatorEq, OperatorBetween, ...)
                     use to which key from FILTER_VALUES dictionary
-        mappings dict - maps keys from FILTER_VALUES to column attributes of objects (see example)
+        mappings dict - maps keys from FILTER_VALUES to column attributes names of objects (see example)
                       - if the key from FILTER_VALUES is equal to the name of column attribute,
                         it doesn`t have to be mentioned in mappings
         allow_null boolean - if False (default value), None values from FILTER_VALUES will be ignored
