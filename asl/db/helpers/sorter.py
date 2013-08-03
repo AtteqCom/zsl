@@ -13,7 +13,7 @@ class Sorter(object):
         sorter = {'sortby': string, 'sort': string}
             sortby - string of comma-separated column names by which you want to order
             sort - string of comma-separated values 'ASC'/'DESC' (order direction) which
-                    set order direction to according columns from sorter['sortby'] string
+                    set order direction to corresponding columns from sorter['sortby'] string
             notes: - if 'sortby' key is not in sorter, no sorting will be applied to query
                    - if 'sort' key is not in sorter, DEFAULT_SORT_ORDER will be applied to
                      all columns from sorter['sortby']
