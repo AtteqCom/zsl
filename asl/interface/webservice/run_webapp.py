@@ -21,10 +21,8 @@ def run_task(args):
     if len(args) == 0:
         raise Exception('I need a task path to run')
 
-    # TODO
-
 def run_webapp():
-    service_application.run()
+    service_application.run(port=service_application.config.get('FLASK_PORT'))
 
 # Run it!
 if __name__ == "__main__":

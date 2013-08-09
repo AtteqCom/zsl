@@ -20,3 +20,6 @@ syntax: regexp
 ^asl/interface/webservice/run_shell\.cmd$
 syntax: regexp
 ^asl/interface/webservice/run_webapp\.cmd$
+
+syntax: regexp
+^$

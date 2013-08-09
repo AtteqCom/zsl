@@ -4,6 +4,8 @@ Created on 15.12.2012
 @author: Martin Babka
 '''
 import re
+import random
+import string
 
 def underscore_to_camelcase(value):
     def camelcase():
@@ -24,3 +26,21 @@ def et_node_to_string(et_node):
     '''
 
     return unicode(et_node.text).strip()
+
+def generate_random_string(size=6, chars=string.ascii_uppercase + string.digits):
+    '''
+    Random string generator.
+
+    @param size: Length of the returned string.
+    @param chars: List of the usable characters.
+    @return: The random string.
+    '''
+    return ''.join(random.choice(chars) for _ in range(size))
+
+def addslashes(s, l = ["\\", "'", ]):
+    # l = ["\\", '"', "'", "\0", ]
+    for i in l:
+        if i in s:
+            s = s.replace(i, '\\'+i)
+    return s
+

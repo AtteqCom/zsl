@@ -5,6 +5,7 @@ Created on 8.4.2013
 '''
 from asl.task.task_data import TaskData
 from asl.application.service_application import service_application
+from abc import abstractmethod
 
 class Job:
     def __init__(self, data):
@@ -31,8 +32,16 @@ class JobContext:
     def set_current_context(cls, context):
         cls._current_context = context
 
+class Responder:
+    @abstractmethod
+    def respond(self):
+        pass
+
+def web_task_redirect(location):
+    return {'headers': {'Location': location}, 'status_code': 301}
+
 class WebJobContext(JobContext):
-    def __init__(self, path, data, task, task_callable):
+    def __init__(self, path, data, task, task_callable, request):
         '''
         Constructor
         '''
@@ -40,3 +49,15 @@ class WebJobContext(JobContext):
         self.task = task
         self.task_callable = task_callable
         self.task_data = TaskData(service_application, data)
+        self._request = request
+        self._responders = []
+
+    def get_web_request(self):
+        return self._request
+
+    def add_responder(self, r):
+        self._responders.append(r)
+
+    def notify_responders(self, response):
+        for r in self._responders:
+            r.respond(response)

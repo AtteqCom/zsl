@@ -18,17 +18,24 @@ class Job():
 
 def run_task():
     if len(sys.argv) == 1:
-        print "Please provide argumets"
-        sys.exit(1)  
-    
+        print "Please provide the task arguments."
+        sys.exit(1)
+
     task = sys.argv[1]
     data = sys.argv[2] if len(sys.argv) > 2 else None
-    
+
+    # Open the data from file, if necessary.
+    if data is not None and data.startswith("file://"):
+        with open(data[len("file://"):]) as f:
+            data = f.read()
+
+    # Prepare the task.
     job = Job(data)
-    
     (task, task_callable) = router.route(task)
     jc = JobContext(job, task, task_callable)
     JobContext.set_current_context(jc)
+
+    # Run the task.
     return jc.task_callable(jc.task_data)
 
 # Run it!

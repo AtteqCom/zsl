@@ -11,6 +11,7 @@ from asl.interface.gearman.json_data_encoder import JSONDataEncoder
 from asl.task.task_data import TaskData
 import socket
 from asl.task.job_context import JobContext
+import traceback
 
 app = service_application
 
@@ -25,7 +26,7 @@ def executeTask(worker, job):
         app.logger.info("Task {0} executed successfully.".format(job.data['path']))
         return {'task_name': job.data['path'], 'data': data}
     except Exception as e:
-        app.logger.error(str(e))
+        app.logger.error(str(e) + "\n" + traceback.format_exc())
         return {'task_name': job.data['path'], 'data': None, 'error': str(e)}
 
 '''
