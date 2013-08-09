@@ -15,7 +15,7 @@ from asl.task.job_context import JobContext
 app = service_application
 
 def executeTask(worker, job):
-    print "Job fetched, preparing the task."
+    app.logger.info("Job fetched, preparing the task '{0}'.".format(job.data['path']))
 
     try:
         (task, task_callable) = router.route(job.data['path'])
