@@ -5,7 +5,7 @@ Created on 12.12.2012
 '''
 
 import json
-from flask import request
+from flask import request, Response
 from asl.application.service_application import service_application
 from asl.task.task_data import TaskData
 from asl.db.model import AppModelJSONEncoder
@@ -219,3 +219,12 @@ class SecuredTaskDecorator:
 
 def secured_task(f):
     return SecuredTaskDecorator()(f)
+
+def xml_output(f):
+    '''
+    Create xml response for output
+    '''
+    def xml_output(*args, **kwargs):
+        return Response(f(*args, **kwargs), mimetype='text/xml')
+    
+    return xml_output
