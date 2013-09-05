@@ -4,7 +4,6 @@ from asl.application.service_application import service_application
 
 class OperatorEq:
     def apply(self, q, attr, v):
-        service_application.logger.debug('\n\nEqOperator attr: {}, value: {}\n\n'.format(attr, v));
         return q.filter(attr == v)
 
 class OperatorNeq:
