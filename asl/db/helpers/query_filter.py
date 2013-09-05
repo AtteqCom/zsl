@@ -12,21 +12,21 @@ class OperatorNeq:
 
 class OperatorLike:
     def apply(self, q, attr, v):
-        return q.filter(attr.like('%{0}%'.format(v)))
+        return q.filter(attr.like(u'%{0}%'.format(v)))
 
 class OperatorLeftLike:
     '''
         Left side of string is like ...
     '''
     def apply(self, q, attr, v):
-        return q.filter(attr.like('{0}%'.format(v)))
+        return q.filter(attr.like(u'{0}%'.format(v)))
 
 class OperatorRightLike:
     '''
         Right side of string is like ...
     '''
     def apply(self, q, attr, v):
-        return q.filter(attr.like('%{0}'.format(v)))
+        return q.filter(attr.like(u'%{0}'.format(v)))
 
 class OperatorBetween:
     def apply(self, q, attr, v):
