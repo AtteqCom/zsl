@@ -44,3 +44,14 @@ def addslashes(s, l = ["\\", "'", ]):
             s = s.replace(i, '\\'+i)
     return s
 
+def xstr(s):
+    '''
+    If ``s`` is None return empty string 
+    '''
+    return '' if s is None else str(s)
+
+def xunicode(s):
+    '''
+    If ``s`` is None return empty string 
+    '''
+    return '' if s is None else unicode(s)

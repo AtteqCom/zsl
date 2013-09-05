@@ -21,6 +21,5 @@ def slugify(value):
 def club(club):
     return '/sportove-kluby/{id}/{name}'.format(id=club.id, name=slugify(club.name))
 
-
 def image(image, dim):
-    return '/cacheImg/obr/{0}px/{1}-{2}.{3}'.format(dim, slugify(image.description), image.iid, image.extension);
+    return '/cacheImg/obr/{0}px/{1}-{2}.{3}'.format(dim, slugify(image.description), image.iid, image.extension)
