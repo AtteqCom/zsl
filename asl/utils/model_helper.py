@@ -18,13 +18,13 @@ def update_model(raw_model, app_model, forbidden_keys = [], inverse = False):
 
     if inverse:
         for k in app_model.keys():
-            app.logger.debug("Considering property {0}.".format(k))
+            app.logger.debug(u"Considering property {0}.".format(k))
             if (hasattr(raw_model, k)) and (not k in forbidden_keys):
-                app.logger.debug("Setting property {0}.".format(k))
+                app.logger.debug(u"Setting property {0} to value '{1}'.".format(k, app_model[k]))
                 setattr(raw_model, k, app_model[k])
     else:
         for k in raw_model.__dict__.keys():
-            app.logger.debug("Considering property {0}.".format(k))
+            app.logger.debug(u"Considering property {0}.".format(k))
             if (k in app_model) and (not k in forbidden_keys):
-                app.logger.debug("Setting property {0}.".format(k))
+                app.logger.debug(u"Setting property {0} to value '{1}'.".format(k, app_model[k]))
                 setattr(raw_model, k, app_model[k])
