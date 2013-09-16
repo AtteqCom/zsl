@@ -39,6 +39,7 @@ def transactional(f):
 
             if not a[0]._in_transaction:
                 trans_close = True
+                a[0]._in_transaction = True
                 service_application.logger.debug("Transaction opened.")
 
             rv = f(*a, **kwargs)
