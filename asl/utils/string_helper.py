@@ -7,6 +7,9 @@ import re
 import random
 import string
 
+_html_tag_re = re.compile(ur'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE)
+_html_tag_re_un = re.compile(ur'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE|re.UNICODE)
+
 def underscore_to_camelcase(value):
     def camelcase():
         while True:
@@ -46,12 +49,24 @@ def addslashes(s, l = ["\\", "'", ]):
 
 def xstr(s):
     '''
-    If ``s`` is None return empty string 
+    If ``s`` is None return empty string
     '''
     return '' if s is None else str(s)
 
 def xunicode(s):
     '''
-    If ``s`` is None return empty string 
+    If ``s`` is None return empty string
     '''
     return '' if s is None else unicode(s)
+
+def strip_html_tags(s):
+    '''
+    Remove all html tags from string
+    '''
+    return _html_tag_re.sub('', s)
+
+def strip_html_tags_unicode(s):
+    '''
+    Remove all html tags from unicode string
+    '''
+    return _html_tag_re_un.sub(u'', s)
