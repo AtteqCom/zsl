@@ -1,6 +1,5 @@
-from asl.db.sqlalchemy.extensions.function import function
-import sqlalchemy
-from asl.application.service_application import service_application
+from sqlalchemy.sql import func
+#from asl.application.service_application import service_application
 
 class OperatorEq:
     def apply(self, q, attr, v):
@@ -40,12 +39,7 @@ class OperatorCompareDates:
     '''
 
     def apply(self, q, attr, v):
-        (month, day) = map(lambda x: x.strip(), v.split("-", 1))
-
-        q = q.filter(function('MONTH', sqlalchemy.types.Date())(attr) == month)
-        q = q.filter(function('DAY', sqlalchemy.types.Date())(attr) == day)
-
-        return q
+        return q.filter(func.date_format(attr, '%m-%d') == v)
 
 class RelationshipOperatorContains:
     def apply(self, q, attr, v):
