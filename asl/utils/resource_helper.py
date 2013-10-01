@@ -12,19 +12,9 @@ class MethodNotImplementedException(Exception):
     pass
 
 def parse_resource_path(path):
-    splits = path.split('/', 1)
-    splits_num = len(splits)
-
-    resource = None
-    param = None
-
-    if splits_num > 0:
-        resource = splits[0]
-
-    if splits_num > 1:
-        param = splits[1]
-
-    return (resource, param)
+    splits = path.split('/')
+    
+    return (splits[0], splits[1:])
 
 def get_method(resource, method):
     if hasattr(resource, method) and callable(getattr(resource,method)):
@@ -33,20 +23,23 @@ def get_method(resource, method):
         raise MethodNotImplementedException()
 
 def get_resource_task(resource_path):
-    class_name = underscore_to_camelcase(resource_path)
-    module_name = app.config['RESOURCE_PACKAGE'] + resource_path
+    class_name = underscore_to_camelcase(resource_path) + 'Resource'
+    module_name = "{0}.{1}".format(app.config['RESOURCE_PACKAGE'], resource_path)
 
     try:
         module = importlib.import_module(module_name)
-    except ImportError:
+    except ImportError, e:
         app.logger.debug("Module %s resource does not exits", module_name)
-        return None
+        raise e
 
     # TODO if app.is_debug
     reload(module)
 
     # Create the resource using the injector initialization.
-    cls = getattr(module, class_name)
+    try:
+        cls = getattr(module, class_name)
+    except AttributeError:
+        raise ImportError("cannot find [{0}] in module [{1}]".format(class_name, module_name))
     resource = instantiate(cls)
 
     try:

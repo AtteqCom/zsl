@@ -61,7 +61,7 @@ class JsonOutputDecorator:
                     skip_encode = d.is_skipping_json()
 
             if not skip_encode:
-                return json.dumps(ret_val, cls = AppModelJSONEncoder)
+                return Response(json.dumps(ret_val, cls = AppModelJSONEncoder), mimetype="application/json")
             else:
                 return ret_val
 
