@@ -21,15 +21,19 @@ class validators:
         '''
         validator - skontroluje, ci dany string je datum v zadanom formate a ci je dany datum platny
         '''
-        def __init__(self, format, message=u'Nesprávny formát dátumu alebo neplatný dátum.'):
+        def __init__(self, format, message=u'Nesprávny formát dátumu alebo neplatný dátum.', stop_after_fail = False):
             self.format = format
             self.message = message
+            self.stop_after_fail = stop_after_fail
 
         def __call__(self, form, field):
             try:
                 strptime(field.data, self.format)
             except ValueError:
-                raise wtforms.validators.ValidationError(self.message)
+                if self.stop_after_fail:
+                    raise wtforms.validators.StopValidation(self.message)
+                else:
+                    raise wtforms.validators.ValidationError(self.message)
 
     class Length(wtforms.validators.Length):
         def __init__(self, min=-1, max=-1, message=None):
