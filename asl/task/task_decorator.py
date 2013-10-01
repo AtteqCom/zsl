@@ -61,7 +61,12 @@ class JsonOutputDecorator:
                     skip_encode = d.is_skipping_json()
 
             if not skip_encode:
-                return Response(json.dumps(ret_val, cls = AppModelJSONEncoder), mimetype="application/json")
+                ret_val =  json.dumps(ret_val, cls = AppModelJSONEncoder)
+                
+                if isinstance(JobContext.get_current_context(), WebJobContext):
+                    return Response(ret_val, mimetype="application/json")
+                else:
+                    return ret_val
             else:
                 return ret_val
 
