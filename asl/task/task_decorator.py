@@ -62,7 +62,7 @@ class JsonOutputDecorator:
 
             if not skip_encode:
                 ret_val =  json.dumps(ret_val, cls = AppModelJSONEncoder)
-                
+
                 if isinstance(JobContext.get_current_context(), WebJobContext):
                     return Response(ret_val, mimetype="application/json")
                 else:
@@ -231,5 +231,26 @@ def xml_output(f):
     '''
     def xml_output(*args, **kwargs):
         return Response(f(*args, **kwargs), mimetype='text/xml')
-    
+
     return xml_output
+
+class FilesUploadDecorator:
+    '''
+    Return list of werkzeug.datastructures.FileStorage objects - files to be uploaded
+    '''
+    def __call__(self, fn):
+        def wrapped_fn(*a):
+            # If the data is already transformed, we do not transform it any further.
+            task_data = get_data(a)
+
+            if task_data == None:
+                app.logger.error("Task data is empty during FilesUploadDecorator.")
+
+            task_data.transform_data(lambda _: request.files.getlist('file'))
+
+            return fn(*a)
+
+        return wrapped_fn
+
+def files_upload(f):
+    return FilesUploadDecorator()(f)
