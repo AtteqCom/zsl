@@ -13,8 +13,8 @@ def load():
 app = service_application
 
 # Do the mapping.
-@app.route("/", defaults={'path': ''})
-@app.route("/<path:path>")
+@app.route("/", defaults={'path': ''}, methods=("POST", "GET"))
+@app.route("/<path:path>", methods=("POST", "GET"))
 def mapping(path):
     app.logger.debug("Hello wording!")
     return "Hello World! Using path '{0}'.".format(path)
