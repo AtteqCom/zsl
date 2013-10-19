@@ -3,6 +3,7 @@ from asl.router import router
 from flask import request
 from flask.helpers import make_response
 from asl.task.job_context import JobContext, WebJobContext
+import traceback
 
 app = service_application
 
@@ -25,7 +26,7 @@ class WebTaskTester:
             response.headers['Cache-Control'] = 'no-cache'
             return response
         except Exception as e:
-            app.logger.error(e)
+            app.logger.error(unicode(e) + "\n" + traceback.format_exc())
             raise
 
 @app.route("/task/<path:path>", methods=["POST", "GET"])

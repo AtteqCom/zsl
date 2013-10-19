@@ -5,7 +5,7 @@ Created on 12.12.2012
 '''
 
 import json
-from flask import request
+from flask import request, Response
 from asl.application.service_application import service_application
 from asl.task.task_data import TaskData
 from asl.db.model import AppModelJSONEncoder
@@ -61,7 +61,12 @@ class JsonOutputDecorator:
                     skip_encode = d.is_skipping_json()
 
             if not skip_encode:
-                return json.dumps(ret_val, cls = AppModelJSONEncoder)
+                ret_val =  json.dumps(ret_val, cls = AppModelJSONEncoder)
+
+                if isinstance(JobContext.get_current_context(), WebJobContext):
+                    return Response(ret_val, mimetype="application/json")
+                else:
+                    return ret_val
             else:
                 return ret_val
 
@@ -219,3 +224,33 @@ class SecuredTaskDecorator:
 
 def secured_task(f):
     return SecuredTaskDecorator()(f)
+
+def xml_output(f):
+    '''
+    Create xml response for output
+    '''
+    def xml_output(*args, **kwargs):
+        return Response(f(*args, **kwargs), mimetype='text/xml')
+
+    return xml_output
+
+class FilesUploadDecorator:
+    '''
+    Return list of werkzeug.datastructures.FileStorage objects - files to be uploaded
+    '''
+    def __call__(self, fn):
+        def wrapped_fn(*a):
+            # If the data is already transformed, we do not transform it any further.
+            task_data = get_data(a)
+
+            if task_data == None:
+                app.logger.error("Task data is empty during FilesUploadDecorator.")
+
+            task_data.transform_data(lambda _: request.files.getlist('file'))
+
+            return fn(*a)
+
+        return wrapped_fn
+
+def files_upload(f):
+    return FilesUploadDecorator()(f)

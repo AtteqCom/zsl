@@ -26,8 +26,8 @@ def executeTask(worker, job):
         app.logger.info("Task {0} executed successfully.".format(job.data['path']))
         return {'task_name': job.data['path'], 'data': data}
     except Exception as e:
-        app.logger.error(str(e) + "\n" + traceback.format_exc())
-        return {'task_name': job.data['path'], 'data': None, 'error': str(e)}
+        app.logger.error(unicode(e) + "\n" + traceback.format_exc())
+        return {'task_name': job.data['path'], 'data': None, 'error': unicode(e)}
 
 '''
 Class responsible for connecting to the Gearman server and grabbing tasks.
