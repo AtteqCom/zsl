@@ -51,7 +51,7 @@ class RawTaskResult(TaskResult):
     def get_task(self):
         return self._task
 
-    def get_result(self, result):
+    def get_result(self):
         return self._result
 
 class TaskDecorator:
