@@ -4,8 +4,16 @@ Created on 9.8.2013
 @author: Martin Babka
 '''
 from abc import abstractmethod
+import hashlib
 import json
+import random
+import urllib2
+
 import gearman
+
+
+def _random_string(length, allowed_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz'):
+    return ''.join(random.choice(allowed_characters) for _ in range(length))
 
 class Task:
     @abstractmethod
@@ -51,25 +59,41 @@ class RawTaskResult(TaskResult):
     def get_task(self):
         return self._task
 
-    def get_result(self, result):
+    def get_result(self):
         return self._result
 
-class TaskDecorator:
+class TaskDecorator(Task):
     def __init__(self, task):
         self._task = task
 
-class JsonTask(Task, TaskDecorator):
+    def get_name(self):
+        return self._task.get_name()
+
     def get_data(self):
-        data = self._task.get_data(self)
+        return self._task.get_data()
+
+class JsonTask(Task, TaskDecorator):
+    def get_name(self):
+        return TaskDecorator.get_name(self)
+
+    def get_data(self):
+        data = self._task.get_data()
         return json.dumps(data)
 
 class SecuredTask(Task, TaskDecorator):
+    def get_name(self):
+        return TaskDecorator.get_name(self)
+
+    def set_asl(self, asl):
+        self._asl = asl
+
     def get_data(self):
+        random_token = _random_string(16)
         return {
-            "data": self._task.data,
+            "data": self._task.get_data(),
             "security": {
-                "random_token": "",
-                "hashed_token": ""
+                "random_token": random_token,
+                "hashed_token": hashlib.sha1(random_token + self._asl.get_secure_token()).hexdigest().upper()
             }
         }
 
@@ -83,6 +107,22 @@ class JsonTaskResult(TaskResult, TaskResultDecorator):
         result = self._task_result.get_result()
         return json.loads(result)
 
+class ErrorTaskResult(TaskResult, TaskResultDecorator):
+    def get_complete_result(self):
+        result = self._task_result.get_result()
+        return result
+
+    def get_result(self):
+        result = self._task_result.get_result()
+        return json.loads(result['data'])
+
+    def is_error(self):
+        result = self._task_result.get_result()
+        return True if 'error'in result else False
+
+    def get_error(self):
+        return self._task_result.get_result()['error']
+
 class Service:
     @abstractmethod
     def _inner_call(self, data):
@@ -90,8 +130,10 @@ class Service:
 
     def call(self, task, decorators = []):
         task = self.apply_task_decorators(task, decorators)
-        data = task.data
-        name = task.name
+
+        data = task.get_data()
+        name = task.get_name()
+
         result = self._inner_call(name, data)
         task_result = RawTaskResult(task, result)
         return self.apply_task_result_decorators(task_result, decorators)
@@ -100,6 +142,8 @@ class Service:
         for d in decorators:
             if TaskDecorator in d.__bases__:
                 task = d(task)
+                if hasattr(task, 'set_asl'):
+                    task.set_asl(self)
 
         return task
 
@@ -109,6 +153,9 @@ class Service:
                 task_result = d(task_result)
 
         return task_result
+
+    def get_secure_token(self):
+        return self._security_config['SECURITY_TOKEN']
 
 class GearmanService(Service):
     def __init__(self, gearman_config, security_config):
@@ -142,3 +189,19 @@ class WebService(Service):
     def __init__(self, web_config, security_config):
         self._web_config = web_config
         self._security_config = security_config
+        self._service_layer_url = self._web_config['SERVICE_LAYER_URL']
+
+    def get_service_layer_url(self):
+        return self._service_layer_url
+
+    def _inner_call(self, name, data):
+        if data is None:
+            data = "null"
+        elif not (isinstance(data, unicode) or isinstance(data, str)):
+            data = str(data)
+
+        req = urllib2.Request(self._service_layer_url + name, data, {'Content-Type': 'application/json'})
+        f = urllib2.urlopen(req)
+        returned_data = f.read()
+        f.close()
+        return returned_data
