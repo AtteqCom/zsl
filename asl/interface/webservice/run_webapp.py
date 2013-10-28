@@ -13,6 +13,8 @@ web_application_loader.load()
 from asl.application import service_application
 service_application.initialize_dependencies()
 
+conf = service_application.config
+
 def run_shell():
     import bpython
     bpython.embed()
@@ -22,7 +24,12 @@ def run_task(args):
         raise Exception('I need a task path to run')
 
 def run_webapp():
-    service_application.run(port=service_application.config.get('FLASK_PORT'))
+    service_application.run(
+        port=conf.get('FLASK_PORT'), 
+        debug=conf.get('DEBUG', False),
+        use_debugger=conf.get('USE_DEBUGGER', False),
+        use_reloader=conf.get('USE_RELOADER', False)
+    )
 
 # Run it!
 if __name__ == "__main__":

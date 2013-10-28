@@ -68,6 +68,7 @@ class ModelResource(object):
         row_id = params[0] if len(params) > 0 else None
         
         args = args.copy()
+        args['related'] = 'meals'
         
         if 'related' in args:
             args['related'] = args['related'].split(',')
@@ -161,24 +162,40 @@ class ModelResource(object):
     def get_collection_desc(self):
         return [column.name for column in class_mapper(self.model_cls).columns]
     
+    def _update_one_simple(self, row_id, fields):
+        fields = dict_pick(fields, self._model_columns)
+        
+        model = self.session.query(self.model_cls).get(row_id)
+        
+        if model is None:
+            return None
+        
+        for name,value in fields.items():
+            setattr(model, name, value)
+            
+        return model
+    
     def update_one(self, row_id, fields={}):
         '''
         Update row
         '''
-        fields = dict_pick(fields, self._model_columns)
         
-        return self.session.query(self.model_cls).filter(self._model_pk==row_id).update(fields)
+        model = self._update_one_simple(row_id, fields)
+
+        self.session.commit()
+        
+        return None if model is None else model.get_app_model()
     
     def update_collection(self, rows=[]):
         '''
         Bulk update
         '''
-        count = 0;
+        models = []
         
         for row in rows:
-            count += self.update_one(row.pop('id'), row)
+            models.append(self.update_one(row.pop('id'), row))
         
-        return count
+        return models
     
     def delete_one(self, row_id):
         '''

@@ -14,12 +14,17 @@ def nested_model(model, nested_fields):
     if model is None:
         return None
     
-    app_model  = model.get_app_model()
+    app_model = model.get_app_model()
     is_dict = isinstance(nested_fields, dict)
     
     for field in nested_fields:
         nested_nested = nested_fields.get(field) if is_dict and nested_fields.get(field) else []
-        setattr(app_model, field, nested_model(getattr(model, field, None), nested_nested))
+        value = getattr(model, field, None)
+        
+        # we can have also lists in field
+        nm_fn = nested_models if isinstance(value, list) else nested_model
+        
+        setattr(app_model, field, nm_fn(value, nested_nested))  
         
     return app_model
         
