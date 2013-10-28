@@ -68,11 +68,9 @@ class ModelResource(object):
         row_id = params[0] if len(params) > 0 else None
         
         args = args.copy()
-        args['related'] = 'meals'
         
         if 'related' in args:
             args['related'] = args['related'].split(',')
-        
         
         if 'fields' in args:
             args['fields'] = args['fields'].split(',')
