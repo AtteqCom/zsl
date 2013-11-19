@@ -11,12 +11,13 @@ from sqlalchemy.orm import class_mapper
 import sqlalchemy.exc
 
 model_tpl = """    {model_prefix}{model_name} = {model_fn}.extend({{
-        url: App.service_url + 'resource/{resource_name},
+        urlRoot: App.service_url + 'resource/{resource_name}',
         schema: {schema}
     }});
 
     {collection_prefix}{model_name} = {collection_fn}.extend({{
-        model: {model_prefix}{model_name}
+        model: {model_prefix}{model_name},
+        url: {model_prefix}{model_name}.prototype.urlRoot
     }});
 """
 
