@@ -7,6 +7,7 @@ from asl.utils.string_helper import underscore_to_camelcase
 from asl.utils.task_helper import instantiate
 
 app = service_application
+resource_packages = app.config['RESOURCE_PACKAGES'] if 'RESOURCE_PACKAGES' in app.config else (app.config['RESOURCE_PACKAGE'],)
 
 class MethodNotImplementedException(Exception):
     pass
@@ -24,13 +25,18 @@ def get_method(resource, method):
 
 def get_resource_task(resource_path):
     class_name = underscore_to_camelcase(resource_path) + 'Resource'
-    module_name = "{0}.{1}".format(app.config['RESOURCE_PACKAGE'], resource_path)
 
-    try:
-        module = importlib.import_module(module_name)
-    except ImportError, e:
-        app.logger.debug("Module %s resource does not exits", module_name)
-        raise e
+    module = None    
+    for resource_package in resource_packages:
+        module_name = "{0}.{1}".format(resource_package, resource_path)
+    
+        try:
+            module = importlib.import_module(module_name)
+        except ImportError:
+            pass
+        
+    if module is None:
+        raise ImportError("No module named {0} found in [{1}]".format(module_name, ",".join(resource_packages)))
 
     # TODO if app.is_debug
     reload(module)

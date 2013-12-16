@@ -25,8 +25,6 @@ def dict_pick(dictionary, allowed_keys):
 
 class ModelResource(object):
     '''
-    
-    
     TODO: zatial to funguje iba na tabulky s 1 primary key
     '''
     
