@@ -37,7 +37,7 @@ class ModelResource(object):
         
         mapper = class_mapper(model_cls)
         self._model_pk = mapper.primary_key[0]
-        self._model_columns = [column.name for column in mapper.columns]
+        self._model_columns = [column.key for column in mapper.column_attrs]
         
         self.to_filter = partial(filter_from_url_arg, model_cls)
         self.add_related = partial(apply_related, model_cls)

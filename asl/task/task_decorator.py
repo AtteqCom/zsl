@@ -234,7 +234,7 @@ def xml_output(f):
 
     return xml_output
 
-class FilesUploadDecorator:
+class FileUploadDecorator:
     '''
     Return list of werkzeug.datastructures.FileStorage objects - files to be uploaded
     '''
@@ -252,5 +252,20 @@ class FilesUploadDecorator:
 
         return wrapped_fn
 
-def files_upload(f):
-    return FilesUploadDecorator()(f)
+def file_upload(f):
+    return FileUploadDecorator()(f)
+
+# TODO dopis
+# def web_request(f):
+#     '''
+#     Create 
+#     '''
+#     
+#     def web_request(*args, **kwargs):
+#         ctx = JobContext.get_current_context()
+#         
+#         if not isinstance(ctx, WebJobContext):
+#             return
+#         
+#         req = ctx.get_request() #_request
+#         
