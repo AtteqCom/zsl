@@ -13,6 +13,8 @@ def slugify(value):
 
     Drsny copy-paste z Djanga
     """
+    if isinstance(value, str):
+        value = unicode(value)
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
     value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
     return re.sub('[-\s]+', '-', value)
