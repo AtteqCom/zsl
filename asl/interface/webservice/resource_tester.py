@@ -11,7 +11,7 @@ app = service_application
 def args_to_dict(args):
     return dict((key, value[0]) for key, value in dict(args).items())
 
-@app.route("/resource/<path:path>", methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+@app.route("/resource/<path:path>", methods=['GET', 'POST', 'PUT', 'DELETE'])
 def perform_resource(path):
     try:
         app.logger.debug("Getting resource %s.", path)
