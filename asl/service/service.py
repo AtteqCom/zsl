@@ -62,6 +62,7 @@ def transactional(f):
             raise
         finally:
             if trans_close:
+                a[0]._orm.close()
                 a[0]._in_transaction = False
 
     return transactional_f
