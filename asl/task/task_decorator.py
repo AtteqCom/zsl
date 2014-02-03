@@ -32,7 +32,7 @@ class JsonInput:
             if task_data == None:
                 app.logger.error("Task data is empty during JSON decoding.")
 
-            if task_data.get_data() != "":
+            if task_data.get_data():
                 try:
                     # We transform the data only in the case of plain POST requests.
                     if request.headers.get("Content-Type") != "application/json" and task_data != None and not task_data.is_skipping_json():
@@ -130,29 +130,26 @@ class RequiredDataDecorator:
 def required_data(*data):
     return RequiredDataDecorator(data)
 
-class AppendGetParametersDecorator:
+def append_get_parameters(f):
     '''
     Task decorator which appends the GET data to the task data.
     '''
+   
+    def append_get_parameters(*args, **kwargs):
+        task_data = get_data(args)
+        jc = JobContext.get_current_context()
+        
+        if not isinstance(jc, WebJobContext):
+            raise Exception("AppendGetDataDecorator may be used with GET requests only.")
 
-    def __call__(self, fn):
-        def wrapped_fn(*args):
-            task_data = get_data(args)
-            jc = JobContext.get_current_context()
-            if not isinstance(jc, WebJobContext):
-                raise Exception("AppendGetDataDecorator may be used with GET requests only.")
+        request = jc.get_web_request()
+        data = task_data.get_data()
+        
+        data.update(request.args.to_dict(flat=True))
 
-            request = jc.get_web_request()
-            data = task_data.get_data()
-            for k in request.args:
-                # Maybe getlist could be a better alternative.
-                data[k] = request.args.get(k)
-            return fn(*args)
+        return f(*args, **kwargs)
 
-        return wrapped_fn
-
-def append_get_parameters(f):
-    return AppendGetParametersDecorator()(f)
+    return append_get_parameters
 
 class WebTaskResponder(Responder):
     def __init__(self, data):
@@ -230,7 +227,12 @@ def xml_output(f):
     Create xml response for output
     '''
     def xml_output(*args, **kwargs):
-        return Response(f(*args, **kwargs), mimetype='text/xml')
+        retval = f(*args, **kwargs)
+        
+        if isinstance(JobContext.get_current_context(), WebJobContext):
+            return Response(retval, mimetype='text/xml')
+        else:
+            return retval
 
     return xml_output
 

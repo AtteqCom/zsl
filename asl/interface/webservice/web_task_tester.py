@@ -13,7 +13,7 @@ class WebTaskTester:
             app.logger.debug("Performing task %s.", path)
             (task, task_callable) = router.route(path)
 
-            data = request.data
+            data = request.form.to_dict(flat=True)
             if request.headers.has_key("Content-Type") and request.headers["Content-Type"] == "application/json":
                 data = request.json
 
