@@ -6,6 +6,7 @@ Created on Sep 9, 2013
 
 from sqlalchemy.orm import class_mapper, joinedload
 from sqlalchemy import desc, asc
+from asl.application.service_application import service_application
 
 def filter_from_url_arg(model_cls, query, arg):
     '''
@@ -15,6 +16,7 @@ def filter_from_url_arg(model_cls, query, arg):
     '''
 
     fields = arg.split(',')
+    service_application.logger.debug('\n\n{}\n\n'.format(fields))
 
     exprs = []
     for expr in fields:
@@ -31,6 +33,8 @@ def filter_from_url_arg(model_cls, query, arg):
                 else:
                     pass # TODO vyhod vynimku
 
+                break
+
         # TODO vyhod vynimku ak nenajde operator
 
     return query.filter(*exprs)
@@ -38,10 +42,10 @@ def filter_from_url_arg(model_cls, query, arg):
 operator_to_method = {
     '==': '__eq__',
     '<=': '__le__',
-    '<':  '__lt__',
-    '>':  '__gt__',
     '>=': '__ge__',
-    '!=': '__ne__'
+    '!=': '__ne__',
+    '<':  '__lt__',
+    '>':  '__gt__'
 }
 
 def order_from_url_arg(model_cls, query, arg):
