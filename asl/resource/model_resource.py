@@ -201,7 +201,9 @@ class ModelResource(object):
         '''
         Delete row by id
         '''
-        return self.session.query(self.model_cls).filter(self._model_pk == row_id).delete()
+        ret = self.session.query(self.model_cls).filter(self._model_pk == row_id).delete()
+        self.session.commit()
+        return ret
 
     def delete_collection(self, filter_by=None):
         '''
@@ -212,4 +214,7 @@ class ModelResource(object):
         if filter_by is not None:
             q = self.to_filter(q, filter_by)
 
-        return q.delete()
+        ret = q.delete()
+        self.session.commit()
+        
+        return ret
