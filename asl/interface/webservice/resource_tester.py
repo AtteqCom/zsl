@@ -7,6 +7,7 @@ from asl.db.model import AppModelJSONEncoder
 import traceback
 
 app = service_application
+conf = service_application.config
 
 def args_to_dict(args):
     return dict((key, value[0]) for key, value in dict(args).items())
@@ -30,6 +31,7 @@ def perform_resource(path):
 
         response.headers['ASL-Flask-Layer'] = '1.00aa0'
         response.headers['Cache-Control'] = 'no-cache';
+        response.headers['Access-Control-Allow-Origin'] = conf.get('ALLOW_ORIGIN');
         return response
     except Exception as e:
         app.logger.error(str(e) + "\n" + traceback.format_exc())
