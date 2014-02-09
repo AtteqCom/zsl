@@ -41,6 +41,7 @@ def perform_resource(path):
         	response.headers['Access-Control-Allow-Origin'] = conf.get('ALLOW_ORIGIN')
 
 	response.headers['Access-Control-Allow-Methods'] = 'POST, GET, DELETE, PUT, OPTIONS'
+	response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type'
         
 	return response
     except Exception as e:
