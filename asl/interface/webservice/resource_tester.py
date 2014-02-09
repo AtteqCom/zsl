@@ -12,22 +12,27 @@ conf = service_application.config
 def args_to_dict(args):
     return dict((key, value[0]) for key, value in dict(args).items())
 
-@app.route("/resource/<path:path>", methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route("/resource/<path:path>", methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 def perform_resource(path):
     try:
         app.logger.debug("Getting resource %s.", path)
-        (resource, params) = parse_resource_path(path)
 
-        resource_task = get_resource_task(resource)
+	response = None
 
-        if resource_task == None:
-            # TODO what?
-            return
+	if request.method == 'OPTIONS':
+        	response = app.make_default_options_response()
+	else:
+        	(resource, params) = parse_resource_path(path)
+        	resource_task = get_resource_task(resource)
 
-        data = request.json
+        	if resource_task == None:
+            		# TODO what?
+            		return
 
-        rv = resource_task(params=params, args=args_to_dict(request.args), data=data)
-        response = Response(json.dumps(rv, cls = AppModelJSONEncoder), mimetype="application/json")
+        	data = request.json
+
+        	rv = resource_task(params=params, args=args_to_dict(request.args), data=data)
+        	response = Response(json.dumps(rv, cls = AppModelJSONEncoder), mimetype="application/json")
 
         response.headers['ASL-Flask-Layer'] = '1.00aa0'
         response.headers['Cache-Control'] = 'no-cache';
