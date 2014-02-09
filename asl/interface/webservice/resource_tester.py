@@ -31,7 +31,9 @@ def perform_resource(path):
 
         response.headers['ASL-Flask-Layer'] = '1.00aa0'
         response.headers['Cache-Control'] = 'no-cache';
-        response.headers['Access-Control-Allow-Origin'] = conf.get('ALLOW_ORIGIN');
+	if conf.get('ALLOW_ORIGIN'):
+        	response.headers['Access-Control-Allow-Origin'] = conf.get('ALLOW_ORIGIN');
+	response.headers['Access-Control-Allow-Methods'] = 'POST, GET, DELETE, PUT, OPTIONS'
         return response
     except Exception as e:
         app.logger.error(str(e) + "\n" + traceback.format_exc())
