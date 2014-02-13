@@ -16,6 +16,7 @@ from asl.resource.resource_helper import filter_from_url_arg, apply_related, cre
 from functools import partial
 from asl.db.helpers import app_models
 from asl.db.helpers.nested import nested_models, nested_model
+from asl.service.service import transactional, SqlSesionMixin
 
 def dict_pick(dictionary, allowed_keys):
     '''
@@ -23,7 +24,7 @@ def dict_pick(dictionary, allowed_keys):
     '''
     return dict((key, value) for (key,value) in dictionary.items() if key in allowed_keys)
 
-class ModelResource(object):
+class ModelResource(SqlSesionMixin):
     '''
     TODO: zatial to funguje iba na tabulky s 1 primary key
     '''
@@ -32,8 +33,10 @@ class ModelResource(object):
         """
         Create Model CRUD resource for ``model_cls``
         """
+        
+        self.init_sql_session()
+        
         self.model_cls = model_cls
-        self.session = app.get_injector().get(SessionHolder)()
 
         mapper = class_mapper(model_cls)
         self._model_pk = mapper.primary_key[0]
@@ -43,6 +46,7 @@ class ModelResource(object):
         self.add_related = partial(apply_related, model_cls)
         self.set_ordering = partial(order_from_url_arg, model_cls)
 
+    @transactional
     def create(self, params, args, data):
         '''
         POST /resource/model_cls/
@@ -53,11 +57,11 @@ class ModelResource(object):
         fields = dict_pick(data, self._model_columns)
         model = self.model_cls(**fields)
 
-        self.session.add(model)
-        self.session.commit()
+        self._orm.add(model)
 
         return model.get_app_model()
-
+    
+    @transactional
     def read(self, params, args, data):
         '''
         GET /resource/model_cls/[params:id]?[args:{limit,offset,filter_by,order_by,related,fields}]
@@ -91,6 +95,7 @@ class ModelResource(object):
             kwargs = dict_pick(args, ['limit', 'offset', 'filter_by', 'order_by', 'related'])
             return self.get_collection(**kwargs)
 
+    @transactional
     def update(self, params, args, data):
         '''
         PUT /resource/model_cls/[params:id]
@@ -105,6 +110,7 @@ class ModelResource(object):
         else:
             return self.update_collection(data)
 
+    @transactional
     def delete(self, params, args, data):
         '''
         DELETE /resource/model_cls/[params]?[args]
@@ -119,7 +125,7 @@ class ModelResource(object):
             return self.delete_collection(args.get('filter_by', None))
 
     def get_one(self, row_id, related=None):
-        q = self.session.query(self.model_cls).filter(self._model_pk == row_id)
+        q = self._orm.query(self.model_cls).filter(self._model_pk == row_id)
 
         if related is not None:
             q = self.add_related(q, related)
@@ -130,7 +136,7 @@ class ModelResource(object):
 
 
     def get_collection_count(self, filter_by=None):
-        q = self.session.query(self.model_cls)
+        q = self._orm.query(self.model_cls)
 
         if filter_by is not None:
             q = self.to_filter(q, filter_by)
@@ -138,7 +144,7 @@ class ModelResource(object):
         return q.count()
 
     def get_collection(self, limit=10, offset=0, filter_by=None, order_by=None, related=None):
-        q = self.session.query(self.model_cls)
+        q = self._orm.query(self.model_cls)
 
         if filter_by is not None:
             q = self.to_filter(q, filter_by)
@@ -165,7 +171,7 @@ class ModelResource(object):
     def _update_one_simple(self, row_id, fields):
         fields = dict_pick(fields, self._model_columns)
 
-        model = self.session.query(self.model_cls).get(row_id)
+        model = self._orm.query(self.model_cls).get(row_id)
 
         if model is None:
             return None
@@ -181,8 +187,6 @@ class ModelResource(object):
         '''
 
         model = self._update_one_simple(row_id, fields)
-
-        self.session.commit()
 
         return None if model is None else model.get_app_model()
 
@@ -201,20 +205,15 @@ class ModelResource(object):
         '''
         Delete row by id
         '''
-        ret = self.session.query(self.model_cls).filter(self._model_pk == row_id).delete()
-        self.session.commit()
-        return ret
+        return self._orm.query(self.model_cls).filter(self._model_pk == row_id).delete()
 
     def delete_collection(self, filter_by=None):
         '''
         Delete a collection from DB, optionally filtered by ``filter_by``
         '''
-        q = self.session.query(self.model_cls)
+        q = self._orm.query(self.model_cls)
 
         if filter_by is not None:
             q = self.to_filter(q, filter_by)
 
-        ret = q.delete()
-        self.session.commit()
-        
-        return ret
+        return q.delete()

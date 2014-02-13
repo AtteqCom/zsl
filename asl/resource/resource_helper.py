@@ -16,7 +16,6 @@ def filter_from_url_arg(model_cls, query, arg):
     '''
 
     fields = arg.split(',')
-    service_application.logger.debug('\n\n{}\n\n'.format(fields))
 
     exprs = []
     for expr in fields:

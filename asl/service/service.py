@@ -9,6 +9,26 @@ from injector import inject
 from sqlalchemy.engine.base import Engine
 from asl.application.initializers.database_initializer import SessionHolder
 
+class SqlSesionMixin(object):
+    """
+    Prida podporu pre ``transactional`` dekorator pre metody triedy, 
+    ktora implementuje tento mixin. Samotna session potom bude dostupna
+    cez premennu ``self._orm`` v metode, na ktorej je zaveseny
+    ``transactional`` dekorator
+    
+    Zatial treba inicializovat metodou ``init_sql_session``. 
+    """
+    
+    @inject(session_holder=SessionHolder)
+    def init_sql_session(self, session_holder):
+        self._orm = None
+        self._session_holder = session_holder
+        self._in_transaction = False
+        self._transaction_callback = []
+    
+    def append_transaction_callback(self, callback):
+        self._transaction_callback.append(callback)
+
 class Service(object):
     '''
     Main service class.
