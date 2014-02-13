@@ -17,33 +17,30 @@ def perform_resource(path):
     try:
         app.logger.debug("Getting resource %s.", path)
 
-	response = None
+        response = None
+        if request.method == 'OPTIONS':
+            response = app.make_default_options_response()
+        else:
+            (resource, params) = parse_resource_path(path)
+            resource_task = get_resource_task(resource)
+            if resource_task == None:
+                # TODO what?
+                return
 
-	if request.method == 'OPTIONS':
-        	response = app.make_default_options_response()
-	else:
-        	(resource, params) = parse_resource_path(path)
-        	resource_task = get_resource_task(resource)
+            data = request.json
 
-        	if resource_task == None:
-            		# TODO what?
-            		return
-
-        	data = request.json
-
-        	rv = resource_task(params=params, args=args_to_dict(request.args), data=data)
-        	response = Response(json.dumps(rv, cls = AppModelJSONEncoder), mimetype="application/json")
+            rv = resource_task(params=params, args=args_to_dict(request.args), data=data)
+            response = Response(json.dumps(rv, cls = AppModelJSONEncoder), mimetype="application/json")
 
         response.headers['ASL-Flask-Layer'] = '1.00aa0'
         response.headers['Cache-Control'] = 'no-cache';
-	
-	if conf.get('ALLOW_ORIGIN'):
-        	response.headers['Access-Control-Allow-Origin'] = conf.get('ALLOW_ORIGIN')
 
-	response.headers['Access-Control-Allow-Methods'] = 'POST, GET, DELETE, PUT, OPTIONS'
-	response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type'
+        if conf.get('ALLOW_ORIGIN'):
+            response.headers['Access-Control-Allow-Origin'] = conf.get('ALLOW_ORIGIN')
+        response.headers['Access-Control-Allow-Methods'] = 'POST, GET, DELETE, PUT, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type'
         
-	return response
+        return response
     except Exception as e:
         app.logger.error(str(e) + "\n" + traceback.format_exc())
         raise
