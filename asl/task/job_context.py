@@ -34,7 +34,7 @@ class JobContext:
 
 class Responder:
     @abstractmethod
-    def respond(self):
+    def respond(self, r):
         pass
 
 def web_task_redirect(location):

@@ -5,7 +5,7 @@ Created on 12.12.2012
 '''
 
 import json
-from flask import request, Response
+from flask import request
 from asl.application.service_application import service_application
 from asl.task.task_data import TaskData
 from asl.db.model import AppModelJSONEncoder
@@ -62,11 +62,8 @@ class JsonOutputDecorator:
 
             if not skip_encode:
                 ret_val =  json.dumps(ret_val, cls = AppModelJSONEncoder)
-
                 if isinstance(JobContext.get_current_context(), WebJobContext):
-                    return Response(ret_val, mimetype="application/json")
-                else:
-                    return ret_val
+                    JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/json'))
             else:
                 return ret_val
 
@@ -134,17 +131,17 @@ def append_get_parameters(f):
     '''
     Task decorator which appends the GET data to the task data.
     '''
-   
+
     def append_get_parameters(*args, **kwargs):
         task_data = get_data(args)
         jc = JobContext.get_current_context()
-        
+
         if not isinstance(jc, WebJobContext):
             raise Exception("AppendGetDataDecorator may be used with GET requests only.")
 
         request = jc.get_web_request()
         data = task_data.get_data()
-        
+
         data.update(request.args.to_dict(flat=True))
 
         return f(*args, **kwargs)
@@ -162,6 +159,13 @@ class WebTaskResponder(Responder):
                     response.headers[header_name] = self.data[k][header_name]
             else:
                 setattr(response, k, self.data[k])
+
+class MimeSetterWebTaskResponder(Responder):
+    def __init__(self, mime):
+        self._mime = mime
+
+    def respond(self, r):
+        r.content_type = self._mime
 
 class WebTaskDecorator:
     '''
@@ -228,11 +232,10 @@ def xml_output(f):
     '''
     def xml_output(*args, **kwargs):
         retval = f(*args, **kwargs)
-        
+
         if isinstance(JobContext.get_current_context(), WebJobContext):
-            return Response(retval, mimetype='text/xml')
-        else:
-            return retval
+            JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('text/xml'))
+        return retval
 
     return xml_output
 
@@ -260,14 +263,14 @@ def file_upload(f):
 # TODO dopis
 # def web_request(f):
 #     '''
-#     Create 
+#     Create
 #     '''
-#     
+#
 #     def web_request(*args, **kwargs):
 #         ctx = JobContext.get_current_context()
-#         
+#
 #         if not isinstance(ctx, WebJobContext):
 #             return
-#         
+#
 #         req = ctx.get_request() #_request
-#         
+#
