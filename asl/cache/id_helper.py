@@ -17,7 +17,7 @@ class IdHelper:
         pass
 
     @abc.abstractmethod
-    def fill_page(self, page_key, data, encoder = encoder_identity):
+    def fill_page(self, page_key, data, timeout, encoder = encoder_identity):
         pass
 
     @abc.abstractmethod
@@ -37,7 +37,7 @@ class IdHelper:
         pass
 
     @abc.abstractmethod
-    def set_key(self, key, value):
+    def set_key(self, key, value, timeout):
         pass
 
     @abc.abstractmethod
