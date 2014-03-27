@@ -8,7 +8,8 @@ Created on Sep 5, 2013
 @author: Peter Morihladko
 '''
 
-from asl.application.service_application import service_application as app
+from asl.application.service_application import service_application as app,\
+    service_application
 from sqlalchemy.orm import class_mapper
 from asl.application.initializers.database_initializer import SessionHolder
 from asl.resource.resource_helper import filter_from_url_arg, apply_related, create_related_tree,\
@@ -55,11 +56,13 @@ class ModelResource(SqlSesionMixin):
         Create new resource
         '''
         fields = dict_pick(data, self._model_columns)
-        model = self.model_cls(**fields)
 
+        model = self.model_cls(**fields)
         self._orm.add(model)
+        self._orm.flush()
 
         return model.get_app_model()
+
     
     @transactional
     def read(self, params, args, data):
