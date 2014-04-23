@@ -39,6 +39,7 @@ def filter_from_url_arg(model_cls, query, arg):
     return query.filter(*exprs)
 
 operator_to_method = {
+    '::like::': 'like',
     '==': '__eq__',
     '<=': '__le__',
     '>=': '__ge__',
