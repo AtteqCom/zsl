@@ -1,6 +1,8 @@
 '''
 Created on Sep 23, 2013
 
+TODO presun do asl.db.helpers
+
 @author: peter
 '''
 
