@@ -8,8 +8,6 @@ Created on Sep 5, 2013
 @author: Peter Morihladko
 '''
 
-from asl.application.service_application import service_application as app,\
-    service_application
 from sqlalchemy.orm import class_mapper
 from asl.application.initializers.database_initializer import SessionHolder
 from asl.resource.resource_helper import filter_from_url_arg, apply_related, create_related_tree,\
