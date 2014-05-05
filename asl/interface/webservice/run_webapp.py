@@ -25,6 +25,7 @@ def run_task(args):
 
 def run_webapp():
     service_application.run(
+	host=conf.get('FLASK_HOST', '127.0.0.1'),
         port=conf.get('FLASK_PORT'), 
         debug=conf.get('DEBUG', False),
         use_debugger=conf.get('USE_DEBUGGER', False),
