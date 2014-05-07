@@ -98,7 +98,7 @@ class ModelGenerator(object):
                 attrs['type'] = "TextArea"
                 
             elif col_type == 'Enum':
-                attrs['type'] = 'Select'
+                attrs['type'] = 'AtteqSelect' if column.nullable else 'Select'
                 attrs['options'] = column.type.enums
             
             elif col_type == 'INTEGER':
