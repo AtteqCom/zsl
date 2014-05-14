@@ -12,6 +12,7 @@ from asl.db.model import AppModelJSONEncoder
 from asl.task.job_context import JobContext, WebJobContext, Responder
 import traceback
 import hashlib
+from asl.db.model.app_model import AppModel
 
 app = service_application
 
@@ -71,6 +72,45 @@ class JsonOutputDecorator:
 
 def json_output(f):
     return JsonOutputDecorator()(f)
+
+class JsendOutputDecorator:
+    def __init__(self, fail_exception_classes):
+        if fail_exception_classes is None:
+            self._fail_exception_classes = ()
+        else:
+            self._fail_exception_classes = fail_exception_classes
+
+    def __call__(self, fn):
+        
+        @json_output
+        def wrapped_fn(*args):
+            try:
+                ret_val = fn(*args)
+            except self._fail_exception_classes as e:
+                return {'status': 'fail', 'data': {'message': unicode(e)}}
+            except Exception as e:
+                service_application.logger.error(unicode(e) + "\n" + traceback.format_exc())
+                return {'status': 'error', 'message': 'Server error.'}
+
+            # TODO najst lepsie riesenie, ako zistit, ci ret_val bude po JSON dumpe
+            # JSON objekt alebo null alebo nieco ine
+            if not isinstance(ret_val, AppModel) and not isinstance(ret_val, dict)\
+                and ret_val is not None:
+                msg = 'JsendOutputDecorator error: ' + \
+                    'function return value is after JSON dump nor JSON object nor null.'
+                service_application.logger.error(msg + '\nfunction return value: {0}'.format(ret_val))
+                return {'status': 'error', 'message': msg}
+
+            return {'status': 'success', 'data': ret_val}
+
+        return wrapped_fn
+
+def jsend_output(fail_exception_classes = None):
+    def decorator_fn(f):
+        return JsendOutputDecorator(fail_exception_classes)(f)
+    
+    return decorator_fn
+
 
 class ErrorAndResultDecorator:
     def __init__(self, web_only = False):
