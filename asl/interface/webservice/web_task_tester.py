@@ -20,7 +20,7 @@ class WebTaskTester:
                 (task, task_callable) = router.route(path)
     
                 data = request.form.to_dict(flat=True)
-                if request.headers.has_key("Content-Type") and request.headers["Content-Type"] == "application/json":
+                if request.json:
                     data = request.json
     
                 app.logger.debug("Data found '%s'.", str(data))
