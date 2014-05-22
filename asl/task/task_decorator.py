@@ -13,6 +13,251 @@ from asl.task.job_context import JobContext, WebJobContext, Responder
 import traceback
 import hashlib
 from asl.db.model.app_model import AppModel
+from functools import wraps
+
+
+def json_input(f):
+    '''
+    Expects task input data in json format and parse this data.
+    '''
+
+    @wraps(f)
+    def json_input_decorator(*args, **kwargs):
+        # If the data is already transformed, we do not transform it any further.
+        task_data = get_data(args)
+
+        if task_data == None:
+            app.logger.error("Task data is empty during JSON decoding.")
+
+        if task_data.get_data():
+            try:
+                # We transform the data only in the case of plain POST requests.
+                if not request.json and task_data != None and not task_data.is_skipping_json():
+                    task_data.transform_data(json.loads)
+            except:
+                # app.logger.error("Exception while processing JSON input decorator.")
+                task_data.transform_data(json.loads)
+        else:
+            task_data.transform_data(lambda _: {})
+
+        return f(*args, **kwargs)
+    
+    return json_input_decorator
+
+
+def json_output(f):
+    '''
+    Format response to json and in case of web-request set response content-type to 'application/json'.
+    '''
+    
+    @wraps(f)
+    def json_output_decorator(*args, **kwargs):
+        rv = f(*args, **kwargs)
+
+        skip_encode = False
+        for d in args:
+            if isinstance(d, TaskData):
+                skip_encode = d.is_skipping_json()
+
+        if not skip_encode:
+            rv = json.dumps(rv, cls = AppModelJSONEncoder)
+            if isinstance(JobContext.get_current_context(), WebJobContext):
+                JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/json'))
+
+        return rv
+    
+    return json_output_decorator
+
+
+def jsend_output(fail_exception_classes = None):
+    '''
+    Format task result to json output in jsend specification format. See: http://labs.omniti.com/labs/jsend.
+    Task return value must be dict or None.
+    
+    @param fail_exception_classes: exceptions which will produce 'fail' response status
+    '''
+    
+    fail_exception_classes = fail_exception_classes if fail_exception_classes else ()
+
+    def decorator_fn(f):
+        
+        @wraps(f)
+        @json_output
+        def jsend_output_decorator(*args, **kwargs):
+            try:
+                rv = f(*args, **kwargs)
+            except fail_exception_classes as e:
+                return {'status': 'fail', 'data': {'message': unicode(e)}}
+            except Exception as e:
+                service_application.logger.error(unicode(e) + "\n" + traceback.format_exc())
+                return {'status': 'error', 'message': 'Server error.'}
+
+            # TODO najst lepsie riesenie, ako zistit, ci ret_val bude po JSON dumpe
+            # JSON objekt alebo null alebo nieco ine
+            if not isinstance(rv, AppModel) and not isinstance(rv, dict) and rv is not None:
+                msg = 'JsendOutputDecorator error: ' + \
+                    'function return value is after JSON dump nor JSON object nor null.'
+                service_application.logger.error(msg + '\nfunction return value: {0}'.format(rv))
+                return {'status': 'error', 'message': msg}
+
+            return {'status': 'success', 'data': rv}
+        
+        return jsend_output_decorator
+    
+    return decorator_fn
+
+def web_error_and_result(f):
+    '''
+    Same as error_and_result decorator, except:
+    If no exception was raised during task execution, ONLY IN CASE OF WEB REQUEST formats
+    task result into json dictionary {'data': task return value}
+    '''
+    
+    @wraps(f)
+    def web_error_and_result_decorator(*args, **kwargs):
+        return error_and_result_decorator_inner_fn(f, True, *args, **kwargs)
+    
+    return web_error_and_result_decorator
+
+def error_and_result(f):
+    '''
+    Format task result into json dictionary {'data': task return value} if no exception was raised during task execution.
+    If there was raised an exception during task execution, formats task result into dictionary {'error': exception message with traceback}
+    '''
+    
+    @wraps(f)
+    def error_and_result_decorator(*args, **kwargs):
+        return error_and_result_decorator_inner_fn(f, False, *args, **kwargs)
+    
+    return error_and_result_decorator
+
+
+def required_data(*data):
+    '''
+    Task decorator which checks if the given variables (indices) are stored inside the task data.
+    '''
+    
+    def decorator_fn(f):
+        
+        @wraps(f)
+        def required_data_decorator(*args, **kwargs):
+            task_data = get_data(args).get_data()
+            for i in data:
+                if not i in task_data:
+                    raise KeyError(i)
+
+            return f(*args, **kwargs)
+        
+        return required_data_decorator
+
+    return decorator_fn
+
+def append_get_parameters(f):
+    '''
+    Task decorator which appends the GET data to the task data.
+    '''
+
+    @wraps(f)
+    def append_get_parameters(*args, **kwargs):
+        task_data = get_data(args)
+        jc = JobContext.get_current_context()
+
+        if not isinstance(jc, WebJobContext):
+            raise Exception("append_get_parameters decorator may be used with GET requests only.")
+
+        request = jc.get_web_request()
+        data = task_data.get_data()
+
+        data.update(request.args.to_dict(flat=True))
+
+        return f(*args, **kwargs)
+
+    return append_get_parameters
+
+def web_task(f):
+    '''
+    Checks if the task is called through the web interface.
+    Task return value should be in format {'data': ...}.
+    '''
+    
+    @wraps(f)
+    def web_task_decorator(*args, **kwargs):
+        jc = JobContext.get_current_context()
+        if not isinstance(jc, WebJobContext):
+            raise Exception("The WebTask is not called through the web interface.")
+        data = f(*args, **kwargs)
+        jc.add_responder(WebTaskResponder(data))
+        return data['data'] if 'data' in data else ""
+        
+    return web_task_decorator
+
+
+def secured_task(f):
+    '''
+    Secured task decorator.
+    '''
+    
+    secure_token = service_application.config['SERVICE_SECURITY_TOKEN']
+
+    def compute_token(random_token):
+        sha1hash = hashlib.sha1()
+        sha1hash.update(random_token + secure_token)
+        return sha1hash.hexdigest().upper()
+    
+    @wraps(f)
+    def secured_task_decorator(*args, **kwargs):
+        task_data = get_data(args)
+        assert isinstance(task_data, TaskData)
+        random_token = task_data.get_data()['security']['random_token']
+        hashed_token = task_data.get_data()['security']['hashed_token']
+        task_data.transform_data(lambda x: x['data'])
+        if unicode(hashed_token) != unicode(compute_token(random_token)):
+            raise SecurityException(hashed_token)
+
+        return f(*args, **kwargs)
+
+    return secured_task_decorator
+
+def xml_output(f):
+    '''
+    Create xml response for output and set content-type for web-request to 'text/xml'
+    '''
+    
+    @wraps(f)
+    def xml_output(*args, **kwargs):
+        retval = f(*args, **kwargs)
+
+        if isinstance(JobContext.get_current_context(), WebJobContext):
+            JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('text/xml'))
+        return retval
+
+    return xml_output
+
+def file_upload(f):
+    '''
+    Return list of werkzeug.datastructures.FileStorage objects - files to be uploaded
+    TODO: maybe delete
+    '''
+
+    @wraps(f)
+    def file_upload_decorator(*args, **kwargs):
+        # If the data is already transformed, we do not transform it any further.
+        task_data = get_data(args)
+
+        if task_data == None:
+            app.logger.error("Task data is empty during FilesUploadDecorator.")
+
+        task_data.transform_data(lambda _: request.files.getlist('file'))
+
+        return f(*args, **kwargs)
+        
+    return file_upload_decorator
+
+
+
+###############
+### helpers ###
+###############
 
 app = service_application
 
@@ -24,169 +269,14 @@ def get_data(a):
 
     return task_data
 
-class JsonInput:
-    def __call__(self, fn):
-        def wrapped_fn(*a):
-            # If the data is already transformed, we do not transform it any further.
-            task_data = get_data(a)
+class SecurityException(Exception):
 
-            if task_data == None:
-                app.logger.error("Task data is empty during JSON decoding.")
+    def __init__(self, hashed_token):
+        Exception.__init__(self, "Invalid hashed token '{0}'.".format(hashed_token))
+        self._hashed_token = hashed_token
 
-            if task_data.get_data():
-                try:
-                    # We transform the data only in the case of plain POST requests.
-                    if not request.json and task_data != None and not task_data.is_skipping_json():
-                        task_data.transform_data(json.loads)
-                except:
-                    # app.logger.error("Exception while processing JSON input decorator.")
-                    task_data.transform_data(json.loads)
-            else:
-                task_data.transform_data(lambda _: {})
-
-            return fn(*a)
-
-        return wrapped_fn
-
-def json_input(f):
-    return JsonInput()(f)
-
-class JsonOutputDecorator:
-    def __call__(self, fn):
-        def wrapped_fn(*args):
-            ret_val = fn(*args)
-
-            skip_encode = False
-            for d in args:
-                if isinstance(d, TaskData):
-                    skip_encode = d.is_skipping_json()
-
-            if not skip_encode:
-                ret_val = json.dumps(ret_val, cls = AppModelJSONEncoder)
-                if isinstance(JobContext.get_current_context(), WebJobContext):
-                    JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/json'))
-
-            return ret_val
-
-        return wrapped_fn
-
-def json_output(f):
-    return JsonOutputDecorator()(f)
-
-class JsendOutputDecorator:
-    def __init__(self, fail_exception_classes):
-        if fail_exception_classes is None:
-            self._fail_exception_classes = ()
-        else:
-            self._fail_exception_classes = fail_exception_classes
-
-    def __call__(self, fn):
-        
-        @json_output
-        def wrapped_fn(*args):
-            try:
-                ret_val = fn(*args)
-            except self._fail_exception_classes as e:
-                return {'status': 'fail', 'data': {'message': unicode(e)}}
-            except Exception as e:
-                service_application.logger.error(unicode(e) + "\n" + traceback.format_exc())
-                return {'status': 'error', 'message': 'Server error.'}
-
-            # TODO najst lepsie riesenie, ako zistit, ci ret_val bude po JSON dumpe
-            # JSON objekt alebo null alebo nieco ine
-            if not isinstance(ret_val, AppModel) and not isinstance(ret_val, dict)\
-                and ret_val is not None:
-                msg = 'JsendOutputDecorator error: ' + \
-                    'function return value is after JSON dump nor JSON object nor null.'
-                service_application.logger.error(msg + '\nfunction return value: {0}'.format(ret_val))
-                return {'status': 'error', 'message': msg}
-
-            return {'status': 'success', 'data': ret_val}
-
-        return wrapped_fn
-
-def jsend_output(fail_exception_classes = None):
-    def decorator_fn(f):
-        return JsendOutputDecorator(fail_exception_classes)(f)
-    
-    return decorator_fn
-
-
-class ErrorAndResultDecorator:
-    def __init__(self, web_only = False):
-        self._web_only = web_only
-
-    def __call__(self, fn):
-        def inner_wrapped_fn(*args):
-            try:
-                ret_val = fn(*args)
-                if self._web_only and not isinstance(JobContext.get_current_context(), WebJobContext):
-                    return ret_val
-
-                return {
-                    'data': ret_val
-                }
-            except Exception:
-                exc = traceback.format_exc()
-                app.logger.error(exc)
-                return {
-                    'error': "{0}".format(exc)
-                }
-
-        def wrapped_fn(*args):
-            result = inner_wrapped_fn(*args)
-            return json.dumps(result)
-
-        return wrapped_fn
-
-def web_error_and_result(f):
-    return ErrorAndResultDecorator(True)(f)
-
-def error_and_result(f):
-    return ErrorAndResultDecorator()(f)
-
-class RequiredDataDecorator:
-    '''
-    Task decorator which checks if the given variables (indices) are stored inside the task data.
-    '''
-
-    def __init__(self, data):
-        self.data = data
-
-    def __call__(self, fn):
-        def wrapped_fn(*args):
-            task_data = get_data(args).get_data()
-            for i in self.data:
-                if not i in task_data:
-                    raise KeyError(i)
-
-            return fn(*args)
-
-        return wrapped_fn
-
-def required_data(*data):
-    return RequiredDataDecorator(data)
-
-def append_get_parameters(f):
-    '''
-    Task decorator which appends the GET data to the task data.
-    '''
-
-    def append_get_parameters(*args, **kwargs):
-        task_data = get_data(args)
-        jc = JobContext.get_current_context()
-
-        if not isinstance(jc, WebJobContext):
-            raise Exception("AppendGetDataDecorator may be used with GET requests only.")
-
-        request = jc.get_web_request()
-        data = task_data.get_data()
-
-        data.update(request.args.to_dict(flat=True))
-
-        return f(*args, **kwargs)
-
-    return append_get_parameters
+    def get_hashed_token(self):
+        return self._hashed_token
 
 class WebTaskResponder(Responder):
     def __init__(self, data):
@@ -207,110 +297,17 @@ class MimeSetterWebTaskResponder(Responder):
     def respond(self, r):
         r.content_type = self._mime
 
-class WebTaskDecorator:
-    '''
-    Checks if the task is called through the web interface.
-    '''
+def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
+    try:
+        ret_val = f(*args, **kwargs)
+        if web_only and not isinstance(JobContext.get_current_context(), WebJobContext):
+            rv = ret_val
+        else:
+            rv = {'data': ret_val}
 
-    def __call__(self, fn):
-        def wrapped_fn(*args):
-            jc = JobContext.get_current_context()
-            if not isinstance(jc, WebJobContext):
-                raise Exception("The WebTask is not called through the web interface.")
-            data = fn(*args)
-            jc.add_responder(WebTaskResponder(data))
-            return data['data'] if 'data' in data else ""
+    except Exception:
+        exc = traceback.format_exc()
+        app.logger.error(exc)
+        rv = {'error': "{0}".format(exc)}
 
-        return wrapped_fn
-
-def web_task(f):
-    return WebTaskDecorator()(f)
-
-
-class SecurityException(Exception):
-
-    def __init__(self, hashed_token):
-        Exception.__init__(self, "Invalid hashed token '{0}'.".format(hashed_token))
-        self._hashed_token = hashed_token
-
-    def get_hashed_token(self):
-        return self._hashed_token
-
-class SecuredTaskDecorator:
-    '''
-    Checks if the task is called through the web interface.
-    '''
-
-    def __init__(self):
-        self._secure_token = service_application.config['SERVICE_SECURITY_TOKEN']
-
-    def __call__(self, fn):
-        def wrapped_fn(*args):
-            task_data = get_data(args)
-            assert isinstance(task_data, TaskData)
-            random_token = task_data.get_data()['security']['random_token']
-            hashed_token = task_data.get_data()['security']['hashed_token']
-            task_data.transform_data(lambda x: x['data'])
-            if unicode(hashed_token) != unicode(self.compute_token(random_token)):
-                raise SecurityException(hashed_token)
-
-            return fn(*args)
-
-        return wrapped_fn
-
-    def compute_token(self, random_token):
-        sha1hash = hashlib.sha1()
-        sha1hash.update(random_token + self._secure_token)
-        return sha1hash.hexdigest().upper()
-
-def secured_task(f):
-    return SecuredTaskDecorator()(f)
-
-def xml_output(f):
-    '''
-    Create xml response for output
-    '''
-    def xml_output(*args, **kwargs):
-        retval = f(*args, **kwargs)
-
-        if isinstance(JobContext.get_current_context(), WebJobContext):
-            JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('text/xml'))
-        return retval
-
-    return xml_output
-
-class FileUploadDecorator:
-    '''
-    Return list of werkzeug.datastructures.FileStorage objects - files to be uploaded
-    '''
-    def __call__(self, fn):
-        def wrapped_fn(*a):
-            # If the data is already transformed, we do not transform it any further.
-            task_data = get_data(a)
-
-            if task_data == None:
-                app.logger.error("Task data is empty during FilesUploadDecorator.")
-
-            task_data.transform_data(lambda _: request.files.getlist('file'))
-
-            return fn(*a)
-
-        return wrapped_fn
-
-def file_upload(f):
-    return FileUploadDecorator()(f)
-
-# TODO dopis
-# def web_request(f):
-#     '''
-#     Create
-#     '''
-#
-#     def web_request(*args, **kwargs):
-#         ctx = JobContext.get_current_context()
-#
-#         if not isinstance(ctx, WebJobContext):
-#             return
-#
-#         req = ctx.get_request() #_request
-#
+    return json.dumps(rv)
