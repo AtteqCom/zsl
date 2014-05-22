@@ -12,7 +12,6 @@ from asl.db.model import AppModelJSONEncoder
 from asl.task.job_context import JobContext, WebJobContext, Responder
 import traceback
 import hashlib
-from asl.db.model.app_model import AppModel
 from functools import wraps
 
 
@@ -92,13 +91,10 @@ def jsend_output(fail_exception_classes = None):
                 service_application.logger.error(unicode(e) + "\n" + traceback.format_exc())
                 return {'status': 'error', 'message': 'Server error.'}
 
-            # TODO najst lepsie riesenie, ako zistit, ci ret_val bude po JSON dumpe
-            # JSON objekt alebo null alebo nieco ine
-            if not isinstance(rv, AppModel) and not isinstance(rv, dict) and rv is not None:
-                msg = 'JsendOutputDecorator error: ' + \
-                    'function return value is after JSON dump nor JSON object nor null.'
-                service_application.logger.error(msg + '\nfunction return value: {0}'.format(rv))
-                return {'status': 'error', 'message': msg}
+            if not isinstance(rv, dict) and rv is not None:
+                msg = 'jsend_output decorator error: task must return dict or None.'
+                service_application.logger.error(msg + '\ntask return value: {0}'.format(rv))
+                return {'status': 'error', 'message': 'Server error.'}
 
             return {'status': 'success', 'data': rv}
         
