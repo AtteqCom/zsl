@@ -23,6 +23,27 @@ def dict_pick(dictionary, allowed_keys):
     '''
     return dict((key, value) for (key,value) in dictionary.items() if key in allowed_keys)
 
+def page_to_offset(params):
+    '''
+    Transform 'page'/'per_page' to 'limit'/'offset'
+    '''
+    
+    if 'page' not in params:
+        return
+    
+    page = params['page']
+    del params['page']
+
+    # 'per_page' je len alias za 'limit'
+    if 'per_page' in params:
+        per_page = params.get('per_page')
+        del params['per_page']
+    else:
+        per_page = params.get('limit', 10)
+    
+    params['offset'] = int(per_page) * (int(page) - 1)
+    params['limit'] = per_page
+    
 class ModelResource(SqlSesionMixin):
     '''
     TODO: zatial to funguje iba na tabulky s 1 primary key
@@ -63,9 +84,9 @@ class ModelResource(SqlSesionMixin):
 
     
     @transactional
-    def read(self, params, args, data):
+    def read(self, params = [], args = {}, data = None):
         '''
-        GET /resource/model_cls/[params:id]?[args:{limit,page,filter_by,order_by,related,fields}]
+        GET /resource/model_cls/[params:id]?[args:{limit,offset,page,per_page,filter_by,order_by,related,fields}]
 
         Get resource/s
         '''
@@ -93,7 +114,11 @@ class ModelResource(SqlSesionMixin):
             return self.get_collection_desc()
 
         else:
-            kwargs = dict_pick(args, ['limit', 'page', 'filter_by', 'order_by', 'related'])
+            kwargs = dict_pick(args, ['limit', 'offset', 'filter_by', 'order_by', 'related', 'page', 'per_page'])
+            
+            if 'page' in kwargs:
+                page_to_offset(kwargs)
+            
             return self.get_collection(**kwargs)
 
     @transactional
@@ -144,7 +169,7 @@ class ModelResource(SqlSesionMixin):
 
         return q.count()
 
-    def get_collection(self, limit=10, page=1, filter_by=None, order_by=None, related=None):
+    def get_collection(self, limit=10, offset=0, filter_by=None, order_by=None, related=None):
         q = self._orm.query(self.model_cls)
 
         if filter_by is not None:
@@ -156,8 +181,8 @@ class ModelResource(SqlSesionMixin):
         if limit is not None and limit != 'unlimited':
             q = q.limit(limit)
 
-        if page > 1 and limit is not None and limit != 'unlimited':
-            q = q.offset(int(limit) * (int(page) - 1))
+        if offset > 0:
+            q = q.offset(offset)
 
         if related is not None:
             q = self.add_related(q, related)
