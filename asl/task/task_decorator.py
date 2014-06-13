@@ -13,6 +13,8 @@ from asl.task.job_context import JobContext, WebJobContext, Responder
 import traceback
 import hashlib
 from functools import wraps
+from asl.utils.injection_helper import inject
+from asl.cache.id_helper import IdHelper
 
 
 def json_input(f):
@@ -67,6 +69,35 @@ def json_output(f):
     
     return json_output_decorator
 
+def jsonp_output(f):
+    '''
+    Format response to json and in case of web-request add a callback 
+    to JSON data - a jsonp request 
+    '''
+    
+    @wraps(f)
+    def jsonp_output_decorator(*args, **kwargs):
+        ctx = JobContext.get_current_context()
+        callback = None
+        
+        if isinstance(ctx, WebJobContext):
+            try:
+                callback =  ctx.get_web_request().args['callback']
+            except KeyError:
+                pass # TODO vyhodit nejaku rozumnu hlasku, nech uzivatel vie, ze mu chyba callback
+        
+        rv = f(*args, **kwargs)
+        
+        jsonp = json.dumps(rv, cls = AppModelJSONEncoder)
+        
+        if callback:
+            JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/javascript'))
+            
+            jsonp = "{callback}({data})".format(callback=callback, data=jsonp)
+            
+        return jsonp
+    
+    return jsonp_output_decorator
 
 def jsend_output(fail_exception_classes = None):
     '''
@@ -249,6 +280,25 @@ def file_upload(f):
         
     return file_upload_decorator
 
+# TODO toto je len quick and dirty riesenie
+def cache_simple_output(key, timeout):
+    cache = get_id_helper()
+    
+    def wrapper_fn(f):
+        
+        @wraps(f)
+        def cache_simple_output_decorator(*args, **kwargs):
+            rv = cache.get_key(key)
+            
+            if not rv:
+                rv = f(*args, **kwargs)
+                cache.set_key(key, rv, timeout)
+            
+            return rv
+        
+        return cache_simple_output_decorator
+    
+    return wrapper_fn
 
 
 ###############
@@ -307,3 +357,6 @@ def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
         rv = {'error': "{0}".format(exc)}
 
     return json.dumps(rv)
+
+def get_id_helper():
+    return app.get_injector().get(IdHelper)
