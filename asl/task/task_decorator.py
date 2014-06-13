@@ -281,7 +281,7 @@ def file_upload(f):
     return file_upload_decorator
 
 # TODO toto je len quick and dirty riesenie
-def cache_simple_output(key, timeout):
+def cache_json_output(key, timeout):
     cache = get_id_helper()
     
     def wrapper_fn(f):
@@ -290,9 +290,15 @@ def cache_simple_output(key, timeout):
         def cache_simple_output_decorator(*args, **kwargs):
             rv = cache.get_key(key)
             
+            if rv:
+                try:
+                    rv = json.loads(rv)
+                except ValueError:
+                    rv = None
+            
             if not rv:
                 rv = f(*args, **kwargs)
-                cache.set_key(key, rv, timeout)
+                cache.set_key(key, json.dumps(rv), timeout)
             
             return rv
         
