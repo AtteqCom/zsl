@@ -13,9 +13,20 @@ from asl.task.job_context import JobContext, WebJobContext, Responder
 import traceback
 import hashlib
 from functools import wraps
-from asl.utils.injection_helper import inject
 from asl.cache.id_helper import IdHelper
 
+def log_output(f):
+    '''
+    Logs the output value.
+    '''
+
+    @wraps(f)
+    def wrapper_fn(*args, **kwargs):
+        res = f(*args, **kwargs)
+        service_application.logger.debug("Logging result %s.", res)
+        return res
+
+    return wrapper_fn
 
 def json_input(f):
     '''
@@ -42,7 +53,7 @@ def json_input(f):
             task_data.transform_data(lambda _: {})
 
         return f(*args, **kwargs)
-    
+
     return json_input_decorator
 
 
@@ -50,7 +61,7 @@ def json_output(f):
     '''
     Format response to json and in case of web-request set response content-type to 'application/json'.
     '''
-    
+
     @wraps(f)
     def json_output_decorator(*args, **kwargs):
         rv = f(*args, **kwargs)
@@ -66,51 +77,51 @@ def json_output(f):
                 JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/json'))
 
         return rv
-    
+
     return json_output_decorator
 
 def jsonp_output(f):
     '''
-    Format response to json and in case of web-request add a callback 
-    to JSON data - a jsonp request 
+    Format response to json and in case of web-request add a callback
+    to JSON data - a jsonp request
     '''
-    
+
     @wraps(f)
     def jsonp_output_decorator(*args, **kwargs):
         ctx = JobContext.get_current_context()
         callback = None
-        
+
         if isinstance(ctx, WebJobContext):
             try:
                 callback =  ctx.get_web_request().args['callback']
             except KeyError:
                 pass # TODO vyhodit nejaku rozumnu hlasku, nech uzivatel vie, ze mu chyba callback
-        
+
         rv = f(*args, **kwargs)
-        
+
         jsonp = json.dumps(rv, cls = AppModelJSONEncoder)
-        
+
         if callback:
             JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/javascript'))
-            
+
             jsonp = "{callback}({data})".format(callback=callback, data=jsonp)
-            
+
         return jsonp
-    
+
     return jsonp_output_decorator
 
 def jsend_output(fail_exception_classes = None):
     '''
     Format task result to json output in jsend specification format. See: http://labs.omniti.com/labs/jsend.
     Task return value must be dict or None.
-    
+
     @param fail_exception_classes: exceptions which will produce 'fail' response status
     '''
-    
+
     fail_exception_classes = fail_exception_classes if fail_exception_classes else ()
 
     def decorator_fn(f):
-        
+
         @wraps(f)
         @json_output
         def jsend_output_decorator(*args, **kwargs):
@@ -128,9 +139,9 @@ def jsend_output(fail_exception_classes = None):
                 return {'status': 'error', 'message': 'Server error.'}
 
             return {'status': 'success', 'data': rv}
-        
+
         return jsend_output_decorator
-    
+
     return decorator_fn
 
 def web_error_and_result(f):
@@ -139,11 +150,11 @@ def web_error_and_result(f):
     If no exception was raised during task execution, ONLY IN CASE OF WEB REQUEST formats
     task result into json dictionary {'data': task return value}
     '''
-    
+
     @wraps(f)
     def web_error_and_result_decorator(*args, **kwargs):
         return error_and_result_decorator_inner_fn(f, True, *args, **kwargs)
-    
+
     return web_error_and_result_decorator
 
 def error_and_result(f):
@@ -151,11 +162,11 @@ def error_and_result(f):
     Format task result into json dictionary {'data': task return value} if no exception was raised during task execution.
     If there was raised an exception during task execution, formats task result into dictionary {'error': exception message with traceback}
     '''
-    
+
     @wraps(f)
     def error_and_result_decorator(*args, **kwargs):
         return error_and_result_decorator_inner_fn(f, False, *args, **kwargs)
-    
+
     return error_and_result_decorator
 
 
@@ -163,9 +174,9 @@ def required_data(*data):
     '''
     Task decorator which checks if the given variables (indices) are stored inside the task data.
     '''
-    
+
     def decorator_fn(f):
-        
+
         @wraps(f)
         def required_data_decorator(*args, **kwargs):
             task_data = get_data(args).get_data()
@@ -174,7 +185,7 @@ def required_data(*data):
                     raise KeyError(i)
 
             return f(*args, **kwargs)
-        
+
         return required_data_decorator
 
     return decorator_fn
@@ -206,7 +217,7 @@ def web_task(f):
     Checks if the task is called through the web interface.
     Task return value should be in format {'data': ...}.
     '''
-    
+
     @wraps(f)
     def web_task_decorator(*args, **kwargs):
         jc = JobContext.get_current_context()
@@ -215,7 +226,7 @@ def web_task(f):
         data = f(*args, **kwargs)
         jc.add_responder(WebTaskResponder(data))
         return data['data'] if 'data' in data else ""
-        
+
     return web_task_decorator
 
 
@@ -223,14 +234,14 @@ def secured_task(f):
     '''
     Secured task decorator.
     '''
-    
+
     secure_token = service_application.config['SERVICE_SECURITY_TOKEN']
 
     def compute_token(random_token):
         sha1hash = hashlib.sha1()
         sha1hash.update(random_token + secure_token)
         return sha1hash.hexdigest().upper()
-    
+
     @wraps(f)
     def secured_task_decorator(*args, **kwargs):
         task_data = get_data(args)
@@ -249,7 +260,7 @@ def xml_output(f):
     '''
     Create xml response for output and set content-type for web-request to 'text/xml'
     '''
-    
+
     @wraps(f)
     def xml_output(*args, **kwargs):
         retval = f(*args, **kwargs)
@@ -277,33 +288,33 @@ def file_upload(f):
         task_data.transform_data(lambda _: request.files.getlist('file'))
 
         return f(*args, **kwargs)
-        
+
     return file_upload_decorator
 
 # TODO toto je len quick and dirty riesenie
 def cache_json_output(key, timeout):
     cache = get_id_helper()
-    
+
     def wrapper_fn(f):
-        
+
         @wraps(f)
         def cache_simple_output_decorator(*args, **kwargs):
             rv = cache.get_key(key)
-            
+
             if rv:
                 try:
                     rv = json.loads(rv)
                 except ValueError:
                     rv = None
-            
+
             if not rv:
                 rv = f(*args, **kwargs)
                 cache.set_key(key, json.dumps(rv), timeout)
-            
+
             return rv
-        
+
         return cache_simple_output_decorator
-    
+
     return wrapper_fn
 
 
