@@ -81,7 +81,7 @@ class ModelGenerator(object):
             
             if column.foreign_keys:
                 try:
-                    attrs['type'] = 'Select'
+                    attrs['type'] = 'AtteqSelect'
                     attrs['options'] = '__CALLBACK__%d' % len(callbacks)
                     callbacks.append(self._get_list_options(column))
                     
@@ -96,8 +96,19 @@ class ModelGenerator(object):
                 
             elif col_type == 'TEXT':
                 attrs['type'] = "TextArea"
+                
+            elif col_type == 'Enum':
+                attrs['type'] = 'AtteqSelect' if column.nullable else 'Select'
+                attrs['options'] = column.type.enums
+            
+            elif col_type == 'INTEGER':
+                attrs['type'] = 'Number'
+                    
             else:
                 attrs['type'] = "Text"
+
+            if column.nullable:
+                attrs['nullable'] = True
             
             schema[column.name] = attrs
         

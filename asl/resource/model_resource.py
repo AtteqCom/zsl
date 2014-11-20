@@ -8,7 +8,6 @@ Created on Sep 5, 2013
 @author: Peter Morihladko
 '''
 
-from asl.application.service_application import service_application as app
 from sqlalchemy.orm import class_mapper
 from asl.application.initializers.database_initializer import SessionHolder
 from asl.resource.resource_helper import filter_from_url_arg, apply_related, create_related_tree,\
@@ -24,6 +23,27 @@ def dict_pick(dictionary, allowed_keys):
     '''
     return dict((key, value) for (key,value) in dictionary.items() if key in allowed_keys)
 
+def page_to_offset(params):
+    '''
+    Transform 'page'/'per_page' to 'limit'/'offset'
+    '''
+    
+    if 'page' not in params:
+        return
+    
+    page = params['page']
+    del params['page']
+
+    # 'per_page' je len alias za 'limit'
+    if 'per_page' in params:
+        per_page = params.get('per_page')
+        del params['per_page']
+    else:
+        per_page = params.get('limit', 10)
+    
+    params['offset'] = int(per_page) * (int(page) - 1)
+    params['limit'] = per_page
+    
 class ModelResource(SqlSesionMixin):
     '''
     TODO: zatial to funguje iba na tabulky s 1 primary key
@@ -55,16 +75,18 @@ class ModelResource(SqlSesionMixin):
         Create new resource
         '''
         fields = dict_pick(data, self._model_columns)
-        model = self.model_cls(**fields)
 
+        model = self.model_cls(**fields)
         self._orm.add(model)
+        self._orm.flush()
 
         return model.get_app_model()
+
     
     @transactional
-    def read(self, params, args, data):
+    def read(self, params = [], args = {}, data = None):
         '''
-        GET /resource/model_cls/[params:id]?[args:{limit,offset,filter_by,order_by,related,fields}]
+        GET /resource/model_cls/[params:id]?[args:{limit,offset,page,per_page,filter_by,order_by,related,fields}]
 
         Get resource/s
         '''
@@ -92,7 +114,11 @@ class ModelResource(SqlSesionMixin):
             return self.get_collection_desc()
 
         else:
-            kwargs = dict_pick(args, ['limit', 'offset', 'filter_by', 'order_by', 'related'])
+            kwargs = dict_pick(args, ['limit', 'offset', 'filter_by', 'order_by', 'related', 'page', 'per_page'])
+            
+            if 'page' in kwargs:
+                page_to_offset(kwargs)
+            
             return self.get_collection(**kwargs)
 
     @transactional

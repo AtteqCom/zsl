@@ -5,8 +5,9 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
-# For WSGI.
-def application(environ, start_response):
+app = None
+
+def get_app(environ):
 	if 'ASL_SETTINGS' not in os.environ:
 		os.environ['ASL_SETTINGS'] = environ['ASL_SETTINGS']
 
@@ -22,4 +23,14 @@ def application(environ, start_response):
 
 	web_application_loader.load()
 	service_application.initialize_dependencies()
-	return service_application.wsgi_app(environ, start_response)
+	
+	return service_application
+	
+# For WSGI.
+def application(environ, start_response):
+	global app
+	
+	if app is None:
+		app = get_app(environ)
+	
+	return app.wsgi_app(environ, start_response)

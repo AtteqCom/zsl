@@ -18,9 +18,10 @@ class CacheDecorator:
         self._id_helper = id_helper
         service_application.logger.debug("Initializing CacheDecorator.")
 
-    def decorate(self, key_params, fn):
+    def decorate(self, key_params, timeout, fn):
         self._key_params = key_params
         self._fn = fn
+        self._timeout = timeout
 
         return self.get_wrapped_fn()
 
@@ -70,15 +71,15 @@ class CacheOutputDecorator(CacheDecorator):
                 return self._id_helper.get_key(key)
             else:
                 ret_val = self._fn(*args)
-                self._id_helper.set_key(key, ret_val)
+                self._id_helper.set_key(key, ret_val, self._timeout)
                 service_application.logger.debug("Newly fetched into the cache.")
                 return ret_val
 
         return wrapped_fn
 
-def cache_output(key_params):
+def cache_output(key_params, timeout = 'default'):
     def decorator_fn(fn):
-        return CacheOutputDecorator().decorate(key_params, fn)
+        return CacheOutputDecorator().decorate(key_params, timeout, fn)
 
     return decorator_fn
 
@@ -101,21 +102,21 @@ class CacheModelDecorator(CacheDecorator):
             model = self._fn(*args)
             encoded_model = json.dumps(model, cls = AppModelJSONEncoder)
             model_key = self._id_helper.create_key(model)
-            self._id_helper.set_key(key, model_key)
-            self._id_helper.set_key(model_key, encoded_model)
+            self._id_helper.set_key(key, model_key, self._timeout)
+            self._id_helper.set_key(model_key, encoded_model, self._timeout)
             service_application.logger.debug("Newly fetched into the cache.")
             return model
 
         return wrapped_fn
 
-def cache_model(key_params):
+def cache_model(key_params, timeout = 'default'):
     '''
     Caching decorator for app models in task.perform
     
     
     '''
     def decorator_fn(fn):
-        return CacheModelDecorator().decorate(key_params, fn)
+        return CacheModelDecorator().decorate(key_params, timeout, fn)
 
     return decorator_fn
 
@@ -133,29 +134,29 @@ class CachePageDecorator(CacheDecorator):
                 return self._id_helper.gather_page(page_key, self.get_decoder())
 
             page = self._fn(*args)
-            self._id_helper.fill_page(page_key, page, self.get_encoder())
+            self._id_helper.fill_page(page_key, page, self._timeout, self.get_encoder())
             service_application.logger.debug("Newly fetched into the cache.")
             return page
 
         return wrapped_fn
 
-def cache_page(key_params):
+def cache_page(key_params, timeout = 'default'):
     '''
     Cache a page (slice) of a list of appmodels
     '''
     def decorator_fn(fn):
         d = CachePageDecorator()
-        return d.decorate(key_params, fn)
+        return d.decorate(key_params, timeout, fn)
 
     return decorator_fn
 
 # alias
 cache_list = cache_page
 
-def cache_filtered_page(filter_param = 'filter', pagination_param = 'pagination', sorter_param = 'sorter'):
+def cache_filtered_page(filter_param = 'filter', pagination_param = 'pagination', sorter_param = 'sorter', timeout = 'default'):
     def decorator_fn(fn):
         d = CachePageDecorator()
-        return d.decorate([filter_param, sorter_param, pagination_param], fn)
+        return d.decorate([filter_param, sorter_param, pagination_param], timeout, fn)
 
     return decorator_fn
 
