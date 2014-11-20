@@ -16,5 +16,6 @@ app = service_application
 @app.route("/", defaults={'path': ''}, methods=("POST", "GET"))
 @app.route("/<path:path>", methods=("POST", "GET"))
 def mapping(path):
-    app.logger.debug("Hello wording!")
-    return "Hello World! Using path '{0}'.".format(path)
+    response_str = "Default handler, not found! Path not found '{0}'.".format(path);
+    app.logger.warn(response_str)
+    return response_str, 404

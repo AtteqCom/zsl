@@ -6,7 +6,7 @@ from asl.utils.task_helper import instantiate, get_callable
 class Router:
     def __init__(self, app):
         self._mappings = {}
-	# support for old settings with only one TASK_PACKAGE defined
+        # Support for the settings with only one TASK_PACKAGE defined.
         self._task_packages = (app.config['TASK_PACKAGE'],) if 'TASK_PACKAGE' in app.config else app.config['TASK_PACKAGES']
         self._app = app
         self._task_reloading = app.config['RELOAD']
@@ -49,7 +49,7 @@ class Router:
                 pass
         
         if module is None:
-            raise ImportError("No module named {0} found in [{1}]".format(".".join(path), ",".join(self.get_task_packages())))
+            raise ImportError("No module named {0} found in [{1}].".format(".".join(path), ",".join(self.get_task_packages())))
 
         if self.is_task_reloading():
             reload(module)

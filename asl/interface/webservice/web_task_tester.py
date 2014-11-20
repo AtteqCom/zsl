@@ -37,6 +37,9 @@ class WebTaskTester:
             response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type'
             
             return response
+        except ImportError as ie:
+            app.logger.error(unicode(ie) + "\n" + traceback.format_exc())
+            return unicode(ie), 404
         except Exception as e:
             app.logger.error(unicode(e) + "\n" + traceback.format_exc())
             raise
