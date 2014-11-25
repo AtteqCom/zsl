@@ -1,6 +1,5 @@
 import importlib
 from flask import request
-from imp import reload
 
 from asl.application.service_application import service_application as app
 from asl.utils.string_helper import underscore_to_camelcase
@@ -29,10 +28,10 @@ def get_resource_task(resource_path):
     resource = None    
     for resource_package in resource_packages:
         module_name = "{0}.{1}".format(resource_package, resource_path)
-        
+
         try:
             module = importlib.import_module(module_name)
-            
+
             try:
                 cls = getattr(module, class_name)
 
@@ -40,7 +39,7 @@ def get_resource_task(resource_path):
                 break
             except AttributeError:
                 raise NameError("Can't find resource [{0}]".format(resource_path))
-            
+
         except ImportError:
             
             # try to find __exposer__

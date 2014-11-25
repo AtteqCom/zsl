@@ -34,17 +34,16 @@ def run_webapp():
 
 # Run it!
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        cmd = sys.argv[1]
+    cmd = sys.argv[1] if len(sys.argv) > 1 else None
 
-        if cmd == 'shell':
-            run_shell()
+    if cmd == 'shell':
+        run_shell()
 
-        elif cmd == 'task':
-            run_task(sys.argv[1:])
+    elif cmd == 'task':
+        run_task(sys.argv[1:])
 
-        else:
-            run_webapp()
+    elif cmd == 'web':
+        run_webapp()
 
     else:
-        run_webapp()
+        print >> sys.stderr, "Usage: run_webappy.py <command>. You provided no or onvalid command - choose one from 'shell', 'task' or 'web'."
