@@ -9,17 +9,21 @@ from asl.application.service_application import service_application
 from asl.db.model.app_model_json_encoder import AppModelJSONEncoder
 import json
 
+class Performer(object):
+    def __init__(self, f):
+        self._f = f
+        self.__name__ = "method-router-performer-of-" + f.__name__
+
+    @headers_appender
+    @error_handler
+    def __call__(self, *a, **kw):
+        rv = self._f(*a, **kw)
+        return json.dumps(rv, cls = AppModelJSONEncoder)
 
 def route(path, **options):
-    routed_function = service_application.route("/method" + path, **options)
-
     def _decorator(f):
-        def _encode(f):
-            def _wrapper(*a, **kw):
-                rv = f(*a, **kw)
-                return json.dumps(rv, cls = AppModelJSONEncoder)
-            return _wrapper
-        return routed_function(headers_appender(error_handler(_encode(f))))
+        routed_function = service_application.route("/method" + path, **options)
+        return routed_function(Performer(f))
 
     return _decorator
 

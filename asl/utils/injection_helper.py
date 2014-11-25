@@ -33,11 +33,6 @@ def inject(**bindings):
             @functools.wraps(f)
             def inject(*args, **kwargs):
                 injector = _app.get_injector()
-                if injector is None:
-                    try:
-                        return f(*args, **kwargs)
-                    except TypeError as e:
-                        reraise(e, CallError(f, args, kwargs, e))
                 dependencies = injector.args_to_inject(
                     function=f,
                     bindings=bindings,
