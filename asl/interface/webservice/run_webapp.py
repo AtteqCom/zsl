@@ -7,11 +7,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'));
 from asl.interface.importer import append_pythonpath
 append_pythonpath()
 from asl.interface.webservice import web_application_loader
-web_application_loader.load()
 
 # Now import the application and the remaining stuff.
 from asl.application import service_application
 service_application.initialize_dependencies()
+web_application_loader.load()
 
 conf = service_application.config
 
@@ -26,7 +26,7 @@ def run_task(args):
 def run_webapp():
     service_application.run(
 	host=conf.get('FLASK_HOST', '127.0.0.1'),
-        port=conf.get('FLASK_PORT'), 
+        port=conf.get('FLASK_PORT'),
         debug=conf.get('DEBUG', False),
         use_debugger=conf.get('USE_DEBUGGER', False),
         use_reloader=conf.get('USE_RELOADER', False)

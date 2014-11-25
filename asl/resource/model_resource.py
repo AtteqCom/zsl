@@ -27,10 +27,10 @@ def page_to_offset(params):
     '''
     Transform 'page'/'per_page' to 'limit'/'offset'
     '''
-    
+
     if 'page' not in params:
         return
-    
+
     page = params['page']
     del params['page']
 
@@ -40,10 +40,10 @@ def page_to_offset(params):
         del params['per_page']
     else:
         per_page = params.get('limit', 10)
-    
+
     params['offset'] = int(per_page) * (int(page) - 1)
     params['limit'] = per_page
-    
+
 class ModelResource(SqlSesionMixin):
     '''
     TODO: zatial to funguje iba na tabulky s 1 primary key
@@ -53,9 +53,9 @@ class ModelResource(SqlSesionMixin):
         """
         Create Model CRUD resource for ``model_cls``
         """
-        
+
         self.init_sql_session()
-        
+
         self.model_cls = model_cls
 
         mapper = class_mapper(model_cls)
@@ -82,7 +82,7 @@ class ModelResource(SqlSesionMixin):
 
         return model.get_app_model()
 
-    
+
     @transactional
     def read(self, params = [], args = {}, data = None):
         '''
@@ -115,10 +115,10 @@ class ModelResource(SqlSesionMixin):
 
         else:
             kwargs = dict_pick(args, ['limit', 'offset', 'filter_by', 'order_by', 'related', 'page', 'per_page'])
-            
+
             if 'page' in kwargs:
                 page_to_offset(kwargs)
-            
+
             return self.get_collection(**kwargs)
 
     @transactional
