@@ -7,7 +7,7 @@ importer.append_pythonpath()
 
 from asl.application.service_application import service_application
 from asl.task.job_context import JobContext
-from asl.router import router
+from asl.router import task_router
 
 app = service_application
 app.initialize_dependencies()
@@ -31,7 +31,7 @@ def run_task():
 
     # Prepare the task.
     job = Job(data)
-    (task, task_callable) = router.route(task)
+    (task, task_callable) = task_router.route(task)
     jc = JobContext(job, task, task_callable)
     JobContext.set_current_context(jc)
 

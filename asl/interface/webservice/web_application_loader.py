@@ -1,20 +1,14 @@
 # Now import the application and the remaining stuff.
-from asl.application import service_application
-
-def load_testers():
-    # TODO: A better configuration.
-    __import__('asl.interface.webservice.resource_tester')
-    __import__('asl.interface.webservice.web_task_tester')
+def load_peformers():
+    '''
+    Import in this form is necessary so that we avoid the unwanted behavior and immediate initialization of the 
+    application objects. This makes the initialization procedure run in the time when it is necessary and has every 
+    required resources.
+    '''
+    __import__('asl.interface.webservice.performers.default')
+    __import__('asl.interface.webservice.performers.resource')
+    __import__('asl.interface.webservice.performers.task')
+    __import__('asl.interface.webservice.performers.method')
 
 def load():
-    load_testers()
-
-# Shortcut
-app = service_application
-
-# Do the mapping.
-@app.route("/", defaults={'path': ''}, methods=("POST", "GET"))
-@app.route("/<path:path>", methods=("POST", "GET"))
-def mapping(path):
-    app.logger.debug("Hello wording!")
-    return "Hello World! Using path '{0}'.".format(path)
+    load_peformers()

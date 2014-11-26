@@ -3,10 +3,10 @@ from asl.utils.string_helper import underscore_to_camelcase
 from imp import reload
 from asl.utils.task_helper import instantiate, get_callable
 
-class Router:
+class TaskRouter:
     def __init__(self, app):
         self._mappings = {}
-	# support for old settings with only one TASK_PACKAGE defined
+        # Support for the settings with only one TASK_PACKAGE defined.
         self._task_packages = (app.config['TASK_PACKAGE'],) if 'TASK_PACKAGE' in app.config else app.config['TASK_PACKAGES']
         self._app = app
         self._task_reloading = app.config['RELOAD']
@@ -19,7 +19,7 @@ class Router:
 
     def _load_module(self, module_name):
         return importlib.import_module(module_name)
-    
+
     def is_task_reloading(self):
         return self._task_reloading
 
@@ -35,21 +35,21 @@ class Router:
         # Split the path into arrays - package names in the tasks package.
         path = path.split("/")
         class_name = underscore_to_camelcase(path[-1])
-        
+
         # finding the path in task packages
         module = None
         for task_package in self.get_task_packages():
             module_name = "{0}.{1}".format(task_package, ".".join(path))
-        
+
             try:
                 self._app.logger.debug("Trying to load module with name '%s' and class name '%s'.", module_name, class_name)
                 module = self._load_module(module_name)
                 break
             except ImportError:
                 pass
-        
+
         if module is None:
-            raise ImportError("No module named {0} found in [{1}]".format(".".join(path), ",".join(self.get_task_packages())))
+            raise ImportError("No module named {0} found in [{1}].".format(".".join(path), ",".join(self.get_task_packages())))
 
         if self.is_task_reloading():
             reload(module)
