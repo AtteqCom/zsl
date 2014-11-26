@@ -102,8 +102,11 @@ class ApiariDoc(object, pydoc.Doc):
 
         for loader, module_name, _ispkg in pkgutil.iter_modules(obj.__path__):
             service_application.logger.debug("Loading module {0} in {1}.".format(module_name, obj.__path__))
-            module = loader.find_module(module_name).load_module(module_name)
-            self.docmodule(module)
+            try:
+                module = loader.find_module(module_name).load_module(module_name)
+                self.docmodule(module)
+            except:
+                pass
 
     def get_doc(self):
         return "FORMAT: 1A\n\n" + "\n\n".join(self._docs)

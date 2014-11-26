@@ -23,14 +23,14 @@ def get_app(environ):
 
 	web_application_loader.load()
 	service_application.initialize_dependencies()
-	
+
 	return service_application
-	
+
 # For WSGI.
 def application(environ, start_response):
 	global app
-	
+
 	if app is None:
 		app = get_app(environ)
-	
+
 	return app.wsgi_app(environ, start_response)
