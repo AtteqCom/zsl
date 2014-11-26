@@ -6,6 +6,22 @@ Created on 25.11.2014
 import traceback
 from asl.application.service_application import service_application
 from functools import wraps
+from abc import abstractmethod
+
+_error_handlers = []
+
+class ErrorHandler:
+
+    @abstractmethod
+    def can_handle(self, e):
+        pass
+
+    @abstractmethod
+    def handle(self, e):
+        pass
+
+def register(e):
+    _error_handlers.append(e)
 
 def error_handler(f):
     '''
@@ -21,8 +37,12 @@ def error_handler(f):
         except ImportError as ie:
             service_application.logger.error(unicode(ie) + "\n" + traceback.format_exc())
             return unicode(ie), 404
-        except Exception as e:
-            service_application.logger.error(unicode(e) + "\n" + traceback.format_exc())
+        except Exception as ex:
+            for eh in _error_handlers:
+                if eh.can_handle(ex):
+                    return eh.handle(ex)
+
+            service_application.logger.error(unicode(ex) + "\n" + traceback.format_exc())
             return "An error occurred!", 500
 
     return error_handling_function

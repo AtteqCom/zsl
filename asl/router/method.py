@@ -13,6 +13,7 @@ class Performer(object):
     def __init__(self, f):
         self._f = f
         self.__name__ = "method-router-performer-of-" + f.__name__
+        self.__doc__ = f.__doc__ if hasattr(f, '__doc__') else None
 
     @headers_appender
     @error_handler
