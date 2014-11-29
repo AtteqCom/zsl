@@ -21,8 +21,8 @@ def get_app(environ):
 	from asl.application import service_application
 	from asl.interface.webservice import web_application_loader
 
-	web_application_loader.load()
 	service_application.initialize_dependencies()
+	web_application_loader.load()
 
 	return service_application
 

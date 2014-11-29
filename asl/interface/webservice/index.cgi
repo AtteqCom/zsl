@@ -13,8 +13,8 @@ from asl.application import service_application
 from asl.interface.webservice import web_application_loader
 
 # Load and init the application.
-web_application_loader.load()
 service_application.initialize_dependencies()
+web_application_loader.load()
 
 # Run it!
 if __name__ == "__main__":
