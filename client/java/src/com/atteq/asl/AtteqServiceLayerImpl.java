@@ -6,11 +6,20 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
+import com.atteq.asl.performers.Method;
 import com.atteq.asl.performers.Performer;
+import com.atteq.asl.results.GenericResult;
+import com.atteq.asl.results.GenericResultFactory;
+import com.atteq.asl.results.JsonResultTransformer;
 import com.atteq.asl.results.Result;
 import com.atteq.asl.results.ResultTransformer;
+import com.atteq.asl.tasks.JsonResultWithErrorTransformer;
+import com.atteq.asl.tasks.Task;
+import com.atteq.asl.tasks.TaskResult;
+import com.atteq.asl.tasks.TaskResultFactory;
 
 public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 
@@ -47,6 +56,41 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 		} catch (Exception e) {
 			throw new ServiceCallException(String.format("Error when calling ASL. %s", e.getMessage()), e);
 		}
+	}
+
+	public <T, R extends Result<T>> R perform(Performer performer, ResultTransformer<T, R> resultTransformer, Class<T> c)
+			throws ServiceCallException {
+		return perform(performer, resultTransformer, TypeFactory.defaultInstance().constructType(c));
+	}
+
+	public <T> TaskResult<T> perform(Task task, JavaType t) throws ServiceCallException {
+		TaskResultFactory<T> f = new TaskResultFactory<T>();
+		return perform(task, new JsonResultTransformer<T, TaskResult<T>>(f), t);
+	}
+
+	public <T> TaskResult<T> perform(Task task, Class<T> c) throws ServiceCallException {
+		TaskResultFactory<T> f = new TaskResultFactory<T>();
+		return perform(task, new JsonResultTransformer<T, TaskResult<T>>(f), TypeFactory.defaultInstance()
+				.constructType(c));
+	}
+
+	public <T> GenericResult<T> perform(Method method, JavaType t) throws ServiceCallException {
+		GenericResultFactory<T> f = new GenericResultFactory<T>();
+		return perform(method, new JsonResultTransformer<T, GenericResult<T>>(f), t);
+	}
+
+	public <T> GenericResult<T> perform(Method method, Class<T> c) throws ServiceCallException {
+		GenericResultFactory<T> f = new GenericResultFactory<T>();
+		return perform(method, new JsonResultTransformer<T, GenericResult<T>>(f), TypeFactory.defaultInstance()
+				.constructType(c));
+	}
+
+	public <T> TaskResult<T> performWithErrorDecorator(Task task, JavaType t) throws ServiceCallException {
+		return perform(task, new JsonResultWithErrorTransformer<T>(), t);
+	}
+
+	public <T> TaskResult<T> performWithErrorDecorator(Task task, Class<T> c) throws ServiceCallException {
+		return perform(task, new JsonResultWithErrorTransformer<T>(), TypeFactory.defaultInstance().constructType(c));
 	}
 
 	public String getServiceLayerUrl() {
