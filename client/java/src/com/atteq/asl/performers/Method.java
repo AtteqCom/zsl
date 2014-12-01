@@ -9,10 +9,13 @@ public class Method implements Performer {
 
 	private final String name;
 
+	private final String[] params;
+
 	private final static String DEFAULT_METHOD_PREFIX = "method";
 
-	public Method(String name) {
+	public Method(String name, String... params) {
 		this.name = name;
+		this.params = params;
 	}
 
 	public String getName() {
@@ -21,7 +24,12 @@ public class Method implements Performer {
 
 	@Override
 	public String getUrl() {
-		return DEFAULT_METHOD_PREFIX + "/" + getName();
+		StringBuilder paramBuilder = new StringBuilder();
+		for (String p : params) {
+			paramBuilder.append('/');
+			paramBuilder.append(p);
+		}
+		return DEFAULT_METHOD_PREFIX + "/" + getName() + paramBuilder.toString();
 	}
 
 	@Override
