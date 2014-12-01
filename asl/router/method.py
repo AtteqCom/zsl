@@ -8,6 +8,7 @@ from asl.interface.webservice.utils.error_handler import error_handler
 from asl.application.service_application import service_application
 from asl.db.model.app_model_json_encoder import AppModelJSONEncoder
 import json
+from flask.wrappers import Response
 
 class Performer(object):
     def __init__(self, f):
@@ -19,7 +20,7 @@ class Performer(object):
     @error_handler
     def __call__(self, *a, **kw):
         rv = self._f(*a, **kw)
-        return json.dumps(rv, cls = AppModelJSONEncoder)
+        return Response(json.dumps(rv, cls = AppModelJSONEncoder), mimetype="application/json")
 
 def route(path, **options):
     def _decorator(f):
