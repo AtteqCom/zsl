@@ -24,4 +24,5 @@ syntax: regexp
 syntax: regexp
 ^client/java/\.classpath$
 ^client/java/\.project$
-^client/java/\.settings/org\.eclipse\.jdt\.core\.prefs$
+^client/java/\.settings
+^client/java/target

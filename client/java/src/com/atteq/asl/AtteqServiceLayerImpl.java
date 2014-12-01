@@ -6,6 +6,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.codehaus.jackson.type.JavaType;
 
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.results.Result;
@@ -20,7 +21,7 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 	private final static String ASL_VERSION = "1.1";
 
 	@Override
-	public <T, R extends Result<T>> R perform(Performer performer, ResultTransformer<T, R> resultTransformer)
+	public <T, R extends Result<T>> R perform(Performer performer, ResultTransformer<T, R> resultTransformer, JavaType t)
 			throws ServiceCallException {
 		try {
 			HttpClient httpClient = new HttpClient();
@@ -42,7 +43,7 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 				}
 			}
 
-			return resultTransformer.transform(performer, method.getResponseBodyAsString(), method.getStatusCode());
+			return resultTransformer.transform(performer, method.getResponseBodyAsString(), method.getStatusCode(), t);
 		} catch (Exception e) {
 			throw new ServiceCallException(String.format("Error when calling ASL. %s", e.getMessage()), e);
 		}
