@@ -33,4 +33,11 @@ class AtteqServiceFlask(Flask):
     def set_injector(self, injector):
         self._injector = injector
 
+    def get_version(self):
+        v = self.config.get('VERSION')
+        if v is None:
+            return '1.1'
+        else:
+            return '1.1' + "-" + v
+
 service_application = AtteqServiceFlask("asl.application")

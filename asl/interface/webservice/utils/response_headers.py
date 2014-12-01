@@ -17,7 +17,7 @@ def append_origin(response):
     response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type'
 
 def append_asl(response):
-    response.headers['ASL-Flask-Layer'] = '1.00aa0'
+    response.headers['ASL-Flask-Layer'] = service_application.get_version()
 
 def append_cache(response):
     response.headers['Cache-Control'] = 'no-cache'
