@@ -27,6 +27,7 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 	private String serviceLayerUrl;
 	private String securityToken;
 	private boolean checkAslVersion = false;
+	static Logger logger = Logger.getLogger(AtteqServiceLayerImpl.class);
 
 	private final static String ASL_VERSION = "1.1";
 
@@ -37,7 +38,7 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 			HttpClient httpClient = new HttpClient();
 			HttpMethod method = performer.getHttpMethod();
 			method.setURI(new URI(String.format("%s/%s", serviceLayerUrl, performer.getUrl()), false));
-			Logger.getLogger(getClass()).debug(String.format("%s %s", method.getName(), performer.getUrl()));
+			logger.debug(String.format("%s %s", method.getName(), performer.getUrl()));
 			if (method instanceof EntityEnclosingMethod) {
 				((EntityEnclosingMethod) method).setRequestEntity(new StringRequestEntity(performer.getBody(),
 						performer.getContentType(), performer.getEncoding()));
@@ -54,7 +55,9 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 				}
 			}
 
-			return resultTransformer.transform(performer, method.getResponseBodyAsString(), method.getStatusCode(), t);
+			String result = method.getResponseBodyAsString();
+			logger.debug(String.format("Response:\n%s", result));
+			return resultTransformer.transform(performer, result, method.getStatusCode(), t);
 		} catch (Exception e) {
 			throw new ServiceCallException(String.format("Error when calling ASL. %s", e.getMessage()), e);
 		}

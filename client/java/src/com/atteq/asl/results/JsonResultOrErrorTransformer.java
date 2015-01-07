@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.JavaType;
@@ -15,7 +14,6 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 		ResultTransformer<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> {
 
 	protected ResultFactory<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> factory;
-	Logger logger = Logger.getLogger(getClass());
 	protected ObjectMapper mapper = new ObjectMapper();
 
 	public JsonResultOrErrorTransformer(
@@ -33,7 +31,6 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 		final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		mapper.setDateFormat(df);
 		try {
-			logger.debug(String.format("Response:\n%s", result));
 			ResultOrError<ResultType, ErrorType> r;
 
 			try {
