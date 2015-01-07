@@ -8,13 +8,14 @@ Created on 2.1.2015
 
 import sys
 import os
-from asl.router import task_router
-from asl.task.job_context import JobContext
 import json
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'));
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'));
 from asl.interface.importer import append_pythonpath
 append_pythonpath()
+
+from asl.router import task_router
+from asl.task.job_context import JobContext
 from asl.interface.webservice import web_application_loader
 
 # Now import the application and the remaining stuff.
