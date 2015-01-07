@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
 import com.atteq.asl.performers.Performer;
@@ -22,6 +23,10 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 
 	public JavaType getType(Class<ResultType> resultClass, Class<ErrorType> errorClass) {
 		return mapper.getTypeFactory().constructParametricType(ResultOrError.class, resultClass, errorClass);
+	}
+
+	public TypeFactory getTypeFactory() {
+		return mapper.getTypeFactory();
 	}
 
 	public JavaType getType(JavaType resultType, JavaType errorType) {
