@@ -27,10 +27,16 @@ public class ResultOrError<ResultType, ErrorType extends Error>  {
 	}
 
 	public ResultType getResult() {
+		if (isError()) {
+			throw new java.lang.Error("Can not access result on error.");
+		}
 		return result;
 	}
 
 	public ErrorType getError() {
+		if (!isError()) {
+			throw new java.lang.Error("Can not access error data on success.");
+		}
 		return error;
 	}
 

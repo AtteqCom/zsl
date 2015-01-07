@@ -2,23 +2,23 @@ package com.atteq.asl.results;
 
 public class Error {
 
-	int code;
+	String code;
 	String message;
 
 	Error() {
 	}
 
-	public Error(int code, String message) {
+	public Error(String code, String message) {
 		super();
 		this.code = code;
 		this.message = message;
 	}
 
-	public int getCode() {
+	public String getCode() {
 		return code;
 	}
 
-	public void setCode(int code) {
+	public void setCode(String code) {
 		this.code = code;
 	}
 
@@ -28,6 +28,10 @@ public class Error {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String toString() {
+		return String.format("{code=%s, message=%s}", code, message);
 	}
 
 }
