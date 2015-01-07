@@ -20,6 +20,8 @@ class Performer(object):
     @error_handler
     def __call__(self, *a, **kw):
         rv = self._f(*a, **kw)
+        if isinstance(rv, Response):
+            return rv
         return Response(json.dumps(rv, cls = AppModelJSONEncoder), mimetype="application/json")
 
 def route(path, **options):

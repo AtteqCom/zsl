@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.JavaType;
 
@@ -33,15 +32,10 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 		try {
 			ResultOrError<ResultType, ErrorType> r;
 
-			try {
-				if (status == HttpStatus.SC_OK) {
-					ResultType rr = mapper.readValue(result, type.containedType(0));
-					r = new ResultOrError<ResultType, ErrorType>(rr);
-				} else {
-					ErrorType error = mapper.readValue(result, type.containedType(1));
-					r = new ResultOrError<ResultType, ErrorType>(error);
-				}
-			} catch (JsonMappingException _e) {
+			if (status == HttpStatus.SC_OK) {
+				ResultType rr = mapper.readValue(result, type.containedType(0));
+				r = new ResultOrError<ResultType, ErrorType>(rr);
+			} else {
 				ErrorType error = mapper.readValue(result, type.containedType(1));
 				r = new ResultOrError<ResultType, ErrorType>(error);
 			}
