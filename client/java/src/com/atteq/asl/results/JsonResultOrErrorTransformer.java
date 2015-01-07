@@ -24,6 +24,10 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 		return mapper.getTypeFactory().constructParametricType(ResultOrError.class, resultClass, errorClass);
 	}
 
+	public JavaType getType(JavaType resultType, JavaType errorType) {
+		return mapper.getTypeFactory().constructParametricType(ResultOrError.class, resultType, errorType);
+	}
+
 	@Override
 	public GenericResult<ResultOrError<ResultType, ErrorType>> transform(Performer performer, String result,
 			int status, JavaType type) throws TransformationException {
