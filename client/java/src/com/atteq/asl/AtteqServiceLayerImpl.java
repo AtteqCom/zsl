@@ -6,6 +6,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
@@ -36,6 +37,7 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 			HttpClient httpClient = new HttpClient();
 			HttpMethod method = performer.getHttpMethod();
 			method.setURI(new URI(String.format("%s/%s", serviceLayerUrl, performer.getUrl()), false));
+			Logger.getLogger(getClass()).debug(String.format("%s %s", method.getName(), performer.getUrl()));
 			if (method instanceof EntityEnclosingMethod) {
 				((EntityEnclosingMethod) method).setRequestEntity(new StringRequestEntity(performer.getBody(),
 						performer.getContentType(), performer.getEncoding()));
