@@ -67,7 +67,7 @@ if __name__ == "__main__":
         run_shell()
 
     elif cmd == 'task':
-        run_task(sys.argv[1:])
+        run_task(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
 
     elif cmd == 'web':
         run_webapp()
