@@ -3,7 +3,7 @@
 abstract class Service {
 
 	/**
-	 * Connects to Service Layer and assigns task to it.
+	 * Connects to Service Layer and call task on it.
 	 * 
 	 * @param string $task_name - name of the task
 	 * @param $task_data - input data for the task
@@ -16,7 +16,8 @@ abstract class Service {
 	 * $decorators array.
 	 * 
 	 * @param Task $task - task to be called
-	 * @param array $decorators - array of TaskDecorator's / TaskResultDecorator's
+	 * @param array (of strings) $decorators - array of TaskDecorator / TaskResultDecorator
+	 * 		subclass names
 	 * @return result processed by TaskResultDecorator's given in $decorators array 
 	 */
 	function call(Task $task, $decorators = array()) {
@@ -39,12 +40,29 @@ abstract class Service {
 	}
 
 	private function _apply_task_decorators(Task $task, $decorators) {
+		foreach ($decorators as $decorator) {
+			if ($this->_is_subclass_or_same_class($decorator, 'TaskDecorator')) {
+				$task = new $decorator($task);
+			}
+		}
+
 		return $task;
 	}
 	
 	private function _apply_task_result_decorators(TaskResult $task_result,
 		$decorators) {
 		
+		foreach ($decorators as $decorator) {
+			if ($this->_is_subclass_or_same_class($decorator, 'TaskResultDecorator')) {
+				$task_result = new $decorator($task_result);
+			}
+		}
+
 		return $task_result;
+	}
+	
+	private function _is_subclass_or_same_class($tested_class_name, $class_name) {
+		return $tested_class_name == $class_name || is_subclass_of(
+			$tested_class_name, $class_name);
 	}
 }
