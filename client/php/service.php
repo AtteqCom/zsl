@@ -1,6 +1,17 @@
 <?php
 
 abstract class Service {
+	
+	/**
+	 * Constructor of inherited class is responsible for setting this attribute.
+	 * 
+	 * security settings:
+	 * 
+	 * @var string SECURITY_TOKEN - security token used in secured tasks
+	 */
+	protected $_security_config = array(
+		'SECURITY_TOKEN' => null,
+	);
 
 	/**
 	 * Has responsibility for calling task on Service Layer.
@@ -69,9 +80,29 @@ abstract class Service {
 
 
 class WebService extends Service {
-	
-	private $_service_layer_url;
-	
+
+	/**
+	 * web service settings:
+	 * 
+	 * @var string SERVICE_LAYER_URL - url to service layer
+	 */
+	private $_web_config = array(
+		'SERVICE_LAYER_URL' => null,
+	);
+
+	/**
+	 * Constructor of WebService class
+	 * 
+	 * @param array $web_config - see documentation for WebService::$_web_config
+	 * 		attribute
+	 * @param array $security_config - see documentation for
+	 * 		Service::$_security_config attribute
+	 */
+	function __construct($web_config, $security_config) {
+		$this->_web_config = $web_config;
+		$this->_security_config = $security_config;
+	}
+
 	protected function _inner_call($task_name, $task_data) {
 		$task_data = $this->_convert_to_string($task_data);
 		return $this->_send_request_to_service_layer($task_name, $task_data);
@@ -83,9 +114,19 @@ class WebService extends Service {
 	}
 	
 	private function _get_task_url($task_name) {
-		return $this->_service_layer_url . $task_name;
+		$service_layer_url = $this->_get_service_layer_url();
+		
+		return $service_layer_url . $task_name;
 	}
 	
+	private function _get_service_layer_url() {
+		if (is_null($this->_web_config['SERVICE_LAYER_URL'])) {
+			// raise exception
+		}
+
+		return $this->_web_config['SERVICE_LAYER_URL'];
+	}
+
 	private function _convert_to_string($data) {
 		if (is_null($data)) {
 			$data = 'null';
