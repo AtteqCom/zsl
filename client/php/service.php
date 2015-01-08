@@ -3,7 +3,7 @@
 abstract class Service {
 
 	/**
-	 * Connects to Service Layer and call task on it.
+	 * Has responsibility for calling task on Service Layer.
 	 * 
 	 * @param string $task_name - name of the task
 	 * @param $task_data - input data for the task
@@ -64,5 +64,50 @@ abstract class Service {
 	private function _is_subclass_or_same_class($tested_class_name, $class_name) {
 		return $tested_class_name == $class_name || is_subclass_of(
 			$tested_class_name, $class_name);
+	}
+}
+
+
+class WebService extends Service {
+	
+	private $_service_layer_url;
+	
+	protected function _inner_call($task_name, $task_data) {
+		$task_data = $this->_convert_to_string($task_data);
+		return $this->_send_request_to_service_layer($task_name, $task_data);
+	}
+	
+	private function _send_request_to_service_layer($task_name, $task_data) {
+		$task_url = $this->_get_task_url($task_name);
+		return $this->_send_json_http_request($task_url, $task_data);
+	}
+	
+	private function _get_task_url($task_name) {
+		return $this->_service_layer_url . $task_name;
+	}
+	
+	private function _convert_to_string($data) {
+		if (is_null($data)) {
+			$data = 'null';
+		} else if (!is_string($data)) {
+			$data = "$data";
+		}
+		
+		return $data;
+	}
+
+	private function _send_json_http_request($url, $json_encoded_data) {
+		$http_request = $this->_create_json_http_request($url, $json_encoded_data);
+		$http_request->send();
+
+		return $http_request->getResponseBody();
+	}
+
+	private function _create_json_http_request($url, $json_encoded_data) {
+		$http_request = new HttpRequest($url, HTTP_METH_POST);
+		$http_request->setRawPostData($json_encoded_data);
+		$http_request->setHeaders(array('Content-Type' => 'application/json'));
+
+		return $http_request;
 	}
 }
