@@ -1,9 +1,11 @@
 <?php
 
+namespace AtteqServiceLayer;
+
 abstract class TaskResult {
 	
-	abstract function get_task() {}
-	abstract function get_result() {}
+	abstract function get_task();
+	abstract function get_result();
 
 }
 

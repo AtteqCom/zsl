@@ -1,7 +1,14 @@
 <?php
 
+namespace AtteqServiceLayer;
+
+require_once('task.php');
+require_once('task_result.php');
+require_once('decorators.php');
+require_once('exceptions.php');
+
 abstract class Service {
-	
+
 	/**
 	 * Constructor of inherited class is responsible for setting this attribute.
 	 * 
@@ -17,10 +24,11 @@ abstract class Service {
 	 * Has responsibility for calling task on Service Layer.
 	 * 
 	 * @param string $task_name - name of the task
-	 * @param $task_data - input data for the task
-	 * @return unprocessed result of call to Service Layer
+	 * @param string $task_data - input data for the task; data should be in
+	 * 		string format
+	 * @return result of call to Service Layer
 	 */
-	abstract protected function _inner_call($task_name, $task_data) {}
+	abstract protected function _inner_call($task_name, string $task_data);
 
 	/**
 	 * Calls given task. Task data will be processed by TaskDecorator's given in
@@ -103,12 +111,7 @@ class WebService extends Service {
 		$this->_security_config = $security_config;
 	}
 
-	protected function _inner_call($task_name, $task_data) {
-		$task_data = $this->_convert_to_string($task_data);
-		return $this->_send_request_to_service_layer($task_name, $task_data);
-	}
-	
-	private function _send_request_to_service_layer($task_name, $task_data) {
+	protected function _inner_call($task_name, string $task_data) {
 		$task_url = $this->_get_task_url($task_name);
 		return $this->_send_json_http_request($task_url, $task_data);
 	}
@@ -121,19 +124,17 @@ class WebService extends Service {
 	
 	private function _get_service_layer_url() {
 		if (is_null($this->_web_config['SERVICE_LAYER_URL'])) {
-			// raise exception
+			throw new WebServiceException('SERVICE_LAYER_URL not configured.');
 		}
 
 		return $this->_web_config['SERVICE_LAYER_URL'];
 	}
 
 	private function _convert_to_string($data) {
-		if (is_null($data)) {
-			$data = 'null';
-		} else if (!is_string($data)) {
+		if (!is_string($data)) {
 			$data = "$data";
 		}
-		
+
 		return $data;
 	}
 

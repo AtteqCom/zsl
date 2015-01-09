@@ -1,5 +1,7 @@
 <?php
 
+namespace AtteqServiceLayer;
+
 class TaskDecorator extends Task {
 	
 	protected $_task;
@@ -42,6 +44,6 @@ class JsonTaskDecorator extends TaskDecorator {
 	}
 
 	private function _to_json($data) {
-		return $data;
+		return json_encode($data);
 	}
 }
