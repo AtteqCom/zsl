@@ -11,11 +11,11 @@ class TaskDecorator extends Task {
 	}
 	
 	function get_name() {
-		$this->_task->get_name();
+		return $this->_task->get_name();
 	}
 	
 	function get_data() {
-		$this->_task->get_data();
+		return $this->_task->get_data();
 	}
 }
 
@@ -28,26 +28,31 @@ class TaskResultDecorator extends TaskResult {
 	}
 	
 	function get_task() {
-		$this->_task_result->get_task();
+		return $this->_task_result->get_task();
 	}
 	
 	function get_result() {
-		$this->_task_result->get_result();
+		return $this->_task_result->get_result();
 	}
 }
 
 class JsonTaskDecorator extends TaskDecorator {
 
 	function get_data() {
-		$data = parent::get_data();
-		return $this->_to_json($data);
-	}
+		$data = $this->_task->get_data();
 
-	private function _to_json($data) {
-		return json_encode($data);
+		return \json_encode($data);
 	}
 }
 
+class JsonTaskResultDecorator extends TaskResultDecorator {
+
+	function get_result() {
+		$result = $this->_task_result->get_result();
+
+		return \json_decode($result, true);
+	}
+}
 
 class SecuredTaskDecorator extends TaskDecorator {
 	
@@ -87,5 +92,27 @@ class SecuredTaskDecorator extends TaskDecorator {
 	private function _compute_hashed_token($random_token) {
 		$hash = \sha1($random_token . $this->_asl->get_secure_token());
 		return \strtoupper($hash);
+	}
+}
+
+class ErrorTaskResultDecorator extends TaskResultDecorator {
+	
+	function get_complete_result() {
+		return $this->_task_result->get_result();
+	}
+	
+	function get_result() {
+		$result = $this->_task_result->get_result();
+		return \json_decode($result['data'], true);
+	}
+	
+	function is_error() {
+		$result = $this->_task_result->get_result();
+		return \array_key_exists('error', $result);
+	}
+	
+	function get_error() {
+		$result = $this->_task_result->get_result();
+		return $this->is_error() ? $result['error'] : null;
 	}
 }

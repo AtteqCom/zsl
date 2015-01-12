@@ -7,6 +7,10 @@ require_once('task_result.php');
 require_once('decorators.php');
 require_once('exceptions.php');
 
+function _name_with_namespace($name) {
+	return __NAMESPACE__ . "\\$name";
+}
+
 abstract class Service {
 
 	/**
@@ -69,8 +73,11 @@ abstract class Service {
 
 	private function _apply_task_decorators(Task $task, $decorators) {
 		foreach ($decorators as $decorator) {
-			if ($this->_is_subclass_or_same_class($decorator, 'TaskDecorator')) {
-				$task = new $decorator($task);
+			if ($this->_is_subclass_or_same_class(_name_with_namespace($decorator),
+				_name_with_namespace('TaskDecorator'))) {
+
+				$class_name = _name_with_namespace($decorator);
+				$task = new $class_name($task);
 				
 				if (\method_exists($task, 'set_asl')) {
 					$task->set_asl($this);
@@ -85,8 +92,15 @@ abstract class Service {
 		$decorators) {
 		
 		foreach ($decorators as $decorator) {
-			if ($this->_is_subclass_or_same_class($decorator, 'TaskResultDecorator')) {
-				$task_result = new $decorator($task_result);
+			if ($this->_is_subclass_or_same_class(_name_with_namespace($decorator),
+				_name_with_namespace('TaskResultDecorator'))) {
+				
+				$class_name = _name_with_namespace($decorator);
+				$task_result = new $class_name($task_result);
+
+			if (\method_exists($task_result, 'set_asl')) {
+					$task_result->set_asl($this);
+				}
 			}
 		}
 
@@ -96,6 +110,14 @@ abstract class Service {
 	private function _is_subclass_or_same_class($tested_class_name, $class_name) {
 		return $tested_class_name == $class_name || is_subclass_of(
 			$tested_class_name, $class_name);
+	}
+	
+	/**
+	 * Returns class name with namespace specified.
+	 * @param string $class_name - name of class without namespace
+	 */
+	private function _get_full_class_name($class_name) {
+		return __NAMESPACE__ . "\\$class_name";
 	}
 }
 
@@ -161,11 +183,11 @@ class WebService extends Service {
 		
 		$curl_handle = \curl_init($url);
 		
-		\curl_setopt($curl_handle, CURLOPT_POST, true);
+		\curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, 'POST');
 		\curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $json_encoded_data);
 		\curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
 		\curl_setopt($curl_handle, CURLOPT_HTTPHEADER, array(
-			'Content-Type' => 'application/json',
+			'Content-Type: application/json',
 		));
 
 		return $curl_handle;
