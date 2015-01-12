@@ -9,7 +9,7 @@ abstract class TaskResult {
 
 }
 
-class RawTaskResult {
+class RawTaskResult extends TaskResult {
 
 	protected $_task;
 	protected $_result;

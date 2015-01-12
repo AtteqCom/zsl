@@ -28,7 +28,7 @@ abstract class Service {
 	 * 		string format
 	 * @return result of call to Service Layer
 	 */
-	abstract protected function _inner_call($task_name, string $task_data);
+	abstract protected function _inner_call($task_name, $task_data);
 
 	/**
 	 * Calls given task. Task data will be processed by TaskDecorator's given in
@@ -40,21 +40,30 @@ abstract class Service {
 	 * @return result processed by TaskResultDecorator's given in $decorators array 
 	 */
 	function call(Task $task, $decorators = array()) {
-		$call_task_result = $this->_call_task($task, $decorators);
-		return $this->_process_call_task_result($call_task_result, $decorators); 
+		$decorated_task = $this->_apply_task_decorators($task, $decorators);
+		$call_result = $this->_call_task($decorated_task);
+		
+		return $this->_process_call_result($decorated_task, $call_result,
+			$decorators); 
 	}
 	
-	private function _call_task(Task $task, $decorators) {
-		$task = $this->_apply_task_decorators($task, $decorators);
+	function get_secure_token() {
+		if (\is_null($this->_security_config['SECURITY_TOKEN'])) {
+			throw new ServiceException('SECURITY_TOKEN is not configured.');
+		}
 		
+		return $this->_security_config['SECURITY_TOKEN'];
+	}
+	
+	private function _call_task(Task $task) {
 		$task_data = $task->get_data();
 		$task_name = $task->get_name();
 		
 		return $this->_inner_call($task_name, $task_data);
 	}
 	
-	private function _process_call_task_result($call_task_result, $decorators) {
-		$task_result = new RawTaskResult($task, $call_task_result);
+	private function _process_call_result(Task $task, $call_result, $decorators) {
+		$task_result = new RawTaskResult($task, $call_result);
 		return $this->_apply_task_result_decorators($task_result, $decorators);
 	}
 
@@ -62,6 +71,10 @@ abstract class Service {
 		foreach ($decorators as $decorator) {
 			if ($this->_is_subclass_or_same_class($decorator, 'TaskDecorator')) {
 				$task = new $decorator($task);
+				
+				if (\method_exists($task, 'set_asl')) {
+					$task->set_asl($this);
+				}
 			}
 		}
 
@@ -106,50 +119,62 @@ class WebService extends Service {
 	 * @param array $security_config - see documentation for
 	 * 		Service::$_security_config attribute
 	 */
-	function __construct($web_config, $security_config) {
-		$this->_web_config = $web_config;
-		$this->_security_config = $security_config;
+	function __construct($web_config, $security_config = array()) {
+		$this->_web_config = array_merge($this->_web_config, $web_config);
+		$this->_security_config = array_merge($this->_security_config,
+			$security_config);
 	}
 
-	protected function _inner_call($task_name, string $task_data) {
+	protected function _inner_call($task_name, $task_data) {
 		$task_url = $this->_get_task_url($task_name);
 		return $this->_send_json_http_request($task_url, $task_data);
 	}
-	
+
 	private function _get_task_url($task_name) {
 		$service_layer_url = $this->_get_service_layer_url();
-		
+
 		return $service_layer_url . $task_name;
 	}
-	
+
 	private function _get_service_layer_url() {
 		if (is_null($this->_web_config['SERVICE_LAYER_URL'])) {
-			throw new WebServiceException('SERVICE_LAYER_URL not configured.');
+			throw new WebServiceException('SERVICE_LAYER_URL is not configured.');
 		}
 
 		return $this->_web_config['SERVICE_LAYER_URL'];
 	}
 
-	private function _convert_to_string($data) {
-		if (!is_string($data)) {
-			$data = "$data";
-		}
-
-		return $data;
-	}
-
+	/**
+	 * implementovane cez curl, pretoze novsia verzia (>= 2.0) pecl_http
+	 * extension (trieda HttpRequest) sa vyrazne lisi a je nekompatibilna od
+	 * starsich verzii 
+	 */
 	private function _send_json_http_request($url, $json_encoded_data) {
-		$http_request = $this->_create_json_http_request($url, $json_encoded_data);
-		$http_request->send();
+		$curl_handle = $this->_create_curl_handle_for_json_http_request($url,
+			$json_encoded_data);
 
-		return $http_request->getResponseBody();
+		return $this->_execute_curl($curl_handle);
 	}
 
-	private function _create_json_http_request($url, $json_encoded_data) {
-		$http_request = new HttpRequest($url, HTTP_METH_POST);
-		$http_request->setRawPostData($json_encoded_data);
-		$http_request->setHeaders(array('Content-Type' => 'application/json'));
+	private function _create_curl_handle_for_json_http_request($url,
+		$json_encoded_data) {
+		
+		$curl_handle = \curl_init($url);
+		
+		\curl_setopt($curl_handle, CURLOPT_POST, true);
+		\curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $json_encoded_data);
+		\curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
+		\curl_setopt($curl_handle, CURLOPT_HTTPHEADER, array(
+			'Content-Type' => 'application/json',
+		));
 
-		return $http_request;
+		return $curl_handle;
+	}
+	
+	private function _execute_curl($curl_handle) {
+		$response = \curl_exec($curl_handle);
+		\curl_close($curl_handle);
+		
+		return $response;
 	}
 }

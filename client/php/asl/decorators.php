@@ -47,3 +47,45 @@ class JsonTaskDecorator extends TaskDecorator {
 		return json_encode($data);
 	}
 }
+
+
+class SecuredTaskDecorator extends TaskDecorator {
+	
+	private $_allowed_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+	private $_random_token_length = 16;
+	
+	function get_data() {
+		$random_token = $this->_get_random_token();
+		
+		return array(
+			'data' => $this->_task->get_data(),
+			'security' => array(
+				'random_token' => $random_token,
+				'hashed_token' => $this->_compute_hashed_token($random_token),
+			),
+		);
+	}
+	
+	function set_asl(Service $asl) {
+		$this->_asl = $asl;
+	}
+	
+	private function _get_random_token() {
+		$token = '';
+		
+		for ($i = 0; $i < $this->_random_token_length; $i++) {
+			$token .= $this->_get_random_allowed_character();
+		}
+		
+		return $token;
+	}
+	
+	private function _get_random_allowed_character() {
+		return $this->_allowed_characters[\rand(0, strlen($this->_allowed_characters) - 1)];
+	}
+	
+	private function _compute_hashed_token($random_token) {
+		$hash = \sha1($random_token . $this->_asl->get_secure_token());
+		return \strtoupper($hash);
+	}
+}
