@@ -5,6 +5,7 @@ namespace AtteqServiceLayer;
 class TaskDecorator extends Task {
 	
 	protected $_task;
+	protected $_asl_client;
 	
 	function __construct(Task $task) {
 		$this->_task = $task;
@@ -22,6 +23,7 @@ class TaskDecorator extends Task {
 class TaskResultDecorator extends TaskResult {
 	
 	protected $_task_result;
+	protected $_asl_client;
 	
 	function __construct(TaskResult $task_result) {
 		$this->_task_result = $task_result;
@@ -71,8 +73,8 @@ class SecuredTaskDecorator extends TaskDecorator {
 		);
 	}
 	
-	function set_asl(Service $asl) {
-		$this->_asl = $asl;
+	function set_client(Client $client) {
+		$this->_asl_client = $client;
 	}
 	
 	private function _get_random_token() {
@@ -90,7 +92,7 @@ class SecuredTaskDecorator extends TaskDecorator {
 	}
 	
 	private function _compute_hashed_token($random_token) {
-		$hash = \sha1($random_token . $this->_asl->get_secure_token());
+		$hash = \sha1($random_token . $this->_asl_client->get_secure_token());
 		return \strtoupper($hash);
 	}
 }

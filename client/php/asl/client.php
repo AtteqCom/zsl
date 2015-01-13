@@ -11,7 +11,7 @@ function _name_with_namespace($name) {
 	return __NAMESPACE__ . "\\$name";
 }
 
-abstract class Service {
+abstract class Client {
 
 	/**
 	 * Constructor of inherited class is responsible for setting this attribute.
@@ -53,7 +53,7 @@ abstract class Service {
 	
 	function get_secure_token() {
 		if (\is_null($this->_security_config['SECURITY_TOKEN'])) {
-			throw new ServiceException('SECURITY_TOKEN is not configured.');
+			throw new ClientException('SECURITY_TOKEN is not configured.');
 		}
 		
 		return $this->_security_config['SECURITY_TOKEN'];
@@ -79,8 +79,8 @@ abstract class Service {
 				$class_name = _name_with_namespace($decorator);
 				$task = new $class_name($task);
 				
-				if (\method_exists($task, 'set_asl')) {
-					$task->set_asl($this);
+				if (\method_exists($task, 'set_client')) {
+					$task->set_client($this);
 				}
 			}
 		}
@@ -98,8 +98,8 @@ abstract class Service {
 				$class_name = _name_with_namespace($decorator);
 				$task_result = new $class_name($task_result);
 
-			if (\method_exists($task_result, 'set_asl')) {
-					$task_result->set_asl($this);
+			if (\method_exists($task_result, 'set_client')) {
+					$task_result->set_client($this);
 				}
 			}
 		}
@@ -122,10 +122,10 @@ abstract class Service {
 }
 
 
-class WebService extends Service {
+class WebClient extends Client {
 
 	/**
-	 * web service settings:
+	 * web client settings:
 	 * 
 	 * @var string SERVICE_LAYER_URL - url to service layer
 	 */
@@ -134,12 +134,12 @@ class WebService extends Service {
 	);
 
 	/**
-	 * Constructor of WebService class
+	 * Constructor of WebClient class
 	 * 
-	 * @param array $web_config - see documentation for WebService::$_web_config
+	 * @param array $web_config - see documentation for WebClient::$_web_config
 	 * 		attribute
 	 * @param array $security_config - see documentation for
-	 * 		Service::$_security_config attribute
+	 * 		Client::$_security_config attribute
 	 */
 	function __construct($web_config, $security_config = array()) {
 		$this->_web_config = array_merge($this->_web_config, $web_config);
@@ -160,7 +160,7 @@ class WebService extends Service {
 
 	private function _get_service_layer_url() {
 		if (is_null($this->_web_config['SERVICE_LAYER_URL'])) {
-			throw new WebServiceException('SERVICE_LAYER_URL is not configured.');
+			throw new WebClientException('SERVICE_LAYER_URL is not configured.');
 		}
 
 		return $this->_web_config['SERVICE_LAYER_URL'];
