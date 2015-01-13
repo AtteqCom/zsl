@@ -13,7 +13,9 @@ web_service = WebService(web_config, security_config)
 
 
 # prepare task
-task = RawTask('example/my_super_task', {'data': 'for my super task'})
+# task data doesn't have to be dictionary. It depends on task and TaskDecorators
+# (see bellow) you use
+task = RawTask('example/my_super_task_task', {'motto': 'hate haters', 'frequency': 'every day'})
 
 # call task with some decorators
 #
