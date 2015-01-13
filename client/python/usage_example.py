@@ -1,6 +1,10 @@
 from asl.client import Task, WebService, JsonTask, JsonTaskResult,\
     SecuredTask
 
+#
+# Usage example to express the idea of working with Atteq Service Layer.
+#
+
 # create client
 web_config = {'SERVICE_LAYER_URL': 'http://my.service.layer.url/task/'}
 security_config = {'SECURITY_TOKEN': 'my super secret secure token'}
