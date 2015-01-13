@@ -19,7 +19,7 @@ $web_client = new ASL\WebClient($web_client, $security_config);
 // prepare task
 // task data doesn't have to be array. It depends on task and
 // TaskDecorators (see bellow) you use
-$task = new RawTask('example/my_super_task_task', array(
+$task = new RawTask('example/my_super_task', array(
 	'motto' => 'hate haters',
 	'frequency' => 'every day',
 ));
