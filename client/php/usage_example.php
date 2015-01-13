@@ -30,13 +30,13 @@ $task = new RawTask('example/my_super_task', array(
 // in desirable order.
 //
 // we get $task_result which is TaskResult instance "decorated" (in this case) with
-// JsonResultDecorator. TaskResultDecorator's are responsible for processing data
+// JsonTaskResultDecorator. TaskResultDecorator's are responsible for processing data
 // we get as response to our "call task" request. If you want to chain more
 // TaskDecorator's together, simply put them in array (second parameter of
 // WebClient::call() method) in desirable order.
 // 
 $task_result = $web_client->call($task, ['SecuredTaskDecorator', 'JsonTaskDecorator',
-	'JsonResultDecorator']);
+	'JsonTaskResultDecorator']);
 
 // to get result (of request to service layer) parsed with given TaskResultDecorator's
 // simply call get_result() method
