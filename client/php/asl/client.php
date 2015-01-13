@@ -41,7 +41,8 @@ abstract class Client {
 	 * @param Task $task - task to be called
 	 * @param array (of strings) $decorators - array of TaskDecorator / TaskResultDecorator
 	 * 		subclass names
-	 * @return result processed by TaskResultDecorator's given in $decorators array 
+	 * @return TaskResult instance - result processed by TaskResultDecorator's 
+	 * 		given in $decorators array 
 	 */
 	function call(Task $task, $decorators = array()) {
 		$decorated_task = $this->_apply_task_decorators($task, $decorators);
