@@ -121,7 +121,11 @@ abstract class Client {
 	}
 }
 
-
+/**
+ * Client for calling service layer through HTTP requests.
+ * 
+ * @author jankes
+ */
 class WebClient extends Client {
 
 	/**
