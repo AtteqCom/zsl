@@ -147,15 +147,15 @@ class WebClient extends Client {
 			$security_config);
 	}
 
-	protected function _inner_call($task_name, $task_data) {
-		$task_url = $this->_get_task_url($task_name);
-		return $this->_send_json_http_request($task_url, $task_data);
-	}
-
-	private function _get_task_url($task_name) {
+	function get_task_url($task_name) {
 		$service_layer_url = $this->_get_service_layer_url();
 
 		return $service_layer_url . $task_name;
+	}
+	
+	protected function _inner_call($task_name, $task_data) {
+		$task_url = $this->get_task_url($task_name);
+		return $this->_send_json_http_request($task_url, $task_data);
 	}
 
 	private function _get_service_layer_url() {
