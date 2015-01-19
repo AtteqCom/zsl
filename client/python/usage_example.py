@@ -1,4 +1,4 @@
-from asl.client import Task, WebService, JsonTask, JsonTaskResult,\
+from asl.client import RawTask, WebService, JsonTask, JsonTaskResult,\
     SecuredTask
 
 #
@@ -30,7 +30,7 @@ task = RawTask('example/my_super_task', {'motto': 'hate haters', 'frequency': 'e
 # we get as response to our "call task" request. If you want to chain more
 # TaskDecorator's together, simply put them in array (second parameter of
 # WebService.call() method) in desirable order.
-# 
+#
 task_result = web_service.call(task, [SecuredTask, JsonTask, JsonTaskResult])
 
 # to get result (of request to service layer) parsed with given TaskResultDecorator's
