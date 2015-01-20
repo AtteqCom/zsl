@@ -124,10 +124,33 @@ class ErrorTaskResult(TaskResult, TaskResultDecorator):
 
 class Service:
     @abstractmethod
-    def _inner_call(self, data):
+    def _inner_call(self, name, data):
+        '''
+        Make request to service layer and returns response to this request.
+        
+        :param name: name of the task
+        :type name: str
+        :param data: task data
+        
+        :return response to task request on service layer
+        '''
         pass
 
     def call(self, task, decorators = []):
+        '''
+        Call given task on service layer.
+         
+        :param task: task to be called. task will be decorated with
+            TaskDecorator's contained in 'decorators' list
+        :type task: instance of Task class
+        :param decorators: list of TaskDecorator's / TaskResultDecorator's
+            inherited classes
+        :type decorators: list
+        
+        :return task_result: result of task call decorated with TaskResultDecorator's
+            contained in 'decorators' list
+        :type task_result: TaskResult instance
+        '''
         task = self.apply_task_decorators(task, decorators)
 
         data = task.get_data()
