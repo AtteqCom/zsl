@@ -182,7 +182,7 @@ def required_data(*data):
             task_data = get_data(args).get_data()
             for i in data:
                 if not i in task_data:
-                    raise KeyError(i)
+                    raise KeyError('Missing required parameter "{0}" for task.'.format(i))
 
             return f(*args, **kwargs)
 
@@ -258,7 +258,7 @@ def secured_task(f):
 
 def xml_output(f):
     '''
-    Create xml response for output and set content-type for web-request to 'text/xml'
+    Set content-type for response to WEB-REQUEST to 'text/xml'
     '''
 
     @wraps(f)

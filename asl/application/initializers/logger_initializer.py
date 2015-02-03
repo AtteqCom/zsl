@@ -1,8 +1,9 @@
 from asl.application.service_application import service_application
 from flask import Config
 import logging
-from logging.handlers import SysLogHandler
 import asl.vendor
+from logging import Formatter
+from logging.handlers import SysLogHandler
 asl.vendor.do_init()
 from injector import singleton
 from asl.application.initializers import injection_module
@@ -30,7 +31,9 @@ class LoggerInitializer:
             return
 
         handler.setLevel(config['LOG_LEVEL'])
-        app.logger.addHandler(handler)
+        handler.setFormatter(Formatter('%(asctime)-15s %(message)s'))
+
+        logging.getLogger(app.logger_name).addHandler(handler)
 
         db_logger = logging.getLogger('sqlalchemy.engine')
         db_logger.setLevel(config['DATABASE_LOG_LEVEL'])
