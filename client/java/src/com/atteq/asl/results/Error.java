@@ -1,5 +1,10 @@
 package com.atteq.asl.results;
 
+/**
+ * Generic error - contains a code and a message.
+ *
+ * @author Martin Babka
+ */
 public class Error {
 
 	String code;

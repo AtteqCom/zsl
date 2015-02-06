@@ -159,4 +159,20 @@ public abstract class StringHelper {
 		}
 	}
 
+	/**
+	 * Joins the parameters.
+	 *
+	 * @param params
+	 *            List of parameters.
+	 * @return Parameters joined by '/' starting with /.
+	 */
+	public static String joinParameters(String... params) {
+		StringBuilder paramBuilder = new StringBuilder();
+		for (String p : params) {
+			paramBuilder.append('/');
+			paramBuilder.append(p);
+		}
+		return paramBuilder.toString();
+	}
+
 }

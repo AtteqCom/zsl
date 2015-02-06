@@ -46,7 +46,7 @@ def page_to_offset(params):
 
 class ModelResource(SqlSesionMixin):
     '''
-    TODO: zatial to funguje iba na tabulky s 1 primary key
+    ModelResource works only for tables with a single-column identifier (key).
     '''
 
     def __init__(self, model_cls):

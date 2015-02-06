@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
-import com.atteq.asl.performers.Method;
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.results.GenericResult;
 import com.atteq.asl.results.GenericResultFactory;
@@ -79,23 +78,23 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 				.constructType(c));
 	}
 
-	public <T> GenericResult<T> perform(Method method, JavaType t) throws ServiceCallException {
-		GenericResultFactory<T> f = new GenericResultFactory<T>();
-		return perform(method, new JsonResultTransformer<T, GenericResult<T>>(f), t);
-	}
-
-	public <T> GenericResult<T> perform(Method method, Class<T> c) throws ServiceCallException {
-		GenericResultFactory<T> f = new GenericResultFactory<T>();
-		return perform(method, new JsonResultTransformer<T, GenericResult<T>>(f), TypeFactory.defaultInstance()
-				.constructType(c));
-	}
-
 	public <T> TaskResult<T> performWithErrorDecorator(Task task, JavaType t) throws ServiceCallException {
 		return perform(task, new JsonResultWithErrorTransformer<T>(), t);
 	}
 
 	public <T> TaskResult<T> performWithErrorDecorator(Task task, Class<T> c) throws ServiceCallException {
 		return perform(task, new JsonResultWithErrorTransformer<T>(), TypeFactory.defaultInstance().constructType(c));
+	}
+
+	public <T> GenericResult<T> perform(Performer performer, JavaType t) throws ServiceCallException {
+		GenericResultFactory<T> f = new GenericResultFactory<T>();
+		return perform(performer, new JsonResultTransformer<T, GenericResult<T>>(f), t);
+	}
+
+	public <T> GenericResult<T> perform(Performer performer, Class<T> c) throws ServiceCallException {
+		GenericResultFactory<T> f = new GenericResultFactory<T>();
+		return perform(performer, new JsonResultTransformer<T, GenericResult<T>>(f), TypeFactory.defaultInstance()
+				.constructType(c));
 	}
 
 	public String getServiceLayerUrl() {

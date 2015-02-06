@@ -1,6 +1,17 @@
 package com.atteq.asl.results;
 
-public class ResultOrError<ResultType, ErrorType extends Error>  {
+/**
+ * Plain result object for responses which can be either a valid result or an
+ * error description.
+ *
+ * @author Martin Babka
+ *
+ * @param <ResultType>
+ *            Result type.
+ * @param <ErrorType>
+ *            Error type.
+ */
+public class ResultOrError<ResultType, ErrorType extends Error> {
 
 	final ResultType result;
 	final ErrorType error;
@@ -11,11 +22,13 @@ public class ResultOrError<ResultType, ErrorType extends Error>  {
 		this.error = error;
 		this.result = result;
 	}
+
 	public ResultOrError(ResultType result) {
 		this.errorFlag = false;
 		this.error = null;
 		this.result = result;
 	}
+
 	public ResultOrError(ErrorType error) {
 		this.errorFlag = true;
 		this.error = error;
