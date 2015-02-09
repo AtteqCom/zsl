@@ -32,9 +32,10 @@ class LoggerInitializer:
         elif config['LOG_HANDLER'] == None or config['LOG_HANDLER'].lower() == 'none':
             return
 
-        handler.setLevel(config['LOG_LEVEL'])
-        handler.setFormatter(Formatter('%(asctime)-15s %(message)s'))
+        handler.setLevel(logging.DEBUG)
+        handler.setFormatter(Formatter('[%(asctime)s %(levelname)s %(name)s] %(message)s'))
 
+        app.logger.addHandler(handler)
         logging.getLogger(app.logger_name).addHandler(handler)
 
         db_logger = logging.getLogger('sqlalchemy.engine')
