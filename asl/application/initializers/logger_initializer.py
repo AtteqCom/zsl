@@ -21,13 +21,15 @@ class LoggerInitializer:
         )
 
         if 'LOG_HANDLER' not in config:
-            config['LOG_HANDLER'] = 'file'
+            config['LOG_HANDLER'] = 'rotating-file'
 
         if config['LOG_HANDLER'] == "syslog":
             handler = SysLogHandler(**config['SYSLOG_PARAMS'])
         elif config['LOG_HANDLER'] == "file":
             handler = logging.FileHandler(config['LOG_FILE'])
-        elif config['LOG_HANDLER'] == None or config['LOG_HANDLER'] == 'none':
+        elif config['LOG_HANDLER'] == "rotating-file":
+            handler = logging.handlers.RotatingFileHandler(config['LOG_FILE'])
+        elif config['LOG_HANDLER'] == None or config['LOG_HANDLER'].lower() == 'none':
             return
 
         handler.setLevel(config['LOG_LEVEL'])
