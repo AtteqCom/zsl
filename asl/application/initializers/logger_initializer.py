@@ -22,6 +22,10 @@ class LoggerInitializer:
 
         if 'LOG_HANDLER' not in config:
             config['LOG_HANDLER'] = 'rotating-file'
+        if 'LOG_LEVEL' not in config:
+            config['LOG_LEVEL'] = 'DEBUG' if app.debug else 'WARNING'
+        else:
+            config['LOG_LEVEL'] = config['LOG_LEVEL']
 
         if config['LOG_HANDLER'] == "syslog":
             handler = SysLogHandler(**config['SYSLOG_PARAMS'])
@@ -32,11 +36,11 @@ class LoggerInitializer:
         elif config['LOG_HANDLER'] == None or config['LOG_HANDLER'].lower() == 'none':
             return
 
-        handler.setLevel(logging.DEBUG)
-        handler.setFormatter(Formatter('[%(asctime)s %(levelname)s %(name)s] %(message)s'))
+        handler.setLevel(getattr(logging, config['LOG_LEVEL']))
+        handler.setFormatter(Formatter('[%(asctime)s] [%(name)s-%(levelname)s] [%(filename)s] %(message)s'))
 
-        app.logger.addHandler(handler)
         logging.getLogger(app.logger_name).addHandler(handler)
+        logging.getLogger(app.logger_name).setLevel(getattr(logging, config['LOG_LEVEL']))
 
         db_logger = logging.getLogger('sqlalchemy.engine')
         db_logger.setLevel(config['DATABASE_LOG_LEVEL'])
