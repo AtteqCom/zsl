@@ -22,30 +22,28 @@ def filter_from_url_arg(model_cls, query, arg):
     for expr in fields:
         e_mapper = mapper
         e_model_cls = model_cls
-        
-        # TODO preco to prechadzam for cyklom ??
+
         for operator, method in operator_to_method.items():
-            if operator in expr:
-                (column_names, value) = expr.split(operator)
+            if operator not in expr:
+                raise Exception('Operator {0} not in expression {1}.'.format(operator, expr))
 
-                column_names = column_names.split('__')
-                value = value.strip()
-                
-                for column_name in column_names:
-                    if column_name in e_mapper.relationships:
-                        joins.append(column_name)
-                        e_model_cls = e_mapper.attrs[column_name].mapper.class_
-                        e_mapper = class_mapper(e_model_cls)
+            (column_names, value) = expr.split(operator)
 
-                if hasattr(e_model_cls, column_name):
-                    column = getattr(e_model_cls, column_name)
-                    exprs.append(getattr(column, method)(value))
-                else:
-                    pass # TODO vyhod vynimku
+            column_names = column_names.split('__')
+            value = value.strip()
 
-                break
+            for column_name in column_names:
+                if column_name in e_mapper.relationships:
+                    joins.append(column_name)
+                    e_model_cls = e_mapper.attrs[column_name].mapper.class_
+                    e_mapper = class_mapper(e_model_cls)
 
-        # TODO vyhod vynimku ak nenajde operator
+            if hasattr(e_model_cls, column_name):
+                column = getattr(e_model_cls, column_name)
+                exprs.append(getattr(column, method)(value))
+            else:
+                raise Exception('Invalid property {0} in class {1}.'.format(column_name, e_model_cls))
+
 
     return query.join(*joins).filter(*exprs)
 
@@ -76,7 +74,7 @@ def order_from_url_arg(model_cls, query, arg):
             order_by = asc(column) if direction == 'asc' else desc(column)
             orderings.append(order_by)
         else:
-            pass # TODO vyhod vynimku
+            raise Exception('Invalid property {0} in class {1}.'.format(column_name, model_cls))
 
     return query.order_by(*orderings)
 
