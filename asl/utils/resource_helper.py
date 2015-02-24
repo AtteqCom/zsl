@@ -25,7 +25,7 @@ def get_method(resource, method):
 def get_resource_task(resource_path):
     class_name = underscore_to_camelcase(resource_path) + 'Resource'
 
-    resource = None    
+    resource = None
     for resource_package in resource_packages:
         module_name = "{0}.{1}".format(resource_package, resource_path)
 
@@ -48,7 +48,8 @@ def get_resource_task(resource_path):
                 
                 resource = exposer.get_resource(class_name)
                 break
-            except ImportError:
+            except ImportError as e:
+                app.logger.error("Can not load resource {0} [{1}].".format(resource_path, e))
                 pass
             
     if resource is None:
