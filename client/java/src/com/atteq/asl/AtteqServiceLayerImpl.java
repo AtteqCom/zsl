@@ -39,8 +39,10 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 			method.setURI(new URI(String.format("%s/%s", serviceLayerUrl, performer.getUrl()), false));
 			logger.debug(String.format("%s %s", method.getName(), performer.getUrl()));
 			if (method instanceof EntityEnclosingMethod) {
-				((EntityEnclosingMethod) method).setRequestEntity(new StringRequestEntity(performer.getBody(),
-						performer.getContentType(), performer.getEncoding()));
+				String body = performer.getBody();
+				logger.debug(body);
+				((EntityEnclosingMethod) method).setRequestEntity(new StringRequestEntity(body, performer
+						.getContentType(), performer.getEncoding()));
 			}
 			httpClient.executeMethod(method);
 
