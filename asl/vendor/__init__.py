@@ -22,7 +22,7 @@ def do_init():
                 path = os.path.abspath(p + '/asl/vendor/')
                 break
 
-    vendor_modules = ['injector', 'flask_injector', 'redis-py', 'sqlalchemy/sqlalchemy-0_9_1/lib', 'bpython/bpython', 'sphinxapi']
+    vendor_modules = ['injector', 'flask_injector', 'redis-py', 'sqlalchemy/sqlalchemy-0_9_1/lib', 'bpython/bpython', 'sphinxapi', 'simplejson']
     new_path = []
     for v in vendor_modules:
         new_path.append(path + os.sep + v)
