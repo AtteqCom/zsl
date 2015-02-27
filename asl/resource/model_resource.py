@@ -117,7 +117,7 @@ class ModelResource(SqlSesionMixin):
         ctx = self._create_context(params, args, data)
         model = self._create_one(ctx)
         self._save_one(model, ctx)
-        return model.get_app_model()
+        return self._return_saved_one(model, ctx)
 
     @transactional
     def read(self, params = [], args = {}, data = None):
@@ -190,6 +190,9 @@ class ModelResource(SqlSesionMixin):
         self._orm.add(model)
         self._orm.flush()
 
+    def _return_saved_one(self, model, ctx):
+        return model.get_app_model()
+
     # Read one implementation.
     def _get_one(self, row_id, ctx):
         assert isinstance(ctx, ResourceQueryContext)
@@ -258,6 +261,7 @@ class ModelResource(SqlSesionMixin):
     def _get_collection_desc(self):
         return [column.name for column in class_mapper(self.model_cls).columns]
 
+    # Update
     def _update_one_simple(self, row_id, fields):
         fields = dict_pick(fields, self._model_columns)
 
