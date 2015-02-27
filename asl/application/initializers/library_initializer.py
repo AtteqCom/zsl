@@ -20,7 +20,7 @@ class LibraryInitializer:
         if external_libraries is None:
             return
 
-        vendor_path = external_libraries['VENDOR_PATH']
+        vendor_path = external_libraries['vendor_path']
         append_paths(vendor_path, external_libraries['libs'])
 
         logger.info("Current PYTHON_PATH={0}.".format(sys.path))
