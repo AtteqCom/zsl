@@ -67,7 +67,9 @@ public class Resource implements Performer {
 		for (Entry<String, String> e : args.entrySet()) {
 			try {
 				query.append(String.format("%s=%s",
-						URIUtil.encodeWithinQuery(e.getKey(), URIUtil.encodeWithinQuery(e.getValue()))));
+					URIUtil.encodeWithinQuery(e.getKey()),
+					URIUtil.encodeWithinQuery(e.getValue())
+				));
 			} catch (URIException ex) {
 				logger.error(ex);
 			}
