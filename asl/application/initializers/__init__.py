@@ -16,3 +16,4 @@ from .database_initializer import DatabaseInitializer
 from .application_initializer import ApplicationInitializer
 from .service_initializer import ServiceInitializer
 from .cache_initializer import CacheInitializer
+from .library_initializer import LibraryInitializer
