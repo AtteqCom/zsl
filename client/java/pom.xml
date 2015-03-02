@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.atteq.asl</groupId>
 	<artifactId>asl-client</artifactId>
-	<version>0.0.7-SNAPSHOT</version>
+	<version>0.0.8-SNAPSHOT</version>
 	<name>ASL Client</name>
 	<dependencies>
 		<dependency>

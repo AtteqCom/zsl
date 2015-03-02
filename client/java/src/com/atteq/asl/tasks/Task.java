@@ -12,6 +12,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.performers.Performer;
+import com.atteq.asl.utils.JsonHelper;
 
 public class Task implements Performer {
 
@@ -69,7 +70,7 @@ public class Task implements Performer {
 	@Override
 	public String getBody() throws ServiceCallException {
 		ByteArrayOutputStream ss = new ByteArrayOutputStream();
-		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectMapper objectMapper = JsonHelper.createMapper();
 		try {
 			objectMapper.writeValue(ss, getData());
 		} catch (JsonGenerationException e) {

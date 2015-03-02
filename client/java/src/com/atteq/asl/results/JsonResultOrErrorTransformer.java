@@ -9,12 +9,13 @@ import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
 import com.atteq.asl.performers.Performer;
+import com.atteq.asl.utils.JsonHelper;
 
 public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> implements
 		ResultTransformer<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> {
 
 	protected ResultFactory<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> factory;
-	protected ObjectMapper mapper = new ObjectMapper();
+	protected ObjectMapper mapper = JsonHelper.createMapper();
 
 	public JsonResultOrErrorTransformer(
 			ResultFactory<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> factory) {

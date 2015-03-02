@@ -12,9 +12,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import com.atteq.asl.ServiceCallException;
+import com.atteq.asl.utils.JsonHelper;
 import com.atteq.asl.utils.StringHelper;
 
 public class Resource implements Performer {
@@ -89,7 +89,7 @@ public class Resource implements Performer {
 				return "";
 			}
 
-			return (new ObjectMapper()).writeValueAsString(data);
+			return JsonHelper.createMapper().writeValueAsString(data);
 		} catch (Exception e) {
 			throw new ServiceCallException("Error converting body to JSON when calling resource.", e);
 		}

@@ -1,12 +1,9 @@
 package com.atteq.asl.results;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.JavaType;
 
 import com.atteq.asl.performers.Performer;
+import com.atteq.asl.utils.JsonHelper;
 
 public class JsonResultTransformer<T, R extends Result<T>> implements ResultTransformer<T, R> {
 
@@ -18,11 +15,8 @@ public class JsonResultTransformer<T, R extends Result<T>> implements ResultTran
 
 	@Override
 	public R transform(Performer performer, String result, int status, JavaType type) throws TransformationException {
-		ObjectMapper mapper = new ObjectMapper();
-		final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		mapper.setDateFormat(df);
 		try {
-			T r = mapper.readValue(result, type);
+			T r = JsonHelper.createMapper().readValue(result, type);
 			return factory.create(performer, r);
 		} catch (Exception e) {
 			throw new TransformationException(e);
