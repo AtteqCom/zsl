@@ -52,7 +52,7 @@ class CommandDispatcher(object):
         :raises KeyError: if command is not found
         """
 
-        if args in None:
+        if args is None:
             args = {}
 
         command_fn = self.commands[command]
@@ -74,7 +74,7 @@ class CommandDispatcher(object):
         bounded_dispatcher = CommandDispatcher()
         bounded_dispatcher.commands = self.commands.copy()
 
-        for name, fn in self.commands.iteritems():
+        for name in self.commands.iterkeys():
             method = getattr(instance, name, None)
 
             if method and inspect.ismethod(method) and method.__self__ == instance:
