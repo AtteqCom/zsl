@@ -42,7 +42,6 @@ class TestCommandDispatcher(unittest.TestCase):
                          dummy_function,
                          "Decorator didn't decorate")
 
-    @property
     def test_command_execute(self):
         dispatcher = self.dispatcher
 
