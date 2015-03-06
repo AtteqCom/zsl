@@ -19,9 +19,7 @@ class CommandDispatcher(object):
         """
 
         self.commands = {}
-        """command dictionary"""
 
-        self._required_arguments = {}
 
     def command(self, fn):
         """
