@@ -1,5 +1,4 @@
 import importlib
-import traceback
 from asl.utils.string_helper import underscore_to_camelcase
 from imp import reload
 from asl.utils.task_helper import instantiate, get_callable
@@ -46,7 +45,7 @@ class TaskRouter:
                 self._app.logger.debug("Trying to load module with name '%s' and class name '%s'.", module_name, class_name)
                 module = self._load_module(module_name)
                 break
-            except ImportError as e:
+            except ImportError:
                 self._app.logger.exception("Could not load module with name '%s' and class name '%s'.", module_name, class_name)
 
         if module is None:
