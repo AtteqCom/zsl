@@ -6,6 +6,8 @@ from flask_injector import FlaskInjector
 
 class AtteqServiceFlask(Flask):
 
+    VERSION = '1.1.2'
+
     def __init__(self, import_name, static_path=None, static_url_path=None,
                  static_folder='static', template_folder='templates',
                  instance_path=None, instance_relative_config=False):
@@ -37,8 +39,8 @@ class AtteqServiceFlask(Flask):
     def get_version(self):
         v = self.config.get('VERSION')
         if v is None:
-            return '1.1'
+            return AtteqServiceFlask.VERSION
         else:
-            return '1.1' + "-" + v
+            return AtteqServiceFlask.VERSION + ":" + v
 
 service_application = AtteqServiceFlask("asl.application")
