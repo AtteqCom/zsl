@@ -36,10 +36,10 @@ class Performer(object):
     def set_responder(self, responder):
         self._responder = responder
 
-    @error_handler
     def _call_inner_function(self, a, kw):
         return self._f(*a, **kw)
 
+    @error_handler
     def __call__(self, *a, **kw):
         rv = self._call_inner_function(a, kw)
         responder = self._responder
