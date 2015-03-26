@@ -4,6 +4,10 @@ import java.text.Normalizer;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
+import org.apache.log4j.Logger;
+
 /**
  * String helper.
  */
@@ -13,6 +17,8 @@ public abstract class StringHelper {
 	private static final String REMOVE_ACCENT_PATTERN = "\\p{InCombiningDiacriticalMarks}+";
 	private static final String RANDOM_PATTERN = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	private static final String DOTS = "...";
+
+	private static final Logger logger = Logger.getLogger(StringHelper.class);
 
 	/**
 	 * Check if string is null or empty.
@@ -170,7 +176,12 @@ public abstract class StringHelper {
 		StringBuilder paramBuilder = new StringBuilder();
 		for (String p : params) {
 			paramBuilder.append('/');
-			paramBuilder.append(p);
+			try {
+				paramBuilder.append(URIUtil.encodePath(p));
+			} catch (URIException e) {
+				paramBuilder.append(p);
+				logger.error(String.format("Can not encode path part/parameters '%s'.",  p), e);
+			}
 		}
 		return paramBuilder.toString();
 	}
