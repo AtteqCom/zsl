@@ -282,7 +282,7 @@ class ModelResource(SqlSesionMixin):
         assert isinstance(ctx, ResourceQueryContext)
         fields = ctx.data
         row_id = ctx.get_row_id()
-        return self.update_one(row_id, fields)
+        return self._update_one_simple(row_id, fields)
 
     def _update_collection(self, ctx):
         '''
