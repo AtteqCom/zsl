@@ -178,6 +178,9 @@ class ModelResource(SqlSesionMixin):
 
     # Create implementation
     def _create_one(self, ctx):
+        '''
+        Creates an instance to be saved when a model is created.
+        '''
         assert isinstance(ctx, ResourceQueryContext)
 
         fields = dict_pick(ctx.data, self._model_columns)
@@ -185,6 +188,9 @@ class ModelResource(SqlSesionMixin):
         return model
 
     def _save_one(self, model, ctx):
+        '''
+        Saves the created instance.
+        '''
         assert isinstance(ctx, ResourceQueryContext)
 
         self._orm.add(model)
