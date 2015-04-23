@@ -15,6 +15,7 @@ import hashlib
 from functools import wraps
 from asl.cache.id_helper import IdHelper
 
+
 def log_output(f):
     '''
     Logs the output value.
@@ -27,6 +28,7 @@ def log_output(f):
         return res
 
     return wrapper_fn
+
 
 def json_input(f):
     '''

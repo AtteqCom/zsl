@@ -3,13 +3,11 @@ Created on 3.4.2013
 
 @author: Martin Babka
 '''
-from asl.application.service_application import service_application
+from asl.application.service_application import service_application as _app
 import injector
 from injector import BindingKey, reraise, CallError
 import inspect
 import functools
-
-_app = service_application
 
 def instantiate(cls):
     injector = _app.get_injector()
