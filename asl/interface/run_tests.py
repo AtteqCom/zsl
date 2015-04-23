@@ -20,6 +20,7 @@ set_default_responder(identity_responder)
 # Set up necessities.
 test_module = importlib.import_module(service_application.config['TEST_PACKAGE'])
 
+
 # Run it!
 def main():
     unittest.main(module=test_module)

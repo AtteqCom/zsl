@@ -10,7 +10,10 @@ import sys
 import os
 import json
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'));
+if __name__ == "__main__":
+    # replace current dir in path with asl home
+    sys.path[0] = os.path.join(os.path.dirname(__file__), '..', '..')
+
 from asl.interface.importer import append_pythonpath
 append_pythonpath()
 
@@ -25,9 +28,11 @@ web_application_loader.load()
 
 conf = service_application.config
 
+
 class Job():
     def __init__(self, data):
         self.data = {'data': data}
+
 
 def run_task(task, data = None):
     if not isinstance(data, str) and not isinstance(data, unicode):
@@ -46,9 +51,11 @@ def run_task(task, data = None):
     # Run the task.
     return jc.task_callable(jc.task_data)
 
+
 def run_shell():
     import bpython
     bpython.embed()
+
 
 def run_webapp():
     service_application.run(
