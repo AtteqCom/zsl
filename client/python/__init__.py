@@ -4,7 +4,6 @@ Created on 9.8.2013
 @author: Martin Babka
 '''
 from abc import abstractmethod
-from django.utils.simplejson.decoder import JSONDecoder
 import json
 import gearman
 
@@ -80,7 +79,7 @@ class TaskResultDecorator:
 class JsonTaskResult(TaskResult, TaskResultDecorator):
     def get_result(self):
         result = self._task_result.get_result()
-        return JSONDecoder.decode(self, result)
+        return json.JSONDecoder.decode(self, result)
 
 class Service:
     @abstractmethod
@@ -111,7 +110,7 @@ class Service:
         return task_result
 
 class GearmanService(Service):
-    def __init__(self, gearman_config, security_config):
+    def __init__(self, gearman_config, security_config=None):
         self._gearman_config = gearman_config
         self._security_config = security_config
         self._gearman_client = gearman.client.GearmanClient(self._gearman_config['HOST'])
