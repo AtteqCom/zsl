@@ -4,6 +4,7 @@ Created on 9.8.2013
 @author: Martin Babka
 '''
 from abc import abstractmethod
+
 import hashlib
 import json
 import random
@@ -180,7 +181,7 @@ class Service:
         return self._security_config['SECURITY_TOKEN']
 
 class GearmanService(Service):
-    def __init__(self, gearman_config, security_config):
+    def __init__(self, gearman_config, security_config=None):
         self._gearman_config = gearman_config
         self._security_config = security_config
         self._gearman_client = gearman.client.GearmanClient(self._gearman_config['HOST'])
