@@ -5,14 +5,23 @@ from asl.utils.params_helper import required_params
 
 __author__ = 'Peter Morihladko'
 
+
 def background_task_method(task):
     """
-    Decorate a function as a background task (called with help of gearman)
+    Decorate an object method as a background task (called with help of
+    gearman)
+
+    You have to create a task which will handle the gearman call. The
+    method arguments will be encoded as JSON.
 
     :param task: name of the task
     :type task: str
     :return: decorated function
     """
+
+    # TODO ako vysledok vrat nejaky JOB ID, aby sa dalo checkovat na pozadi
+
+    # TODO vytvorit este vseobecny background_task nielen pre metody
 
     def decorator_fn(fn):
         if 'GEARMAN' not in app.config or 'host' not in app.config['GEARMAN'] or 'GEARMAN_TASK_NAME' not in app.config:
@@ -26,6 +35,7 @@ def background_task_method(task):
 
         @wraps(fn)
         def background_task_decorator(*args, **kwargs):
+            # prvy args je self
             t = RawTask(task, dict(method=fn.__name__, args=args[1:], kwargs=kwargs))
 
             t_result = gearman.call(t, [JsonTask])
