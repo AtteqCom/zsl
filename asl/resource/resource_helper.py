@@ -31,7 +31,7 @@ def filter_from_url_arg(model_cls, query, arg):
                 method = m
 
         if operator is None:
-            raise Exception('No operator in expression {1}.'.format(expr))
+            raise Exception('No operator in expression {0}.'.format(expr))
 
         (column_names, value) = expr.split(operator)
 
