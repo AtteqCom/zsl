@@ -23,26 +23,32 @@ def filter_from_url_arg(model_cls, query, arg):
         e_mapper = mapper
         e_model_cls = model_cls
 
-        for operator, method in operator_to_method.items():
-            if operator not in expr:
-                raise Exception('Operator {0} not in expression {1}.'.format(operator, expr))
+        operator = None
+        method = None
+        for op, m in operator_to_method.items():
+            if op in expr:
+                operator = op
+                method = m
 
-            (column_names, value) = expr.split(operator)
+        if operator is None:
+            raise Exception('Operator {0} not in expression {1}.'.format(operator, expr))
 
-            column_names = column_names.split('__')
-            value = value.strip()
+        (column_names, value) = expr.split(operator)
 
-            for column_name in column_names:
-                if column_name in e_mapper.relationships:
-                    joins.append(column_name)
-                    e_model_cls = e_mapper.attrs[column_name].mapper.class_
-                    e_mapper = class_mapper(e_model_cls)
+        column_names = column_names.split('__')
+        value = value.strip()
 
-            if hasattr(e_model_cls, column_name):
-                column = getattr(e_model_cls, column_name)
-                exprs.append(getattr(column, method)(value))
-            else:
-                raise Exception('Invalid property {0} in class {1}.'.format(column_name, e_model_cls))
+        for column_name in column_names:
+            if column_name in e_mapper.relationships:
+                joins.append(column_name)
+                e_model_cls = e_mapper.attrs[column_name].mapper.class_
+                e_mapper = class_mapper(e_model_cls)
+
+        if hasattr(e_model_cls, column_name):
+            column = getattr(e_model_cls, column_name)
+            exprs.append(getattr(column, method)(value))
+        else:
+            raise Exception('Invalid property {0} in class {1}.'.format(column_name, e_model_cls))
 
 
     return query.join(*joins).filter(*exprs)
