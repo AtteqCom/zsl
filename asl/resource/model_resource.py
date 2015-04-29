@@ -139,8 +139,8 @@ class ModelResource(SqlSesionMixin):
             return self._get_collection_desc(ctx)
 
         else:
-            if 'page' in ctx.params:
-                page_to_offset(ctx.params)
+            if 'page' in ctx.args:
+                page_to_offset(ctx.args)
 
             return self._get_collection(ctx)
 
