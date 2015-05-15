@@ -1,10 +1,7 @@
 #!/usr/bin/python
 
-import sys
-import os
-
-if __name__ == "__main__":
-    sys.path[0] = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+from importer import append_asl_path_to_pythonpath
+append_asl_path_to_pythonpath()
 
 from asl.interface.run import run_webapp
 

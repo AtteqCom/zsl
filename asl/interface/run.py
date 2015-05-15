@@ -6,25 +6,15 @@ Created on 2.1.2015
 @author: Peter Morihladko, Martin Babka
 '''
 
+# Initialize
+from .importer import initialize_web_application
+initialize_web_application()
+
 import sys
-import os
 import json
-
-if __name__ == "__main__":
-    # replace current dir in path with asl home
-    sys.path[0] = os.path.join(os.path.dirname(__file__), '..', '..')
-
-from asl.interface.importer import append_pythonpath
-append_pythonpath()
-
 from asl.router import task_router
 from asl.task.job_context import JobContext
-from asl.interface.webservice import web_application_loader
-
-# Now import the application and the remaining stuff.
 from asl.application import service_application
-service_application.initialize_dependencies()
-web_application_loader.load()
 
 conf = service_application.config
 
