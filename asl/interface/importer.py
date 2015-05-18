@@ -1,6 +1,9 @@
 '''
 Created on 28.3.2013
 
+The modules deals with the initialization of the basics - python path and then loads and initializes the application
+if necessary.
+
 @author: Martin Babka
 '''
 
@@ -8,6 +11,9 @@ import os
 import sys
 
 def _append_application_pythonpath():
+    '''
+    Appends application to python path.
+    '''
     app_package_path = os.environ.get('APPLICATION_PACKAGE_PATH')
 
     if app_package_path is None:
@@ -16,6 +22,9 @@ def _append_application_pythonpath():
     sys.path.append(app_package_path)
 
 def _append_pythonpath():
+    '''
+    Appends required paths to python path. Actually adds the application to python path.
+    '''
     _append_application_pythonpath()
 
 _skip_appending_asl_path = False
