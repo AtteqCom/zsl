@@ -35,6 +35,14 @@ def _append_asl_path_to_pythonpath():
 
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
+    # Remove the path which could collide with the main libraries.
+    to_remove = []
+    for pa in sys.path:
+        if os.path.abspath(pa) == os.path.abspath(os.path.dirname(__file__)):
+            to_remove.append(pa)
+    for pa in to_remove:
+        sys.path.remove(pa)
+
 def skip_appending_asl_path_to_pythonpath():
     global _skip_appending_asl_path
     _skip_appending_asl_path = True
