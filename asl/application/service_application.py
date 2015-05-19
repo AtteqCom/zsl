@@ -5,8 +5,11 @@ asl.vendor.do_init()
 from flask_injector import FlaskInjector
 
 class AtteqServiceFlask(Flask):
+    '''
+    Atteq Service Flask application.
+    '''
 
-    VERSION = '1.1.2'
+    VERSION = '1.1.3'
 
     def __init__(self, import_name, static_path=None, static_url_path=None,
                  static_folder='static', template_folder='templates',

@@ -26,3 +26,5 @@ syntax: regexp
 ^client/java/\.project$
 ^client/java/\.settings
 ^client/java/target
+^docs/_build$
+
