@@ -3,20 +3,26 @@ Created on 20.12.2012
 
 @author: Martin Babka
 '''
-import gearman
 
-# Append the right path to the PYTHONPATH for the CGI script to work.
-import os
+# Initialize app
+import importer
+importer.append_asl_path_to_pythonpath()
+from asl.interface.importer import initialize_cli_application
+initialize_cli_application()
+
 import sys
+import gearman
 import json
-sys.path.append(os.path.abspath('../../'))
-
-from asl.application.service_application import service_application
-app = service_application
+from asl.application.service_application import service_application as app
 
 if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        sys.stderr.write("Usage: task_filler.py <task name> <task data (file:// for file input, otherwise raw data)>\n")
+        exit(1)
+
     print "Initializing client."
     gm_client = gearman.GearmanClient(["{0}:{1}".format(app.config['GEARMAN']['host'], app.config['GEARMAN']['port'])])
+
     print "Client initialized."
     json_data = sys.argv[2]
     if json_data.startswith("file://"):

@@ -1,11 +1,16 @@
 '''
-Generates the API documentation suitable for the apiari.io. It parses all the files and finds the apiari definitions
+Generates the API documentation suitable for the apiari.io. It parses all the files and finds the apiari.io definitions
 in the documentary comments. Then outputs it to a file.
 
 Created on 21.11.2014
 
 @author: Martin Babka
 '''
+
+import importer
+importer.append_asl_path_to_pythonpath()
+from asl.interface.importer import initialize_cli_application
+initialize_cli_application
 
 import pydoc
 import inspect
@@ -14,7 +19,6 @@ from asl.application import service_application
 from asl.router.method import get_method_packages
 import sys
 import os
-service_application.initialize_dependencies()
 from asl.router.task import TaskRouter
 import importlib
 

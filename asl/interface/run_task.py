@@ -1,11 +1,8 @@
-import sys
-import os
-
-if __name__ == "__main__":
-    # replace current dir to asl home
-    sys.path[0] = os.path.join(os.path.dirname(__file__), '..', '..')
+from importer import initialize_cli_application
+initialize_cli_application()
 
 from asl.interface.run import run_task
+import sys
 
 # Run it!
 if __name__ == "__main__":
