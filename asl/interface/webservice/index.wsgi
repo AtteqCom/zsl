@@ -2,6 +2,7 @@
 
 import os
 from asl.interface.importer import initialize_web_application
+from asl.application.service_application import service_application
 
 app = None
 
