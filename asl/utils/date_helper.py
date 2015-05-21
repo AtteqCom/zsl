@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-Created on 10.7.2013
+:mod:`asl.utils.date_helper`
 
 .. moduleauthor:: Martin Babka
 '''

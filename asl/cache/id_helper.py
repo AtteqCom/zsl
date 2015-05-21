@@ -1,5 +1,5 @@
 '''
-Created on 12.12.2012
+:mod:`asl.cache.id_helper`
 
 .. moduleauthor:: Martin Babka
 '''

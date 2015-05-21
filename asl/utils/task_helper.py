@@ -1,5 +1,5 @@
 '''
-Created on 22.1.2013
+:mod:`asl.utils.task_helper`
 
 .. moduleauthor:: Martin Babka
 '''

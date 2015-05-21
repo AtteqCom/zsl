@@ -1,5 +1,5 @@
 '''
-Created on Aug 15, 2013
+:mod:`asl.utils.rss`
 
 .. moduleauthor:: Peter Morihladko
 '''

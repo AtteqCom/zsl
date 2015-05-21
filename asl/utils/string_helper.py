@@ -1,5 +1,5 @@
 '''
-Created on 15.12.2012
+:mod:`asl.utils.string_helper`
 
 .. moduleauthor:: Martin Babka
 '''

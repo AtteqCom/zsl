@@ -1,5 +1,5 @@
 '''
-Created on 17.3.2015
+:mod:`asl.interface.run_tests`
 
 .. moduleauthor:: Martin Babka
 '''

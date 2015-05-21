@@ -1,5 +1,5 @@
 '''
-Created on 14.12.2012
+:mod:`asl.task.task_data`
 
 .. moduleauthor:: Martin Babka
 '''

@@ -1,5 +1,5 @@
 '''
-Created on 8.7.2013
+:mod:`asl.utils.reflection_helper`
 
 .. moduleauthor:: Martin Babka
 '''

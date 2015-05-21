@@ -1,5 +1,5 @@
 '''
-Created on Jan 7, 2014
+:mod:`asl.utils.flask_decorator`
 
 .. moduleauthor:: Peter Morihladko
 '''

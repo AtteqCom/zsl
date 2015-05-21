@@ -1,5 +1,5 @@
 """
-Created on Mar 4, 2015
+:mod:`asl.utils.command_dispatcher`
 
 .. moduleauthor:: peter morihladko
 """

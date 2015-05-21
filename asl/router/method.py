@@ -1,5 +1,5 @@
 '''
-Created on 25.11.2014
+:mod:`asl.router.method`
 
 .. moduleauthor:: Martin Babka
 '''

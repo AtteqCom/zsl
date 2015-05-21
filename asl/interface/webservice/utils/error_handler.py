@@ -1,5 +1,5 @@
 '''
-Created on 25.11.2014
+:mod:`asl.interface.webservice.utils.error_handler`
 
 .. moduleauthor:: Martin Babka
 '''

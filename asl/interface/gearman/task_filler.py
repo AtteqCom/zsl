@@ -1,5 +1,5 @@
 '''
-Created on 20.12.2012
+:mod:`asl.interface.gearman.task_filler`
 
 .. moduleauthor:: Martin Babka
 '''

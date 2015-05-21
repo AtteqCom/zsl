@@ -1,5 +1,5 @@
 '''
-Created on 8.4.2013
+:mod:`asl.db.model.app_model_json_decoder`
 
 .. moduleauthor:: Martin Babka
 '''

@@ -1,5 +1,5 @@
 '''
-Created on 8.4.2013
+:mod:`asl.utils.cache_helper`
 
 .. moduleauthor:: Martin Babka
 '''

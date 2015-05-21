@@ -1,5 +1,5 @@
 '''
-Created on 30.12.2012
+:mod:`asl.db.helpers.query_helper`
 
 .. moduleauthor:: Martin Babka
 '''

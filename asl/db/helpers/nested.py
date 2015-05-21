@@ -1,5 +1,5 @@
 '''
-Created on Sep 23, 2013
+:mod:`asl.db.helpers.nested`
 
 TODO presun do asl.db.helpers
 

@@ -1,5 +1,5 @@
 '''
-Created on 18.5.2015
+:mod:`asl.interface.tools.importer`
 
 .. moduleauthor:: Martin Babka
 '''

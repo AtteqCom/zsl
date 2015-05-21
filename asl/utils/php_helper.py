@@ -1,5 +1,5 @@
 '''
-Created on Aug 22, 2013
+:mod:`asl.utils.php_helper`
 
 .. moduleauthor:: Peter Morihladko
 

@@ -1,5 +1,5 @@
 '''
-Created on 3.4.2013
+:mod:`asl.utils.injection_helper`
 
 .. moduleauthor:: Martin Babka
 '''

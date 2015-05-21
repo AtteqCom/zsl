@@ -1,5 +1,5 @@
 '''
-Created on Sep 9, 2013
+:mod:`asl.resource.resource_helper`
 
 .. moduleauthor:: Peter Morihladko
 '''

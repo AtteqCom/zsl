@@ -1,5 +1,5 @@
 '''
-Created on 12.12.2012
+:mod:`asl.interface.gearman.worker`
 
 .. moduleauthor:: Martin
 '''

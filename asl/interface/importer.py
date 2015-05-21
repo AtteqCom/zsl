@@ -1,5 +1,5 @@
 '''
-Created on 28.3.2013
+:mod:`asl.interface.importer`
 
 The modules deals with the initialization of the basics - python path and then loads and initializes the application
 if necessary.

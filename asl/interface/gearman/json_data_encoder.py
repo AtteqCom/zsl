@@ -1,5 +1,5 @@
 '''
-Created on 22.12.2012
+:mod:`asl.interface.gearman.json_data_encoder`
 
 .. moduleauthor:: Martin Babka
 '''

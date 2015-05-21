@@ -2,7 +2,7 @@
 Generates the API documentation suitable for the apiari.io. It parses all the files and finds the apiari.io definitions
 in the documentary comments. Then outputs it to a file.
 
-Created on 21.11.2014
+:mod:`asl.interface.tools.generate_apiari_doc`
 
 .. moduleauthor:: Martin Babka
 '''

@@ -1,5 +1,5 @@
 '''
-Created on 15.12.2012
+:mod:`asl.interface.gearman.run_worker`
 
 .. moduleauthor:: Martin Babka
 '''

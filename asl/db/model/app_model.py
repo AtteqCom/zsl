@@ -1,5 +1,5 @@
 '''
-Created on 28.3.2013
+:mod:`asl.db.model.app_model`
 
 .. moduleauthor:: Martin Babka
 '''

@@ -1,5 +1,5 @@
 '''
-Created on 24.1.2013
+:mod:`asl.service.service`
 
 .. moduleauthor:: Martin Babka
 '''

@@ -1,5 +1,5 @@
 '''
-Created on Oct 23, 2013
+:mod:`asl.utils.type_helper`
 
 .. moduleauthor:: peter
 '''

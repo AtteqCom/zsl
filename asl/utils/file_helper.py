@@ -1,5 +1,5 @@
 '''
-Created on Dec 13, 2013
+:mod:`asl.utils.file_helper`
 
 .. moduleauthor:: Peter Morihladko
 '''

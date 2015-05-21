@@ -3,7 +3,7 @@ REST for a DB model.
 
 /articles/
 
-Created on Sep 5, 2013
+:mod:`asl.resource.model_resource`
 
 .. moduleauthor:: Peter Morihladko
 '''

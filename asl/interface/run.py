@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 '''
-Created on 2.1.2015
+:mod:`asl.interface.run`
 
 .. moduleauthor:: Peter Morihladko, Martin Babka
 '''

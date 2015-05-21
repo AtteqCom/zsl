@@ -1,5 +1,5 @@
 '''
-Created on Nov 9, 2013
+:mod:`asl.utils.deploy.js_model_generator`
 
 .. moduleauthor:: Peter Morihladko
 '''
