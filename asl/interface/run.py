@@ -3,7 +3,7 @@
 '''
 Created on 2.1.2015
 
-@author: Peter Morihladko, Martin Babka
+.. moduleauthor:: Peter Morihladko, Martin Babka
 '''
 
 # Initialize

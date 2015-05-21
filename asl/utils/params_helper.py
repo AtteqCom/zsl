@@ -1,7 +1,7 @@
 """
 Helpers for parameter handling
 
-@author Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 """
 
 import inspect

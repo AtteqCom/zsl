@@ -1,7 +1,7 @@
 '''
 Created on 8.4.2013
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from json.decoder import JSONDecoder, WHITESPACE
 import importlib

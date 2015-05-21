@@ -5,7 +5,7 @@ REST for a DB model.
 
 Created on Sep 5, 2013
 
-@author: Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 '''
 
 from sqlalchemy.orm import class_mapper

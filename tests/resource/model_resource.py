@@ -1,7 +1,7 @@
 '''
 Created on May 14, 2014
 
-@author: peter
+.. moduleauthor:: peter
 '''
 import unittest
 

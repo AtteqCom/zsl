@@ -1,7 +1,7 @@
 '''
 Created on 28.3.2013
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from json.encoder import JSONEncoder
 from asl.db.model import AppModel

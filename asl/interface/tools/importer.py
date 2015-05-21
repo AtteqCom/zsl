@@ -1,7 +1,7 @@
 '''
 Created on 18.5.2015
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 import sys

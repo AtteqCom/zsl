@@ -1,7 +1,7 @@
 '''
 Created on 28.3.2013
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 from datetime import datetime, date

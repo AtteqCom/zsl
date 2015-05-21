@@ -1,7 +1,7 @@
 """
 Created on Mar 4, 2015
 
-@author: peter morihladko
+.. moduleauthor:: peter morihladko
 """
 
 import inspect

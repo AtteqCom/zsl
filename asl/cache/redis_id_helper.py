@@ -1,7 +1,7 @@
 '''
 Created on 12.12.2012
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.cache.id_helper import IdHelper, decoder_identity, encoder_identity
 from asl.utils.injection_helper import inject

@@ -2,7 +2,7 @@
 '''
 Created on 10.7.2013
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from datetime import date, timedelta
 

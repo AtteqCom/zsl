@@ -1,7 +1,7 @@
 '''
 Created on 24.1.2013
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 from asl.application.service_application import AtteqServiceFlask, service_application

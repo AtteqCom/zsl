@@ -1,7 +1,7 @@
 '''
-Modul na ulahcenie prace s redisom 
+Modul na ulahcenie prace s redisom
 
-@author Peter Morihladko
+.. moduleauthor::  Peter Morihladko
 '''
 
 from functools import partial

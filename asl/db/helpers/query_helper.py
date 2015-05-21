@@ -1,7 +1,7 @@
 '''
 Created on 30.12.2012
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.db.helpers.pagination import Pagination
 from asl.db.helpers.sorter import Sorter

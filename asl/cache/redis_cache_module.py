@@ -1,7 +1,7 @@
 '''
 Created on 6.4.2013
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.cache.cache_module import CacheModule
 import redis

@@ -3,7 +3,7 @@ Created on Jan 6, 2014
 
 one base the rule them all
 
-@author: Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 '''
 
 from sqlalchemy.ext.declarative import declarative_base

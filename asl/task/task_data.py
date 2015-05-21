@@ -1,7 +1,7 @@
 '''
 Created on 14.12.2012
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 class TaskData:
     def __init__(self, app, data):

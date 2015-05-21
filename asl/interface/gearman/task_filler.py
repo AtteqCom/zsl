@@ -1,7 +1,7 @@
 '''
 Created on 20.12.2012
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 # Initialize app

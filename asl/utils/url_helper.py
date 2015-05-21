@@ -1,7 +1,7 @@
 '''
 Created on 21.01.2013
 
-@author: Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 '''
 import unicodedata
 import re

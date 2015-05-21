@@ -4,7 +4,7 @@ in the documentary comments. Then outputs it to a file.
 
 Created on 21.11.2014
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 import importer

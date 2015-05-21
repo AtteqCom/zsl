@@ -1,7 +1,7 @@
 '''
 Created on Sep 9, 2013
 
-@author: Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 '''
 
 from sqlalchemy.orm import class_mapper, joinedload

@@ -1,7 +1,7 @@
 '''
 Created on 3.7.2013
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.utils.model_helper import update_model
 

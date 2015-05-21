@@ -1,7 +1,7 @@
 '''
 Created on 17.3.2015
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 from importer import initialize_cli_application

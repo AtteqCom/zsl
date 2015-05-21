@@ -1,7 +1,7 @@
 '''
 Created on 22.12.2012
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 import json
 import gearman

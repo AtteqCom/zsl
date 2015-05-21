@@ -3,7 +3,7 @@ Created on Sep 23, 2013
 
 TODO presun do asl.db.helpers
 
-@author: peter
+.. moduleauthor:: peter
 '''
 
 def nested_model(model, nested_fields):

@@ -1,7 +1,7 @@
 '''
 Created on Nov 9, 2013
 
-@author: Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 '''
 
 import json

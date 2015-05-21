@@ -1,7 +1,7 @@
 '''
 Created on 25.11.2014
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.interface.webservice.utils.response_headers import headers_appender
 from asl.interface.webservice.utils.error_handler import error_handler

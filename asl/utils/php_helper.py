@@ -1,7 +1,7 @@
 '''
 Created on Aug 22, 2013
 
-@author: Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 
 Some handy function when dealing with code written in PHP
 '''

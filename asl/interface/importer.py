@@ -4,7 +4,7 @@ Created on 28.3.2013
 The modules deals with the initialization of the basics - python path and then loads and initializes the application
 if necessary.
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 import os

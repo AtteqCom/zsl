@@ -1,7 +1,7 @@
 '''
 Created on 8.4.2013
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.task.task_data import TaskData
 from asl.application.service_application import service_application
