@@ -1,8 +1,11 @@
 '''
-Created on 24.1.2013
+:mod:`asl.application.initializers.application_initializer` -- Initialization of the application.
 
-@author: Martin Babka
+   :platform: Unix, Windows
+   :synopsis: The Atteq Service Layer
+.. moduleauthor:: Martin Babka <babka@atteq.com>
 '''
+
 import asl.vendor
 import logging
 from asl.application.service_application import service_application, AtteqServiceFlask

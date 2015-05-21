@@ -1,8 +1,11 @@
 '''
-Created on 24.1.2013
+:mod:`asl.application.initializers.cache_initializer` -- Initialization of the cache.
 
-@author: Martin Babka
+   :platform: Unix, Windows
+   :synopsis: The Atteq Service Layer
+.. moduleauthor:: Martin Babka <babka@atteq.com>
 '''
+
 import logging
 from injector import singleton
 from asl.application.initializers import injection_module

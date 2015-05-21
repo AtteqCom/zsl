@@ -28,3 +28,7 @@ syntax: regexp
 ^client/java/target
 ^docs/_build$
 
+
+syntax: regexp
+^docs/imports\.py$
+^docs/make\.bat$

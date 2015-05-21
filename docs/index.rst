@@ -11,12 +11,43 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+.. automodule:: asl
+   :members:
+   :undoc-members:
+
+.. automodule:: asl.router
+   :members:
+   :undoc-members:
 
 .. automodule:: asl.router.method
    :members:
    :undoc-members:
 
 .. automodule:: asl.router.task
+   :members:
+   :undoc-members:
+
+.. automodule:: asl.interface
+   :members:
+   :undoc-members:
+
+.. automodule:: asl.interface.webservice
+   :members:
+   :undoc-members:
+
+.. automodule:: asl.interface.webservice.utils
+   :members:
+   :undoc-members:
+
+.. automodule:: asl.interface.webservice.performers
+   :members:
+   :undoc-members:
+
+.. automodule:: asl.interface.tools
+   :members:
+   :undoc-members:
+
+.. automodule:: asl.interface.gearman
    :members:
    :undoc-members:
 
@@ -113,6 +144,14 @@ Contents:
    :undoc-members:
 
 .. automodule:: asl.utils.reflection_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: asl.utils
+   :members:
+   :undoc-members:
+
+.. automodule:: asl.utils.deploy
    :members:
    :undoc-members:
 
@@ -220,6 +259,10 @@ Contents:
    :members:
    :undoc-members:
 
+.. automodule:: asl.application.initializers
+   :members:
+   :undoc-members:
+
 .. automodule:: asl.application.initializers.application_initializer
    :members:
    :undoc-members:
@@ -320,55 +363,11 @@ Contents:
    :members:
    :undoc-members:
 
-.. automodule:: asl
-   :members:
-   :undoc-members:
-
-.. automodule:: asl.router
-   :members:
-   :undoc-members:
-
-.. automodule:: asl.interface
-   :members:
-   :undoc-members:
-
-.. automodule:: asl.interface.webservice
-   :members:
-   :undoc-members:
-
-.. automodule:: asl.interface.webservice.utils
-   :members:
-   :undoc-members:
-
-.. automodule:: asl.interface.webservice.performers
-   :members:
-   :undoc-members:
-
-.. automodule:: asl.interface.tools
-   :members:
-   :undoc-members:
-
-.. automodule:: asl.interface.gearman
-   :members:
-   :undoc-members:
-
 .. automodule:: asl.resource
    :members:
    :undoc-members:
 
-.. automodule:: asl.utils
-   :members:
-   :undoc-members:
-
-.. automodule:: asl.utils.deploy
-   :members:
-   :undoc-members:
-
 .. automodule:: asl.application
-   :members:
-   :undoc-members:
-
-.. automodule:: asl.application.initializers
    :members:
    :undoc-members:
 
@@ -393,6 +392,10 @@ Contents:
    :undoc-members:
 
 .. automodule:: asl.task
+   :members:
+   :undoc-members:
+
+.. automodule:: client.python.asl.client
    :members:
    :undoc-members:
 

@@ -1,3 +1,11 @@
+'''
+:mod:`asl.application.initializers.logger_initializer` -- Initialization of the logger.
+
+   :platform: Unix, Windows
+   :synopsis: The Atteq Service Layer
+.. moduleauthor:: Martin Babka <babka@atteq.com>
+'''
+
 from asl.application.service_application import service_application
 from flask import Config
 import logging
@@ -65,7 +73,7 @@ class LoggerInitializer:
                     logger.addHandler(handlers[handler_name])
                 except Exception as e:
                     errors.append(e)
-            
+
             logger.propagate = logger_settings.get('propagate', logger.propagate)
 
         self._check_deprecated_config_properties(config)

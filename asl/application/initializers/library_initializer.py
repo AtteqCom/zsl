@@ -1,8 +1,11 @@
 '''
-Created on 27.2.2015
+:mod:`asl.application.initializers.library_initializer` -- Initialization of the external libraries.
 
-@author: Martin Babka
+   :platform: Unix, Windows
+   :synopsis: The Atteq Service Layer
+.. moduleauthor:: Martin Babka <babka@atteq.com>
 '''
+
 import logging
 from flask import Config
 from asl.application.initializers import injection_module

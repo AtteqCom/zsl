@@ -1,7 +1,13 @@
 '''
-Created on 9.8.2013
+:mod:`client.python.asl.client` -- ASL python client module
+===========================================================
 
-@author: Martin Babka
+Python client which allows to connect to web and gearman service and delivers tasks to them.
+For usage of this module just use `import asl.client` and add the path `client/python` to `PYTHON_PATH`.
+
+   :platform: Unix, Windows
+   :synopsis: The Atteq Service Layer python client.
+.. moduleauthor:: Martin Babka <babka@atteq.com>
 '''
 from abc import abstractmethod
 
@@ -128,11 +134,11 @@ class Service:
     def _inner_call(self, name, data):
         '''
         Make request to service layer and returns response to this request.
-        
+
         :param name: name of the task
         :type name: str
         :param data: task data
-        
+
         :return response to task request on service layer
         '''
         pass
@@ -140,14 +146,14 @@ class Service:
     def call(self, task, decorators = []):
         '''
         Call given task on service layer.
-         
+
         :param task: task to be called. task will be decorated with
             TaskDecorator's contained in 'decorators' list
         :type task: instance of Task class
         :param decorators: list of TaskDecorator's / TaskResultDecorator's
             inherited classes
         :type decorators: list
-        
+
         :return task_result: result of task call decorated with TaskResultDecorator's
             contained in 'decorators' list
         :type task_result: TaskResult instance

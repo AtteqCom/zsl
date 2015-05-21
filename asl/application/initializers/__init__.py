@@ -1,3 +1,13 @@
+'''
+:mod:`asl.application.initializers` -- ASL initializers
+=======================================================
+
+   :platform: Unix, Windows
+   :synopsis: The Atteq Service Layer initialization infrastructure
+   
+.. moduleauthor:: Martin Babka <babka@atteq.com>
+'''
+
 import asl.vendor
 
 injection_views = []
