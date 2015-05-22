@@ -68,24 +68,37 @@ operator_to_method = {
 
 def order_from_url_arg(model_cls, query, arg):
     fields = arg.split(',')
-
+    mapper = class_mapper(model_cls)
+    
     orderings = []
+    joins = []
     for field in fields:
+        e_mapper = mapper
+        e_model_cls = model_cls
+        
         if field[0] == '-':
-            column_name = field[1:]
+            column_names = field[1:]
             direction = 'desc'
         else:
-            column_name = field
+            column_names = field
             direction = 'asc'
+            
+        column_names = column_names.split('__')
+        
+        for column_name in column_names:
+            if column_name in e_mapper.relationships:
+                joins.append(column_name)
+                e_model_cls = e_mapper.attrs[column_name].mapper.class_
+                e_mapper = class_mapper(e_model_cls)
 
-        if hasattr(model_cls, column_name):
-            column = getattr(model_cls, column_name)
+        if hasattr(e_model_cls, column_name):
+            column = getattr(e_model_cls, column_name)
             order_by = asc(column) if direction == 'asc' else desc(column)
             orderings.append(order_by)
         else:
             raise Exception('Invalid property {0} in class {1}.'.format(column_name, model_cls))
 
-    return query.order_by(*orderings)
+    return query.join(*joins).order_by(*orderings)
 
 def create_related_tree(fields):
     tree = {}
