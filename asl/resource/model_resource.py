@@ -232,7 +232,7 @@ class ModelResource(SqlSesionMixin):
         return self._read_collection_count(q, ctx)
 
     def _read_collection_count(self, q, ctx):
-        return q.count()
+        return q.with_entities(self._model_pk).count()
 
     def _get_collection(self, ctx):
         assert isinstance(ctx, ResourceQueryContext)
