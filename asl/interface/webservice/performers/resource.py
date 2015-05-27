@@ -1,6 +1,5 @@
 from asl.application.service_application import service_application
 from flask import request, Response
-#from asl.task.task_data import TaskData
 from asl.utils.resource_helper import parse_resource_path, get_resource_task
 import json
 from asl.db.model import AppModelJSONEncoder

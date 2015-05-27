@@ -1,11 +1,3 @@
-'''
-:mod:`asl.application.initializers.application_initializer` -- Initialization of the application.
-
-   :platform: Unix, Windows
-   :synopsis: The Atteq Service Layer
-.. moduleauthor:: Martin Babka <babka@atteq.com>
-'''
-
 import asl.vendor
 import logging
 from asl.application.service_application import service_application, AtteqServiceFlask
@@ -15,12 +7,13 @@ from asl.application.initializers import injection_module
 
 class ApplicationInitializer(object):
     '''
-    Application initializer - just for the injection capability.
+    :class:`asl.application.initializers.ApplicationInitializer` adds the injection capability of the application object. 
+    The application object is bound as `AtteqServiceFlask`.
     '''
 
     def initialize(self, binder):
         '''
-        Initialization method.
+        Initialization method which bounds the application object to `AtteqServiceFlask` key.
         '''
         binder.bind(
             AtteqServiceFlask,
@@ -33,4 +26,9 @@ class ApplicationInitializer(object):
 
 @injection_module
 def application_initializer_module(binder):
+    '''
+    Application initializer - just for the injection capability of the application object.
+    
+    See :class:`asl.application.initializers.ApplicationInitializer`.
+    '''
     ApplicationInitializer().initialize(binder)

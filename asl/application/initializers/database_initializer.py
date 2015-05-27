@@ -1,11 +1,3 @@
-'''
-:mod:`asl.application.initializers.database_initializer` -- Initialization of the database.
-
-   :platform: Unix, Windows
-   :synopsis: The Atteq Service Layer
-.. moduleauthor:: Martin Babka <babka@atteq.com>
-'''
-
 from flask import Config
 import asl.vendor
 import logging
