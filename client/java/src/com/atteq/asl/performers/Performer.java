@@ -1,14 +1,13 @@
 package com.atteq.asl.performers;
 
-import org.apache.http.client.methods.HttpUriRequest;
-
+import com.atteq.asl.HttpMethod;
 import com.atteq.asl.ServiceCallException;
 
 public interface Performer {
 
 	public String getUrl();
 
-	public HttpUriRequest getHttpMethod();
+	public HttpMethod getHttpMethod();
 
 	public String getBody() throws ServiceCallException;
 

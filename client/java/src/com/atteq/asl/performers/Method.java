@@ -1,8 +1,6 @@
 package com.atteq.asl.performers;
 
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.HttpPost;
-
+import com.atteq.asl.HttpMethod;
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.utils.StringHelper;
 
@@ -31,8 +29,8 @@ public class Method implements Performer {
 	}
 
 	@Override
-	public HttpUriRequest getHttpMethod() {
-		return new HttpPost();
+	public HttpMethod getHttpMethod() {
+		return HttpMethod.POST;
 	}
 
 	@Override

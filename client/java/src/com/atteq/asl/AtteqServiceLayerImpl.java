@@ -1,15 +1,11 @@
 package com.atteq.asl;
 
-import java.net.URI;
+import java.io.BufferedOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
@@ -24,6 +20,8 @@ import com.atteq.asl.tasks.JsonResultWithErrorTransformer;
 import com.atteq.asl.tasks.Task;
 import com.atteq.asl.tasks.TaskResult;
 import com.atteq.asl.tasks.TaskResultFactory;
+import com.atteq.asl.utils.StringHelper;
+import com.google.common.io.CharStreams;
 
 public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 
@@ -37,38 +35,41 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 	@Override
 	public <T, R extends Result<T>> R perform(Performer performer, ResultTransformer<T, R> resultTransformer, JavaType t) throws ServiceCallException {
 		try {
-			HttpUriRequest method = performer.getHttpMethod();
-			// TODO: Improve this with no cast.
-			((HttpRequestBase) method).setURI(new URI(String.format("%s/%s", serviceLayerUrl, performer.getUrl())));
+			URL url = new URL(String.format("%s/%s", serviceLayerUrl, performer.getUrl()));
 
-			assert method.getURI().toString().endsWith(performer.getUrl());
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			assert conn.getURL().toString().endsWith(performer.getUrl());
+			conn.setRequestMethod(performer.getHttpMethod().toString());
 
-			logger.debug(String.format("%s %s", method.getMethod(), performer.getUrl()));
-			if (method instanceof HttpEntityEnclosingRequest) {
-				String body = performer.getBody();
-				logger.debug(body);
+			String body = performer.getBody();
+			logger.debug(String.format("%s %s", performer.getHttpMethod(), performer.getUrl()));
+			logger.debug(body);
+			System.out.println(String.format("%s %s", performer.getHttpMethod(), performer.getUrl()));
+			System.out.println(body);
 
-				StringEntity entity = new StringEntity(body, performer.getEncoding());
-				entity.setContentType(performer.getContentType());
-				((HttpEntityEnclosingRequest) method).setEntity(entity);
+			if ((performer.getHttpMethod() == HttpMethod.POST || performer.getHttpMethod() == HttpMethod.PUT) && !StringHelper.isNullOrEmpty(body)) {
+				conn.setRequestProperty("Content-Type", performer.getContentType() + "; charset=" + performer.getEncoding());
+				conn.setRequestProperty("Content-Length", Integer.toString(body.getBytes().length));
+				conn.setDoOutput(true);
+				OutputStreamWriter os = new OutputStreamWriter(new BufferedOutputStream(conn.getOutputStream()));
+				os.write(body);
+				os.close();
 			}
-			CloseableHttpResponse response = HttpClients.createDefault().execute(method);
-			try {
-				if (getCheckAslVersion()) {
-					Header h = response.getFirstHeader("ASL-Flask-Layer");
-					String serverVersion = (h == null ? "" : h.getValue());
-					if (!serverVersion.startsWith(ASL_VERSION)) {
-						throw new ServiceCallException(String.format("The service version '%s' is not compatibile with the client version '%s'.",
-								serverVersion, ASL_VERSION));
-					}
+
+			if (getCheckAslVersion()) {
+				String h = conn.getHeaderField("ASL-Flask-Layer");
+				String serverVersion = (h == null ? "" : h);
+				if (!serverVersion.startsWith(ASL_VERSION)) {
+					throw new ServiceCallException(String.format("The service version '%s' is not compatibile with the client version '%s'.", serverVersion,
+							ASL_VERSION));
 				}
-
-				String result = EntityUtils.toString(response.getEntity());
-				logger.debug(String.format("Response:\n%s", result));
-				return resultTransformer.transform(performer, result, response.getStatusLine().getStatusCode(), t);
-			} finally {
-				response.close();
 			}
+
+			String result = CharStreams.toString(new InputStreamReader(conn.getResponseCode() == HTTP_STATUS_CODE_OK ? conn.getInputStream() : conn
+					.getErrorStream()));
+			logger.debug(String.format("Response:\n%s", result));
+			System.out.println(result);
+			return resultTransformer.transform(performer, result, conn.getResponseCode(), t);
 		} catch (Exception e) {
 			throw new ServiceCallException(String.format("Error when calling ASL. %s", e.getMessage()), e);
 		}
@@ -129,5 +130,7 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 	public void setCheckAslVersion(boolean checkAslVersion) {
 		this.checkAslVersion = checkAslVersion;
 	}
+
+	public static final int HTTP_STATUS_CODE_OK = 200;
 
 }

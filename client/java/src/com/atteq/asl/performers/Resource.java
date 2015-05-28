@@ -1,18 +1,14 @@
 package com.atteq.asl.performers;
 
-import java.net.URISyntaxException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.log4j.Logger;
 
+import com.atteq.asl.HttpMethod;
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.utils.JsonHelper;
 import com.atteq.asl.utils.StringHelper;
@@ -35,21 +31,16 @@ public class Resource implements Performer {
 
 	public static enum RequestType {
 
-		CREATE(HttpPost.class), READ(HttpGet.class), UPDATE(HttpPut.class), DELETE(HttpDelete.class);
+		CREATE(HttpMethod.POST), READ(HttpMethod.GET), UPDATE(HttpMethod.PUT), DELETE(HttpMethod.DELETE);
 
-		private final Class<? extends HttpUriRequest> method;
+		private final HttpMethod method;
 
-		RequestType(Class<? extends HttpUriRequest> method) {
+		RequestType(HttpMethod method) {
 			this.method = method;
 		}
 
-		public HttpUriRequest getMethod() {
-			try {
-				return this.method.newInstance();
-			} catch (Exception e) {
-				logger.error(e);
-				return null;
-			}
+		public HttpMethod getMethod() {
+			return this.method;
 		}
 
 	}
@@ -68,22 +59,24 @@ public class Resource implements Performer {
 
 	@Override
 	public String getUrl() {
-		try {
-			URIBuilder b = new URIBuilder(DEFAULT_RESOURCE_PREFIX + "/" + getName() + "/" + StringHelper.join("/", params));
+		StringBuilder sb = new StringBuilder(StringHelper.join("/", DEFAULT_RESOURCE_PREFIX, getName(), StringHelper.join("/", params)));
 
+		if (args.size() > 0) {
+			sb.append('?');
 			for (Entry<String, String> e : args.entrySet()) {
-				b.addParameter(e.getKey(), e.getValue());
+				try {
+					sb.append(String.format("%s=%s", URLEncoder.encode(e.getKey(), getEncoding()), URLEncoder.encode(e.getValue(), getEncoding())));
+				} catch (UnsupportedEncodingException ex) {
+					logger.error(ex);
+				}
 			}
-
-			return b.build().toString();
-		} catch (URISyntaxException e) {
-			logger.error(e);
-			return null;
 		}
+
+		return sb.toString();
 	}
 
 	@Override
-	public HttpUriRequest getHttpMethod() {
+	public HttpMethod getHttpMethod() {
 		return requestType.getMethod();
 	}
 

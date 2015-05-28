@@ -4,12 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.atteq.asl.HttpMethod;
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.utils.JsonHelper;
@@ -63,16 +62,21 @@ public class Task implements Performer {
 	}
 
 	@Override
-	public HttpUriRequest getHttpMethod() {
-		return new HttpPost();
+	public HttpMethod getHttpMethod() {
+		return HttpMethod.POST; 
 	}
 
 	@Override
 	public String getBody() throws ServiceCallException {
+		Object data = getData();
+		if (data == null) {
+			return null;
+		}
+		
 		ByteArrayOutputStream ss = new ByteArrayOutputStream();
 		ObjectMapper objectMapper = JsonHelper.createMapper();
 		try {
-			objectMapper.writeValue(ss, getData());
+			objectMapper.writeValue(ss, data);
 		} catch (JsonGenerationException e) {
 			throw new ServiceCallException("Could not generate JSON from the object data.", e);
 		} catch (JsonMappingException e) {
