@@ -159,4 +159,30 @@ public abstract class StringHelper {
 		}
 	}
 
+	/**
+	 * Joins the given {@code params} using delimiter.
+	 * 
+	 * @param delimiter
+	 *            Delimiter.
+	 * @param params
+	 *            The parameters to be joined.
+	 * @return The joined text.
+	 */
+	public static String join(String delimiter, String... params) {
+		if (params.length == 0) {
+			return "";
+		} else if (params.length == 1) {
+			return params[0];
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append(params[0]);
+			for (int i = 1; i < params.length; ++i) {
+				sb.append(delimiter);
+				sb.append(params[i]);
+			}
+			return sb.toString();
+		}
+
+	}
+
 }

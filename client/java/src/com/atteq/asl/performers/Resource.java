@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.utils.JsonHelper;
+import com.atteq.asl.utils.StringHelper;
 
 public class Resource implements Performer {
 
@@ -68,7 +69,7 @@ public class Resource implements Performer {
 	@Override
 	public String getUrl() {
 		try {
-			URIBuilder b = new URIBuilder(DEFAULT_RESOURCE_PREFIX + "/" + getName() + "/" + String.join("/", params));
+			URIBuilder b = new URIBuilder(DEFAULT_RESOURCE_PREFIX + "/" + getName() + "/" + StringHelper.join("/", params));
 
 			for (Entry<String, String> e : args.entrySet()) {
 				b.addParameter(e.getKey(), e.getValue());

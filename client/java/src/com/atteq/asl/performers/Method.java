@@ -4,6 +4,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.HttpPost;
 
 import com.atteq.asl.ServiceCallException;
+import com.atteq.asl.utils.StringHelper;
 
 public class Method implements Performer {
 
@@ -25,7 +26,7 @@ public class Method implements Performer {
 	@Override
 	public String getUrl() {
 		return params.length > 0 ? 
-			DEFAULT_METHOD_PREFIX + "/" + getName() + "/" + String.join("/", params) : 
+			DEFAULT_METHOD_PREFIX + "/" + getName() + "/" + StringHelper.join("/", params) : 
 			DEFAULT_METHOD_PREFIX + "/" + getName();
 	}
 
