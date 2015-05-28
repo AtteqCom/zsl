@@ -1,21 +1,20 @@
 package com.atteq.asl.performers;
 
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.util.URIUtil;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.log4j.Logger;
 
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.utils.JsonHelper;
-import com.atteq.asl.utils.StringHelper;
 
 public class Resource implements Performer {
 
@@ -35,16 +34,21 @@ public class Resource implements Performer {
 
 	public static enum RequestType {
 
-		CREATE(new PostMethod()), READ(new GetMethod()), UPDATE(new PutMethod()), DELETE(new DeleteMethod());
+		CREATE(HttpPost.class), READ(HttpGet.class), UPDATE(HttpPut.class), DELETE(HttpDelete.class);
 
-		private final HttpMethod method;
+		private final Class<? extends HttpUriRequest> method;
 
-		RequestType(HttpMethod method) {
+		RequestType(Class<? extends HttpUriRequest> method) {
 			this.method = method;
 		}
 
-		public HttpMethod getMethod() {
-			return method;
+		public HttpUriRequest getMethod() {
+			try {
+				return this.method.newInstance();
+			} catch (Exception e) {
+				logger.error(e);
+				return null;
+			}
 		}
 
 	}
@@ -63,22 +67,22 @@ public class Resource implements Performer {
 
 	@Override
 	public String getUrl() {
-		StringBuilder query = new StringBuilder();
-		for (Entry<String, String> e : args.entrySet()) {
-			try {
-				query.append(String.format("%s=%s",
-					URIUtil.encodeWithinQuery(e.getKey()),
-					URIUtil.encodeWithinQuery(e.getValue())
-				));
-			} catch (URIException ex) {
-				logger.error(ex);
+		try {
+			URIBuilder b = new URIBuilder(DEFAULT_RESOURCE_PREFIX + "/" + getName() + "/" + String.join("/", params));
+
+			for (Entry<String, String> e : args.entrySet()) {
+				b.addParameter(e.getKey(), e.getValue());
 			}
+
+			return b.build().toString();
+		} catch (URISyntaxException e) {
+			logger.error(e);
+			return null;
 		}
-		return DEFAULT_RESOURCE_PREFIX + "/" + getName() + StringHelper.joinParameters(params) + "?" + query;
 	}
 
 	@Override
-	public HttpMethod getHttpMethod() {
+	public HttpUriRequest getHttpMethod() {
 		return requestType.getMethod();
 	}
 

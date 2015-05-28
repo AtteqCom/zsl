@@ -1,10 +1,9 @@
 package com.atteq.asl.performers;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.HttpPost;
 
 import com.atteq.asl.ServiceCallException;
-import com.atteq.asl.utils.StringHelper;
 
 public class Method implements Performer {
 
@@ -25,12 +24,14 @@ public class Method implements Performer {
 
 	@Override
 	public String getUrl() {
-		return DEFAULT_METHOD_PREFIX + "/" + getName() + StringHelper.joinParameters(params);
+		return params.length > 0 ? 
+			DEFAULT_METHOD_PREFIX + "/" + getName() + "/" + String.join("/", params) : 
+			DEFAULT_METHOD_PREFIX + "/" + getName();
 	}
 
 	@Override
-	public HttpMethod getHttpMethod() {
-		return new PostMethod();
+	public HttpUriRequest getHttpMethod() {
+		return new HttpPost();
 	}
 
 	@Override

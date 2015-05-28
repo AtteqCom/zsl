@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -63,8 +63,8 @@ public class Task implements Performer {
 	}
 
 	@Override
-	public HttpMethod getHttpMethod() {
-		return new PostMethod();
+	public HttpUriRequest getHttpMethod() {
+		return new HttpPost();
 	}
 
 	@Override

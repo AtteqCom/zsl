@@ -3,7 +3,7 @@ package com.atteq.asl.results;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import org.apache.commons.httpclient.HttpStatus;
+import org.apache.http.HttpStatus;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;

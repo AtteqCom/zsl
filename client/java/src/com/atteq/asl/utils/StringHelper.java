@@ -4,10 +4,6 @@ import java.text.Normalizer;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
-import org.apache.log4j.Logger;
-
 /**
  * String helper.
  */
@@ -17,8 +13,6 @@ public abstract class StringHelper {
 	private static final String REMOVE_ACCENT_PATTERN = "\\p{InCombiningDiacriticalMarks}+";
 	private static final String RANDOM_PATTERN = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	private static final String DOTS = "...";
-
-	private static final Logger logger = Logger.getLogger(StringHelper.class);
 
 	/**
 	 * Check if string is null or empty.
@@ -32,7 +26,7 @@ public abstract class StringHelper {
 	}
 
 	/**
-	 * Check if string is null or empty or contains only whitespaces.
+	 * Check if string is null or empty or contains only whitespace.
 	 *
 	 * @param text
 	 *            String.
@@ -163,27 +157,6 @@ public abstract class StringHelper {
 		} catch (NumberFormatException e) {
 			return false;
 		}
-	}
-
-	/**
-	 * Joins the parameters.
-	 *
-	 * @param params
-	 *            List of parameters.
-	 * @return Parameters joined by '/' starting with /.
-	 */
-	public static String joinParameters(String... params) {
-		StringBuilder paramBuilder = new StringBuilder();
-		for (String p : params) {
-			paramBuilder.append('/');
-			try {
-				paramBuilder.append(URIUtil.encodePath(p));
-			} catch (URIException e) {
-				paramBuilder.append(p);
-				logger.error(String.format("Can not encode path part/parameters '%s'.",  p), e);
-			}
-		}
-		return paramBuilder.toString();
 	}
 
 }

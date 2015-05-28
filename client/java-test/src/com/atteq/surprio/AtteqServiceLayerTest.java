@@ -24,22 +24,20 @@ public class AtteqServiceLayerTest {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws ServiceCallException {
 		AtteqServiceLayerImpl asl = new AtteqServiceLayerImpl();
-		asl.setServiceLayerUrl("http://sardonyx");
+		asl.setServiceLayerUrl("http://localhost");
 		Task t = new Task("test_task", null);
 
 		GenericResultFactory<Object> rf = new GenericResultFactory<Object>();
-		GenericResult<Object> r = asl.perform(t, new JsonResultTransformer<Object, GenericResult<Object>>(rf),
-				Object.class);
+		GenericResult<Object> r = asl.perform(t, new JsonResultTransformer<Object, GenericResult<Object>>(rf), Object.class);
 		System.out.println(r.getResult());
 		System.out.println(asl.perform(t, Object.class).getResult());
 
 		Method m = new Method("test_method");
 		System.out.println(asl.perform(m, Object.class).getResult());
 
-		m = new Method("user/send_validation_code_by_phone_no", "+420608902447");
+		m = new Method("user/send_validation_code_by_phone_no", "00420608902447");
 		GenericResultFactory<ResultOrError<Object, Error>> erf = new GenericResultFactory<ResultOrError<Object, Error>>();
-		JsonResultOrErrorTransformer<Object, com.atteq.asl.results.Error> transformer = new JsonResultOrErrorTransformer<Object, Error>(
-				erf);
+		JsonResultOrErrorTransformer<Object, com.atteq.asl.results.Error> transformer = new JsonResultOrErrorTransformer<Object, Error>(erf);
 		JavaType type = transformer.getType(Object.class, Error.class);
 		Map<String, Object> mr;
 		mr = (Map<String, Object>) asl.perform(m, transformer, type).getResult().getResult();
@@ -51,11 +49,9 @@ public class AtteqServiceLayerTest {
 		m = new Method("user/send_validation_code_by_phone_no", "420608902447");
 		System.out.println(asl.perform(m, transformer, type).getResult().getError());
 
-		String secretToken = asl
-				.perform(new Method("user/create_secret_token", userId, validationId, validationCode), transformer,
-						type).getResult().getResult().toString();
-		String authToken = ((Map<String, Object>) asl
-				.perform(new Method("user/create_auth_token", userId, secretToken), transformer, type).getResult()
+		String secretToken = asl.perform(new Method("user/create_secret_token", userId, validationId, validationCode), transformer, type).getResult()
+				.getResult().toString();
+		String authToken = ((Map<String, Object>) asl.perform(new Method("user/create_auth_token", userId, secretToken), transformer, type).getResult()
 				.getResult()).get("token").toString();
 
 		Resource rs = new Resource("user", RequestType.READ, null, null, "1", authToken);
