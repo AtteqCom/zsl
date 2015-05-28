@@ -7,7 +7,8 @@
 '''
 
 # Initialize
-from .importer import initialize_web_application
+from importer import initialize_web_application
+
 initialize_web_application()
 
 import sys
@@ -19,12 +20,12 @@ from asl.application import service_application
 conf = service_application.config
 
 
-class Job():
+class Job(object):
     def __init__(self, data):
         self.data = {'data': data}
 
 
-def run_task(task, data = None):
+def run_task(task, data=None):
     if not isinstance(data, str) and not isinstance(data, unicode):
         data = json.dumps(data)
     # Open the data from file, if necessary.
@@ -44,12 +45,13 @@ def run_task(task, data = None):
 
 def run_shell():
     import bpython
+
     bpython.embed()
 
 
 def run_webapp():
     service_application.run(
-    host=conf.get('FLASK_HOST', '127.0.0.1'),
+        host=conf.get('FLASK_HOST', '127.0.0.1'),
         port=conf.get('FLASK_PORT'),
         debug=conf.get('DEBUG', False),
         use_debugger=conf.get('USE_DEBUGGER', False),
