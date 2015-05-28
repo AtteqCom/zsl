@@ -24,6 +24,7 @@ def perform_resource(path):
         resource_task = get_resource_task(resource)
         if resource_task == None:
             raise ImportError("No resource named {0}.".format(resource))
+        app.logger.debug("Fetched resource named {0} with data\n{1}.".format(resource, request.data))
 
         data = request.json
         rv = resource_task(params=params, args=args_to_dict(request.args), data=data)
