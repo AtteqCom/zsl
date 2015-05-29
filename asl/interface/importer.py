@@ -34,6 +34,9 @@ def _append_asl_path_to_pythonpath():
         return
 
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    #TODO: This is because of settings.default_settings import in application object.
+    # This should be somehow more inteligent or related to APPLICATION_PACKAGE_PATH.
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
     # Remove the path which could collide with the main libraries.
     to_remove = []
