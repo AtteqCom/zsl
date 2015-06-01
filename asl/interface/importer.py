@@ -66,18 +66,25 @@ def initialize_cli_application():
     global _cli_application_initialized
     if _cli_application_initialized:
         return
+    _cli_application_initialized = True
 
     _initialize_environment()
     _append_pythonpath()
     _append_asl_path_to_pythonpath()
     initialize_service_application()
 
+def is_initialized():
+    global _cli_application_initialized
+    return _cli_application_initialized
+
 _web_application_initialized = False
 def initialize_web_application():
     global _web_application_initialized
     if _web_application_initialized:
         return
+    _web_application_initialized = True
 
     initialize_cli_application()
     from asl.interface.webservice import web_application_loader
     web_application_loader.load()
+    
