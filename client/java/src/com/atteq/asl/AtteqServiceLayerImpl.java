@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -35,14 +36,14 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 	@Override
 	public <T, R extends Result<T>> R perform(Performer performer, ResultTransformer<T, R> resultTransformer, JavaType t) throws ServiceCallException {
 		try {
-			URL url = new URL(String.format("%s/%s", serviceLayerUrl, performer.getUrl()));
+			URI baseUri = new URI(serviceLayerUrl);
+			URL url = performer.getUrl(baseUri.getScheme(), baseUri.getHost());
 
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			assert conn.getURL().toString().endsWith(performer.getUrl());
 			conn.setRequestMethod(performer.getHttpMethod().toString());
 
 			String body = performer.getBody();
-			logger.debug(String.format("%s %s", performer.getHttpMethod(), performer.getUrl()));
+			logger.debug(String.format("%s %s", performer.getHttpMethod(), url));
 			logger.debug(body);
 
 			if ((performer.getHttpMethod() == HttpMethod.POST || performer.getHttpMethod() == HttpMethod.PUT) && !StringHelper.isNullOrEmpty(body)) {

@@ -1,6 +1,10 @@
 package com.atteq.asl.performers;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,18 +62,21 @@ public class Resource implements Performer {
 	}
 
 	@Override
-	public String getUrl() throws UnsupportedEncodingException {
-		StringBuilder sb = new StringBuilder(StringHelper.join("/", DEFAULT_RESOURCE_PREFIX, getName(),
-				StringHelper.join("/", StringHelper.encodeParams(getEncoding(), params))));
+	public URL getUrl(String scheme, String hostname) throws MalformedURLException, URISyntaxException, UnsupportedEncodingException {
+		String path = StringHelper.join("/", DEFAULT_RESOURCE_PREFIX, getName(),
+				StringHelper.join("/", StringHelper.encodeParams(getEncoding(), params)));
 
+		String query = null;
 		if (args.size() > 0) {
+			StringBuilder sb = new StringBuilder();
 			sb.append('?');
 			for (Entry<String, String> e : args.entrySet()) {
 				sb.append(String.format("%s=%s", URLEncoder.encode(e.getKey(), getEncoding()), URLEncoder.encode(e.getValue(), getEncoding())));
 			}
+			query = sb.toString();
 		}
 
-		return sb.toString();
+		return new URI(scheme, null, hostname, -1, path, query, null).toURL();
 	}
 
 	@Override

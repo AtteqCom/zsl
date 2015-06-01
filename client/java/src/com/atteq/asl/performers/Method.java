@@ -1,6 +1,9 @@
 package com.atteq.asl.performers;
 
-import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import com.atteq.asl.HttpMethod;
 import com.atteq.asl.ServiceCallException;
@@ -24,10 +27,10 @@ public class Method implements Performer {
 	}
 
 	@Override
-	public String getUrl() throws UnsupportedEncodingException {
-		return params.length > 0 ? 
-			DEFAULT_METHOD_PREFIX + "/" + getName() + "/" + StringHelper.join("/", StringHelper.encodeParams(getEncoding(), params)) : 
-			DEFAULT_METHOD_PREFIX + "/" + getName();
+	public URL getUrl(String scheme, String hostname) throws MalformedURLException, URISyntaxException {
+		return (params.length > 0 ?
+				new URI(scheme, null, hostname, -1, StringHelper.join("/", DEFAULT_METHOD_PREFIX, getName(), StringHelper.join("/",  params)), null, null) :
+				new URI(scheme, null, hostname, -1, DEFAULT_METHOD_PREFIX + "/" + getName(), null, null)).toURL();
 	}
 
 	@Override

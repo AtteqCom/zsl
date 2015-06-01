@@ -3,6 +3,10 @@ package com.atteq.asl.tasks;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -57,8 +61,8 @@ public class Task implements Performer {
 	}
 
 	@Override
-	public String getUrl() {
-		return DEFAULT_TASK_PREFIX + "/" + getName();
+	public URL getUrl(String scheme, String hostname) throws MalformedURLException, URISyntaxException {
+		return new URI(scheme, hostname, DEFAULT_TASK_PREFIX + "/" + getName(), null).toURL();
 	}
 
 	@Override
