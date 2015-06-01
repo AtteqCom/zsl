@@ -44,8 +44,6 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 			String body = performer.getBody();
 			logger.debug(String.format("%s %s", performer.getHttpMethod(), performer.getUrl()));
 			logger.debug(body);
-			System.out.println(String.format("%s %s", performer.getHttpMethod(), performer.getUrl()));
-			System.out.println(body);
 
 			if ((performer.getHttpMethod() == HttpMethod.POST || performer.getHttpMethod() == HttpMethod.PUT) && !StringHelper.isNullOrEmpty(body)) {
 				conn.setRequestProperty("Content-Type", performer.getContentType() + "; charset=" + performer.getEncoding());
@@ -68,7 +66,6 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 			String result = CharStreams.toString(new InputStreamReader(conn.getResponseCode() == HTTP_STATUS_CODE_OK ? conn.getInputStream() : conn
 					.getErrorStream()));
 			logger.debug(String.format("Response:\n%s", result));
-			System.out.println(result);
 			return resultTransformer.transform(performer, result, conn.getResponseCode(), t);
 		} catch (Exception e) {
 			throw new ServiceCallException(String.format("Error when calling ASL. %s", e.getMessage()), e);
