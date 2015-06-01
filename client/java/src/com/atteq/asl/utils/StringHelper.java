@@ -1,6 +1,10 @@
 package com.atteq.asl.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.Normalizer;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -169,20 +173,53 @@ public abstract class StringHelper {
 	 * @return The joined text.
 	 */
 	public static String join(String delimiter, String... params) {
-		if (params.length == 0) {
+		return join(delimiter, Arrays.asList(params));
+	}
+
+	/**
+	 * Joins the given {@code params} using delimiter.
+	 * 
+	 * @param delimiter
+	 *            Delimiter.
+	 * @param params
+	 *            The parameters to be joined.
+	 * @return The joined text.
+	 */
+	public static String join(String delimiter, List<String> params) {
+		if (params.size() == 0) {
 			return "";
-		} else if (params.length == 1) {
-			return params[0];
+		} else if (params.size() == 1) {
+			return params.get(0);
 		} else {
 			StringBuilder sb = new StringBuilder();
-			sb.append(params[0]);
-			for (int i = 1; i < params.length; ++i) {
+			sb.append(params.get(0));
+			for (int i = 1; i < params.size(); ++i) {
 				sb.append(delimiter);
-				sb.append(params[i]);
+				sb.append(params.get(i));
 			}
 			return sb.toString();
 		}
+	}
 
+	/**
+	 * Encodes the list of path parts that will be separated by /.
+	 * 
+	 * @param encoding
+	 *            Encoding.
+	 * @param params
+	 *            Parameters to be encoded.
+	 * @return The encoded array of parameters.
+	 * @throws UnsupportedEncodingException
+	 *             If the encoding is not supported.
+	 */
+	public static List<String> encodeParams(String encoding, String... params) throws UnsupportedEncodingException {
+		List<String> encodedParams = Arrays.asList(params);
+
+		for (int i = 0; i < encodedParams.size(); ++i) {
+			encodedParams.set(i, URLEncoder.encode(params[i], encoding));
+		}
+
+		return encodedParams;
 	}
 
 }

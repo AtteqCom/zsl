@@ -58,17 +58,14 @@ public class Resource implements Performer {
 	}
 
 	@Override
-	public String getUrl() {
-		StringBuilder sb = new StringBuilder(StringHelper.join("/", DEFAULT_RESOURCE_PREFIX, getName(), StringHelper.join("/", params)));
+	public String getUrl() throws UnsupportedEncodingException {
+		StringBuilder sb = new StringBuilder(StringHelper.join("/", DEFAULT_RESOURCE_PREFIX, getName(),
+				StringHelper.join("/", StringHelper.encodeParams(getEncoding(), params))));
 
 		if (args.size() > 0) {
 			sb.append('?');
 			for (Entry<String, String> e : args.entrySet()) {
-				try {
-					sb.append(String.format("%s=%s", URLEncoder.encode(e.getKey(), getEncoding()), URLEncoder.encode(e.getValue(), getEncoding())));
-				} catch (UnsupportedEncodingException ex) {
-					logger.error(ex);
-				}
+				sb.append(String.format("%s=%s", URLEncoder.encode(e.getKey(), getEncoding()), URLEncoder.encode(e.getValue(), getEncoding())));
 			}
 		}
 

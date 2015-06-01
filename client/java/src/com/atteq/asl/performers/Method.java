@@ -1,5 +1,7 @@
 package com.atteq.asl.performers;
 
+import java.io.UnsupportedEncodingException;
+
 import com.atteq.asl.HttpMethod;
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.utils.StringHelper;
@@ -22,9 +24,9 @@ public class Method implements Performer {
 	}
 
 	@Override
-	public String getUrl() {
+	public String getUrl() throws UnsupportedEncodingException {
 		return params.length > 0 ? 
-			DEFAULT_METHOD_PREFIX + "/" + getName() + "/" + StringHelper.join("/", params) : 
+			DEFAULT_METHOD_PREFIX + "/" + getName() + "/" + StringHelper.join("/", StringHelper.encodeParams(getEncoding(), params)) : 
 			DEFAULT_METHOD_PREFIX + "/" + getName();
 	}
 
