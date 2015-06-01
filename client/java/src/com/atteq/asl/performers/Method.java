@@ -15,7 +15,7 @@ public class Method implements Performer {
 
 	private final String[] params;
 
-	private final static String DEFAULT_METHOD_PREFIX = "method";
+	private final static String DEFAULT_METHOD_PREFIX = "/method";
 
 	public Method(String name, String... params) {
 		this.name = name;

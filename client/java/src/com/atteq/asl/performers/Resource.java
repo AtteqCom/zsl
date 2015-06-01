@@ -29,7 +29,7 @@ public class Resource implements Performer {
 
 	private final String[] params;
 
-	private final static String DEFAULT_RESOURCE_PREFIX = "resource";
+	private final static String DEFAULT_RESOURCE_PREFIX = "/resource";
 
 	private final RequestType requestType;
 

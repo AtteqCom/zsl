@@ -23,7 +23,7 @@ public class Task implements Performer {
 
 	private static final String DEFAULT_ENCODING = "utf-8";
 
-	private final static String DEFAULT_TASK_PREFIX = "task";
+	private final static String DEFAULT_TASK_PREFIX = "/task";
 
 	private String contentType;
 
