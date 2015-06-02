@@ -31,3 +31,5 @@ syntax: regexp
 ^docs/_build$
 ^docs/imports\.py$
 ^docs/make\.bat$
+syntax: glob
+.idea
