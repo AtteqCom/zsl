@@ -11,13 +11,13 @@ def encoder_identity(x):
 def decoder_identity(module_name, x):
     return x
 
-class IdHelper:
+class IdHelper(object):
     @abc.abstractmethod
-    def gather_page(self, page_key, decoder = decoder_identity):
+    def gather_page(self, page_key, decoder=decoder_identity):
         pass
 
     @abc.abstractmethod
-    def fill_page(self, page_key, data, timeout, encoder = encoder_identity):
+    def fill_page(self, page_key, data, timeout, encoder=encoder_identity):
         pass
 
     @abc.abstractmethod

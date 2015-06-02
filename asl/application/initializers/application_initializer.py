@@ -17,9 +17,10 @@ class ApplicationInitializer(object):
         '''
         binder.bind(
             AtteqServiceFlask,
-            to = service_application,
-            scope = singleton
+            to=service_application,
+            scope=singleton
         )
+
         service_application.set_injector(binder.injector)
         logger = binder.injector.get(logging.Logger)
         logger.debug("Created AtteqServiceFlask binding.")
