@@ -69,7 +69,6 @@ public class Resource implements Performer {
 		String query = null;
 		if (args.size() > 0) {
 			StringBuilder sb = new StringBuilder();
-			sb.append('?');
 			for (Entry<String, String> e : args.entrySet()) {
 				sb.append(String.format("%s=%s", URLEncoder.encode(e.getKey(), getEncoding()), URLEncoder.encode(e.getValue(), getEncoding())));
 			}
