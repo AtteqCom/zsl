@@ -8,7 +8,7 @@ The default classes of the models should be overriden to provide more logic or r
 The basic way to use them is as follows:
  - todo: define the models
  - todo: how to override
- 
+
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 '''
 
@@ -88,7 +88,7 @@ class ResourceQueryContext(object):
 class ModelResource(SqlSesionMixin):
     '''
     ModelResource works only for tables with a single-column identifier (key).
-    
+
     .. automethod:: __init__
     .. automethod:: _create_context
     .. automethod:: _create_one
@@ -288,7 +288,7 @@ class ModelResource(SqlSesionMixin):
         return [column.name for column in class_mapper(self.model_cls).columns]
 
     # Update
-    def _update_one_simple(self, row_id, fields):
+    def _update_one_simple(self, row_id, fields, ctx):
         fields = dict_pick(fields, self._model_columns)
 
         model = self._orm.query(self.model_cls).get(row_id)
@@ -308,7 +308,7 @@ class ModelResource(SqlSesionMixin):
         assert isinstance(ctx, ResourceQueryContext)
         fields = ctx.data
         row_id = ctx.get_row_id()
-        return self._update_one_simple(row_id, fields)
+        return self._update_one_simple(row_id, fields, ctx)
 
     def _update_collection(self, ctx):
         '''
@@ -318,7 +318,7 @@ class ModelResource(SqlSesionMixin):
         models = []
 
         for row in ctx.data:
-            models.append(self._update_one_simple(row.pop('id'), row))
+            models.append(self._update_one_simple(row.pop('id'), row), ctx)
 
         return models
 
@@ -326,7 +326,7 @@ class ModelResource(SqlSesionMixin):
     def _delete_one(self, row_id, ctx):
         '''
         Deletes row by the given id -- `row_id`. The method first created the query using the method :meth:`_create_delete_one_query` and then executes it.
-        
+
         :param int row_id: Identifier of the deleted row.
         :param ResourceQueryContext ctx: The context of this delete query.
         '''
@@ -339,7 +339,7 @@ class ModelResource(SqlSesionMixin):
         :param int row_id: Identifier of the deleted row.
         :param ResourceQueryContext ctx: The context of this delete query.
         '''
-        
+
         assert isinstance(ctx, ResourceQueryContext)
         return self._orm.query(self.model_cls).filter(self._model_pk == row_id)
 
