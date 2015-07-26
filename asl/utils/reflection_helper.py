@@ -1,7 +1,7 @@
 '''
-Created on 8.7.2013
+:mod:`asl.utils.reflection_helper`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 def extend(instance, new_class):
     instance.__class__ = type(

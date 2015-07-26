@@ -1,7 +1,7 @@
 '''
-Created on Oct 23, 2013
+:mod:`asl.utils.type_helper`
 
-@author: peter
+.. moduleauthor:: peter
 '''
 
 def not_empty_list(l):

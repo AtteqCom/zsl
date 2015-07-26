@@ -1,7 +1,7 @@
 '''
-Created on Aug 15, 2013
+:mod:`asl.utils.rss`
 
-@author: Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 '''
 
 import xml.etree.cElementTree as ET

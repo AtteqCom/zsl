@@ -1,8 +1,11 @@
 package com.atteq.asl.performers;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
+import com.atteq.asl.HttpMethod;
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.utils.StringHelper;
 
@@ -12,7 +15,7 @@ public class Method implements Performer {
 
 	private final String[] params;
 
-	private final static String DEFAULT_METHOD_PREFIX = "method";
+	private final static String DEFAULT_METHOD_PREFIX = "/method";
 
 	public Method(String name, String... params) {
 		this.name = name;
@@ -24,13 +27,15 @@ public class Method implements Performer {
 	}
 
 	@Override
-	public String getUrl() {
-		return DEFAULT_METHOD_PREFIX + "/" + getName() + StringHelper.joinParameters(params);
+	public URL getUrl(String scheme, String hostname) throws MalformedURLException, URISyntaxException {
+		return (params.length > 0 ?
+				new URI(scheme, null, hostname, -1, StringHelper.join("/", DEFAULT_METHOD_PREFIX, getName(), StringHelper.join("/",  params)), null, null) :
+				new URI(scheme, null, hostname, -1, DEFAULT_METHOD_PREFIX + "/" + getName(), null, null)).toURL();
 	}
 
 	@Override
 	public HttpMethod getHttpMethod() {
-		return new PostMethod();
+		return HttpMethod.POST;
 	}
 
 	@Override

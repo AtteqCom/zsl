@@ -1,7 +1,7 @@
 '''
-Created on 12.12.2012
+:mod:`asl.task.task_decorator`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 import json

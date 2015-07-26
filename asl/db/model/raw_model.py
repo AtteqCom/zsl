@@ -1,7 +1,7 @@
 '''
-Created on 3.7.2013
+:mod:`asl.db.model.raw_model`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.utils.model_helper import update_model
 

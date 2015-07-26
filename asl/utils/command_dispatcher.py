@@ -1,7 +1,7 @@
 """
-Created on Mar 4, 2015
+:mod:`asl.utils.command_dispatcher`
 
-@author: peter morihladko
+.. moduleauthor:: peter morihladko
 """
 
 import inspect
@@ -19,7 +19,6 @@ class CommandDispatcher(object):
         """
 
         self.commands = {}
-
 
     def command(self, fn):
         """

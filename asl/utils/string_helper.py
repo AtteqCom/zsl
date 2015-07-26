@@ -1,7 +1,7 @@
 '''
-Created on 15.12.2012
+:mod:`asl.utils.string_helper`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 import re
 import random

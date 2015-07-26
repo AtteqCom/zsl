@@ -65,7 +65,7 @@ class LoggerInitializer:
                     logger.addHandler(handlers[handler_name])
                 except Exception as e:
                     errors.append(e)
-            
+
             logger.propagate = logger_settings.get('propagate', logger.propagate)
 
         self._check_deprecated_config_properties(config)

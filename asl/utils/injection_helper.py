@@ -1,7 +1,7 @@
 '''
-Created on 3.4.2013
+:mod:`asl.utils.injection_helper`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.application.service_application import service_application as _app
 import injector
@@ -65,3 +65,6 @@ def inject(**bindings):
             return function_wrapper(f)
 
     return outer_wrapper
+
+def bind(interface, to=None, scope=None):
+    _app.get_injector().binder.bind(interface, to, scope)

@@ -1,7 +1,7 @@
 '''
-Created on 28.3.2013
+:mod:`asl.db.model.app_model`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 from datetime import datetime, date
@@ -90,3 +90,6 @@ class AppModel:
                     d[k][key] = convert(value)
 
         return d
+
+    def __str__(self):
+        return "{0}: {1}".format(self.__class__, self.__dict__)

@@ -1,7 +1,7 @@
 '''
-Created on Nov 9, 2013
+:mod:`asl.utils.deploy.js_model_generator`
 
-@author: Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 '''
 
 import json

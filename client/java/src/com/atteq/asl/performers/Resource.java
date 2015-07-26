@@ -1,18 +1,18 @@
 package com.atteq.asl.performers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.log4j.Logger;
 
+import com.atteq.asl.HttpMethod;
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.utils.JsonHelper;
 import com.atteq.asl.utils.StringHelper;
@@ -29,13 +29,13 @@ public class Resource implements Performer {
 
 	private final String[] params;
 
-	private final static String DEFAULT_RESOURCE_PREFIX = "resource";
+	private final static String DEFAULT_RESOURCE_PREFIX = "/resource";
 
 	private final RequestType requestType;
 
 	public static enum RequestType {
 
-		CREATE(new PostMethod()), READ(new GetMethod()), UPDATE(new PutMethod()), DELETE(new DeleteMethod());
+		CREATE(HttpMethod.POST), READ(HttpMethod.GET), UPDATE(HttpMethod.PUT), DELETE(HttpMethod.DELETE);
 
 		private final HttpMethod method;
 
@@ -44,7 +44,7 @@ public class Resource implements Performer {
 		}
 
 		public HttpMethod getMethod() {
-			return method;
+			return this.method;
 		}
 
 	}
@@ -62,19 +62,20 @@ public class Resource implements Performer {
 	}
 
 	@Override
-	public String getUrl() {
-		StringBuilder query = new StringBuilder();
-		for (Entry<String, String> e : args.entrySet()) {
-			try {
-				query.append(String.format("%s=%s",
-					URIUtil.encodeWithinQuery(e.getKey()),
-					URIUtil.encodeWithinQuery(e.getValue())
-				));
-			} catch (URIException ex) {
-				logger.error(ex);
+	public URL getUrl(String scheme, String hostname) throws MalformedURLException, URISyntaxException, UnsupportedEncodingException {
+		String path = StringHelper.join("/", DEFAULT_RESOURCE_PREFIX, getName(),
+				StringHelper.join("/", StringHelper.encodeParams(getEncoding(), params)));
+
+		String query = null;
+		if (args.size() > 0) {
+			StringBuilder sb = new StringBuilder();
+			for (Entry<String, String> e : args.entrySet()) {
+				sb.append(String.format("%s=%s", URLEncoder.encode(e.getKey(), getEncoding()), URLEncoder.encode(e.getValue(), getEncoding())));
 			}
+			query = sb.toString();
 		}
-		return DEFAULT_RESOURCE_PREFIX + "/" + getName() + StringHelper.joinParameters(params) + "?" + query;
+
+		return new URI(scheme, null, hostname, -1, path, query, null).toURL();
 	}
 
 	@Override

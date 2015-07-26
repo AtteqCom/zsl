@@ -1,7 +1,7 @@
 '''
-Created on 30.12.2012
+:mod:`asl.db.helpers.query_helper`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.db.helpers.pagination import Pagination
 from asl.db.helpers.sorter import Sorter

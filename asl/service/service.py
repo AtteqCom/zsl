@@ -1,11 +1,11 @@
 '''
-Created on 24.1.2013
+:mod:`asl.service.service`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 from asl.application.service_application import AtteqServiceFlask, service_application
-from injector import inject
+from asl.utils.injection_helper import inject
 from sqlalchemy.engine.base import Engine
 from asl.application.initializers.database_initializer import SessionHolder
 from functools import wraps

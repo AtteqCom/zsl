@@ -1,6 +1,5 @@
 from asl.application.service_application import service_application
 from flask import request, Response
-#from asl.task.task_data import TaskData
 from asl.utils.resource_helper import parse_resource_path, get_resource_task
 import json
 from asl.db.model import AppModelJSONEncoder
@@ -25,6 +24,7 @@ def perform_resource(path):
         resource_task = get_resource_task(resource)
         if resource_task == None:
             raise ImportError("No resource named {0}.".format(resource))
+        app.logger.debug("Fetched resource named {0} with data\n{1}.".format(resource, request.data))
 
         data = request.json
         rv = resource_task(params=params, args=args_to_dict(request.args), data=data)

@@ -120,15 +120,3 @@ class TestCommandDispatcher(unittest.TestCase):
 
         self.assertEqual(bounded_dispatcher.execute_command('dummy_fun'),
                          5, "Bound has returned a false result for normal function")
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,8 +1,3 @@
-'''
-Created on 24.1.2013
-
-@author: Martin Babka
-'''
 import logging
 from injector import singleton
 from asl.application.initializers import injection_module
@@ -13,12 +8,16 @@ from asl.cache.id_helper import IdHelper
 
 class CacheInitializer(object):
     '''
-    Application initializer - just for the injection capability.
+    Cache initializer - adds the cache injection capability.
     '''
 
     def initialize(self, binder):
         '''
-        Initialization method.
+        Initializer of the cache - creates the Redis cache module as the default cache infrastructure. 
+        The module is bound to `RedisCacheModule` and `CacheModule` keys.
+        The initializer also creates `RedisIdHelper` and bounds it to `RedisIdHelper` and `IdHelper` keys.
+        
+        :param Binder binder: The binder object holding the binding context, we add cache to the binder.
         '''
         redis_cache_module = RedisCacheModule()
         binder.bind(
@@ -49,4 +48,9 @@ class CacheInitializer(object):
 
 @injection_module
 def application_initializer_module(binder):
+    '''
+    Cache initializer - adds the cache injection capability.
+    
+    :param Binder binder: The binder object holding the binding context, we add cache to the binder.
+    '''
     CacheInitializer().initialize(binder)

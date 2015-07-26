@@ -1,7 +1,7 @@
 '''
-Created on 25.11.2014
+:mod:`asl.interface.webservice.utils.error_handler`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 import traceback
 from asl.application.service_application import service_application

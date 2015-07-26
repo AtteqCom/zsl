@@ -1,7 +1,7 @@
 '''
-Created on 25.11.2014
+:mod:`asl.interface.webservice.performers.method`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.router.method import get_method_packages
 import importlib

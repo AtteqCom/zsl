@@ -1,7 +1,7 @@
 '''
-Created on 25.11.2014
+:mod:`asl.interface.webservice.utils.response_headers`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.application.service_application import service_application
 from flask import Response
@@ -13,7 +13,7 @@ conf = service_application.config
 def append_origin(response):
     if conf.get('ALLOW_ORIGIN'):
         response.headers['Access-Control-Allow-Origin'] = conf.get('ALLOW_ORIGIN')
-    response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+    response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, DELETE'
     response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type'
 
 def append_asl(response):

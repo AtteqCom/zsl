@@ -1,7 +1,7 @@
 '''
-Created on Dec 13, 2013
+:mod:`asl.utils.file_helper`
 
-@author: Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 '''
 import os, errno
 

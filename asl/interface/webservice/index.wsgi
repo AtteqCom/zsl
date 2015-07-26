@@ -1,36 +1,34 @@
 #!/usr/bin/python
 
-# Append the right path to the PYTHONPATH for the CGI script to work.
-import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-
 app = None
 
+# Application preparation.
 def get_app(environ):
-	if 'ASL_SETTINGS' not in os.environ:
-		os.environ['ASL_SETTINGS'] = environ['ASL_SETTINGS']
+    if 'ASL_SETTINGS' not in os.environ:
+        os.environ['ASL_SETTINGS'] = environ['ASL_SETTINGS']
 
-	if 'APPLICATION_PACKAGE_PATH' not in os.environ:
-		os.environ['APPLICATION_PACKAGE_PATH'] = environ['APPLICATION_PACKAGE_PATH']
+    if 'APPLICATION_PACKAGE_PATH' not in os.environ:
+        os.environ['APPLICATION_PACKAGE_PATH'] = environ['APPLICATION_PACKAGE_PATH']
 
-	from asl.interface import importer
-	importer.append_pythonpath()
+    # For Apache mod_wsgi convenience.
+    if 'ASL_IMPORT_SCRIPT' in environ and 'ASL_IMPORT_SCRIPT' not in os.environ:
+        os.environ['ASL_IMPORT_SCRIPT'] = environ['ASL_IMPORT_SCRIPT']
+    if 'ASL_IMPORT_SCRIPT' in os.environ:
+        execfile(os.environ['ASL_IMPORT_SCRIPT'])
+    
+    execfile(os.path.dirname(__file__) + '/importer.py')
 
-	# Now import the application and the remaining stuff.
-	from asl.application import service_application
-	from asl.interface.webservice import web_application_loader
-
-	service_application.initialize_dependencies()
-	web_application_loader.load()
-
-	return service_application
+    from asl.interface.importer import initialize_web_application
+    initialize_web_application()
+    from asl.application.service_application import service_application
+    return service_application
 
 # For WSGI.
 def application(environ, start_response):
-	global app
+    global app
 
-	if app is None:
-		app = get_app(environ)
+    if app is None:
+        app = get_app(environ)
 
-	return app.wsgi_app(environ, start_response)
+    return app.wsgi_app(environ, start_response)

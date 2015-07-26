@@ -1,7 +1,7 @@
 '''
-Created on 12.12.2012
+:mod:`asl.interface.gearman.worker`
 
-@author: Martin
+.. moduleauthor:: Martin
 '''
 
 import socket

@@ -1,8 +1,3 @@
-'''
-Created on 24.1.2013
-
-@author: Martin Babka
-'''
 import asl.vendor
 import logging
 from asl.application.service_application import service_application, AtteqServiceFlask
@@ -12,22 +7,29 @@ from asl.application.initializers import injection_module
 
 class ApplicationInitializer(object):
     '''
-    Application initializer - just for the injection capability.
+    :class:`asl.application.initializers.ApplicationInitializer` adds the injection capability of the application object. 
+    The application object is bound as `AtteqServiceFlask`.
     '''
 
     def initialize(self, binder):
         '''
-        Initialization method.
+        Initialization method which bounds the application object to `AtteqServiceFlask` key.
         '''
         binder.bind(
             AtteqServiceFlask,
-            to = service_application,
-            scope = singleton
+            to=service_application,
+            scope=singleton
         )
+
         service_application.set_injector(binder.injector)
         logger = binder.injector.get(logging.Logger)
         logger.debug("Created AtteqServiceFlask binding.")
 
 @injection_module
 def application_initializer_module(binder):
+    '''
+    Application initializer - just for the injection capability of the application object.
+    
+    See :class:`asl.application.initializers.ApplicationInitializer`.
+    '''
     ApplicationInitializer().initialize(binder)

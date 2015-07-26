@@ -1,8 +1,3 @@
-'''
-Created on 27.2.2015
-
-@author: Martin Babka
-'''
 import logging
 from flask import Config
 from asl.application.initializers import injection_module

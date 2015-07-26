@@ -1,7 +1,7 @@
 '''
-Created on Jan 7, 2014
+:mod:`asl.utils.flask_decorator`
 
-@author: Peter Morihladko
+.. moduleauthor:: Peter Morihladko
 '''
 from datetime import timedelta
 from flask import make_response, request, current_app

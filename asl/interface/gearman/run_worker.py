@@ -1,21 +1,17 @@
 '''
-Created on 15.12.2012
+:mod:`asl.interface.gearman.run_worker`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+# Initialize app
+import importer
+importer.append_asl_path_to_pythonpath()
+from asl.interface.importer import initialize_cli_application
+initialize_cli_application()
 
-from asl.interface import importer
-importer.append_pythonpath()
-
-from asl.application.service_application import service_application
 from asl.interface.gearman.worker import Worker
-
-app = service_application
-app.initialize_dependencies()
+from asl.application.service_application import service_application as app
 
 if __name__ == "__main__":
     print "Initializing Gearman worker."

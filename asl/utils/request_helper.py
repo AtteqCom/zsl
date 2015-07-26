@@ -1,7 +1,7 @@
 '''
-Created on 25.11.2014
+:mod:`asl.utils.request_helper`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 
 def args_to_dict(args):

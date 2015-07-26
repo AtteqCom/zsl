@@ -1,7 +1,7 @@
 '''
-Created on 25.11.2014
+:mod:`asl.interface.webservice.performers.default`
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 '''
 from asl.application.service_application import service_application
 
