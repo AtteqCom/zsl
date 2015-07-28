@@ -16,6 +16,8 @@ def get_app(environ):
         os.environ['ASL_IMPORT_SCRIPT'] = environ['ASL_IMPORT_SCRIPT']
     if 'ASL_IMPORT_SCRIPT' in os.environ:
         execfile(os.environ['ASL_IMPORT_SCRIPT'])
+    
+    execfile(os.path.dirname(__file__) + '/importer.py')
 
     from asl.interface.importer import initialize_web_application
     initialize_web_application()

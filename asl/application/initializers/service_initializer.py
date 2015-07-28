@@ -1,11 +1,3 @@
-'''
-:mod:`asl.application.initializers.service_initializer` -- Initialization of the services.
-
-   :platform: Unix, Windows
-   :synopsis: The Atteq Service Layer
-.. moduleauthor:: Martin Babka <babka@atteq.com>
-'''
-
 import asl.vendor
 from injector import singleton
 import logging

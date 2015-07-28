@@ -34,6 +34,9 @@ def _append_asl_path_to_pythonpath():
         return
 
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    #TODO: This is because of settings.default_settings import in application object.
+    # This should be somehow more inteligent or related to APPLICATION_PACKAGE_PATH.
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
     # Remove the path which could collide with the main libraries.
     to_remove = []
@@ -63,18 +66,24 @@ def initialize_cli_application():
     global _cli_application_initialized
     if _cli_application_initialized:
         return
+    _cli_application_initialized = True
 
     _initialize_environment()
     _append_pythonpath()
     _append_asl_path_to_pythonpath()
     initialize_service_application()
 
+def is_initialized():
+    return _cli_application_initialized
+
 _web_application_initialized = False
 def initialize_web_application():
     global _web_application_initialized
     if _web_application_initialized:
         return
+    _web_application_initialized = True
 
     initialize_cli_application()
     from asl.interface.webservice import web_application_loader
     web_application_loader.load()
+    

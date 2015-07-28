@@ -3,13 +3,16 @@ package com.atteq.asl.tasks;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.atteq.asl.HttpMethod;
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.utils.JsonHelper;
@@ -20,7 +23,7 @@ public class Task implements Performer {
 
 	private static final String DEFAULT_ENCODING = "utf-8";
 
-	private final static String DEFAULT_TASK_PREFIX = "task";
+	private final static String DEFAULT_TASK_PREFIX = "/task";
 
 	private String contentType;
 
@@ -58,21 +61,26 @@ public class Task implements Performer {
 	}
 
 	@Override
-	public String getUrl() {
-		return DEFAULT_TASK_PREFIX + "/" + getName();
+	public URL getUrl(String scheme, String hostname) throws MalformedURLException, URISyntaxException {
+		return new URI(scheme, hostname, DEFAULT_TASK_PREFIX + "/" + getName(), null).toURL();
 	}
 
 	@Override
 	public HttpMethod getHttpMethod() {
-		return new PostMethod();
+		return HttpMethod.POST; 
 	}
 
 	@Override
 	public String getBody() throws ServiceCallException {
+		Object data = getData();
+		if (data == null) {
+			return null;
+		}
+		
 		ByteArrayOutputStream ss = new ByteArrayOutputStream();
 		ObjectMapper objectMapper = JsonHelper.createMapper();
 		try {
-			objectMapper.writeValue(ss, getData());
+			objectMapper.writeValue(ss, data);
 		} catch (JsonGenerationException e) {
 			throw new ServiceCallException("Could not generate JSON from the object data.", e);
 		} catch (JsonMappingException e) {

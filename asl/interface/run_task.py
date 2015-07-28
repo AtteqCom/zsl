@@ -1,4 +1,4 @@
-from importer import initialize_cli_application
+from asl.interface.importer import initialize_cli_application
 initialize_cli_application()
 
 from asl.interface.run import run_task

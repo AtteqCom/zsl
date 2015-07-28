@@ -20,7 +20,6 @@ class CommandDispatcher(object):
 
         self.commands = {}
 
-
     def command(self, fn):
         """
         Add method or function to dispatcher. Can be use as a nice

@@ -1,12 +1,12 @@
 package com.atteq.asl.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.Normalizer;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
-
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
-import org.apache.log4j.Logger;
 
 /**
  * String helper.
@@ -17,8 +17,6 @@ public abstract class StringHelper {
 	private static final String REMOVE_ACCENT_PATTERN = "\\p{InCombiningDiacriticalMarks}+";
 	private static final String RANDOM_PATTERN = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	private static final String DOTS = "...";
-
-	private static final Logger logger = Logger.getLogger(StringHelper.class);
 
 	/**
 	 * Check if string is null or empty.
@@ -32,7 +30,7 @@ public abstract class StringHelper {
 	}
 
 	/**
-	 * Check if string is null or empty or contains only whitespaces.
+	 * Check if string is null or empty or contains only whitespace.
 	 *
 	 * @param text
 	 *            String.
@@ -166,24 +164,62 @@ public abstract class StringHelper {
 	}
 
 	/**
-	 * Joins the parameters.
-	 *
+	 * Joins the given {@code params} using delimiter.
+	 * 
+	 * @param delimiter
+	 *            Delimiter.
 	 * @param params
-	 *            List of parameters.
-	 * @return Parameters joined by '/' starting with /.
+	 *            The parameters to be joined.
+	 * @return The joined text.
 	 */
-	public static String joinParameters(String... params) {
-		StringBuilder paramBuilder = new StringBuilder();
-		for (String p : params) {
-			paramBuilder.append('/');
-			try {
-				paramBuilder.append(URIUtil.encodePath(p));
-			} catch (URIException e) {
-				paramBuilder.append(p);
-				logger.error(String.format("Can not encode path part/parameters '%s'.",  p), e);
+	public static String join(String delimiter, String... params) {
+		return join(delimiter, Arrays.asList(params));
+	}
+
+	/**
+	 * Joins the given {@code params} using delimiter.
+	 * 
+	 * @param delimiter
+	 *            Delimiter.
+	 * @param params
+	 *            The parameters to be joined.
+	 * @return The joined text.
+	 */
+	public static String join(String delimiter, List<String> params) {
+		if (params.size() == 0) {
+			return "";
+		} else if (params.size() == 1) {
+			return params.get(0);
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append(params.get(0));
+			for (int i = 1; i < params.size(); ++i) {
+				sb.append(delimiter);
+				sb.append(params.get(i));
 			}
+			return sb.toString();
 		}
-		return paramBuilder.toString();
+	}
+
+	/**
+	 * Encodes the list of path parts that will be separated by /.
+	 * 
+	 * @param encoding
+	 *            Encoding.
+	 * @param params
+	 *            Parameters to be encoded.
+	 * @return The encoded array of parameters.
+	 * @throws UnsupportedEncodingException
+	 *             If the encoding is not supported.
+	 */
+	public static List<String> encodeParams(String encoding, String... params) throws UnsupportedEncodingException {
+		List<String> encodedParams = Arrays.asList(params);
+
+		for (int i = 0; i < encodedParams.size(); ++i) {
+			encodedParams.set(i, URLEncoder.encode(params[i], encoding));
+		}
+
+		return encodedParams;
 	}
 
 }

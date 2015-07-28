@@ -65,3 +65,6 @@ def inject(**bindings):
             return function_wrapper(f)
 
     return outer_wrapper
+
+def bind(interface, to=None, scope=None):
+    _app.get_injector().binder.bind(interface, to, scope)

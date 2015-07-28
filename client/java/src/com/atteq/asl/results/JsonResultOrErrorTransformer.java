@@ -3,11 +3,11 @@ package com.atteq.asl.results;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
+import com.atteq.asl.AtteqServiceLayerImpl;
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.utils.JsonHelper;
 
@@ -17,8 +17,7 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 	protected ResultFactory<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> factory;
 	protected ObjectMapper mapper = JsonHelper.createMapper();
 
-	public JsonResultOrErrorTransformer(
-			ResultFactory<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> factory) {
+	public JsonResultOrErrorTransformer(ResultFactory<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> factory) {
 		this.factory = factory;
 	}
 
@@ -35,14 +34,14 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 	}
 
 	@Override
-	public GenericResult<ResultOrError<ResultType, ErrorType>> transform(Performer performer, String result,
-			int status, JavaType type) throws TransformationException {
+	public GenericResult<ResultOrError<ResultType, ErrorType>> transform(Performer performer, String result, int status, JavaType type)
+			throws TransformationException {
 		final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		mapper.setDateFormat(df);
 		try {
 			ResultOrError<ResultType, ErrorType> r;
 
-			if (status == HttpStatus.SC_OK) {
+			if (status == AtteqServiceLayerImpl.HTTP_STATUS_CODE_OK) {
 				ResultType rr = mapper.readValue(result, type.containedType(0));
 				r = new ResultOrError<ResultType, ErrorType>(rr);
 			} else {

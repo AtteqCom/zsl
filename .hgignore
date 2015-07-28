@@ -20,15 +20,16 @@ syntax: regexp
 ^asl/interface/webservice/run_shell\.cmd$
 syntax: regexp
 ^asl/interface/webservice/run_webapp\.cmd$
-
-syntax: regexp
 ^client/java/\.classpath$
 ^client/java/\.project$
 ^client/java/\.settings
 ^client/java/target
+^client/java-test/\.classpath$
+^client/java-test/\.project$
+^client/java-test/\.settings
+^client/java-test/target
 ^docs/_build$
-
-
-syntax: regexp
 ^docs/imports\.py$
 ^docs/make\.bat$
+syntax: glob
+.idea

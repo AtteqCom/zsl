@@ -1,7 +1,10 @@
 from flask import Flask
 import os
+
 import asl.vendor
 asl.vendor.do_init()
+
+from asl.interface.importer import is_initialized
 from flask_injector import FlaskInjector
 
 class AtteqServiceFlask(Flask):
@@ -46,4 +49,6 @@ class AtteqServiceFlask(Flask):
         else:
             return AtteqServiceFlask.VERSION + ":" + v
 
+if not is_initialized():
+    raise Exception("Can not instantiate ServiceApplication object, the service is not initialized.")
 service_application = AtteqServiceFlask("asl.application")
