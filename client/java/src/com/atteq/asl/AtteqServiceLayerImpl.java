@@ -45,22 +45,21 @@ public class AtteqServiceLayerImpl implements SecuredAtteqServiceLayer {
 
 			if ((performer.getHttpMethod() == HttpMethod.POST || performer.getHttpMethod() == HttpMethod.PUT)
 					&& !StringHelper.isNullOrEmpty(body)) {
-				conn.setRequestProperty("Content-Type",
-						performer.getContentType() + "; charset=" + performer.getEncoding());
+				conn.setRequestProperty("Content-Type", performer.getContentType() + ";charset=" + performer.getEncoding().toUpperCase());
+				conn.setRequestProperty("Content-Encoding", performer.getEncoding());
 				conn.setRequestProperty("Content-Length", Integer.toString(body.getBytes().length));
 				conn.setDoOutput(true);
-				OutputStreamWriter os = new OutputStreamWriter(new BufferedOutputStream(conn.getOutputStream()));
-				os.write(body);
-				os.close();
+				conn.getOutputStream().write(body.getBytes(performer.getEncoding()));
+				conn.getOutputStream().close();
 			}
 
 			if (getCheckAslVersion()) {
 				String h = conn.getHeaderField("ASL-Flask-Layer");
 				String serverVersion = (h == null ? "" : h);
 				if (!serverVersion.startsWith(ASL_VERSION)) {
-					throw new ServiceCallException(
-							String.format("The service version '%s' is not compatibile with the client version '%s'.",
-									serverVersion, ASL_VERSION));
+					throw new ServiceCallException(String.format(
+						"The service version '%s' is not compatibile with the client version '%s'.",
+						serverVersion, ASL_VERSION));
 				}
 			}
 
