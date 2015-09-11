@@ -9,6 +9,7 @@ import com.atteq.asl.results.GenericResultFactory;
 import com.atteq.asl.results.JsonResultTransformer;
 import com.atteq.asl.results.ResultTransformer;
 import com.atteq.asl.results.TransformationException;
+import com.atteq.asl.utils.JsonHelper;
 
 public class JsonResultWithErrorTransformer<T> implements ResultTransformer<T, TaskResultWithError<T>> {
 
@@ -40,4 +41,9 @@ public class JsonResultWithErrorTransformer<T> implements ResultTransformer<T, T
 			return new TaskResultWithError<T>((Task) performer, res);
 		}
 	}
+
+	public JavaType getType(Class<T> cls) {
+		return JsonHelper.createMapper().getTypeFactory().constructType(cls);
+	}
+
 }
