@@ -2,6 +2,7 @@ package com.atteq.asl;
 
 import java.io.BufferedOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -49,8 +50,10 @@ public class AtteqServiceLayerImpl implements SecuredAtteqServiceLayer {
 				conn.setRequestProperty("Content-Encoding", performer.getEncoding());
 				conn.setRequestProperty("Content-Length", Integer.toString(body.getBytes().length));
 				conn.setDoOutput(true);
-				conn.getOutputStream().write(body.getBytes(performer.getEncoding()));
-				conn.getOutputStream().close();
+				OutputStream os = conn.getOutputStream();
+				BufferedOutputStream bos = new BufferedOutputStream(os);
+				bos.write(body.getBytes(performer.getEncoding()));
+				os.close();
 			}
 
 			if (getCheckAslVersion()) {
