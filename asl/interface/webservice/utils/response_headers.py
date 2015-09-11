@@ -13,7 +13,7 @@ conf = service_application.config
 def append_origin(response):
     if conf.get('ALLOW_ORIGIN'):
         response.headers['Access-Control-Allow-Origin'] = conf.get('ALLOW_ORIGIN')
-    response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT'
+    response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, DELETE'
     response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type'
 
 def append_asl(response):

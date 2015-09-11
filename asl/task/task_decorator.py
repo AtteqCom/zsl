@@ -107,6 +107,8 @@ def jsonp_output(f):
             JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/javascript'))
 
             jsonp = "{callback}({data})".format(callback=callback, data=jsonp)
+        else:
+            JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/json'))
 
         return jsonp
 

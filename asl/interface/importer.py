@@ -74,7 +74,6 @@ def initialize_cli_application():
     initialize_service_application()
 
 def is_initialized():
-    global _cli_application_initialized
     return _cli_application_initialized
 
 _web_application_initialized = False
