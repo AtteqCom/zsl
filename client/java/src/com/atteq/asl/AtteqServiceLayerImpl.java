@@ -13,18 +13,14 @@ import org.codehaus.jackson.type.JavaType;
 
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.results.GenericResult;
-import com.atteq.asl.results.GenericResultFactory;
-import com.atteq.asl.results.JsonResultTransformer;
 import com.atteq.asl.results.Result;
 import com.atteq.asl.results.ResultTransformer;
-import com.atteq.asl.tasks.JsonResultWithErrorTransformer;
 import com.atteq.asl.tasks.Task;
 import com.atteq.asl.tasks.TaskResult;
-import com.atteq.asl.tasks.TaskResultFactory;
 import com.atteq.asl.utils.StringHelper;
 import com.google.common.io.CharStreams;
 
-public class AtteqServiceLayerImpl implements AtteqServiceLayer {
+public class AtteqServiceLayerImpl implements SecuredAtteqServiceLayer {
 
 	private String serviceLayerUrl;
 	private String securityToken;
@@ -34,7 +30,8 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 	private final static String ASL_VERSION = "1.1";
 
 	@Override
-	public <T, R extends Result<T>> R perform(Performer performer, ResultTransformer<T, R> resultTransformer, JavaType t) throws ServiceCallException {
+	public <T, R extends Result<T>> R perform(Performer performer, ResultTransformer<T, R> resultTransformer,
+			JavaType t) throws ServiceCallException {
 		try {
 			URI baseUri = new URI(serviceLayerUrl);
 			URL url = performer.getUrl(baseUri.getScheme(), baseUri.getHost());
@@ -46,8 +43,10 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 			logger.debug(String.format("%s %s", performer.getHttpMethod(), url));
 			logger.debug(body);
 
-			if ((performer.getHttpMethod() == HttpMethod.POST || performer.getHttpMethod() == HttpMethod.PUT) && !StringHelper.isNullOrEmpty(body)) {
-				conn.setRequestProperty("Content-Type", performer.getContentType() + "; charset=" + performer.getEncoding());
+			if ((performer.getHttpMethod() == HttpMethod.POST || performer.getHttpMethod() == HttpMethod.PUT)
+					&& !StringHelper.isNullOrEmpty(body)) {
+				conn.setRequestProperty("Content-Type",
+						performer.getContentType() + "; charset=" + performer.getEncoding());
 				conn.setRequestProperty("Content-Length", Integer.toString(body.getBytes().length));
 				conn.setDoOutput(true);
 				OutputStreamWriter os = new OutputStreamWriter(new BufferedOutputStream(conn.getOutputStream()));
@@ -59,13 +58,14 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 				String h = conn.getHeaderField("ASL-Flask-Layer");
 				String serverVersion = (h == null ? "" : h);
 				if (!serverVersion.startsWith(ASL_VERSION)) {
-					throw new ServiceCallException(String.format("The service version '%s' is not compatibile with the client version '%s'.", serverVersion,
-							ASL_VERSION));
+					throw new ServiceCallException(
+							String.format("The service version '%s' is not compatibile with the client version '%s'.",
+									serverVersion, ASL_VERSION));
 				}
 			}
 
-			String result = CharStreams.toString(new InputStreamReader(conn.getResponseCode() == HTTP_STATUS_CODE_OK ? conn.getInputStream() : conn
-					.getErrorStream()));
+			String result = CharStreams.toString(new InputStreamReader(
+					conn.getResponseCode() == HTTP_STATUS_CODE_OK ? conn.getInputStream() : conn.getErrorStream()));
 			logger.debug(String.format("Response:\n%s", result));
 			return resultTransformer.transform(performer, result, conn.getResponseCode(), t);
 		} catch (Exception e) {
@@ -73,36 +73,33 @@ public class AtteqServiceLayerImpl implements AtteqServiceLayer {
 		}
 	}
 
-	public <T, R extends Result<T>> R perform(Performer performer, ResultTransformer<T, R> resultTransformer, Class<T> c) throws ServiceCallException {
+	public <T, R extends Result<T>> R perform(Performer performer, ResultTransformer<T, R> resultTransformer,
+			Class<T> c) throws ServiceCallException {
 		return perform(performer, resultTransformer, TypeFactory.defaultInstance().constructType(c));
 	}
 
 	public <T> TaskResult<T> perform(Task task, JavaType t) throws ServiceCallException {
-		TaskResultFactory<T> f = new TaskResultFactory<T>();
-		return perform(task, new JsonResultTransformer<T, TaskResult<T>>(f), t);
+		return CallHelper.perform(this, task, t);
 	}
 
 	public <T> TaskResult<T> perform(Task task, Class<T> c) throws ServiceCallException {
-		TaskResultFactory<T> f = new TaskResultFactory<T>();
-		return perform(task, new JsonResultTransformer<T, TaskResult<T>>(f), TypeFactory.defaultInstance().constructType(c));
+		return CallHelper.perform(this, task, c);
 	}
 
 	public <T> TaskResult<T> performWithErrorDecorator(Task task, JavaType t) throws ServiceCallException {
-		return perform(task, new JsonResultWithErrorTransformer<T>(), t);
+		return CallHelper.performWithErrorDecorator(this, task, t);
 	}
 
 	public <T> TaskResult<T> performWithErrorDecorator(Task task, Class<T> c) throws ServiceCallException {
-		return perform(task, new JsonResultWithErrorTransformer<T>(), TypeFactory.defaultInstance().constructType(c));
+		return CallHelper.performWithErrorDecorator(this, task, c);
 	}
 
 	public <T> GenericResult<T> perform(Performer performer, JavaType t) throws ServiceCallException {
-		GenericResultFactory<T> f = new GenericResultFactory<T>();
-		return perform(performer, new JsonResultTransformer<T, GenericResult<T>>(f), t);
+		return CallHelper.perform(this, performer, t);
 	}
 
 	public <T> GenericResult<T> perform(Performer performer, Class<T> c) throws ServiceCallException {
-		GenericResultFactory<T> f = new GenericResultFactory<T>();
-		return perform(performer, new JsonResultTransformer<T, GenericResult<T>>(f), TypeFactory.defaultInstance().constructType(c));
+		return CallHelper.perform(this, performer, c);
 	}
 
 	public String getServiceLayerUrl() {
