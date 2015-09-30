@@ -49,6 +49,7 @@ public class SecuredTask extends Task {
 		this.securityInfo = new SecurityInfo(asl.getSecurityToken());
 	}
 
+	@Override
 	public Object getData() throws ServiceCallException {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("data", super.getBody());
