@@ -50,7 +50,7 @@ public class SecuredTask extends Task {
 
 	public Object getData() {
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("data", super.getData());
+		map.put("data", super.getBody());
 		map.put("security", securityInfo);
 		return map;
 	}
