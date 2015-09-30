@@ -52,7 +52,7 @@ public class Task implements Performer {
 		return name;
 	}
 
-	public Object getData() throws ServiceCallException {
+	public Object getData() {
 		return data;
 	}
 

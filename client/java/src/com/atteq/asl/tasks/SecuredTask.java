@@ -6,11 +6,8 @@ import java.util.HashMap;
 
 import org.apache.commons.codec.binary.Hex;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import com.atteq.asl.SecuredAtteqServiceLayer;
-import com.atteq.asl.ServiceCallException;
-import com.atteq.asl.utils.JsonHelper;
 import com.atteq.asl.utils.StringHelper;
 
 public class SecuredTask extends Task {
@@ -52,14 +49,9 @@ public class SecuredTask extends Task {
 	}
 
 	@Override
-	public Object getData() throws ServiceCallException {
+	public Object getData() {
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		ObjectMapper objectMapper = JsonHelper.createMapper();
-		try {
-			map.put("data", objectMapper.writeValueAsString(super.getData()));
-		} catch (Exception e) {
-			throw new ServiceCallException(e.getMessage(), e);
-		}
+		map.put("data", super.getData());
 		map.put("security", securityInfo);
 		return map;
 	}
