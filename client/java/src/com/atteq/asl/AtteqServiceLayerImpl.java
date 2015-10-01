@@ -1,6 +1,5 @@
 package com.atteq.asl;
 
-import java.io.BufferedOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -46,12 +45,12 @@ public class AtteqServiceLayerImpl implements SecuredAtteqServiceLayer {
 			if ((performer.getHttpMethod() == HttpMethod.POST || performer.getHttpMethod() == HttpMethod.PUT)
 					&& !StringHelper.isNullOrEmpty(body)) {
 				conn.setRequestProperty("Content-Type", performer.getContentType() + ";charset=" + performer.getEncoding().toUpperCase());
-				conn.setRequestProperty("Content-Encoding", performer.getEncoding());
-				conn.setRequestProperty("Content-Length", Integer.toString(body.getBytes().length));
+				conn.setRequestProperty("Content-Encoding", performer.getEncoding().toUpperCase());
+				byte[] rawBody = body.getBytes(performer.getEncoding());
+				conn.setRequestProperty("Content-Length", Integer.toString(rawBody.length));
 				conn.setDoOutput(true);
 				OutputStream os = conn.getOutputStream();
-				BufferedOutputStream bos = new BufferedOutputStream(os);
-				bos.write(body.getBytes(performer.getEncoding()));
+				os.write(rawBody);
 				os.close();
 			}
 
