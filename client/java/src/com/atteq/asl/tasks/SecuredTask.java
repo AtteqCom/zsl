@@ -8,6 +8,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.atteq.asl.SecuredAtteqServiceLayer;
+import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.utils.StringHelper;
 
 public class SecuredTask extends Task {
@@ -49,7 +50,7 @@ public class SecuredTask extends Task {
 	}
 
 	@Override
-	public Object getData() {
+	public Object getData() throws ServiceCallException {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("data", super.getData());
 		map.put("security", securityInfo);
