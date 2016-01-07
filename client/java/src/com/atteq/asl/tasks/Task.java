@@ -8,14 +8,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import com.atteq.asl.HttpMethod;
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.utils.JsonHelper;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Task implements Performer {
 
@@ -67,7 +66,7 @@ public class Task implements Performer {
 
 	@Override
 	public HttpMethod getHttpMethod() {
-		return HttpMethod.POST; 
+		return HttpMethod.POST;
 	}
 
 	@Override
@@ -76,7 +75,7 @@ public class Task implements Performer {
 		if (data == null) {
 			return null;
 		}
-		
+
 		ByteArrayOutputStream ss = new ByteArrayOutputStream();
 		ObjectMapper objectMapper = JsonHelper.createMapper();
 		try {

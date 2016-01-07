@@ -1,9 +1,8 @@
 package com.atteq.asl.results;
 
-import org.codehaus.jackson.type.JavaType;
-
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.utils.JsonHelper;
+import com.fasterxml.jackson.databind.JavaType;
 
 public class JsonResultTransformer<T, R extends Result<T>> implements ResultTransformer<T, R> {
 

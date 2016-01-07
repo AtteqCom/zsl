@@ -5,11 +5,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import org.apache.commons.codec.binary.Hex;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.atteq.asl.SecuredAtteqServiceLayer;
 import com.atteq.asl.ServiceCallException;
 import com.atteq.asl.utils.StringHelper;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SecuredTask extends Task {
 

@@ -1,8 +1,7 @@
 package com.atteq.asl.results;
 
-import org.codehaus.jackson.type.JavaType;
-
 import com.atteq.asl.performers.Performer;
+import com.fasterxml.jackson.databind.JavaType;
 
 /**
  * An infrastructure for creating results from raw responses.
@@ -17,8 +16,8 @@ import com.atteq.asl.performers.Performer;
 public interface ResultTransformer<T, R extends Result<T>> {
 
 	/**
-	 * Transforms the raw result info a nice structure implementing {@see
-	 * Result} interface.
+	 * Transforms the raw result info a nice structure implementing
+	 * {@see Result} interface.
 	 *
 	 * @param performer
 	 *            Performer which generated the data.

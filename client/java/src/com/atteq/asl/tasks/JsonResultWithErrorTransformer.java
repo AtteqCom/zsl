@@ -1,8 +1,5 @@
 package com.atteq.asl.tasks;
 
-import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.type.JavaType;
-
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.results.GenericResult;
 import com.atteq.asl.results.GenericResultFactory;
@@ -10,6 +7,8 @@ import com.atteq.asl.results.JsonResultTransformer;
 import com.atteq.asl.results.ResultTransformer;
 import com.atteq.asl.results.TransformationException;
 import com.atteq.asl.utils.JsonHelper;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 public class JsonResultWithErrorTransformer<T> implements ResultTransformer<T, TaskResultWithError<T>> {
 

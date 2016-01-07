@@ -3,13 +3,12 @@ package com.atteq.asl.results;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.type.JavaType;
-
 import com.atteq.asl.AtteqServiceLayerImpl;
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.utils.JsonHelper;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> implements
 		ResultTransformer<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> {
@@ -17,7 +16,8 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 	protected ResultFactory<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> factory;
 	protected ObjectMapper mapper = JsonHelper.createMapper();
 
-	public JsonResultOrErrorTransformer(ResultFactory<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> factory) {
+	public JsonResultOrErrorTransformer(
+			ResultFactory<ResultOrError<ResultType, ErrorType>, GenericResult<ResultOrError<ResultType, ErrorType>>> factory) {
 		this.factory = factory;
 	}
 
@@ -34,8 +34,8 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 	}
 
 	@Override
-	public GenericResult<ResultOrError<ResultType, ErrorType>> transform(Performer performer, String result, int status, JavaType type)
-			throws TransformationException {
+	public GenericResult<ResultOrError<ResultType, ErrorType>> transform(Performer performer, String result, int status,
+			JavaType type) throws TransformationException {
 		final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		mapper.setDateFormat(df);
 		try {
