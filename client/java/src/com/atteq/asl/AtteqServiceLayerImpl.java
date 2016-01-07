@@ -7,8 +7,6 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.type.JavaType;
 
 import com.atteq.asl.performers.Performer;
 import com.atteq.asl.results.GenericResult;
@@ -17,6 +15,8 @@ import com.atteq.asl.results.ResultTransformer;
 import com.atteq.asl.tasks.Task;
 import com.atteq.asl.tasks.TaskResult;
 import com.atteq.asl.utils.StringHelper;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.google.common.io.CharStreams;
 
 public class AtteqServiceLayerImpl implements SecuredAtteqServiceLayer {
