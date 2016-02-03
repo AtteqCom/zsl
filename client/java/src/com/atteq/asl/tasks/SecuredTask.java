@@ -2,7 +2,6 @@ package com.atteq.asl.tasks;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 
 import org.apache.commons.codec.binary.Hex;
 
@@ -48,13 +47,23 @@ public class SecuredTask extends Task {
 		super(name, data);
 		this.securityInfo = new SecurityInfo(asl.getSecurityToken());
 	}
+	
+	private static class Data {
+		
+		public Data(SecurityInfo info, Object data) {
+			this.security = info;
+			this.data = data;
+		}
+		
+		public Object data;
+		
+		public SecurityInfo security;
+		
+	}
 
 	@Override
 	public Object getData() throws ServiceCallException {
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("data", super.getData());
-		map.put("security", securityInfo);
-		return map;
+		return new Data(securityInfo, super.getData());
 	}
 
 }
