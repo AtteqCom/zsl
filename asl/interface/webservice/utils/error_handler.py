@@ -7,6 +7,7 @@ import traceback
 from asl.application.service_application import service_application
 from functools import wraps
 from abc import abstractmethod
+from flask import request
 
 _error_handlers = []
 
@@ -43,6 +44,7 @@ def error_handler(f):
                     return eh.handle(ex)
 
             service_application.logger.error(unicode(ex) + "\n" + traceback.format_exc())
+            service_application.logger.error("Request:\n{0}\n{1}\n".format(request.headers, request.data));
             return "An error occurred!", 500
 
     return error_handling_function
