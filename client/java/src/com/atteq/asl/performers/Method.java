@@ -50,7 +50,7 @@ public class Method implements Performer {
 
 	@Override
 	public String getEncoding() {
-		return "utf-8";
+		return "UTF-8";
 	}
 
 }

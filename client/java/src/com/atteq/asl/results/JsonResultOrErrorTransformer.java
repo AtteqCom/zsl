@@ -22,7 +22,7 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 	}
 
 	public JavaType getType(Class<ResultType> resultClass, Class<ErrorType> errorClass) {
-		return mapper.getTypeFactory().constructParametricType(ResultOrError.class, resultClass, errorClass);
+		return mapper.getTypeFactory().constructParametrizedType(ResultOrError.class, ResultOrError.class, resultClass, errorClass);
 	}
 
 	public TypeFactory getTypeFactory() {
@@ -30,7 +30,7 @@ public class JsonResultOrErrorTransformer<ResultType, ErrorType extends Error> i
 	}
 
 	public JavaType getType(JavaType resultType, JavaType errorType) {
-		return mapper.getTypeFactory().constructParametricType(ResultOrError.class, resultType, errorType);
+		return mapper.getTypeFactory().constructParametrizedType(ResultOrError.class, ResultOrError.class, resultType, errorType);
 	}
 
 	@Override

@@ -37,10 +37,12 @@ public class AtteqServiceLayerImpl implements SecuredAtteqServiceLayer {
 
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod(performer.getHttpMethod().toString());
+			conn.setDoInput(true); // this is to enable reading
+			conn.setDoOutput(true); // this is to enable writing
 
 			String body = performer.getBody();
 			logger.debug(String.format("%s %s", performer.getHttpMethod(), url));
-			logger.debug(body);
+			logger.debug("Request body:\n" + body);
 
 			if ((performer.getHttpMethod() == HttpMethod.POST || performer.getHttpMethod() == HttpMethod.PUT)
 					&& !StringHelper.isNullOrEmpty(body)) {
@@ -48,7 +50,6 @@ public class AtteqServiceLayerImpl implements SecuredAtteqServiceLayer {
 				conn.setRequestProperty("Content-Encoding", performer.getEncoding().toUpperCase());
 				byte[] rawBody = body.getBytes(performer.getEncoding());
 				conn.setRequestProperty("Content-Length", Integer.toString(rawBody.length));
-				conn.setDoOutput(true);
 				OutputStream os = conn.getOutputStream();
 				os.write(rawBody);
 				os.close();
@@ -66,7 +67,7 @@ public class AtteqServiceLayerImpl implements SecuredAtteqServiceLayer {
 
 			String result = CharStreams.toString(new InputStreamReader(
 					conn.getResponseCode() == HTTP_STATUS_CODE_OK ? conn.getInputStream() : conn.getErrorStream()));
-			logger.debug(String.format("Response:\n%s", result));
+			logger.debug(String.format("Response %d %s\n%s", conn.getResponseCode(), conn.getResponseMessage(), result));
 			return resultTransformer.transform(performer, result, conn.getResponseCode(), t);
 		} catch (Exception e) {
 			throw new ServiceCallException(String.format("Error when calling ASL. %s", e.getMessage()), e);

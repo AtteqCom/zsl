@@ -20,7 +20,7 @@ public class Task implements Performer {
 
 	private static final String DEFAULT_CONTENT_TYPE = "application/json";
 
-	private static final String DEFAULT_ENCODING = "utf-8";
+	private static final String DEFAULT_ENCODING = "UTF-8";
 
 	private final static String DEFAULT_TASK_PREFIX = "/task";
 
@@ -89,7 +89,7 @@ public class Task implements Performer {
 		}
 
 		try {
-			return ss.toString("UTF-8");
+			return ss.toString(encoding);
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceCallException("IO error while converting to JSON.", e);
 		}
