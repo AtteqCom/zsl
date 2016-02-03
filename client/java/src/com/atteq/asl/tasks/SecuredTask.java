@@ -55,8 +55,13 @@ public class SecuredTask extends Task {
 			this.data = data;
 		}
 		
+		
+		// Used in JSON mapping.
+		@SuppressWarnings("unused")
 		public Object data;
 		
+		// Used in JSON mapping.
+		@SuppressWarnings("unused")
 		public SecurityInfo security;
 		
 	}
