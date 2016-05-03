@@ -5,3 +5,5 @@ dist/
 dump.rdb
 /.tox
 _build
+vagrant/.vagrant
+.python-version

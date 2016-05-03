@@ -55,3 +55,11 @@ class CacheModule(object):
         Returns the list associated with the ``key``.
         '''
         pass
+
+    @abc.abstractmethod
+    def invalidate_by_glob(self, glob):
+        '''
+        Invalidates the keys by given glob.
+        
+        :param string glob: All the keys matching the given glob will be invalidated.
+        '''

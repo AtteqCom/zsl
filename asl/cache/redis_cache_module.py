@@ -62,3 +62,10 @@ class RedisCacheModule(CacheModule):
         pkey = self._prefix_key(key)
         llen = self._client.llen(pkey)
         return self._client.lrange(pkey, 0, llen - 1)
+    
+    def invalidate_by_glob(self, glob):
+        pglob = self._prefix_key(glob)
+        for key in self._client.scan_iter(pglob):
+            # This does not need to prefixed.
+            self._app.logger.debug('Invalidating key {0}.'.format(key))
+            self._client.delete(key)
