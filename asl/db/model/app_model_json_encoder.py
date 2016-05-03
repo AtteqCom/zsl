@@ -16,5 +16,3 @@ class AppModelJSONEncoder(JSONEncoder):
             return d
         else:
             return JSONEncoder.default(self, o)
-
-

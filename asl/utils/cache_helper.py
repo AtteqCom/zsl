@@ -5,10 +5,10 @@
 '''
 from asl.application.service_application import service_application
 from asl.utils.injection_helper import inject
-from asl.cache.id_helper import IdHelper
+from asl.cache.id_helper import IdHelper, create_key_object_prefix,\
+    app_model_decoder_fn, app_model_encoder_fn
 from asl.db.model.app_model_json_encoder import AppModelJSONEncoder
 import json
-from asl.db.model.app_model_json_decoder import get_json_decoder
 import abc
 from asl.task.job_context import JobContext
 
@@ -45,17 +45,10 @@ class CacheDecorator:
         return key
 
     def get_decoder(self):
-        def decoder_fn(model_key, x):
-            class_name = model_key.split("-", 1)[0]
-            return json.loads(x, cls = get_json_decoder(class_name))
-
-        return decoder_fn
+        return app_model_decoder_fn
 
     def get_encoder(self):
-        def encoder_fn(x):
-            return json.dumps(x, cls = AppModelJSONEncoder)
-
-        return encoder_fn
+        return app_model_encoder_fn
 
 class CacheOutputDecorator(CacheDecorator):
     def get_wrapped_fn(self):
@@ -112,8 +105,6 @@ class CacheModelDecorator(CacheDecorator):
 def cache_model(key_params, timeout = 'default'):
     '''
     Caching decorator for app models in task.perform
-    
-    
     '''
     def decorator_fn(fn):
         return CacheModelDecorator().decorate(key_params, timeout, fn)
@@ -142,7 +133,7 @@ class CachePageDecorator(CacheDecorator):
 
 def cache_page(key_params, timeout = 'default'):
     '''
-    Cache a page (slice) of a list of appmodels
+    Cache a page (slice) of a list of AppModels
     '''
     def decorator_fn(fn):
         d = CachePageDecorator()
@@ -159,9 +150,6 @@ def cache_filtered_page(filter_param = 'filter', pagination_param = 'pagination'
         return d.decorate([filter_param, sorter_param, pagination_param], timeout, fn)
 
     return decorator_fn
-
-def create_key_object_prefix(obj):
-    return "{0}.{1}".format(obj.__class__.__module__, obj.__class__.__name__)
 
 def create_key_for_data(prefix, data, key_params):
     '''

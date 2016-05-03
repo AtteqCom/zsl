@@ -4,15 +4,13 @@
 .. moduleauthor:: Martin Babka
 '''
 from json.decoder import JSONDecoder, WHITESPACE
-import importlib
+from asl.utils.import_helper import fetch_class
 
-def get_json_decoder(full_class_name):
+def get_json_decoder(full_class_name, hints=None):
     class AppModelJSONDecoder(JSONDecoder):
         def decode(self, s, _w=WHITESPACE.match):
             values = JSONDecoder.decode(self, s, _w=_w)
-            (module_name, class_name) = full_class_name.rsplit('.', 1)
-            module = importlib.import_module(module_name)
-            model = getattr(module, class_name)(values)
+            model = fetch_class(full_class_name)(values, 'id', hints)
             return model
 
     return AppModelJSONDecoder

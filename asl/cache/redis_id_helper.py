@@ -1,15 +1,18 @@
 '''
 :mod:`asl.cache.redis_id_helper`
 
-.. moduleauthor:: Martin Babka
+.. moduleauthor:: Martin Babka <babka@atteq.com>
 '''
-from asl.cache.id_helper import IdHelper, decoder_identity, encoder_identity
+from asl.cache.id_helper import IdHelper, decoder_identity, encoder_identity,\
+    model_key_generator
 from asl.utils.injection_helper import inject
 from asl.cache.redis_cache_module import RedisCacheModule
-from asl.utils.cache_helper import create_key_object_prefix
 from asl.application.service_application import service_application
 
 class RedisIdHelper(IdHelper):
+    
+    CACHE_DEFAULT_TIMEOUT = 300
+    
     @inject(redis_cache_module = RedisCacheModule)
     def __init__(self, redis_cache_module):
         '''
@@ -21,16 +24,17 @@ class RedisIdHelper(IdHelper):
             self._cache_timeouts = service_application.config['CACHE_TIMEOUTS']
         else:
             self._cache_timeouts = None
+        self._cache_default_timeout = service_application.config['CACHE_DEFAULT_TIMEOUT'] if 'CACHE_DEFAULT_TIMEOUT'in service_application.config else RedisIdHelper.CACHE_DEFAULT_TIMEOUT
 
     def get_timeout(self, key, value, timeout):
-        # TODO: Nejak lepsie. peto suhlasi
         if self._cache_timeouts is None:
-            return 3600
+            return self._cache_default_timeout
         else:
             return self._cache_timeouts[timeout]
 
     def gather_page(self, page_key, decoder = decoder_identity):
         page_keys = self._redis_cache_module.get_list(page_key)
+        service_application.logger.debug("Fetching page {0} from redis using keys {1}.".format(page_key, page_keys))
 
         p = []
         for k in page_keys:
@@ -38,11 +42,12 @@ class RedisIdHelper(IdHelper):
 
         return p
 
-    def fill_page(self, page_key, data, timeout, encoder = encoder_identity):
+    def fill_page(self, page_key, data, timeout, encoder=encoder_identity, model_key_generator=model_key_generator):
         self._redis_cache_module.invalidate_key(page_key)
+        self._redis_cache_module.set_key_expiration(page_key, self.get_timeout(page_key, data, timeout))
 
         for d in data:
-            key = self.create_key(d)
+            key = model_key_generator(d)
             self._redis_cache_module.append_to_list(page_key, key)
             self._redis_cache_module.set_key(key, encoder(d), self.get_timeout(key, d, timeout))
 
@@ -68,6 +73,3 @@ class RedisIdHelper(IdHelper):
 
     def set_key(self, key, value, timeout):
         self._redis_cache_module.set_key(key, value, self.get_timeout(key, value, timeout))
-
-    def create_key(self, value):
-        return "{0}-{1}".format(create_key_object_prefix(value), value.get_id())

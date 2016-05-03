@@ -24,26 +24,41 @@ class RedisCacheModule(CacheModule):
             password = redis_conf['password'] if 'password' in redis_conf else None
         )
         self._app.logger.debug("Redis client created.")
+        self._cache_prefix = service_application.config['CACHE_PREFIX'] + ':' if 'CACHE_PREFIX' in service_application.config else ''
+        
+    def _prefix_key(self, key):
+        return self._cache_prefix + key
 
     def set_key(self, key, value, timeout):
-        self._client.set(key, value)
-        self._client.expire(key, timeout)
+        pkey = self._prefix_key(key)
+        self._client.set(pkey, value)
+        self.set_key_expiration(pkey, timeout)
 
     def invalidate_key(self, key):
-        self._client.delete(key)
+        pkey = self._prefix_key(key)
+        self._client.delete(pkey)
 
+    def set_key_expiration(self, key, timeout):
+        pkey = self._prefix_key(key)
+        self._client.expire(pkey, timeout)
+        
     def contains_key(self, key):
-        return self._client.exists(key)
+        pkey = self._prefix_key(key)
+        return self._client.exists(pkey)
 
     def contains_list(self, key):
-        return self._client.exists(key)
+        pkey = self._prefix_key(key)
+        return self._client.exists(pkey)
 
     def get_key(self, key):
-        return self._client.get(key)
+        pkey = self._prefix_key(key)
+        return self._client.get(pkey)
 
     def append_to_list(self, key, value):
-        self._client.rpush(key, value)
+        pkey = self._prefix_key(key)
+        self._client.rpush(pkey, value)
 
     def get_list(self, key):
-        llen = self._client.llen(key)
-        return self._client.lrange(key, 0, llen - 1)
+        pkey = self._prefix_key(key)
+        llen = self._client.llen(pkey)
+        return self._client.lrange(pkey, 0, llen - 1)

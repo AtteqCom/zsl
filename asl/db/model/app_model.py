@@ -9,6 +9,9 @@ from asl.utils.date_helper import format_date_portable, format_datetime_portable
 
 DATE_DATA = 'date_data'
 DATETIME_DATA = 'datetime_data'
+RELATED_FIELDS = 'related_fields'
+RELATED_FIELDS_CLASS = 'cls'
+RELATED_FIELDS_HINTS = 'hints'
 
 class AppModel:
     '''
@@ -29,13 +32,15 @@ class AppModel:
         '''
 
         if hints == None:
-            self._hints = {DATE_DATA: {}, DATETIME_DATA: {}}
+            self._hints = {DATE_DATA: {}, DATETIME_DATA: {}, RELATED_FIELDS: {}}
         else:
             self._hints = hints
             if not DATE_DATA in self._hints:
                 self._hints[DATE_DATA] = {}
             if not DATETIME_DATA in self._hints:
                 self._hints[DATETIME_DATA] = {}
+            if not RELATED_FIELDS in self._hints:
+                self._hints[RELATED_FIELDS] = {}
 
         self.set_from_raw_data(raw)
         self._id_name = id_name
@@ -55,6 +60,8 @@ class AppModel:
                 setattr(self, k, format_datetime_portable(v))
             elif isinstance(v, date):
                 setattr(self, k, format_date_portable(v))
+            elif k in self._hints[RELATED_FIELDS]:
+                setattr(self, k, self._hints[RELATED_FIELDS][k][RELATED_FIELDS_CLASS](v, 'id', self._hints[RELATED_FIELDS][k].get(RELATED_FIELDS_HINTS)))
 
     def get_id(self):
         return self.__dict__[self._id_name]

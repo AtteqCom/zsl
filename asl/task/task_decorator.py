@@ -194,27 +194,34 @@ def required_data(*data):
 
     return decorator_fn
 
-def append_get_parameters(f):
+def append_get_parameters(accept_only_web = True):
     '''
     Task decorator which appends the GET data to the task data.
+    
+    :param boolean accept_only_web: Parameter which limits using this task only with web requests.
     '''
-
-    @wraps(f)
-    def append_get_parameters(*args, **kwargs):
-        task_data = get_data(args)
-        jc = JobContext.get_current_context()
-
-        if not isinstance(jc, WebJobContext):
-            raise Exception("append_get_parameters decorator may be used with GET requests only.")
-
-        request = jc.get_web_request()
-        data = task_data.get_data()
-
-        data.update(request.args.to_dict(flat=True))
-
-        return f(*args, **kwargs)
-
-    return append_get_parameters
+    
+    def wrapper(f):
+        @wraps(f)
+        def append_get_parameters(*args, **kwargs):
+            jc = JobContext.get_current_context()
+    
+            if isinstance(jc, WebJobContext):
+                # Update the data with GET parameters 
+                request = jc.get_web_request()
+                task_data = get_data(args)
+                data = task_data.get_data()
+                data.update(request.args.to_dict(flat=True))
+            elif accept_only_web:
+                # Raise exception on non web usage if necessary
+                raise Exception("append_get_parameters decorator may be used with GET requests only.")
+    
+    
+            return f(*args, **kwargs)
+    
+        return append_get_parameters
+    
+    return wrapper
 
 def web_task(f):
     '''

@@ -80,12 +80,16 @@ def create_model_resource(resource_map, name):
     Create a model resource from a dict ``resource_map`` {'resource name': ('model package', 'model class')}
     '''
     try:
-        module_name, model_name = resource_map[name]
+        resource_description = resource_map[name]
+        if len(resource_description) == 2:
+            module_name, model_name = resource_map[name]
+            resource_class = ModelResource
+        else:
+            module_name, model_name, resource_class = resource_map[name] 
     except KeyError:
         raise ImportError()
 
     module = importlib.import_module(module_name)
     model_cls = getattr(module, model_name)
     
-    return app.get_injector().create_object(ModelResource, {'model_cls': model_cls})    
-
+    return app.get_injector().create_object(resource_class, {'model_cls': model_cls})    

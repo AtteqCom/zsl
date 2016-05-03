@@ -13,22 +13,29 @@ The basic way to use them is as follows:
 '''
 
 from sqlalchemy.orm import class_mapper
-from asl.resource.resource_helper import filter_from_url_arg, apply_related, create_related_tree,\
+from asl.resource.resource_helper import filter_from_url_arg, apply_related, create_related_tree, \
     related_from_fields, order_from_url_arg
 from functools import partial
 from asl.db.helpers import app_models
 from asl.db.helpers.nested import nested_models, nested_model
 from asl.service.service import transactional, SqlSesionMixin
+from asl.utils.injection_helper import inject
+from asl.cache.cache_module import CacheModule
+from asl.cache.id_helper import IdHelper, create_key_class_prefix
+from hashlib import sha256
+import logging
+import json
+from asl.utils.cache_helper import app_model_encoder_fn, app_model_decoder_fn
 
 def dict_pick(dictionary, allowed_keys):
     '''
     Return a dictionary only with keys found in ``allowed_keys``
     '''
-    return dict((key, value) for (key,value) in dictionary.items() if key in allowed_keys)
+    return dict((key, value) for (key, value) in dictionary.items() if key in allowed_keys)
 
 def page_to_offset(params):
     '''
-    Transform 'page'/'per_page' to 'limit'/'offset'
+    Transform 'page'/'per_page' to 'limit'/'offset' from params.
     '''
 
     if 'page' not in params:
@@ -48,6 +55,20 @@ def page_to_offset(params):
     params['limit'] = per_page
 
 class ResourceQueryContext(object):
+    '''
+    The context of the resource query.
+     - holds the parameters and arguments of the query,
+     - holds the related models which should be fetched (parsed from the arguments),
+     - holds the given filter and splits it to the given field array (parsed from the arguments)
+     
+    .. automethod:: __init__
+    .. automethod:: get_params Params are given as the part of the path in URL. For example GET /entities/1 will have 1 in the params
+    .. automethod:: get_args Args are in the query part of the url ?related=&filter_by etc.
+    .. automethod:: get_data Body of the request.
+    .. automethod:: get_row_id First parameter, if given, else None. Handy for GET requests.
+    .. automethod:: get_related Related argument - parsed as array, original argument containing the list of comma delimited models which should be fetched along with the resource.
+    .. automethod:: get_filter_by Filter argument - list of filters
+    '''
 
     def __init__(self, params, args, data):
         self._params = params
@@ -136,8 +157,7 @@ class ModelResource(SqlSesionMixin):
         self._save_one(model, ctx)
         return self._return_saved_one(model, ctx)
 
-    @transactional
-    def read(self, params = [], args = {}, data = None):
+    def read(self, params=[], args={}, data=None):
         '''
         GET /resource/model_cls/[params:id]?[args:{limit,offset,page,per_page,filter_by,order_by,related,fields}]
 
@@ -220,6 +240,7 @@ class ModelResource(SqlSesionMixin):
         return model.get_app_model()
 
     # Read one implementation.
+    @transactional
     def _get_one(self, row_id, ctx):
         assert isinstance(ctx, ResourceQueryContext)
 
@@ -239,6 +260,7 @@ class ModelResource(SqlSesionMixin):
     def _create_collection_query(self, ctx):
         return self._orm.query(self.model_cls)
 
+    @transactional
     def _get_collection_count(self, ctx):
         assert isinstance(ctx, ResourceQueryContext)
 
@@ -254,6 +276,7 @@ class ModelResource(SqlSesionMixin):
     def _read_collection_count(self, q, ctx):
         return q.with_entities(self._model_pk).count()
 
+    @transactional
     def _get_collection(self, ctx):
         assert isinstance(ctx, ResourceQueryContext)
 
@@ -296,7 +319,7 @@ class ModelResource(SqlSesionMixin):
         if model is None:
             return None
 
-        for name,value in fields.items():
+        for name, value in fields.items():
             setattr(model, name, value)
 
         return model
@@ -356,3 +379,73 @@ class ModelResource(SqlSesionMixin):
             q = self.to_filter(q, filter_by)
 
         return q.delete()
+
+class CachedModelResource(ModelResource):
+    '''
+    The cached resource - uses redis to cache the resource for the given amount of seconds.
+    '''
+    @inject(cache_module=CacheModule, id_helper=IdHelper, logger=logging.Logger)
+    def __init__(self, model_cls, cache_module, id_helper, logger, timeout='short'):
+        super(CachedModelResource, self).__init__(model_cls)
+        self._cache_module = cache_module
+        self._id_helper = id_helper
+        self._logger = logger
+        self._timeout = timeout
+    
+    def _create_key(self, arghash):
+        key_prefix = create_key_class_prefix(self.model_cls)
+        return "cached-resource:{0}:{1}".format(key_prefix, arghash)
+    
+    def _create_key_from_context(self, ctx):
+        arghash = sha256(json.dumps({'params': ctx.params, 'args': ctx.args, 'data': ctx.data})).hexdigest()
+        return self._create_key(arghash)
+           
+    def _get_one(self, row_id, ctx):
+        # Make hash of params, args and data and ache using the hash in the key.
+        key = self._create_key_from_context(ctx)
+        self._logger.debug("CachedModelResource - get one, key: {0}.".format(key))
+        
+        if self._id_helper.check_key(key):
+            result = json.loads(self._id_helper.get_key(key))
+        else:
+            self._logger.debug("CachedModelResource - get one not cached, transferring to resource...")
+            result = super(CachedModelResource, self)._get_one(row_id, ctx)
+            # serialize as model
+            self._id_helper.set_key(key, app_model_encoder_fn(result), self._timeout)
+        
+        return result
+    
+    def _get_collection_count(self, ctx):
+        # Make hash of params, args and data and ache using the hash in the key.
+        key = self._create_key_from_context(ctx)
+        self._logger.debug("CachedModelResource - get one, key: {0}.".format(key))
+        
+        if self._id_helper.check_key(key):
+            result = long(self._id_helper.get_key(key))
+        else:
+            self._logger.debug("CachedModelResource - get one not cached, transferring to resource...")
+            result = super(CachedModelResource, self)._get_collection_count(ctx)
+            self._id_helper.set_key(key, app_model_encoder_fn(result), self._timeout)
+        
+        return result
+    
+    def _get_collection(self, ctx):
+        # Make hash of params, args and data and ache using the hash in the key.
+        key = self._create_key_from_context(ctx)
+        self._logger.debug("CachedModelResource - collection, key: {0}.".format(key))
+        
+        if self._id_helper.check_key(key):
+            result = self._id_helper.gather_page(key, app_model_decoder_fn)
+        else:
+            self._logger.debug("CachedModelResource - collection not cached, transferring to resource...")
+            result = super(CachedModelResource, self)._get_collection(ctx)
+            self._id_helper.fill_page(key, result, self._timeout, app_model_encoder_fn)
+        
+        return result
+
+    def invalidate(self):
+        '''
+        Invalidates all the data associated with this model
+        '''
+        key = self._create_key("*")
+        self._id_helper.invalidate_key(key)
