@@ -5,7 +5,7 @@
 '''
 from asl.application.service_application import service_application
 from asl.utils.injection_helper import inject
-from asl.cache.id_helper import IdHelper, create_key_object_prefix,\
+from asl.cache.id_helper import IdHelper, model_key_generator, create_key_object_prefix,\
     app_model_decoder_fn, app_model_encoder_fn
 from asl.db.model.app_model_json_encoder import AppModelJSONEncoder
 import json
@@ -94,7 +94,7 @@ class CacheModelDecorator(CacheDecorator):
 
             model = self._fn(*args)
             encoded_model = json.dumps(model, cls = AppModelJSONEncoder)
-            model_key = self._id_helper.create_key(model)
+            model_key = model_key_generator(model)
             self._id_helper.set_key(key, model_key, self._timeout)
             self._id_helper.set_key(model_key, encoded_model, self._timeout)
             service_application.logger.debug("Newly fetched into the cache.")
