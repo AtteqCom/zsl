@@ -12,6 +12,21 @@ from asl.router import task_router
 from asl.interface.gearman.json_data_encoder import JSONDataEncoder
 from asl.task.job_context import JobContext
 
+class KillWorkerException(Exception):
+    pass
+
+class ReloadingWorker(gearman.GearmanWorker):
+    
+    def __init__(self, host_list=None):
+        super(ReloadingWorker, self).__init__(host_list)
+        self._should_stop = False
+    
+    def on_job_complete(self, current_job, job_result):
+        super(ReloadingWorker, self).on_job_complete(current_job, job_result)
+        if self._should_stop:
+            quit()
+        return True
+
 app = service_application
 
 def executeTask(worker, job):
@@ -24,6 +39,8 @@ def executeTask(worker, job):
         data = worker.logical_worker.executeTask(jc)
         app.logger.info("Task {0} executed successfully.".format(job.data['path']))
         return {'task_name': job.data['path'], 'data': data}
+    except KillWorkerException as e:
+        worker._should_stop = True
     except Exception as e:
         app.logger.error(unicode(e) + "\n" + traceback.format_exc())
         return {'task_name': job.data['path'], 'data': None, 'error': unicode(e)}
@@ -36,7 +53,7 @@ class Worker:
     def __init__(self, app):
         self._app = app
         task_router.set_task_reloading(task_router.is_task_reloading() or app.config['RELOAD_GEARMAN'])
-        self.gearman_worker = gearman.GearmanWorker(["{0}:{1}".format(app.config['GEARMAN']['host'], app.config['GEARMAN']['port'])])
+        self.gearman_worker = ReloadingWorker(["{0}:{1}".format(app.config['GEARMAN']['host'], app.config['GEARMAN']['port'])])
         self.gearman_worker.set_client_id("asl-client-{0}".format(socket.gethostname()))
         self.gearman_worker.data_encoder = JSONDataEncoder
         self.gearman_worker.register_task(self._app.config['GEARMAN_TASK_NAME'], executeTask)
