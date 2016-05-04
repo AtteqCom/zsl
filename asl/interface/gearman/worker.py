@@ -40,6 +40,7 @@ def executeTask(worker, job):
         app.logger.info("Task {0} executed successfully.".format(job.data['path']))
         return {'task_name': job.data['path'], 'data': data}
     except KillWorkerException as e:
+        app.logger.info("Stopping Gearman worker on demand.")
         worker._should_stop = True
     except Exception as e:
         app.logger.error(unicode(e) + "\n" + traceback.format_exc())
