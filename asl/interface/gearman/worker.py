@@ -24,6 +24,7 @@ class ReloadingWorker(gearman.GearmanWorker):
     def on_job_complete(self, current_job, job_result):
         super(ReloadingWorker, self).on_job_complete(current_job, job_result)
         if self._should_stop:
+            app.logger.info("Stopping Gearman worker on demand - quitting.")
             quit()
         return True
 
@@ -40,7 +41,7 @@ def executeTask(worker, job):
         app.logger.info("Task {0} executed successfully.".format(job.data['path']))
         return {'task_name': job.data['path'], 'data': data}
     except KillWorkerException as e:
-        app.logger.info("Stopping Gearman worker on demand.")
+        app.logger.info("Stopping Gearman worker on demand flag set.")
         worker._should_stop = True
     except Exception as e:
         app.logger.error(unicode(e) + "\n" + traceback.format_exc())
