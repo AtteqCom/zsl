@@ -413,6 +413,8 @@ class CachedModelResource(ModelResource):
             # serialize as model
             self._id_helper.set_key(key, app_model_encoder_fn(result), self._timeout)
         
+        self.invalidate()
+        
         return result
     
     def _get_collection_count(self, ctx):
@@ -447,8 +449,8 @@ class CachedModelResource(ModelResource):
         '''
         Invalidates all the data associated with this model
         '''
-        key = self._create_key("*")
-        self._id_helper.invalidate_key(key)
+        key = self._create_key("")
+        self._id_helper.invalidate_keys_by_prefix(key)
 
     def create(self, params, args, data):
         rv = ModelResource.create(self, params, args, data)

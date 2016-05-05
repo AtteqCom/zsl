@@ -71,5 +71,8 @@ class RedisIdHelper(IdHelper):
     def invalidate_key(self, key):
         return self._redis_cache_module.invalidate_key(key)
 
+    def invalidate_keys_by_prefix(self, key_prefix):
+        return self._redis_cache_module.invalidate_by_glob(key_prefix + "*")
+
     def set_key(self, key, value, timeout):
         self._redis_cache_module.set_key(key, value, self.get_timeout(key, value, timeout))
