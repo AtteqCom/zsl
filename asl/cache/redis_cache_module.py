@@ -65,7 +65,14 @@ class RedisCacheModule(CacheModule):
     
     def invalidate_by_glob(self, glob):
         pglob = self._prefix_key(glob)
-        for key in self._client.scan_iter(pglob):
+        
+        if self._app.config.get('IS_USING_MEDIEVAL_SOFTWARE', False):
+            keylist = self._client.keys(pglob)
+        else:
+            keylist = self._client.scan_iter(pglob)
+             
+        for key in keylist:
             # This does not need to prefixed.
             self._app.logger.debug('Invalidating key {0}.'.format(key))
             self._client.delete(key)
+        

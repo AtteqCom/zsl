@@ -449,3 +449,18 @@ class CachedModelResource(ModelResource):
         '''
         key = self._create_key("*")
         self._id_helper.invalidate_key(key)
+
+    def create(self, params, args, data):
+        rv = ModelResource.create(self, params, args, data)
+        self.invalidate() 
+        return rv
+    
+    def update(self, params, args, data):
+        rv = ModelResource.update(self, params, args, data)
+        self.invalidate() 
+        return rv
+    
+    def delete(self, params, args, data):
+        rv = ModelResource.delete(self, params, args, data)
+        self.invalidate() 
+        return rv
