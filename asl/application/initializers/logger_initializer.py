@@ -45,6 +45,13 @@ class LoggerInitializer:
             to=app.logger,
             scope=singleton
         )
+        
+        def getChild(self, suffix):
+            name = self.name + "." + suffix
+            return logging.getLogger(name)
+            
+        if app.config.get('IS_USING_MEDIEVAL_SOFTWARE', False):
+            logging.Logger.getChild = getChild
 
         errors = []
 

@@ -29,27 +29,33 @@ class SqlSesionMixin(object):
     
     def append_transaction_callback(self, callback):
         self._transaction_callback.append(callback)
+        
+class TransactionalSupport(object):
+    
+    @inject(session_holder=SessionHolder)
+    def __init__(self, session_holder):
+        self._orm = None
+        self._session_holder = session_holder
+        self._in_transaction = False
+        self._transaction_callback = []
+        
 
-class Service(object):
+class Service(TransactionalSupport):
     '''
     Main service class.
     '''
 
-    @inject(session_holder=SessionHolder, app=AtteqServiceFlask, engine=Engine)
-    def __init__(self, session_holder, app, engine):
+    @inject(app=AtteqServiceFlask, engine=Engine)
+    def __init__(self, app, engine):
         '''
         Constructor - initializes and injects the needed libraries.
         '''
-        self._orm = None
-        self._session_holder = session_holder
+        super(Service, self).__init__()
         self._app = app
         self._engine = engine
-        self._in_transaction = False
-        self._transaction_callback = []
 
     def append_transaction_callback(self, callback):
         self._transaction_callback.append(callback)
-
 
 def transactional(f):
 
