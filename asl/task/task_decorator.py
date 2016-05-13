@@ -82,37 +82,33 @@ def json_output(f):
 
     return json_output_decorator
 
-def jsonp_output(f):
+def jsonp_output(callback_key = 'callback'):
     '''
-    Format response to json and in case of web-request add a callback
-    to JSON data - a jsonp request
+    Format response to jsonp and add a callback to JSON data - a jsonp request
     '''
+    callback_key = callback_key
 
-    @wraps(f)
-    def jsonp_output_decorator(*args, **kwargs):
-        ctx = JobContext.get_current_context()
-        callback = None
+    def decorator_fn(f):
 
-        if isinstance(ctx, WebJobContext):
-            try:
-                callback =  ctx.get_web_request().args['callback']
-            except KeyError:
-                pass # TODO vyhodit nejaku rozumnu hlasku, nech uzivatel vie, ze mu chyba callback
+        @wraps(f)
+        @json_output
+        def jsonp_output_decorator(*args, **kwargs):
+            task_data = get_data(args)
+            data = task_data.get_data()
 
-        rv = f(*args, **kwargs)
+            if not callback in data:
+                raise CallbackNotFoundException('')
 
-        jsonp = json.dumps(rv, cls = AppModelJSONEncoder)
-
-        if callback:
+            callback = data[callback_key]
+            jsonp = f(*args, **kwargs)
             JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/javascript'))
-
             jsonp = "{callback}({data})".format(callback=callback, data=jsonp)
-        else:
-            JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/json'))
 
-        return jsonp
+            return jsonp
 
-    return jsonp_output_decorator
+        return jsonp_output_decorator
+
+    return decorator_fn
 
 def jsend_output(fail_exception_classes = None):
     '''
@@ -197,17 +193,17 @@ def required_data(*data):
 def append_get_parameters(accept_only_web = True):
     '''
     Task decorator which appends the GET data to the task data.
-    
+
     :param boolean accept_only_web: Parameter which limits using this task only with web requests.
     '''
-    
+
     def wrapper(f):
         @wraps(f)
         def append_get_parameters(*args, **kwargs):
             jc = JobContext.get_current_context()
-    
+
             if isinstance(jc, WebJobContext):
-                # Update the data with GET parameters 
+                # Update the data with GET parameters
                 request = jc.get_web_request()
                 task_data = get_data(args)
                 data = task_data.get_data()
@@ -215,12 +211,12 @@ def append_get_parameters(accept_only_web = True):
             elif accept_only_web:
                 # Raise exception on non web usage if necessary
                 raise Exception("append_get_parameters decorator may be used with GET requests only.")
-    
-    
+
+
             return f(*args, **kwargs)
-    
+
         return append_get_parameters
-    
+
     return wrapper
 
 def web_task(f):
