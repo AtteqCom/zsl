@@ -82,7 +82,7 @@ def json_output(f):
 
     return json_output_decorator
 
-def jsonp_output(callback_key = 'callback'):
+def jsonp_wrap(callback_key = 'callback'):
     '''
     Format response to jsonp and add a callback to JSON data - a jsonp request
     '''
