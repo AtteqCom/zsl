@@ -91,13 +91,12 @@ def jsonp_output(callback_key = 'callback'):
     def decorator_fn(f):
 
         @wraps(f)
-        @json_output
         def jsonp_output_decorator(*args, **kwargs):
             task_data = get_data(args)
             data = task_data.get_data()
 
-            if not callback in data:
-                raise CallbackNotFoundException('')
+            if not callback_key in data:
+                raise KeyError('Missing required parameter "{0}" for task.'.format(callback_key))
 
             callback = data[callback_key]
             jsonp = f(*args, **kwargs)
