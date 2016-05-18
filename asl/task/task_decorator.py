@@ -29,6 +29,31 @@ def log_output(f):
 
     return wrapper_fn
 
+def save_to_file(dst):
+    '''
+    Save the output value to file.
+    '''
+
+    dst = dst
+
+    def decorator_fn(f):
+
+        @wraps(f)
+        def wrapper_fn(*args, **kwargs):
+            res = f(*args, **kwargs)
+
+            try:
+                os.makedirs(os.path.dirname(dst))
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+            with open(dst, "w") as text_file:
+                text_file.write(res)
+
+            return res
+
+        return wrapper_fn
+    return decorator_fn
 
 def json_input(f):
     '''
