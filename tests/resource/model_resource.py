@@ -11,7 +11,7 @@ from sqlalchemy.sql.schema import Column
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.engine.base import Engine
 
-from injector import Module, singleton, Injector
+from injector import singleton, Injector
 
 from asl.resource.model_resource import ModelResource
 from asl.db.model.raw_model import ModelBase

@@ -1,6 +1,7 @@
 import asl.vendor
 import logging
 from asl.application.service_application import service_application, AtteqServiceFlask
+from flask.config import Config
 asl.vendor.do_init()
 from injector import singleton
 from asl.application.initializers import injection_module
@@ -15,6 +16,7 @@ class ApplicationInitializer(object):
         '''
         Initialization method which bounds the application object to `AtteqServiceFlask` key.
         '''
+        # Bind app
         binder.bind(
             AtteqServiceFlask,
             to=service_application,
@@ -24,6 +26,14 @@ class ApplicationInitializer(object):
         service_application.set_injector(binder.injector)
         logger = binder.injector.get(logging.Logger)
         logger.debug("Created AtteqServiceFlask binding.")
+        
+        # Bind the Config
+        binder.bind(
+            Config,
+            to=service_application.config,
+            scope=singleton
+        )
+        logger.debug("Created Config binding.")
 
 @injection_module
 def application_initializer_module(binder):
