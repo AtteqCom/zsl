@@ -23,7 +23,8 @@ class RedisCacheModule(CacheModule):
             db = redis_conf['db'] if 'db' in redis_conf else 0,
             password = redis_conf['password'] if 'password' in redis_conf else None
         )
-        self._app.logger.debug("Redis client created.")
+        self.logger = self._app.logger.getChild('cache')
+        self.logger.debug("Redis client created.")
         self._cache_prefix = service_application.config['CACHE_PREFIX'] + ':' if 'CACHE_PREFIX' in service_application.config else ''
 
     def _prefix_key(self, key):
@@ -33,13 +34,15 @@ class RedisCacheModule(CacheModule):
         pkey = self._prefix_key(key)
         self._client.set(pkey, value)
         self.set_key_expiration(key, timeout)
-
+    
     def invalidate_key(self, key):
         pkey = self._prefix_key(key)
+        self.logger.debug("Key invalidation '{0}'.".format(key))
         self._client.delete(pkey)
 
     def set_key_expiration(self, key, timeout):
         pkey = self._prefix_key(key)
+        self.logger.debug("Key expiration '{0}' = {1}.".format(key, timeout))
         self._client.expire(pkey, timeout)
 
     def contains_key(self, key):
@@ -73,5 +76,5 @@ class RedisCacheModule(CacheModule):
 
         for key in keylist:
             # This does not need to prefixed.
-            self._app.logger.debug('Invalidating key {0}.'.format(key))
+            self.logger.debug('Invalidating key {0}.'.format(key))
             self._client.delete(key)

@@ -17,7 +17,7 @@ class CacheModule(object):
         Saves the ``key``-``value`` pair for ``timeout`` seconds.
         '''
         pass
-
+    
     @abc.abstractmethod
     def invalidate_key(self, key):
         '''
@@ -40,7 +40,6 @@ class CacheModule(object):
         TODO morihladko sa pyta: nemalo by sa skor volat get_by_key, ci simple get(self, key), lebo get_key mi asociujuje ze to vrati kluc
         '''
         pass
-
 
     @abc.abstractmethod
     def contains_list(self, key):
