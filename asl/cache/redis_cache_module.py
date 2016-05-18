@@ -25,14 +25,14 @@ class RedisCacheModule(CacheModule):
         )
         self._app.logger.debug("Redis client created.")
         self._cache_prefix = service_application.config['CACHE_PREFIX'] + ':' if 'CACHE_PREFIX' in service_application.config else ''
-        
+
     def _prefix_key(self, key):
         return self._cache_prefix + key
 
     def set_key(self, key, value, timeout):
         pkey = self._prefix_key(key)
         self._client.set(pkey, value)
-        self.set_key_expiration(pkey, timeout)
+        self.set_key_expiration(key, timeout)
 
     def invalidate_key(self, key):
         pkey = self._prefix_key(key)
@@ -41,7 +41,7 @@ class RedisCacheModule(CacheModule):
     def set_key_expiration(self, key, timeout):
         pkey = self._prefix_key(key)
         self._client.expire(pkey, timeout)
-        
+
     def contains_key(self, key):
         pkey = self._prefix_key(key)
         return self._client.exists(pkey)
@@ -62,17 +62,16 @@ class RedisCacheModule(CacheModule):
         pkey = self._prefix_key(key)
         llen = self._client.llen(pkey)
         return self._client.lrange(pkey, 0, llen - 1)
-    
+
     def invalidate_by_glob(self, glob):
         pglob = self._prefix_key(glob)
-        
+
         if self._app.config.get('IS_USING_MEDIEVAL_SOFTWARE', False):
             keylist = self._client.keys(pglob)
         else:
             keylist = self._client.scan_iter(pglob)
-             
+
         for key in keylist:
             # This does not need to prefixed.
             self._app.logger.debug('Invalidating key {0}.'.format(key))
             self._client.delete(key)
-        
