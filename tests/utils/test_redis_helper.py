@@ -1,5 +1,4 @@
 import unittest
-from injector import singleton
 
 from asl.interface.importer import initialize_cli_application
 initialize_cli_application()
