@@ -14,7 +14,10 @@ def slugify(value):
     Drsny copy-paste z Djanga
     """
     if isinstance(value, str):
-        value = unicode(value)
+	try:
+	    value = unicode(value)
+	except UnicodeDecodeError:
+	    value = unicode(value, 'utf-8')
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
     value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
     return re.sub('[-\s]+', '-', value)
