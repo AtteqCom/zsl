@@ -27,6 +27,9 @@ class LoggerInitializer:
         else:
             raise Exception('Unknown logger type {0}.'.fromat(handler_settings['type']))
 
+        if 'level' in handler_settings:
+            handler.setLevel(handler_settings['level'])
+
         handler.setFormatter(Formatter('[%(asctime)s %(name)s %(filename)s:%(levelname)s] %(message)s'))
         return handler
 
@@ -45,11 +48,11 @@ class LoggerInitializer:
             to=app.logger,
             scope=singleton
         )
-        
+
         def getChild(self, suffix):
             name = self.name + "." + suffix
             return logging.getLogger(name)
-            
+
         if app.config.get('IS_USING_MEDIEVAL_SOFTWARE', False):
             logging.Logger.getChild = getChild
 
