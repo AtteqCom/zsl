@@ -10,6 +10,7 @@ class TaskRouter:
         self._task_packages = (app.config['TASK_PACKAGE'],) if 'TASK_PACKAGE' in app.config else app.config['TASK_PACKAGES']
         self._app = app
         self._task_reloading = app.config['RELOAD']
+        self._debug = app.config['DEBUG']
 
     def get_task_packages(self):
         return self._task_packages
@@ -18,6 +19,12 @@ class TaskRouter:
         self._task_packages = task_packages
 
     def _load_module(self, module_name):
+        # Debug loading provides better output.
+        if self._debug:
+            full = []
+            for p in module_name.split('.'):
+                full.append(p)
+                importlib.import_module('.'.join(full))
         return importlib.import_module(module_name)
 
     def is_task_reloading(self):
@@ -45,8 +52,9 @@ class TaskRouter:
                 self._app.logger.debug("Trying to load module with name '%s' and class name '%s'.", module_name, class_name)
                 module = self._load_module(module_name)
                 break
-            except ImportError:
-                self._app.logger.exception("Could not load module with name '%s' and class name '%s'.", module_name, class_name)
+            except ImportError as e:
+                if self._debug:
+                    self._app.logger.exception("Could not load module with name '%s' and class name '%s', '%s'.", module_name, class_name, e)
 
         if module is None:
             raise ImportError("No module named {0} found in [{1}].".format(".".join(path), ",".join(self.get_task_packages())))

@@ -14,6 +14,8 @@ import traceback
 import hashlib
 from functools import wraps
 from asl.cache.id_helper import IdHelper
+from os.path import os
+import errno
 
 
 def log_output(f):
@@ -125,7 +127,8 @@ def jsonp_wrap(callback_key = 'callback'):
 
             callback = data[callback_key]
             jsonp = f(*args, **kwargs)
-            JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/javascript'))
+            if isinstance(JobContext.get_current_context(), WebJobContext):
+                JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/javascript'))
             jsonp = "{callback}({data})".format(callback=callback, data=jsonp)
 
             return jsonp
