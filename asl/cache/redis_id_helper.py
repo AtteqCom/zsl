@@ -44,11 +44,14 @@ class RedisIdHelper(IdHelper):
 
     def fill_page(self, page_key, data, timeout, encoder=encoder_identity, model_key_generator=model_key_generator):
         self._redis_cache_module.invalidate_key(page_key)
-        self._redis_cache_module.set_key_expiration(page_key, self.get_timeout(page_key, data, timeout))
+        first = True
 
         for d in data:
             key = model_key_generator(d)
             self._redis_cache_module.append_to_list(page_key, key)
+            if first:
+                self._redis_cache_module.set_key_expiration(page_key, self.get_timeout(page_key, data, timeout))
+                first = False
             self._redis_cache_module.set_key(key, encoder(d), self.get_timeout(key, d, timeout))
 
     def check_page(self, page_key):
