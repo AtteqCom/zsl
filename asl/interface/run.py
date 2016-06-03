@@ -6,12 +6,15 @@
 .. moduleauthor:: Peter Morihladko, Martin Babka
 '''
 
+# Initialize the path
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+
 # Initialize
 from importer import initialize_web_application
-
 initialize_web_application()
 
-import sys
 import json
 from asl.router import task_router
 from asl.task.job_context import JobContext
