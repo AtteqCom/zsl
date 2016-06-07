@@ -12,8 +12,10 @@ import json
 import abc
 from asl.task.job_context import JobContext
 
+
 class CacheDecorator:
-    @inject(id_helper = IdHelper)
+
+    @inject(id_helper=IdHelper)
     def __init__(self, id_helper):
         self._id_helper = id_helper
         service_application.logger.debug("Initializing CacheDecorator.")
@@ -28,7 +30,7 @@ class CacheDecorator:
     def is_caching(self, *args):
         jc = JobContext.get_current_context()
         if 'cache' not in jc.job.data:
-            cs = True # TODO: Default
+            cs = True  # TODO: Default
         else:
             cs = bool(jc.job.data['cache'])
 
@@ -50,7 +52,9 @@ class CacheDecorator:
     def get_encoder(self):
         return app_model_encoder_fn
 
+
 class CacheOutputDecorator(CacheDecorator):
+
     def get_wrapped_fn(self):
         def wrapped_fn(*args):
             if not self.is_caching(*args):
@@ -70,13 +74,16 @@ class CacheOutputDecorator(CacheDecorator):
 
         return wrapped_fn
 
-def cache_output(key_params, timeout = 'default'):
+
+def cache_output(key_params, timeout='default'):
     def decorator_fn(fn):
         return CacheOutputDecorator().decorate(key_params, timeout, fn)
 
     return decorator_fn
 
+
 class CacheModelDecorator(CacheDecorator):
+
     def get_wrapped_fn(self):
         def wrapped_fn(*args):
             if not self.is_caching(*args):
@@ -88,12 +95,14 @@ class CacheModelDecorator(CacheDecorator):
             if self._id_helper.check_key(key):
                 model_key = self._id_helper.get_key(key)
                 service_application.logger.debug("Retrieved from cache %s.", model_key)
-                
+
                 if self._id_helper.check_key(model_key):
                     return self.get_decoder()(model_key, self._id_helper.get_key(model_key))
 
             model = self._fn(*args)
-            encoded_model = json.dumps(model, cls = AppModelJSONEncoder)
+            if model is None:
+                return model
+            encoded_model = json.dumps(model, cls=AppModelJSONEncoder)
             model_key = model_key_generator(model)
             self._id_helper.set_key(key, model_key, self._timeout)
             self._id_helper.set_key(model_key, encoded_model, self._timeout)
@@ -102,7 +111,8 @@ class CacheModelDecorator(CacheDecorator):
 
         return wrapped_fn
 
-def cache_model(key_params, timeout = 'default'):
+
+def cache_model(key_params, timeout='default'):
     '''
     Caching decorator for app models in task.perform
     '''
@@ -111,7 +121,9 @@ def cache_model(key_params, timeout = 'default'):
 
     return decorator_fn
 
+
 class CachePageDecorator(CacheDecorator):
+
     def get_wrapped_fn(self):
         def wrapped_fn(*args):
             if not self.is_caching(*args):
@@ -131,7 +143,8 @@ class CachePageDecorator(CacheDecorator):
 
         return wrapped_fn
 
-def cache_page(key_params, timeout = 'default'):
+
+def cache_page(key_params, timeout='default'):
     '''
     Cache a page (slice) of a list of AppModels
     '''
@@ -144,12 +157,14 @@ def cache_page(key_params, timeout = 'default'):
 # alias
 cache_list = cache_page
 
-def cache_filtered_page(filter_param = 'filter', pagination_param = 'pagination', sorter_param = 'sorter', timeout = 'default'):
+
+def cache_filtered_page(filter_param='filter', pagination_param='pagination', sorter_param='sorter', timeout='default'):
     def decorator_fn(fn):
         d = CachePageDecorator()
         return d.decorate([filter_param, sorter_param, pagination_param], timeout, fn)
 
     return decorator_fn
+
 
 def create_key_for_data(prefix, data, key_params):
     '''
@@ -163,5 +178,5 @@ def create_key_for_data(prefix, data, key_params):
         else:
             value = d[k] if k in d else ''
             values.append("{0}:{1}".format(k, value))
-            
+
     return "{0}-{1}".format(prefix, "-".join(values))
