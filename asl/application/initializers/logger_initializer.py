@@ -11,6 +11,7 @@ from asl.application.initializers import injection_module
 
 app = service_application
 
+
 class LoggerInitializer:
 
     def _create_handler(self, handler_settings):
@@ -23,10 +24,13 @@ class LoggerInitializer:
             handler = logging.FileHandler(**parameters)
         elif handler_type == "rotating-file":
             handler = logging.handlers.RotatingFileHandler(**parameters)
-        elif getattr(logging, handler_type):
-            handler = fetch_class( handler_type)(**parameters)
+        elif hasattr(logging, handler_type):
+            handler = getattr(logging, handler_type)(**parameters)
         else:
-            raise Exception('Unknown logger type {0}.'.fromat(handler_settings['type']))
+            try:
+                handler = fetch_class(handler_type)(**parameters)
+            except:
+                raise Exception('Unknown logger type {0}.'.fromat(handler_settings['type']))
 
         if 'level' in handler_settings:
             handler.setLevel(handler_settings['level'])
@@ -84,6 +88,7 @@ class LoggerInitializer:
         self._check_deprecated_config_properties(config)
         for e in errors:
             app.logger.error(e)
+
 
 @injection_module
 def logger_initializer_module(binder):
