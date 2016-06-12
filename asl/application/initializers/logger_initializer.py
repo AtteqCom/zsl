@@ -1,5 +1,6 @@
 from asl.application.service_application import service_application
 from flask import Config
+from asl.utils.import_helper import fetch_class
 import logging
 import asl.vendor
 from logging import Formatter
@@ -23,7 +24,7 @@ class LoggerInitializer:
         elif handler_type == "rotating-file":
             handler = logging.handlers.RotatingFileHandler(**parameters)
         elif getattr(logging, handler_type):
-            handler = getattr(logging, handler_type)(**parameters)
+            handler = fetch_class( handler_type)(**parameters)
         else:
             raise Exception('Unknown logger type {0}.'.fromat(handler_settings['type']))
 
@@ -51,7 +52,9 @@ class LoggerInitializer:
 
         def getChild(self, suffix):
             name = self.name + "." + suffix
-            return logging.getLogger(name)
+            logger_child = logging.getLogger(name)
+            logger_child.getChild = getChild
+            return logger_child
 
         if app.config.get('IS_USING_MEDIEVAL_SOFTWARE', False):
             logging.Logger.getChild = getChild
