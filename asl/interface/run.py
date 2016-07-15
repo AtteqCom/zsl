@@ -3,12 +3,13 @@
 '''
 :mod:`asl.interface.run`
 
-.. moduleauthor:: Peter Morihladko, Martin Babka
+.. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 '''
 
 # Initialize the path
 import sys
 import os
+# TODO: Consider removing automatic path initialization!
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 # Initialize
@@ -24,11 +25,18 @@ conf = service_application.config
 
 
 class Job(object):
+
     def __init__(self, data):
         self.data = {'data': data}
 
 
 def run_task(task, data=None):
+    '''
+    .. autofunction:: run_task
+    Runs the given task
+
+    ..param: 
+    '''
     if not isinstance(data, str) and not isinstance(data, unicode):
         data = json.dumps(data)
     # Open the data from file, if necessary.

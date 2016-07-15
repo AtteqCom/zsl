@@ -10,6 +10,7 @@ if necessary.
 import os
 import sys
 
+
 def _append_application_pythonpath():
     '''
     Appends application to python path.
@@ -21,6 +22,7 @@ def _append_application_pythonpath():
 
     sys.path.append(app_package_path)
 
+
 def _append_pythonpath():
     '''
     Appends required paths to python path. Actually adds the application to python path.
@@ -28,13 +30,16 @@ def _append_pythonpath():
     _append_application_pythonpath()
 
 _skip_appending_asl_path = False
+
+
 def _append_asl_path_to_pythonpath():
     global _skip_appending_asl_path
     if _skip_appending_asl_path:
         return
 
+    # TODO: Consider removing automatic path initialization!
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-    #TODO: This is because of settings.default_settings import in application object.
+    # TODO: This is because of settings.default_settings import in application object.
     # This should be somehow more inteligent or related to APPLICATION_PACKAGE_PATH.
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
@@ -46,9 +51,11 @@ def _append_asl_path_to_pythonpath():
     for pa in to_remove:
         sys.path.remove(pa)
 
+
 def skip_appending_asl_path_to_pythonpath():
     global _skip_appending_asl_path
     _skip_appending_asl_path = True
+
 
 def _initialize_environment():
     for x in ['env.py', os.path.join(os.path.dirname(__file__), '..', '..', '..', 'env.py')]:
@@ -57,11 +64,14 @@ def _initialize_environment():
         except:
             pass
 
+
 def initialize_service_application():
     from asl.application.service_application import service_application as app
     app.initialize_dependencies()
 
 _cli_application_initialized = False
+
+
 def initialize_cli_application():
     global _cli_application_initialized
     if _cli_application_initialized:
@@ -73,10 +83,13 @@ def initialize_cli_application():
     _append_asl_path_to_pythonpath()
     initialize_service_application()
 
+
 def is_initialized():
     return _cli_application_initialized
 
 _web_application_initialized = False
+
+
 def initialize_web_application():
     global _web_application_initialized
     if _web_application_initialized:
@@ -86,4 +99,3 @@ def initialize_web_application():
     initialize_cli_application()
     from asl.interface.webservice import web_application_loader
     web_application_loader.load()
-    

@@ -11,11 +11,11 @@ from asl.task.task_data import TaskData
 from asl.db.model import AppModelJSONEncoder
 from asl.task.job_context import JobContext, WebJobContext, Responder
 import traceback
-import hashlib
 from functools import wraps
 from asl.cache.id_helper import IdHelper
 from os.path import os
 import errno
+from asl.utils.security_helper import verify_security_data
 
 
 def log_output(f):
@@ -30,6 +30,7 @@ def log_output(f):
         return res
 
     return wrapper_fn
+
 
 def save_to_file(dst):
     '''
@@ -56,6 +57,7 @@ def save_to_file(dst):
 
         return wrapper_fn
     return decorator_fn
+
 
 def json_input(f):
     '''
@@ -101,7 +103,7 @@ def json_output(f):
                 skip_encode = d.is_skipping_json()
 
         if not skip_encode:
-            rv = json.dumps(rv, cls = AppModelJSONEncoder)
+            rv = json.dumps(rv, cls=AppModelJSONEncoder)
             if isinstance(JobContext.get_current_context(), WebJobContext):
                 JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/json'))
 
@@ -109,7 +111,8 @@ def json_output(f):
 
     return json_output_decorator
 
-def jsonp_wrap(callback_key = 'callback'):
+
+def jsonp_wrap(callback_key='callback'):
     '''
     Format response to jsonp and add a callback to JSON data - a jsonp request
     '''
@@ -137,7 +140,8 @@ def jsonp_wrap(callback_key = 'callback'):
 
     return decorator_fn
 
-def jsend_output(fail_exception_classes = None):
+
+def jsend_output(fail_exception_classes=None):
     '''
     Format task result to json output in jsend specification format. See: http://labs.omniti.com/labs/jsend.
     Task return value must be dict or None.
@@ -171,6 +175,7 @@ def jsend_output(fail_exception_classes = None):
 
     return decorator_fn
 
+
 def web_error_and_result(f):
     '''
     Same as error_and_result decorator, except:
@@ -183,6 +188,7 @@ def web_error_and_result(f):
         return error_and_result_decorator_inner_fn(f, True, *args, **kwargs)
 
     return web_error_and_result_decorator
+
 
 def error_and_result(f):
     '''
@@ -217,7 +223,8 @@ def required_data(*data):
 
     return decorator_fn
 
-def append_get_parameters(accept_only_web = True):
+
+def append_get_parameters(accept_only_web=True):
     '''
     Task decorator which appends the GET data to the task data.
 
@@ -239,12 +246,12 @@ def append_get_parameters(accept_only_web = True):
                 # Raise exception on non web usage if necessary
                 raise Exception("append_get_parameters decorator may be used with GET requests only.")
 
-
             return f(*args, **kwargs)
 
         return append_get_parameters
 
     return wrapper
+
 
 def web_task(f):
     '''
@@ -269,26 +276,18 @@ def secured_task(f):
     Secured task decorator.
     '''
 
-    secure_token = service_application.config['SERVICE_SECURITY_TOKEN']
-
-    def compute_token(random_token):
-        sha1hash = hashlib.sha1()
-        sha1hash.update(random_token + secure_token)
-        return sha1hash.hexdigest().upper()
-
     @wraps(f)
     def secured_task_decorator(*args, **kwargs):
         task_data = get_data(args)
         assert isinstance(task_data, TaskData)
-        random_token = task_data.get_data()['security']['random_token']
-        hashed_token = task_data.get_data()['security']['hashed_token']
-        task_data.transform_data(lambda x: x['data'])
-        if unicode(hashed_token) != unicode(compute_token(random_token)):
-            raise SecurityException(hashed_token)
+        if not verify_security_data(task_data.get_data()['security']):
+            raise SecurityException(task_data.get_data()['security']['hashed_token'])
 
+        task_data.transform_data(lambda x: x['data'])
         return f(*args, **kwargs)
 
     return secured_task_decorator
+
 
 def xml_output(f):
     '''
@@ -304,6 +303,7 @@ def xml_output(f):
         return retval
 
     return xml_output
+
 
 def file_upload(f):
     '''
@@ -326,6 +326,8 @@ def file_upload(f):
     return file_upload_decorator
 
 # TODO toto je len quick and dirty riesenie
+
+
 def cache_json_output(key, timeout):
     cache = get_id_helper()
 
@@ -358,6 +360,7 @@ def cache_json_output(key, timeout):
 
 app = service_application
 
+
 def get_data(a):
     task_data = None
     for d in a:
@@ -365,6 +368,7 @@ def get_data(a):
             task_data = d
 
     return task_data
+
 
 class SecurityException(Exception):
 
@@ -375,7 +379,9 @@ class SecurityException(Exception):
     def get_hashed_token(self):
         return self._hashed_token
 
+
 class WebTaskResponder(Responder):
+
     def __init__(self, data):
         self.data = data
 
@@ -387,12 +393,15 @@ class WebTaskResponder(Responder):
             else:
                 setattr(response, k, self.data[k])
 
+
 class MimeSetterWebTaskResponder(Responder):
+
     def __init__(self, mime):
         self._mime = mime
 
     def respond(self, r):
         r.content_type = self._mime
+
 
 def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
     try:
@@ -408,6 +417,7 @@ def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
         rv = {'error': "{0}".format(exc)}
 
     return json.dumps(rv)
+
 
 def get_id_helper():
     return app.get_injector().get(IdHelper)
