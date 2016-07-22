@@ -5,8 +5,10 @@ Helper functions for working with XML and ElementTree
 import xml.etree.cElementTree as ET
 import urllib2
 
+
 class NotValidXmlException(Exception):
     pass
+
 
 def required_attributes(element, *attributes):
     '''
@@ -14,6 +16,7 @@ def required_attributes(element, *attributes):
     '''
     if not reduce(lambda still_valid, param: still_valid and param in element.attrib, attributes, True):
         raise NotValidXmlException(msg_err_missing_attributes(element.tag, *attributes))
+
 
 def required_elements(element, *children):
     '''
@@ -23,15 +26,19 @@ def required_elements(element, *children):
         if element.find(child) is None:
             raise NotValidXmlException(msg_err_missing_children(element.tag, *children))
 
+
 def required_items(element, children, attributes):
     required_elements(element, *children)
     required_attributes(element, *attributes)
 
+
 def msg_err_missing_attributes(tag, *attributes):
     return "Missing one or more required attributes (%s) in xml tag %s" % ('|'.join(attributes), tag)
 
+
 def msg_err_missing_children(tag, *children):
     return "Missing one or more required children (%s) in xml tag %s" % ('|'.join(children), tag)
+
 
 def attrib_to_dict(element, *args, **kwargs):
     '''
@@ -52,14 +59,15 @@ def attrib_to_dict(element, *args, **kwargs):
 
     return element.attrib
 
+
 def get_xml_root(xml_path):
     '''
     Return root element from given xml_path as ElementTree Element
     '''
     xml_res = urllib2.urlopen(xml_path)
     tree = ET.parse(xml_res)
-
     return tree.getroot()
+
 
 def element_to_int(element, attribute=None):
     '''
@@ -69,6 +77,7 @@ def element_to_int(element, attribute=None):
         return int(element.get(attribute))
     else:
         return int(element.text)
+
 
 def create_el(name, text=None, attrib={}):
     '''
