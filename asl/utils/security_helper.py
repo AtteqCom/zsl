@@ -3,8 +3,8 @@ from asl.utils.injection_helper import inject
 import hashlib
 from asl.utils.string_helper import generate_random_string
 
-TOKEN_RANDOM = 'random'
-TOKEN_HASHED = 'hashed'
+TOKEN_RANDOM = 'random_token'
+TOKEN_HASHED = 'hashed_token'
 
 TOKEN_SERVICE_SECURITY_CONFIG = 'SERVICE_SECURITY_TOKEN'
 
