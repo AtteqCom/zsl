@@ -14,6 +14,10 @@ def generate_security_data():
     return {TOKEN_RANDOM: random_token, TOKEN_HASHED: compute_token(random_token)}
 
 
+def wrap_plain_data_as_secure(data):
+    return {'security': generate_security_data(), 'data': data}
+
+
 @inject(service_application=AtteqServiceFlask)
 def compute_token(random_token, service_application):
     secure_token = service_application.config[TOKEN_SERVICE_SECURITY_CONFIG]
