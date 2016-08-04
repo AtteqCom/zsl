@@ -27,12 +27,12 @@ def camelcase_to_underscore(name):
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 
-def et_node_to_string(et_node):
+def et_node_to_string(et_node, default=u''):
     '''
     @et_node: Element
     '''
 
-    return unicode(et_node.text).strip() if et_node and et_node.text else u''
+    return unicode(et_node.text).strip() if et_node and et_node.text else default
 
 
 def generate_random_string(size=6, chars=string.ascii_uppercase + string.digits):
