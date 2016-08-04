@@ -13,6 +13,7 @@ RELATED_FIELDS = 'related_fields'
 RELATED_FIELDS_CLASS = 'cls'
 RELATED_FIELDS_HINTS = 'hints'
 
+
 class AppModel:
     '''
     ``AppModel``s are used as a thin and simple communication objects. Also they can be saved into cache.
@@ -20,7 +21,7 @@ class AppModel:
 
     _not_serialized_attributes = ['_not_serialized_attributes', '_hints', '_id_name']
 
-    def __init__(self, raw, id_name = 'id', hints = None):
+    def __init__(self, raw, id_name='id', hints=None):
         '''
         The application model model constructor.
 
@@ -61,7 +62,12 @@ class AppModel:
             elif isinstance(v, date):
                 setattr(self, k, format_date_portable(v))
             elif k in self._hints[RELATED_FIELDS]:
-                setattr(self, k, self._hints[RELATED_FIELDS][k][RELATED_FIELDS_CLASS](v, 'id', self._hints[RELATED_FIELDS][k].get(RELATED_FIELDS_HINTS)))
+                related_cls = self._hints[RELATED_FIELDS][k][RELATED_FIELDS_CLASS]
+                related_hints = self._hints[RELATED_FIELDS][k].get(RELATED_FIELDS_HINTS)
+                if isinstance(v, (list, tuple)):
+                    setattr(self, k, map(lambda x: related_cls(x, 'id', related_hints), v))
+                else:
+                    setattr(self, k, related_cls(v, 'id', related_hints))
 
     def get_id(self):
         return self.__dict__[self._id_name]
