@@ -32,7 +32,7 @@ def et_node_to_string(et_node, default=u''):
     @et_node: Element
     '''
 
-    return unicode(et_node.text).strip() if et_node and et_node.text else default
+    return unicode(et_node.text).strip() if et_node is not None and et_node.text else default
 
 
 def generate_random_string(size=6, chars=string.ascii_uppercase + string.digits):
