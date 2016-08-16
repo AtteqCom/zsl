@@ -77,7 +77,7 @@ class LoggerInitializer:
         for (logger_name, logger_settings) in config.get('LOG', {}).iteritems():
             logger = logging.getLogger(logger_name)
             logger.setLevel(getattr(logging, logger_settings['level']))
-            for handler_name in logger_settings['handlers']:
+            for handler_name in logger_settings.get('handlers', []):
                 try:
                     logger.addHandler(handlers[handler_name])
                 except Exception as e:
