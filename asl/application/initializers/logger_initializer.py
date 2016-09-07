@@ -2,10 +2,8 @@ from asl.application.service_application import service_application
 from flask import Config
 from asl.utils.import_helper import fetch_class
 import logging
-import asl.vendor
 from logging import Formatter
 from logging.handlers import SysLogHandler
-asl.vendor.do_init()
 from injector import singleton
 from asl.application.initializers import injection_module
 

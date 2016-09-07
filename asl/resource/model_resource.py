@@ -6,8 +6,8 @@ Resources provide a way how to directly access DB tables (raw models) and perfor
 The default classes of the models should be overriden to provide more logic or restrictions if wanted.
 
 The basic way to use them is as follows:
- - todo: define the models
- - todo: how to override
+ - The models can be defined in the __exposer__.py which is set up at settings.
+ - To override just override the basic methods - `create`, `read`, `update`, `delete`.
 
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 '''
@@ -27,15 +27,20 @@ import logging
 import json
 from asl.utils.cache_helper import app_model_encoder_fn, app_model_decoder_fn
 
+
 def dict_pick(dictionary, allowed_keys):
     '''
-    Return a dictionary only with keys found in ``allowed_keys``
+    Return a dictionary only with keys found in `allowed_keys`
     '''
     return dict((key, value) for (key, value) in dictionary.items() if key in allowed_keys)
 
+
 def page_to_offset(params):
     '''
-    Transform 'page'/'per_page' to 'limit'/'offset' from params.
+    Transforms `page`/`per_page` from `params` to `limit`/`offset` suitable for SQL.
+
+    :param dict params: The dictionary containing `page` and `per_page` values will be added
+                        the values `limit` and `offset`.
     '''
 
     if 'page' not in params:
@@ -54,20 +59,21 @@ def page_to_offset(params):
     params['offset'] = int(per_page) * (int(page) - 1)
     params['limit'] = per_page
 
+
 class ResourceQueryContext(object):
     '''
     The context of the resource query.
      - holds the parameters and arguments of the query,
      - holds the related models which should be fetched (parsed from the arguments),
      - holds the given filter and splits it to the given field array (parsed from the arguments)
-     
+
     .. automethod:: __init__
-    .. automethod:: get_params Params are given as the part of the path in URL. For example GET /entities/1 will have 1 in the params
-    .. automethod:: get_args Args are in the query part of the url ?related=&filter_by etc.
-    .. automethod:: get_data Body of the request.
-    .. automethod:: get_row_id First parameter, if given, else None. Handy for GET requests.
-    .. automethod:: get_related Related argument - parsed as array, original argument containing the list of comma delimited models which should be fetched along with the resource.
-    .. automethod:: get_filter_by Filter argument - list of filters
+    .. automethod:: `get_params` Params are given as the part of the path in URL. For example GET /entities/1 will have 1 in the params
+    .. automethod:: `get_args` Args are in the query part of the url ?related=&filter_by etc.
+    .. automethod:: `get_data` Body of the request.
+    .. automethod:: `get_row_id` First parameter, if given, else None. Handy for GET requests.
+    .. automethod:: `get_related` Related argument - parsed as array, original argument containing the list of comma delimited models which should be fetched along with the resource.
+    .. automethod:: `get_filter_by` Filter argument - list of filters
     '''
 
     def __init__(self, params, args, data):
@@ -83,7 +89,8 @@ class ResourceQueryContext(object):
         if 'fields' in self._args:
             self._args['fields'] = self._args['fields'].split(',')
             # we can pass related fields with this, ensure its in 'related' union of two lists
-            self._args['related'] = list(set(self._args.get('related', [])) | set(related_from_fields(self._args['fields'])))
+            self._args['related'] = list(
+                set(self._args.get('related', [])) | set(related_from_fields(self._args['fields'])))
 
     def get_params(self):
         return self._params
@@ -105,6 +112,7 @@ class ResourceQueryContext(object):
 
     def get_filter_by(self):
         return self._args.get('filter_by', None)
+
 
 class ModelResource(SqlSesionMixin):
     '''
@@ -380,6 +388,7 @@ class ModelResource(SqlSesionMixin):
 
         return q.delete()
 
+
 class CachedModelResource(ModelResource):
     '''
     The cached resource - uses redis to cache the resource for the given amount of seconds.
@@ -391,20 +400,20 @@ class CachedModelResource(ModelResource):
         self._id_helper = id_helper
         self._logger = logger
         self._timeout = timeout
-    
+
     def _create_key(self, arghash):
         key_prefix = create_key_class_prefix(self.model_cls)
         return "cached-resource:{0}:{1}".format(key_prefix, arghash)
-    
+
     def _create_key_from_context(self, ctx):
         arghash = sha256(json.dumps({'params': ctx.params, 'args': ctx.args, 'data': ctx.data})).hexdigest()
         return self._create_key(arghash)
-           
+
     def _get_one(self, row_id, ctx):
         # Make hash of params, args and data and ache using the hash in the key.
         key = self._create_key_from_context(ctx)
         self._logger.debug("CachedModelResource - get one, key: {0}.".format(key))
-        
+
         if self._id_helper.check_key(key):
             result = json.loads(self._id_helper.get_key(key))
         else:
@@ -412,37 +421,37 @@ class CachedModelResource(ModelResource):
             result = super(CachedModelResource, self)._get_one(row_id, ctx)
             # serialize as model
             self._id_helper.set_key(key, app_model_encoder_fn(result), self._timeout)
-        
+
         self.invalidate()
-        
+
         return result
-    
+
     def _get_collection_count(self, ctx):
         # Make hash of params, args and data and ache using the hash in the key.
         key = self._create_key_from_context(ctx)
         self._logger.debug("CachedModelResource - get one, key: {0}.".format(key))
-        
+
         if self._id_helper.check_key(key):
             result = long(self._id_helper.get_key(key))
         else:
             self._logger.debug("CachedModelResource - get one not cached, transferring to resource...")
             result = super(CachedModelResource, self)._get_collection_count(ctx)
             self._id_helper.set_key(key, app_model_encoder_fn(result), self._timeout)
-        
+
         return result
-    
+
     def _get_collection(self, ctx):
         # Make hash of params, args and data and ache using the hash in the key.
         key = self._create_key_from_context(ctx)
         self._logger.debug("CachedModelResource - collection, key: {0}.".format(key))
-        
+
         if self._id_helper.check_key(key):
             result = self._id_helper.gather_page(key, app_model_decoder_fn)
         else:
             self._logger.debug("CachedModelResource - collection not cached, transferring to resource...")
             result = super(CachedModelResource, self)._get_collection(ctx)
             self._id_helper.fill_page(key, result, self._timeout, app_model_encoder_fn)
-        
+
         return result
 
     def invalidate(self):
@@ -454,15 +463,51 @@ class CachedModelResource(ModelResource):
 
     def create(self, params, args, data):
         rv = ModelResource.create(self, params, args, data)
-        self.invalidate() 
+        self.invalidate()
         return rv
-    
+
     def update(self, params, args, data):
         rv = ModelResource.update(self, params, args, data)
-        self.invalidate() 
+        self.invalidate()
         return rv
-    
+
     def delete(self, params, args, data):
         rv = ModelResource.delete(self, params, args, data)
-        self.invalidate() 
+        self.invalidate()
         return rv
+
+
+class ReadOnlyResourceUpdateOperationException(Exception):
+
+    def __init__(self, operation):
+        self._operation = operation
+        super(ReadOnlyResourceUpdateOperationException, self).__init__(
+            "Can not perform operation '{0}' on ReadOnlyResource.".format(operation))
+
+    def get_operation(self):
+        return self._operation
+    operation = property(get_operation)
+
+
+class ReadOnlyResourceMixin(object):
+    '''
+    The mixin to be used to forbid the update/delete and create operations. 
+    Remember the Python's MRO and place this mixin at the right place in the inheritance declaration.
+
+    .. automethod:: create Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not available. 
+    .. automethod:: update Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not available.
+    .. automethod:: delete Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not available.
+    '''
+
+    OPERATION_CREATE = 'create'
+    OPERATION_UPDATE = 'update'
+    OPERATION_DELETE = 'delete'
+
+    def create(self, params, args, data):
+        raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_CREATE)
+
+    def update(self, params, args, data):
+        raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_UPDATE)
+
+    def delete(self, params, args, data):
+        raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_DELETE)

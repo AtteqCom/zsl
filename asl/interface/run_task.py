@@ -3,8 +3,8 @@ import os
 # TODO: Consider removing automatic path initialization!
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from asl.interface.importer import initialize_cli_application
-initialize_cli_application()
+from asl.interface.importer import initialize_cli_application, InitializationContext
+initialize_cli_application(InitializationContext(unit_test=False))
 
 from asl.interface.run import run_task
 

@@ -1,7 +1,7 @@
-from asl.interface.importer import initialize_cli_application
+from asl.interface.importer import initialize_cli_application, InitializationContext
 import unittest
 import json
-initialize_cli_application()
+initialize_cli_application(InitializationContext(unit_test=True))
 
 from asl.task.task_data import TaskData
 from asl.utils.injection_helper import inject

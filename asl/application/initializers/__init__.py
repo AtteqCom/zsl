@@ -35,6 +35,7 @@ def injection_module(f):
     return f
 
 from .logger_initializer import LoggerInitializer
+from .unittest_initializer import UnitTestInitializer
 from .library_initializer import LibraryInitializer
 from .database_initializer import DatabaseInitializer
 from .application_initializer import ApplicationInitializer

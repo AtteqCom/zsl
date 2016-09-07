@@ -9,8 +9,8 @@ in the documentary comments. Then outputs it to a file.
 
 import importer
 importer.append_asl_path_to_pythonpath()
-from asl.interface.importer import initialize_cli_application
-initialize_cli_application
+from asl.interface.importer import initialize_cli_application, InitializationContext
+initialize_cli_application(InitializationContext(unit_test=False))
 
 import pydoc
 import inspect
@@ -21,6 +21,7 @@ import sys
 import os
 from asl.router.task import TaskRouter
 import importlib
+
 
 class ApiariDoc(object, pydoc.Doc):
 
@@ -82,7 +83,7 @@ class ApiariDoc(object, pydoc.Doc):
             wl = white_space_at_beginning(l)
             if m > wl:
                 m = wl
-        apistr = map(lambda x : x[m:], apistr)
+        apistr = map(lambda x: x[m:], apistr)
 
         self._docs.append("\n".join(apistr))
 

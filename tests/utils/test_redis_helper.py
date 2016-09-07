@@ -1,7 +1,4 @@
-import unittest
-
-from asl.interface.importer import initialize_cli_application
-initialize_cli_application()
+from asl.unittest import TestCase
 
 from asl.interface.run_tests import set_test_responder
 from asl.utils.injection_helper import bind
@@ -11,6 +8,7 @@ from asl.utils.redis_helper import Keymaker
 __author__ = 'peter'
 
 set_test_responder()
+
 
 def create_config(dictionary):
     config = Config('.')
@@ -22,7 +20,8 @@ def create_config(dictionary):
 
     return config
 
-class TestKeymaker(unittest.TestCase):
+
+class TestKeymaker(TestCase):
 
     def setUp(self):
         bind(Config, create_config({}))

@@ -11,6 +11,16 @@ import os
 import sys
 
 
+class InitializationContext(object):
+
+    def __init__(self, unit_test):
+        self._unit_test = unit_test
+
+    def get_unit_testing(self):
+        return self._unit_test
+    unit_testing = property(get_unit_testing)
+
+
 def _append_application_pythonpath():
     '''
     Appends application to python path.
@@ -65,14 +75,14 @@ def _initialize_environment():
             pass
 
 
-def initialize_service_application():
+def initialize_service_application(ctx):
     from asl.application.service_application import service_application as app
-    app.initialize_dependencies()
+    app.initialize_dependencies(ctx)
 
 _cli_application_initialized = False
 
 
-def initialize_cli_application():
+def initialize_cli_application(ctx):
     global _cli_application_initialized
     if _cli_application_initialized:
         return
@@ -81,7 +91,7 @@ def initialize_cli_application():
     _initialize_environment()
     _append_pythonpath()
     _append_asl_path_to_pythonpath()
-    initialize_service_application()
+    initialize_service_application(ctx)
 
 
 def is_initialized():
@@ -92,10 +102,11 @@ _web_application_initialized = False
 
 def initialize_web_application():
     global _web_application_initialized
+    ctx = InitializationContext(unit_test=False)
     if _web_application_initialized:
         return
     _web_application_initialized = True
 
-    initialize_cli_application()
+    initialize_cli_application(ctx)
     from asl.interface.webservice import web_application_loader
     web_application_loader.load()

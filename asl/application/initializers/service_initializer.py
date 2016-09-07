@@ -1,18 +1,17 @@
-import asl.vendor
 from injector import singleton
 import logging
 from asl.application.initializers import injection_module
 from asl.utils.string_helper import camelcase_to_underscore
-asl.vendor.do_init()
 from asl.application import service_application
 
 import importlib
+
 
 class ServiceInitializer(object):
     '''
     Initializer handling the service injection.
     '''
-    
+
     @staticmethod
     def _bind_service(package_name, cls_name, binder):
         module = importlib.import_module(package_name)
@@ -20,8 +19,8 @@ class ServiceInitializer(object):
 
         binder.bind(
             cls,
-            to = binder.injector.create_object(cls),
-            scope = singleton
+            to=binder.injector.create_object(cls),
+            scope=singleton
         )
         logger = binder.injector.get(logging.Logger)
         logger.debug("Created {0} binding.".format(cls))
@@ -42,11 +41,11 @@ class ServiceInitializer(object):
             elif isinstance(si_conf, dict):
                 services = si_conf['list']
                 service_package = si_conf['package']
-    
+
                 for cls_name in services:
                     module_name = camelcase_to_underscore(cls_name)
                     package_name = "{0}.{1}".format(service_package, module_name)
-                    ServiceInitializer._bind_service(package_name, cls_name, binder)                    
+                    ServiceInitializer._bind_service(package_name, cls_name, binder)
 
 
 @injection_module
