@@ -68,6 +68,9 @@ class CacheOutputDecorator(CacheDecorator):
                 return self._id_helper.get_key(key)
             else:
                 ret_val = self._fn(*args)
+                if not (isinstance(ret_val, str) or isinstance(ret_val, unicode)):
+                    raise Exception("Can not cache non-string value. Is the serialization, json_output, already done?")
+
                 self._id_helper.set_key(key, ret_val, self._timeout)
                 service_application.logger.debug("Newly fetched into the cache.")
                 return ret_val

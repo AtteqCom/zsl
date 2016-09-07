@@ -308,7 +308,6 @@ def xml_output(f):
 def file_upload(f):
     '''
     Return list of werkzeug.datastructures.FileStorage objects - files to be uploaded
-    TODO: maybe delete
     '''
 
     @wraps(f)
@@ -325,38 +324,8 @@ def file_upload(f):
 
     return file_upload_decorator
 
-# TODO toto je len quick and dirty riesenie
 
-
-def cache_json_output(key, timeout):
-    cache = get_id_helper()
-
-    def wrapper_fn(f):
-
-        @wraps(f)
-        def cache_simple_output_decorator(*args, **kwargs):
-            rv = cache.get_key(key)
-
-            if rv:
-                try:
-                    rv = json.loads(rv)
-                except ValueError:
-                    rv = None
-
-            if not rv:
-                rv = f(*args, **kwargs)
-                cache.set_key(key, json.dumps(rv), timeout)
-
-            return rv
-
-        return cache_simple_output_decorator
-
-    return wrapper_fn
-
-
-###############
-### helpers ###
-###############
+# Helpers
 
 app = service_application
 
