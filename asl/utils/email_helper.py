@@ -2,7 +2,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from asl.application.service_application import service_application as app
-from asl.utils.injection_helper import inject
+
 
 def send_email(sender, receivers, subject, text = None, html = None, charset = 'utf-8'):
     '''
@@ -19,7 +19,7 @@ def send_email(sender, receivers, subject, text = None, html = None, charset = '
 
     # Receivers must be an array.
     if not isinstance(receivers, list) and not isinstance(receivers, tuple):
-        receivers = [receiveres]
+        receivers = [receivers]
 
     # Create the messages
     msgs = []
@@ -49,6 +49,6 @@ def send_email(sender, receivers, subject, text = None, html = None, charset = '
     msg['To'] = ", ".join(receivers)
 
     # Send.
-    smtpServer = smtplib.SMTP(**(smtp_config['SERVER']))
-    smtpServer.sendmail(sender, receivers, msg.as_string())
-    smtpServer.quit()
+    smtp_server= smtplib.SMTP(**(smtp_config['SERVER']))
+    smtp_server.sendmail(sender, receivers, msg.as_string())
+    smtp_server.quit()

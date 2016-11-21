@@ -1,19 +1,21 @@
-'''
+"""
 :mod:`asl.utils.file_helper`
 
-.. moduleauthor:: Peter Morihladko
-'''
-import os, errno
+.. moduleauthor:: Peter Morihladko <morihladko@atteq.com>, Martin Babka <babka@atteq.com>
+"""
+import os
+import errno
 
-def mkdir_p(path):
+
+def makedirs(path):
     """
-    like `mkdir -p path`
-    found on stackoverflow
+    Behaves like `mkdir -p <path>`. Without failure if the path exists.
     """
     
     try:
         os.makedirs(path)
-    except OSError as exc: # Python >2.5
+    except OSError as exc:  # Python >2.5
         if exc.errno == errno.EEXIST and os.path.isdir(path):
             pass
-        else: raise
+        else:
+            raise

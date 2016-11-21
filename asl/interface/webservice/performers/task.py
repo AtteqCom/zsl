@@ -1,20 +1,17 @@
-from asl.application.service_application import service_application
+from asl.application.service_application import service_application as app
 from asl.router import task_router
 from flask import request
 from flask.helpers import make_response
 from asl.task.job_context import JobContext, WebJobContext
 from asl.interface.webservice.utils.error_handler import error_handler
-from asl.interface.webservice.utils.response_headers import headers_appender
+from asl.interface.webservice.utils.response_headers import append_headers
 
-app = service_application
 
 @app.route("/task/<path:path>", methods=["POST", "GET", "OPTIONS"])
-@headers_appender
+@append_headers
 @error_handler
 def perform_web_task(path):
     app.logger.debug("Performing task %s.", path)
-
-    response = None
     if request.method == 'OPTIONS':
         response = app.make_default_options_response()
     else:

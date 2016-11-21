@@ -1,7 +1,7 @@
 '''
 :mod:`asl.utils.cache_helper`
 
-.. moduleauthor:: Martin Babka
+.. moduleauthor:: Martin Babka <babka@atteq.com>
 '''
 from asl.application.service_application import service_application
 from asl.utils.injection_helper import inject

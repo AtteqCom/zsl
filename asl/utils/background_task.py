@@ -20,7 +20,6 @@ def background_task_method(task):
     """
 
     # TODO ako vysledok vrat nejaky JOB ID, aby sa dalo checkovat na pozadi
-
     # TODO vytvorit este vseobecny background_task nielen pre metody
 
     def decorator_fn(fn):
@@ -29,21 +28,17 @@ def background_task_method(task):
 
         gearman_host = (app.config['GEARMAN']['host'], app.config['GEARMAN']['port']) if app.config['GEARMAN']['port'] \
             else app.config['GEARMAN']['host']
-
         gearman = GearmanService({'HOST': [gearman_host], 'TASK_NAME': app.config['GEARMAN_TASK_NAME']})
         gearman.set_blocking(False)
 
         @wraps(fn)
         def background_task_decorator(*args, **kwargs):
-            # prvy args je self
+            # The first of the args is self.
             t = RawTask(task, dict(method=fn.__name__, args=args[1:], kwargs=kwargs))
-
             t_result = gearman.call(t, [JsonTask])
-
             return t_result.result
 
         background_task_decorator._background_fn = fn
-
         return background_task_decorator
 
     return decorator_fn

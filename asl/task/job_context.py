@@ -1,28 +1,31 @@
-'''
+"""
 :mod:`asl.task.job_context`
 
-.. moduleauthor:: Martin Babka
-'''
+.. moduleauthor:: Martin Babka <babka@atteq.com>
+"""
 from asl.task.task_data import TaskData
 from asl.application.service_application import service_application
 from abc import abstractmethod
 
-class Job:
+
+class Job(object):
     def __init__(self, data):
         self.data = data
 
-class JobContext:
-    '''
+
+class JobContext(object):
+    """
     Job Context
-    '''
+    """
     def __init__(self, job, task, task_callable):
-        '''
+        """
         Constructor
-        '''
+        """
         self.job = Job(job.data)
         self.task = task
         self.task_callable = task_callable
         self.task_data = TaskData(service_application, self.job.data['data'])
+        self._current_context = None
 
     @classmethod
     def get_current_context(cls):
@@ -32,19 +35,23 @@ class JobContext:
     def set_current_context(cls, context):
         cls._current_context = context
 
-class Responder:
+
+class Responder(object):
+
     @abstractmethod
     def respond(self, r):
         pass
 
+
 def web_task_redirect(location):
     return {'headers': {'Location': location}, 'status_code': 301}
 
+
 class WebJobContext(JobContext):
     def __init__(self, path, data, task, task_callable, request):
-        '''
+        """
         Constructor
-        '''
+        """
         self.job = Job({'data': data, 'path': path})
         self.task = task
         self.task_callable = task_callable
