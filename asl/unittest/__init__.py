@@ -12,7 +12,7 @@ from asl.db.model.sql_alchemy import metadata
 
 class TestCase(unittest.TestCase):
 
-    @inject(service_application=Engine)
+    @inject(engine=Engine)
     def createSchema(self, engine):
         metadata.create_all(engine)
 
