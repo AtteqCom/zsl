@@ -75,7 +75,7 @@ def json_input(f):
                 # We transform the data only in the case of plain POST requests.
                 if not request.json and task_data is not None and not task_data.is_skipping_json():
                     task_data.transform_data(json.loads)
-            except ValueError:
+            except (ValueError, RuntimeError):
                 app.logger.error("Exception while processing JSON input decorator.")
                 task_data.transform_data(json.loads)
         else:
