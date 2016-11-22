@@ -6,11 +6,15 @@ initialize_cli_application(InitializationContext(unit_test=True))
 from asl.task.task_data import TaskData
 from asl.utils.injection_helper import inject
 from asl.application.service_application import AtteqServiceFlask
+from sqlalchemy.engine.base import Engine
+from asl.db.model.sql_alchemy import metadata
 
 
 class TestCase(unittest.TestCase):
 
-    pass
+    @inject(service_application=Engine)
+    def createSchema(self, engine):
+        metadata.create_all(engine)
 
 
 class TestTaskData(TaskData):
