@@ -3,12 +3,12 @@ Created on May 14, 2014
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 '''
-from asl.unittest import TestCase
+from zsl.unittest import TestCase
 
 from sqlalchemy.ext.declarative import declarative_base
 
-from asl.application.service_application import service_application
-from asl.resource.model_resource import ModelResource, ReadOnlyResourceUpdateOperationException, ReadOnlyResourceMixin
+from zsl.application.service_application import service_application
+from zsl.resource.model_resource import ModelResource, ReadOnlyResourceUpdateOperationException, ReadOnlyResourceMixin
 from tests.resource.resource_test_helper import create_resource_test_data, DummyModel
 
 Base = declarative_base()

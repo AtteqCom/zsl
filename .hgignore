@@ -17,9 +17,9 @@ syntax: regexp
 syntax: regexp
 ^\.pydevproject$
 syntax: regexp
-^asl/interface/webservice/run_shell\.cmd$
+zsl/interface/webservice/run_shell\.cmd$
 syntax: regexp
-^asl/interface/webservice/run_webapp\.cmd$
+zsl/interface/webservice/run_webapp\.cmd$
 ^client/java/\.classpath$
 ^client/java/\.project$
 ^client/java/\.settings

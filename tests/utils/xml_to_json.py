@@ -1,4 +1,4 @@
-from asl.utils.xml_to_json import xml_to_json
+from zsl.utils.xml_to_json import xml_to_json
 import unittest
 
 import xml.etree.cElementTree

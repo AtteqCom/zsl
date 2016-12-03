@@ -27,9 +27,9 @@ except:
     traceback.print_exc()
 
 # Init ASL
-from asl.interface.importer import initialize_cli_application, InitializationContext
+from zsl.interface.importer import initialize_cli_application, InitializationContext
 initialize_cli_application(InitializationContext(unit_test=False))
-from asl.application import service_application
+from zsl.application import service_application
 
 # -- General configuration -----------------------------------------------------
 

@@ -1,11 +1,11 @@
 from sqlalchemy.ext.declarative.api import declarative_base
-from asl.db.model.app_model import AppModel
-from asl.db.model.raw_model import ModelBase
+from zsl.db.model.app_model import AppModel
+from zsl.db.model.raw_model import ModelBase
 from sqlalchemy.sql.sqltypes import VARCHAR, INTEGER
 from sqlalchemy.sql.schema import Column
-from asl.utils.injection_helper import inject
+from zsl.utils.injection_helper import inject
 from sqlalchemy.engine.base import Engine
-from asl.application.initializers.database_initializer import SessionHolder
+from zsl.application.initializers.database_initializer import SessionHolder
 
 
 Base = declarative_base()

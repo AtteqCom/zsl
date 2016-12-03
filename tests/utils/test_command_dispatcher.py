@@ -1,6 +1,6 @@
 import unittest
 import types
-from asl.utils.command_dispatcher import CommandDispatcher
+from zsl.utils.command_dispatcher import CommandDispatcher
 
 __author__ = 'peter'
 
