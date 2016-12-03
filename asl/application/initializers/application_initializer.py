@@ -6,10 +6,10 @@ from asl.application.initializers import injection_module
 
 
 class ApplicationInitializer(object):
-    '''
+    """
     :class:`asl.application.initializers.ApplicationInitializer` adds the injection capability of the application object. 
     The application object is bound as `AtteqServiceFlask`.
-    '''
+    """
 
     def initialize(self, binder):
         '''

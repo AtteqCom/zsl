@@ -18,8 +18,10 @@ import urllib2
 
 import gearman
 
+
 def _random_string(length, allowed_characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz'):
     return ''.join(random.choice(allowed_characters) for _ in range(length))
+
 
 class Task:
     @abstractmethod
@@ -31,6 +33,7 @@ class Task:
     def get_data(self):
         pass
     data = property(get_data)
+
 
 class RawTask(Task):
     def __init__(self, name, data):
