@@ -1,9 +1,6 @@
 from flask import Flask
 import os
 
-import zsl.vendor
-zsl.vendor.do_init()
-
 from zsl.interface.importer import is_initialized
 from flask_injector import FlaskInjector
 
@@ -29,9 +26,9 @@ class AtteqServiceFlask(Flask):
 
     def initialize_dependencies(self, initialization_context):
         from zsl.application.initializers import injection_views, injection_modules
-        self._flask_injector = FlaskInjector(injection_views, injection_modules)
         self._initialization_context = initialization_context
-        self.set_injector(self._flask_injector.init_app(self))
+        self._flask_injector = FlaskInjector(self, injection_views + injection_modules)
+        self.set_injector(self._flask_injector.injector)
         self.logger.debug("Injector configuration {0}, {1}.".format(injection_views, injection_modules))
         self._dependencies_initialized = True
 
