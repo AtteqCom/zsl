@@ -9,11 +9,13 @@
 # Initialize the path
 import sys
 import os
+
 # TODO: Consider removing automatic path initialization!
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 # Initialize
 from importer import initialize_web_application
+
 initialize_web_application()
 
 import json
@@ -25,7 +27,6 @@ conf = service_application.config
 
 
 class Job(object):
-
     def __init__(self, data):
         self.data = {'data': data}
 
@@ -69,8 +70,8 @@ def run_webapp():
         use_reloader=conf.get('USE_RELOADER', False)
     )
 
-# Run it!
-if __name__ == "__main__":
+
+def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else None
 
     if cmd == 'shell':
@@ -84,3 +85,8 @@ if __name__ == "__main__":
 
     else:
         print >> sys.stderr, "Usage: run_webappy.py <command>. You provided no or invalid command - choose one from 'shell', 'task' or 'web'."
+
+
+# Run it!
+if __name__ == "__main__":
+    main()
