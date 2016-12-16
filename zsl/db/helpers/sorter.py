@@ -51,8 +51,8 @@ class Sorter(object):
                     self._orders *= len(self._fields)
                 elif len(self._orders) != len(self._fields):
                     raise Exception(
-                        u'zsl.db.helpers.Sorter: Number of order settings is nor zero nor one nor equal to number of'
-                        u'sortby columns.')
+                        'zsl.db.helpers.Sorter: Number of order settings is nor zero nor one nor equal to number of'
+                        'sortby columns.')
 
             else:
                 self._orders = [DEFAULT_SORT_ORDER] * len(self._fields)

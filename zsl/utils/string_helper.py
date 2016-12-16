@@ -30,7 +30,7 @@ def camelcase_to_underscore(name):
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 
-def et_node_to_string(et_node, default=u''):
+def et_node_to_string(et_node, default=''):
     """
     @et_node: Element
     """
@@ -85,4 +85,4 @@ def strip_html_tags_unicode(s):
     """
     Remove all html tags from unicode string
     """
-    return _html_tag_re_un.sub(u'', s)
+    return _html_tag_re_un.sub('', s)

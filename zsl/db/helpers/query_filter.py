@@ -20,7 +20,7 @@ class OperatorNeq(object):
 class OperatorLike(object):
     @staticmethod
     def apply(q, attr, v):
-        return q.filter(attr.like(u'%{0}%'.format(v)))
+        return q.filter(attr.like('%{0}%'.format(v)))
 
 
 class OperatorLeftLike(object):
@@ -30,7 +30,7 @@ class OperatorLeftLike(object):
 
     @staticmethod
     def apply(q, attr, v):
-        return q.filter(attr.like(u'{0}%'.format(v)))
+        return q.filter(attr.like('{0}%'.format(v)))
 
 
 class OperatorRightLike(object):
@@ -40,7 +40,7 @@ class OperatorRightLike(object):
 
     @staticmethod
     def apply(q, attr, v):
-        return q.filter(attr.like(u'%{0}'.format(v)))
+        return q.filter(attr.like('%{0}'.format(v)))
 
 
 class OperatorBetween(object):
