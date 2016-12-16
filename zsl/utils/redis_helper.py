@@ -3,7 +3,9 @@ Modul na ulahcenie prace s redisom
 
 .. moduleauthor::  Peter Morihladko
 """
+from __future__ import unicode_literals
 
+from builtins import object
 from functools import partial
 from zsl.utils.injection_helper import inject
 from flask.config import Config

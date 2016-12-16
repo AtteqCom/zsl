@@ -9,3 +9,4 @@ Main service module.
    other various aspects of service applications.
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals

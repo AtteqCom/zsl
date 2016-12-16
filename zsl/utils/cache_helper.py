@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals
+from builtins import object
 from zsl.application.service_application import service_application
 from zsl.utils.injection_helper import inject
 from zsl.cache.id_helper import IdHelper, model_key_generator, create_key_object_prefix,\
@@ -13,7 +15,7 @@ import abc
 from zsl.task.job_context import JobContext
 
 
-class CacheDecorator:
+class CacheDecorator(object):
 
     @inject(id_helper=IdHelper)
     def __init__(self, id_helper):

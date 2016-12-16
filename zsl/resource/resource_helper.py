@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Peter Morihladko
 """
+from __future__ import unicode_literals
 
 from sqlalchemy.orm import class_mapper, joinedload
 from sqlalchemy import desc, asc

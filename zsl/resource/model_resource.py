@@ -11,6 +11,8 @@ The basic way to use them is as follows:
 
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals
+from builtins import object
 from future.utils import iteritems
 from builtins import int
 

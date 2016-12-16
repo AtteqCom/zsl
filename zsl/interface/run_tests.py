@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 
 from zsl.interface.importer import InitializationContext, initialize_cli_application
 initialize_cli_application(InitializationContext(unit_test=False))

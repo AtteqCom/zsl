@@ -4,6 +4,7 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import print_function
+from __future__ import unicode_literals
 
 # Initialize app
 from zsl.interface.gearman import importer

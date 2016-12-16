@@ -3,6 +3,7 @@ Helpers for parameter handling
 
 .. moduleauthor:: Peter Morihladko
 """
+from __future__ import unicode_literals
 from future.utils import iteritems
 
 import inspect

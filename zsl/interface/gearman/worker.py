@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martin
 """
+from __future__ import unicode_literals
+from builtins import object
 from builtins import str
 import socket
 import gearman
@@ -57,7 +59,7 @@ Then uses task to get the task object and executes it.
 '''
 
 
-class Worker:
+class Worker(object):
     def __init__(self, app):
         self._app = app
         task_router.set_task_reloading(task_router.is_task_reloading() or app.config['RELOAD_GEARMAN'])

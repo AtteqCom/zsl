@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 from zsl.cache.cache_module import CacheModule
 import redis
 from zsl.application.service_application import service_application

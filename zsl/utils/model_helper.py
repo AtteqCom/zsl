@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from zsl.application import service_application
 
 

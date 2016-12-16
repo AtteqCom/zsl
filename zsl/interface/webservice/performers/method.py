@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 from zsl.router.method import get_method_packages
 import importlib
 

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from builtins import str
 from zsl.application.service_application import AtteqServiceFlask
 from zsl.utils.injection_helper import inject

@@ -1,6 +1,7 @@
 """
 Helper functions for working with XML and ElementTree
 """
+from __future__ import unicode_literals
 from future.utils import iteritems
 
 import xml.etree.cElementTree as ET

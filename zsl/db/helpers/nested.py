@@ -5,6 +5,7 @@ TODO presun do asl.db.helpers
 
 .. moduleauthor:: peter
 """
+from __future__ import unicode_literals
 
 
 def nested_model(model, nested_fields):

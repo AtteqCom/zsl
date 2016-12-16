@@ -8,6 +8,7 @@ in the documentary comments. Then outputs it to a file.
 """
 from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import unicode_literals
 
 from . import importer
 importer.append_asl_path_to_pythonpath()

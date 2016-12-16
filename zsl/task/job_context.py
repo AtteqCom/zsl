@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals
+from builtins import object
 from zsl.task.task_data import TaskData
 from zsl.application.service_application import service_application
 from abc import abstractmethod

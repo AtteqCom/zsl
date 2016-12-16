@@ -2,7 +2,9 @@
 Helper for nginx push stream module
 https://github.com/wandenberg/nginx-push-stream-module
 """
+from __future__ import unicode_literals
 
+from builtins import object
 import requests
 import json
 

@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals
 from zsl.cache.id_helper import IdHelper, decoder_identity, encoder_identity, \
     model_key_generator
 from zsl.utils.injection_helper import inject

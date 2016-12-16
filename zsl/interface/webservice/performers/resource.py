@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from zsl.application.service_application import service_application as app
 from flask import request, Response
 from zsl.utils.resource_helper import parse_resource_path, get_resource_task

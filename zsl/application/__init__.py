@@ -1,1 +1,2 @@
+from __future__ import unicode_literals
 from .service_application import service_application

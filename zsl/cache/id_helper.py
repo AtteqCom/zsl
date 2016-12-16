@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
+from builtins import object
 import abc
 from zsl.db.model.app_model_json_decoder import get_json_decoder
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder

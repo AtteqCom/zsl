@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
+from builtins import object
 from zsl.utils.model_helper import update_model
 
 

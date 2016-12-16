@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 from json.decoder import JSONDecoder, WHITESPACE
 from zsl.utils.import_helper import fetch_class
 

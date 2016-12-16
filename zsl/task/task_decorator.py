@@ -4,6 +4,7 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>, Peter Morihladko <morihladko@atteq.com>, Jan Janco <janco@atteq.com>,
                   Lubos Pis <pis@atteq.com>
 """
+from __future__ import unicode_literals
 from builtins import str
 from past.builtins import basestring
 

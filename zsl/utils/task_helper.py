@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 from zsl.application.service_application import service_application
 from zsl.task.task_data import TaskData
 

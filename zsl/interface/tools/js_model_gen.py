@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
+from __future__ import unicode_literals
 
 from zsl.interface.tools import importer
 importer.append_asl_path_to_pythonpath()

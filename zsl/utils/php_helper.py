@@ -5,6 +5,7 @@
 
 Some handy function when dealing with code written in PHP
 """
+from __future__ import unicode_literals
 
 
 def bool_to_str(boolean):

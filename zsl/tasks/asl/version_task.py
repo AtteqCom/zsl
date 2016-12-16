@@ -3,7 +3,9 @@ Created on 24.12.2012
 
 @author: Martin Babka
 """
+from __future__ import unicode_literals
 
+from builtins import object
 from zsl.application.service_application import service_application
 from zsl.task.task_decorator import json_output
 import sqlalchemy

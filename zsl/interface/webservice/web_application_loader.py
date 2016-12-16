@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 # Now import the application and the remaining stuff.
 def load_peformers():
     """

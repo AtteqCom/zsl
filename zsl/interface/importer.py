@@ -6,6 +6,7 @@ if necessary.
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 
 from past.builtins import execfile
 from builtins import object

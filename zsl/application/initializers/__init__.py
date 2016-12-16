@@ -7,6 +7,7 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals
 
 injection_views = []
 injection_modules = []

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from zsl.application.initializers import injection_module
 from zsl.application.service_application import service_application
 
