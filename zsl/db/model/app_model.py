@@ -3,6 +3,11 @@
 
 .. moduleauthor:: Martin Babka
 """
+from builtins import str
+from builtins import int
+from builtins import map
+from builtins import object
+from future.utils import iteritems
 
 from datetime import datetime, date
 from zsl.utils.date_helper import format_date_portable, format_datetime_portable
@@ -14,7 +19,7 @@ RELATED_FIELDS_CLASS = 'cls'
 RELATED_FIELDS_HINTS = 'hints'
 
 
-class AppModel:
+class AppModel(object):
     """
     ``AppModel``s are used as a thin and simple communication objects. Also they can be saved into cache.
     """
@@ -48,8 +53,8 @@ class AppModel:
         self._id_name = id_name
 
     def set_from_raw_data(self, raw):
-        for (k, v) in raw.items():
-            if isinstance(v, (type(None), str, int, long, float, bool, unicode)):
+        for k, v in iteritems(raw):
+            if isinstance(v, (type(None), str, int, float, bool)):
                 if k in self._hints[DATE_DATA] and v is not None:
                     d = datetime.strptime(v, self._hints[DATE_DATA][k]).date()
                     setattr(self, k, format_date_portable(d))
@@ -66,7 +71,7 @@ class AppModel:
                 related_cls = self._hints[RELATED_FIELDS][k][RELATED_FIELDS_CLASS]
                 related_hints = self._hints[RELATED_FIELDS][k].get(RELATED_FIELDS_HINTS)
                 if isinstance(v, (list, tuple)):
-                    setattr(self, k, map(lambda x: related_cls(x, 'id', related_hints), v))
+                    setattr(self, k, [related_cls(x, 'id', related_hints) for x in v])
                 else:
                     setattr(self, k, related_cls(v, 'id', related_hints))
 
@@ -100,7 +105,7 @@ class AppModel:
                 d[k] = tuple(d[k])
 
             elif isinstance(d[k], dict):
-                for key, value in getattr(self, k).iteritems():
+                for key, value in iteritems(getattr(self, k)):
                     d[k][key] = convert(value)
 
         return d

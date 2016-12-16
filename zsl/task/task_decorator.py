@@ -4,6 +4,8 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>, Peter Morihladko <morihladko@atteq.com>, Jan Janco <janco@atteq.com>,
                   Lubos Pis <pis@atteq.com>
 """
+from builtins import str
+from past.builtins import basestring
 
 import json
 
@@ -156,9 +158,9 @@ def jsend_output(fail_exception_classes=None):
             try:
                 rv = f(*args, **kwargs)
             except fail_exception_classes as e:
-                return {'status': 'fail', 'data': {'message': unicode(e)}}
+                return {'status': 'fail', 'data': {'message': str(e)}}
             except Exception as e:
-                app.logger.error(unicode(e) + "\n" + traceback.format_exc())
+                app.logger.error(str(e) + "\n" + traceback.format_exc())
                 return {'status': 'error', 'message': 'Server error.'}
 
             if not isinstance(rv, dict) and rv is not None:

@@ -3,22 +3,31 @@
 
 .. moduleauthor:: Peter Morihladko
 """
+from builtins import str
 import unicodedata
 import re
+import urllib
 
 
-def slugify(value):
+def slugify(value, unicode=False):
     """
     Normalizes string, converts to lowercase, removes non-alpha characters,
     and converts spaces to hyphens.
-
-    Drsny copy-paste z Djanga
     """
-    if isinstance(value, str):
-        try:
-            value = unicode(value)
-        except UnicodeDecodeError:
-            value = unicode(value, 'utf-8')
-    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-    value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
-    return re.sub('[-\s]+', '-', value)
+    value = str(value)
+
+    if unicode:
+        value = unicodedata.normalize('NFKC', value)
+        value = re.sub(r'[^\w\s-]', '', value, flags=re.U).strip().lower()
+        return re.sub(r'[-\s]+', '-', value, flags=re.U)
+    else:
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+        value = re.sub(r'[^\w\s-]', '', value).strip().lower()
+        return re.sub('[-\s]+', '-', value)
+
+
+def urlencode(query):
+    if hasattr(urllib, 'parse'):
+        return urllib.parse.urlencode(query)
+    else:
+        return urllib.urlencode(query)

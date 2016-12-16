@@ -4,6 +4,7 @@
 .. moduleauthor:: peter morihladko
 """
 
+from builtins import object
 import inspect
 
 
@@ -71,7 +72,7 @@ class CommandDispatcher(object):
         bounded_dispatcher = CommandDispatcher()
         bounded_dispatcher.commands = self.commands.copy()
 
-        for name in self.commands.iterkeys():
+        for name in self.commands:
             method = getattr(instance, name, None)
 
             if method and inspect.ismethod(method) and method.__self__ == instance:

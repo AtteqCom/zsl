@@ -3,13 +3,15 @@
 
 .. moduleauthor:: Martin Babka
 """
+from builtins import str
+from builtins import range
 import re
 import random
 import string
 
-_html_tag_re = re.compile(ur'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE)
+_html_tag_re = re.compile(r'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE)
 _html_tag_re_un = re.compile(
-    ur'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE | re.UNICODE)
+    r'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE | re.UNICODE)
 
 
 def underscore_to_camelcase(value):
@@ -32,7 +34,7 @@ def et_node_to_string(et_node, default=u''):
     @et_node: Element
     """
 
-    return unicode(et_node.text).strip() if et_node is not None and et_node.text else default
+    return str(et_node.text).strip() if et_node is not None and et_node.text else default
 
 
 def generate_random_string(size=6, chars=string.ascii_uppercase + string.digits):
@@ -68,7 +70,7 @@ def xunicode(s):
     """
     If ``s`` is None return empty string
     """
-    return '' if s is None else unicode(s)
+    return '' if s is None else str(s)
 
 
 def strip_html_tags(s):

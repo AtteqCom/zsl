@@ -3,7 +3,7 @@
 
 .. moduleauthor:: Martin
 """
-
+from builtins import str
 import socket
 import gearman
 import traceback
@@ -47,8 +47,8 @@ def execute_task(worker, job):
         app.logger.info("Stopping Gearman worker on demand flag set.")
         worker._should_stop = True
     except Exception as e:
-        app.logger.error(unicode(e) + "\n" + traceback.format_exc())
-        return {'task_name': job.data['path'], 'data': None, 'error': unicode(e)}
+        app.logger.error(str(e) + "\n" + traceback.format_exc())
+        return {'task_name': job.data['path'], 'data': None, 'error': str(e)}
 
 
 '''

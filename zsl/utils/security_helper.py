@@ -1,3 +1,4 @@
+from builtins import str
 from zsl.application.service_application import AtteqServiceFlask
 from zsl.utils.injection_helper import inject
 import hashlib
@@ -29,4 +30,4 @@ def compute_token(random_token, service_application):
 def verify_security_data(security):
     random_token = security[TOKEN_RANDOM]
     hashed_token = security[TOKEN_HASHED]
-    return unicode(hashed_token) == unicode(compute_token(random_token))
+    return str(hashed_token) == str(compute_token(random_token))

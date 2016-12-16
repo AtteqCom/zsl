@@ -11,6 +11,8 @@ The basic way to use them is as follows:
 
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 """
+from future.utils import iteritems
+from builtins import int
 
 from sqlalchemy.orm import class_mapper
 from zsl.resource.resource_helper import filter_from_url_arg, apply_related, create_related_tree, \
@@ -32,7 +34,7 @@ def dict_pick(dictionary, allowed_keys):
     """
     Return a dictionary only with keys found in `allowed_keys`
     """
-    return dict((key, value) for (key, value) in dictionary.items() if key in allowed_keys)
+    return {key: value for key, value in iteritems(dictionary) if key in allowed_keys}
 
 
 def page_to_offset(params):
@@ -347,7 +349,7 @@ class ModelResource(SqlSesionMixin):
         if model is None:
             return None
 
-        for name, value in fields.items():
+        for name, value in iteritems(fields.items):
             setattr(model, name, value)
 
         return model
@@ -454,7 +456,7 @@ class CachedModelResource(ModelResource):
         self._logger.debug("CachedModelResource - get one, key: {0}.".format(key))
 
         if self._id_helper.check_key(key):
-            result = long(self._id_helper.get_key(key))
+            result = int(self._id_helper.get_key(key))
         else:
             self._logger.debug("CachedModelResource - get one not cached, transferring to resource...")
             result = super(CachedModelResource, self)._get_collection_count(ctx)

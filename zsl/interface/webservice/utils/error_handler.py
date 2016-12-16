@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martin Babka
 """
+from builtins import str
+from builtins import object
 import traceback
 from zsl.application.service_application import service_application
 from functools import wraps
@@ -38,14 +40,14 @@ def error_handler(f):
         try:
             return f(*args, **kwargs)
         except ImportError as ie:
-            service_application.logger.error(unicode(ie) + "\n" + traceback.format_exc())
-            return unicode(ie), 404
+            service_application.logger.error(str(ie) + "\n" + traceback.format_exc())
+            return str(ie), 404
         except Exception as ex:
             for eh in _error_handlers:
                 if eh.can_handle(ex):
                     return eh.handle(ex)
 
-            service_application.logger.error(unicode(ex) + "\n" + traceback.format_exc())
+            service_application.logger.error(str(ex) + "\n" + traceback.format_exc())
             service_application.logger.error("Request:\n{0}\n{1}\n".format(request.headers, request.data))
             return "An error occurred!", 500
 

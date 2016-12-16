@@ -1,3 +1,6 @@
+from builtins import object
+from future.utils import iteritems
+
 from zsl.application.service_application import service_application
 from flask import Config
 from zsl.utils.import_helper import fetch_class
@@ -66,14 +69,14 @@ class LoggerInitializer(object):
 
         # Create the handlers.
         handlers = {}
-        for (handler_name, handler_settings) in config.get('LOG_HANDLERS', {}).iteritems():
+        for handler_name, handler_settings in iteritems(config.get('LOG_HANDLERS', {})):
             try:
                 handlers[handler_name] = self._create_handler(handler_settings)
             except Exception as e:
                 errors.append(e)
 
         # Set up the loggers.
-        for (logger_name, logger_settings) in config.get('LOG', {}).iteritems():
+        for logger_name, logger_settings in iteritems(config.get('LOG', {})):
             logger = logging.getLogger(logger_name)
             logger.setLevel(getattr(logging, logger_settings['level']))
             for handler_name in logger_settings.get('handlers', []):
