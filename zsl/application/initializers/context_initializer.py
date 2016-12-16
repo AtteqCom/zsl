@@ -6,9 +6,9 @@ from zsl.application.initializers import injection_module
 
 
 class ContextInitializer(object):
-    '''
+    """
     Initializer handling the service injection.
-    '''
+    """
 
     def bind(self, cls, instance):
         self._binder.bind(
@@ -20,9 +20,9 @@ class ContextInitializer(object):
         logger.debug("Created {0} binding.".format(cls))
 
     def initialize(self, binder):
-        '''
+        """
         Initialization method.
-        '''
+        """
         context_injection_config = service_application.config.get('CONTEXT_INJECTION')
         if not context_injection_config:
             return

@@ -30,25 +30,25 @@ class TestXmlToJson(unittest.TestCase):
     </list>
 </root>
     '''
-        
+
     def setUp(self):
         self._root = xml.etree.cElementTree.fromstring(self.xml)
-    
+
     def test_simple_definitions(self):
         def_attribute = '@atr'
         def_node = 'node_a'
         def_complex_node = 'complex/node_b'
-        
+
         self.assertEqual("34", xml_to_json(self._root, def_attribute))
         self.assertEqual("text", xml_to_json(self._root, def_node))
         self.assertEqual("krajina", xml_to_json(self._root, def_complex_node))
-        
+
     def test_func_callback(self):
         def func(element):
             return element.tag
-        
+
         self.assertEquals('root', xml_to_json(self._root, func))
-        
+
     def test_tuple_definitions(self):
         self.assertEqual('23', xml_to_json(self._root, ('node_d', '@id')))
         self.assertEqual('klud', xml_to_json(self._root, ('complex/node_c', '@hud')))
@@ -57,7 +57,7 @@ class TestXmlToJson(unittest.TestCase):
     def test_list_definitions(self):
         self.assertListEqual(['34', '35', '38', '39'], xml_to_json(self._root, ['list/item']))
         self.assertListEqual(['1', '0', '1', '0'], xml_to_json(self._root, ['list/item', '@prop']))
-        
+
     def test_dict_definitions(self):
         definition = {
             'id': '@atr',
@@ -65,10 +65,11 @@ class TestXmlToJson(unittest.TestCase):
             'b': ('node_d', '@id'),
             'c': 'complex/node_b'
         }
-        
+
         expected = {'id': '34', 'a': 'text', 'b': '23', 'c': 'krajina'}
-        
+
         self.assertDictEqual(expected, xml_to_json(self._root, definition))
-        
+
+
 if __name__ == "main":
     unittest.main()

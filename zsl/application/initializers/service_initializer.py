@@ -8,9 +8,9 @@ import importlib
 
 
 class ServiceInitializer(object):
-    '''
+    """
     Initializer handling the service injection.
-    '''
+    """
 
     @staticmethod
     def _bind_service(package_name, cls_name, binder):
@@ -25,10 +25,11 @@ class ServiceInitializer(object):
         logger = binder.injector.get(logging.Logger)
         logger.debug("Created {0} binding.".format(cls))
 
-    def initialize(self, binder):
-        '''
+    @staticmethod
+    def initialize(binder):
+        """
         Initialization method.
-        '''
+        """
         service_injection_config = service_application.config['SERVICE_INJECTION']
 
         if not isinstance(service_injection_config, (tuple, list)):

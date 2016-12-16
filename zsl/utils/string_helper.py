@@ -1,8 +1,8 @@
-'''
+"""
 :mod:`asl.utils.string_helper`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 import re
 import random
 import string
@@ -28,25 +28,28 @@ def camelcase_to_underscore(name):
 
 
 def et_node_to_string(et_node, default=u''):
-    '''
+    """
     @et_node: Element
-    '''
+    """
 
     return unicode(et_node.text).strip() if et_node is not None and et_node.text else default
 
 
 def generate_random_string(size=6, chars=string.ascii_uppercase + string.digits):
-    '''
+    """
     Random string generator.
 
     @param size: Length of the returned string.
     @param chars: List of the usable characters.
     @return: The random string.
-    '''
+    """
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-def addslashes(s, l=["\\", "'", ]):
+def addslashes(s, l=None):
+    if l is None:
+        l = ["\\", "'", ]
+
     # l = ["\\", '"', "'", "\0", ]
     for i in l:
         if i in s:
@@ -55,28 +58,28 @@ def addslashes(s, l=["\\", "'", ]):
 
 
 def xstr(s):
-    '''
+    """
     If ``s`` is None return empty string
-    '''
+    """
     return '' if s is None else str(s)
 
 
 def xunicode(s):
-    '''
+    """
     If ``s`` is None return empty string
-    '''
+    """
     return '' if s is None else unicode(s)
 
 
 def strip_html_tags(s):
-    '''
+    """
     Remove all html tags from string
-    '''
+    """
     return _html_tag_re.sub('', s)
 
 
 def strip_html_tags_unicode(s):
-    '''
+    """
     Remove all html tags from unicode string
-    '''
+    """
     return _html_tag_re_un.sub(u'', s)

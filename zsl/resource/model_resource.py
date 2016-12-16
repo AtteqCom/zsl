@@ -1,4 +1,4 @@
-'''
+"""
 :mod:`asl.resource.model_resource` -- REST for a DB model.
 ==========================================================
 
@@ -10,7 +10,7 @@ The basic way to use them is as follows:
  - To override just override the basic methods - `create`, `read`, `update`, `delete`.
 
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
-'''
+"""
 
 from sqlalchemy.orm import class_mapper
 from zsl.resource.resource_helper import filter_from_url_arg, apply_related, create_related_tree, \
@@ -29,19 +29,19 @@ from zsl.utils.cache_helper import app_model_encoder_fn, app_model_decoder_fn
 
 
 def dict_pick(dictionary, allowed_keys):
-    '''
+    """
     Return a dictionary only with keys found in `allowed_keys`
-    '''
+    """
     return dict((key, value) for (key, value) in dictionary.items() if key in allowed_keys)
 
 
 def page_to_offset(params):
-    '''
+    """
     Transforms `page`/`per_page` from `params` to `limit`/`offset` suitable for SQL.
 
     :param dict params: The dictionary containing `page` and `per_page` values will be added
                         the values `limit` and `offset`.
-    '''
+    """
 
     if 'page' not in params:
         return
@@ -61,20 +61,22 @@ def page_to_offset(params):
 
 
 class ResourceQueryContext(object):
-    '''
+    """
     The context of the resource query.
      - holds the parameters and arguments of the query,
      - holds the related models which should be fetched (parsed from the arguments),
      - holds the given filter and splits it to the given field array (parsed from the arguments)
 
     .. automethod:: __init__
-    .. automethod:: `get_params` Params are given as the part of the path in URL. For example GET /entities/1 will have 1 in the params
+    .. automethod:: `get_params` Params are given as the part of the path in URL. For example GET /entities/1 will have
+    1 in the params
     .. automethod:: `get_args` Args are in the query part of the url ?related=&filter_by etc.
     .. automethod:: `get_data` Body of the request.
     .. automethod:: `get_row_id` First parameter, if given, else None. Handy for GET requests.
-    .. automethod:: `get_related` Related argument - parsed as array, original argument containing the list of comma delimited models which should be fetched along with the resource.
+    .. automethod:: `get_related` Related argument - parsed as array, original argument containing the list of comma
+    delimited models which should be fetched along with the resource.
     .. automethod:: `get_filter_by` Filter argument - list of filters
-    '''
+    """
 
     def __init__(self, params, args, data):
         self._params = params
@@ -94,14 +96,17 @@ class ResourceQueryContext(object):
 
     def get_params(self):
         return self._params
+
     params = property(get_params)
 
     def get_args(self):
         return self._args
+
     args = property(get_args)
 
     def get_data(self):
         return self._data
+
     data = property(get_data)
 
     def get_row_id(self):
@@ -115,7 +120,7 @@ class ResourceQueryContext(object):
 
 
 class ModelResource(SqlSesionMixin):
-    '''
+    """
     ModelResource works only for tables with a single-column identifier (key).
 
     .. automethod:: __init__
@@ -124,7 +129,7 @@ class ModelResource(SqlSesionMixin):
     .. automethod:: _save_one
     .. automethod:: _delete_one
     .. automethod:: _create_delete_one_query
-    '''
+    """
 
     def __init__(self, model_cls):
         """
@@ -143,34 +148,46 @@ class ModelResource(SqlSesionMixin):
         self.add_related = partial(apply_related, model_cls)
         self.set_ordering = partial(order_from_url_arg, model_cls)
 
-    def _create_context(self, params, args, data):
-        '''
+    @staticmethod
+    def _create_context(params, args, data):
+        """
         Creates the resource query context - this an object holding the data alongside the querying of the resource.
         This object is always present as a parameter for each method during the query and users are free to create own
-        properties so that they can optimize and perform the query (so the subsequent methods have an access to the already
-        precomputed data).
-        '''
+        properties so that they can optimize and perform the query (so the subsequent methods have an access to the
+        already precomputed data).
+        """
         return ResourceQueryContext(params, args, data)
 
     @transactional
     def create(self, params, args, data):
-        '''
+        """
         POST /resource/model_cls/
         data
 
         Create new resource
-        '''
+        """
         ctx = self._create_context(params, args, data)
         model = self._create_one(ctx)
         self._save_one(model, ctx)
         return self._return_saved_one(model, ctx)
 
-    def read(self, params=[], args={}, data=None):
-        '''
+    def read(self, params=None, args=None, data=None):
+        """
         GET /resource/model_cls/[params:id]?[args:{limit,offset,page,per_page,filter_by,order_by,related,fields}]
 
         Get resource/s
-        '''
+
+        :param params
+        :type params list
+        :param args
+        :type args dict
+        :param data
+        """
+        if params is None:
+            params = []
+        if args is None:
+            args = {}
+
         ctx = self._create_context(params, args, data)
         row_id = ctx.get_row_id()
 
@@ -191,12 +208,12 @@ class ModelResource(SqlSesionMixin):
 
     @transactional
     def update(self, params, args, data):
-        '''
+        """
         PUT /resource/model_cls/[params:id]
         data
 
         Update resource/s
-        '''
+        """
         ctx = self._create_context(params, args, data)
         row_id = ctx.get_row_id()
 
@@ -208,11 +225,11 @@ class ModelResource(SqlSesionMixin):
 
     @transactional
     def delete(self, params, args, data):
-        '''
+        """
         DELETE /resource/model_cls/[params]?[args]
 
         delete resource/s
-        '''
+        """
         ctx = self._create_context(params, args, data)
         row_id = ctx.get_row_id()
 
@@ -223,9 +240,9 @@ class ModelResource(SqlSesionMixin):
 
     # Create implementation
     def _create_one(self, ctx):
-        '''
+        """
         Creates an instance to be saved when a model is created.
-        '''
+        """
         assert isinstance(ctx, ResourceQueryContext)
 
         fields = dict_pick(ctx.data, self._model_columns)
@@ -233,18 +250,19 @@ class ModelResource(SqlSesionMixin):
         return model
 
     def _save_one(self, model, ctx):
-        '''
+        """
         Saves the created instance.
-        '''
+        """
         assert isinstance(ctx, ResourceQueryContext)
 
         self._orm.add(model)
         self._orm.flush()
 
-    def _return_saved_one(self, model, ctx):
-        '''
+    @staticmethod
+    def _return_saved_one(model, ctx):
+        """
         Returns the result of the create operation.
-        '''
+        """
         return model.get_app_model()
 
     # Read one implementation.
@@ -261,7 +279,8 @@ class ModelResource(SqlSesionMixin):
         else:
             return self._read_one(q, ctx).get_app_model()
 
-    def _read_one(self, q, ctx):
+    @staticmethod
+    def _read_one(q, ctx):
         return q.one()
 
     # Read collection implementation.
@@ -306,7 +325,8 @@ class ModelResource(SqlSesionMixin):
         else:
             return app_models(self._read_collection(q, ctx))
 
-    def _read_collection(self, q, ctx):
+    @staticmethod
+    def _read_collection(q, ctx):
         offset = ctx.args.get('offset', 0)
         limit = ctx.args.get('limit', 10)
         if limit is not None and limit != 'unlimited':
@@ -333,18 +353,18 @@ class ModelResource(SqlSesionMixin):
         return model
 
     def _update_one(self, ctx):
-        '''
+        """
         Update row
-        '''
+        """
         assert isinstance(ctx, ResourceQueryContext)
         fields = ctx.data
         row_id = ctx.get_row_id()
         return self._update_one_simple(row_id, fields, ctx)
 
     def _update_collection(self, ctx):
-        '''
+        """
         Bulk update
-        '''
+        """
         assert isinstance(ctx, ResourceQueryContext)
         models = []
 
@@ -355,29 +375,30 @@ class ModelResource(SqlSesionMixin):
 
     # Delete methods
     def _delete_one(self, row_id, ctx):
-        '''
-        Deletes row by the given id -- `row_id`. The method first created the query using the method :meth:`_create_delete_one_query` and then executes it.
+        """
+        Deletes row by the given id -- `row_id`. The method first created the query using the method
+        :meth:`_create_delete_one_query` and then executes it.
 
         :param int row_id: Identifier of the deleted row.
         :param ResourceQueryContext ctx: The context of this delete query.
-        '''
+        """
         return self._create_delete_one_query(row_id, ctx).delete()
 
     def _create_delete_one_query(self, row_id, ctx):
-        '''
+        """
         Delete row by id query creation.
 
         :param int row_id: Identifier of the deleted row.
         :param ResourceQueryContext ctx: The context of this delete query.
-        '''
+        """
 
         assert isinstance(ctx, ResourceQueryContext)
         return self._orm.query(self.model_cls).filter(self._model_pk == row_id)
 
     def _delete_collection(self, ctx):
-        '''
+        """
         Delete a collection from DB, optionally filtered by ``filter_by``
-        '''
+        """
         assert isinstance(ctx, ResourceQueryContext)
 
         filter_by = ctx.get_filter_by()
@@ -390,9 +411,10 @@ class ModelResource(SqlSesionMixin):
 
 
 class CachedModelResource(ModelResource):
-    '''
+    """
     The cached resource - uses redis to cache the resource for the given amount of seconds.
-    '''
+    """
+
     @inject(cache_module=CacheModule, id_helper=IdHelper, logger=logging.Logger)
     def __init__(self, model_cls, cache_module, id_helper, logger, timeout='short'):
         super(CachedModelResource, self).__init__(model_cls)
@@ -455,9 +477,9 @@ class CachedModelResource(ModelResource):
         return result
 
     def invalidate(self):
-        '''
+        """
         Invalidates all the data associated with this model
-        '''
+        """
         key = self._create_key("")
         self._id_helper.invalidate_keys_by_prefix(key)
 
@@ -478,7 +500,6 @@ class CachedModelResource(ModelResource):
 
 
 class ReadOnlyResourceUpdateOperationException(Exception):
-
     def __init__(self, operation):
         self._operation = operation
         super(ReadOnlyResourceUpdateOperationException, self).__init__(
@@ -486,28 +507,35 @@ class ReadOnlyResourceUpdateOperationException(Exception):
 
     def get_operation(self):
         return self._operation
+
     operation = property(get_operation)
 
 
 class ReadOnlyResourceMixin(object):
-    '''
-    The mixin to be used to forbid the update/delete and create operations. 
+    """
+    The mixin to be used to forbid the update/delete and create operations.
     Remember the Python's MRO and place this mixin at the right place in the inheritance declaration.
 
-    .. automethod:: create Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not available. 
-    .. automethod:: update Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not available.
-    .. automethod:: delete Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not available.
-    '''
+    .. automethod:: create Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not
+    available.
+    .. automethod:: update Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not
+    available.
+    .. automethod:: delete Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not
+    available.
+    """
 
     OPERATION_CREATE = 'create'
     OPERATION_UPDATE = 'update'
     OPERATION_DELETE = 'delete'
 
-    def create(self, params, args, data):
+    @staticmethod
+    def create(params, args, data):
         raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_CREATE)
 
-    def update(self, params, args, data):
+    @staticmethod
+    def update(params, args, data):
         raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_UPDATE)
 
-    def delete(self, params, args, data):
+    @staticmethod
+    def delete(params, args, data):
         raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_DELETE)

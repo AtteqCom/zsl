@@ -3,11 +3,13 @@ from zsl.utils.string_helper import underscore_to_camelcase
 from imp import reload
 from zsl.utils.task_helper import instantiate, get_callable
 
+
 class TaskRouter:
     def __init__(self, app):
         self._mappings = {}
         # Support for the settings with only one TASK_PACKAGE defined.
-        self._task_packages = (app.config['TASK_PACKAGE'],) if 'TASK_PACKAGE' in app.config else app.config['TASK_PACKAGES']
+        self._task_packages = (app.config['TASK_PACKAGE'],) if 'TASK_PACKAGE' in app.config else app.config[
+            'TASK_PACKAGES']
         self._app = app
         self._task_reloading = app.config['RELOAD']
         self._debug = app.config['DEBUG']
@@ -36,6 +38,7 @@ class TaskRouter:
     '''
     Returns the task handling the given request path.
     '''
+
     def route(self, path):
         self._app.logger.debug("Routing path '%s'.", path)
 
@@ -49,15 +52,18 @@ class TaskRouter:
             module_name = "{0}.{1}".format(task_package, ".".join(path))
 
             try:
-                self._app.logger.debug("Trying to load module with name '%s' and class name '%s'.", module_name, class_name)
+                self._app.logger.debug("Trying to load module with name '%s' and class name '%s'.", module_name,
+                                       class_name)
                 module = self._load_module(module_name)
                 break
             except ImportError as e:
                 if self._debug:
-                    self._app.logger.exception("Could not load module with name '%s' and class name '%s', '%s'.", module_name, class_name, e)
+                    self._app.logger.exception("Could not load module with name '%s' and class name '%s', '%s'.",
+                                               module_name, class_name, e)
 
         if module is None:
-            raise ImportError("No module named {0} found in [{1}].".format(".".join(path), ",".join(self.get_task_packages())))
+            raise ImportError(
+                "No module named {0} found in [{1}].".format(".".join(path), ",".join(self.get_task_packages())))
 
         if self.is_task_reloading():
             reload(module)
@@ -67,4 +73,4 @@ class TaskRouter:
         task = instantiate(cls)
 
         self._app.logger.debug("Task object {0} created [{1}].".format(class_name, task))
-        return (task, get_callable(task))
+        return task, get_callable(task)

@@ -1,4 +1,4 @@
-from client.python.asl.client import GearmanService, RawTask, JsonTask
+from zsl_client import GearmanService, RawTask, JsonTask
 from zsl.application.service_application import service_application as app
 from functools import wraps
 from zsl.utils.params_helper import required_params

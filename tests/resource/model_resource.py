@@ -1,8 +1,8 @@
-'''
+"""
 Created on May 14, 2014
 
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>
-'''
+"""
 from zsl.unittest import TestCase
 
 from zsl.resource.model_resource import ModelResource

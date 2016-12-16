@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 import os
+
 app = None
+
 
 # Application preparation.
 def get_app(environ):
@@ -16,13 +18,14 @@ def get_app(environ):
         os.environ['ASL_IMPORT_SCRIPT'] = environ['ASL_IMPORT_SCRIPT']
     if 'ASL_IMPORT_SCRIPT' in os.environ:
         execfile(os.environ['ASL_IMPORT_SCRIPT'])
-    
+
     execfile(os.path.dirname(__file__) + '/importer.py')
 
     from zsl.interface.importer import initialize_web_application
     initialize_web_application()
     from zsl.application.service_application import service_application
     return service_application
+
 
 # For WSGI.
 def application(environ, start_response):

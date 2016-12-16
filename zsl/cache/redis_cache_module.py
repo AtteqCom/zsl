@@ -1,22 +1,22 @@
-'''
+"""
 :mod:`asl.cache.redis_cache_module`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 from zsl.cache.cache_module import CacheModule
 import redis
 from zsl.application.service_application import service_application
 
 
 class RedisCacheModule(CacheModule):
-    '''
+    """
     Abstraction layer for caching.
-    '''
+    """
 
     def __init__(self):
-        '''
+        """
         Abstraction layer for caching.
-        '''
+        """
         self._app = service_application
         redis_conf = self._app.config['REDIS']
         self._client = redis.StrictRedis(

@@ -1,6 +1,7 @@
 import tempfile
 import os
 
+
 def integrate_to_file(what, filename, start_line, end_line):
     """
     WARNING this is working every second run.. so serious bug
@@ -16,7 +17,7 @@ def integrate_to_file(what, filename, start_line, end_line):
     tmp_file = tempfile.NamedTemporaryFile(delete=False)
 
     lines.reverse()
-    
+
     # first copy before start line
     while lines:
         line = lines.pop()
@@ -25,19 +26,19 @@ def integrate_to_file(what, filename, start_line, end_line):
             break
 
         tmp_file.write(line)
-    
+
     # insert content
     tmp_file.write(start_line)
     tmp_file.write(what)
     tmp_file.write(end_line)
-    
+
     # skip until end line
     while lines:
         line = lines.pop()
 
         if line == end_line:
             break
-    
+
     # copy rest
     tmp_file.writelines(lines)
     tmp_file.close()

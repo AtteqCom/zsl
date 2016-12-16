@@ -1,10 +1,11 @@
-'''
+"""
 :mod:`asl.db.model.app_model_json_encoder`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 from json.encoder import JSONEncoder
 from zsl.db.model import AppModel
+
 
 class AppModelJSONEncoder(JSONEncoder):
     def default(self, o):

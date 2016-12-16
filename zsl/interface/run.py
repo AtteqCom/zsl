@@ -1,10 +1,12 @@
 #!/usr/bin/python
 
-'''
+from __future__ import print_function
+
+"""
 :mod:`zsl.interface.run`
 
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
-'''
+"""
 
 # Initialize the path
 import sys
@@ -32,12 +34,12 @@ class Job(object):
 
 
 def run_task(task, data=None):
-    '''
+    """
     .. autofunction:: run_task
     Runs the given task
 
-    ..param: 
-    '''
+    ..param:
+    """
     if not isinstance(data, str) and not isinstance(data, unicode):
         data = json.dumps(data)
     # Open the data from file, if necessary.
@@ -84,7 +86,8 @@ def main():
         run_webapp()
 
     else:
-        print >> sys.stderr, "Usage: run_webappy.py <command>. You provided no or invalid command - choose one from 'shell', 'task' or 'web'."
+        print("Usage: run_webappy.py <command>. You provided no or invalid command - choose one from 'shell', 'task' "
+              "or 'web'.", file=sys.stderr)
 
 
 # Run it!

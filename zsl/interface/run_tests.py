@@ -1,8 +1,8 @@
-'''
+"""
 :mod:`asl.interface.run_tests`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 
 from importer import initialize_cli_application
 from zsl.interface.importer import InitializationContext

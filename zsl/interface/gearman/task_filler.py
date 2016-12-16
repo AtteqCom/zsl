@@ -1,8 +1,8 @@
-'''
+"""
 :mod:`asl.interface.gearman.task_filler`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 
 # Initialize app
 import importer

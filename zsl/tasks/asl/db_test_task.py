@@ -1,16 +1,17 @@
-'''
+"""
 Created on 24.12.2012
 
 @author: Martin Babka
-'''
+"""
 
 from injector import inject
 import sqlalchemy.engine
 from zsl.application.service_application import AtteqServiceFlask
-from flask import Response 
+from flask import Response
+
 
 class DbTestTask(object):
-    '''
+    """
     Connects to a database and executes a simple query. The result of the query should be 6.
 
     <emph>Input</emph>
@@ -20,7 +21,7 @@ class DbTestTask(object):
     Returns just a number 6.
 
     @author: Martin Babka
-    '''
+    """
 
     @inject(db=sqlalchemy.engine.Engine, app=AtteqServiceFlask)
     def __init__(self, db, app):
@@ -30,4 +31,3 @@ class DbTestTask(object):
 
     def perform(self, data):
         return Response("{0}".format(self._db.execute("select 1 * 2 * 3").scalar()), mimetype='text/plain')
-    

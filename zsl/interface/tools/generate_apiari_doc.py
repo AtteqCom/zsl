@@ -1,11 +1,11 @@
-'''
+"""
 Generates the API documentation suitable for the apiari.io. It parses all the files and finds the apiari.io definitions
 in the documentary comments. Then outputs it to a file.
 
 :mod:`asl.interface.tools.generate_apiari_doc`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 
 import importer
 importer.append_asl_path_to_pythonpath()
@@ -31,7 +31,8 @@ class ApiariDoc(object, pydoc.Doc):
         self._docs = []
         self._done = set()
 
-    def _get_obj_id(self, obj):
+    @staticmethod
+    def _get_obj_id(obj):
         if hasattr(obj, '__path__'):
             return obj.__path__[0]
         if hasattr(obj, '__file__'):

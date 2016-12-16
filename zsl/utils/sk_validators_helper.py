@@ -2,9 +2,11 @@
 
 import wtforms.validators
 from time import strptime
-#from symbol import except_clause
 
-class validators:
+
+# from symbol import except_clause
+
+class Validators(object):
     class Optional(wtforms.validators.Optional):
         def __init__(self, strip_whitespace=True):
             wtforms.validators.Optional.__init__(self, strip_whitespace)
@@ -14,14 +16,17 @@ class validators:
             wtforms.validators.Required.__init__(self, message)
 
     class URL(wtforms.validators.URL):
-        def __init__(self, require_tld=True, message=u'Neplatná URL adresa. URL adresa musí začínať s "http://". Napríklad "http://www.zoznam.sk"'):
+        def __init__(self, require_tld=True,
+                     message=u'Neplatná URL adresa. URL adresa musí začínať s "http://". Napríklad'
+                             u'"http://www.zoznam.sk"'):
             wtforms.validators.URL.__init__(self, require_tld, message)
 
     class Date(object):
-        '''
+        """
         validator - skontroluje, ci dany string je datum v zadanom formate a ci je dany datum platny
-        '''
-        def __init__(self, format, message=u'Nesprávny formát dátumu alebo neplatný dátum.', stop_after_fail = False):
+        """
+
+        def __init__(self, format, message=u'Nesprávny formát dátumu alebo neplatný dátum.', stop_after_fail=False):
             self.format = format
             self.message = message
             self.stop_after_fail = stop_after_fail
@@ -46,7 +51,7 @@ class validators:
                 if max > -1:
                     msg += u'Maximálny počet znakov textu: %(max)d.'
 
-            wtforms.validators.Length.__init__(self,min,max,msg)
+            wtforms.validators.Length.__init__(self, min, max, msg)
 
     class Regexp(wtforms.validators.Regexp):
         def __init__(self, regex, flags=0, message=u'Nesprávny formát dát.'):

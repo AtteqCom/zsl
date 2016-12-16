@@ -3,9 +3,9 @@ from zsl.application.service_application import service_application
 
 
 class UnitTestInitializer(object):
-    '''
+    """
     Initializer handling the unit test settings.
-    '''
+    """
 
     def initialize(self, binder):
 
@@ -19,7 +19,8 @@ class UnitTestInitializer(object):
             service_application.config['DATABASE_ENGINE_PROPS'] = service_application.config[
                 'TEST_DATABASE_ENGINE_PROPS']
 
-    def is_unit_testing(self):
+    @staticmethod
+    def is_unit_testing():
         return service_application.get_initialization_context().unit_testing
 
 

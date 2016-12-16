@@ -15,7 +15,8 @@ import hashlib
 parser = argparse.ArgumentParser(description="Export python models to Backbone.js")
 parser.add_argument("module", help="module from which models are imported")
 parser.add_argument(
-    "models", metavar="model", help="model name, can be a tuple WineCountry/WineCountries as singular/plural", nargs="+")
+    "models", metavar="model", help="model name, can be a tuple WineCountry/WineCountries as singular/plural", nargs="+"
+)
 parser.add_argument("-mp", "--model-prefix", help="namespace prefix for models (Feminity.models.)")
 parser.add_argument("-cp", "--collection-prefix", help="namespace prefix for collection (Feminity.collections.)")
 parser.add_argument("-m", "--model-fn", help="name of model constructor (Atteq.bb.Model)")
