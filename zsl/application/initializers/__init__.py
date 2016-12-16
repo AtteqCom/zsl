@@ -8,15 +8,6 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
 
-from .logger_initializer import LoggerInitializer
-from .unittest_initializer import UnitTestInitializer
-from .library_initializer import LibraryInitializer
-from .database_initializer import DatabaseInitializer
-from .application_initializer import ApplicationInitializer
-from .service_initializer import ServiceInitializer
-from .cache_initializer import CacheInitializer
-from .context_initializer import ContextInitializer
-
 injection_views = []
 injection_modules = []
 
@@ -40,3 +31,13 @@ def injection_module(f):
     """
     injection_modules.append(f)
     return f
+
+
+from .logger_initializer import LoggerInitializer
+from .unittest_initializer import UnitTestInitializer
+from .library_initializer import LibraryInitializer
+from .database_initializer import DatabaseInitializer
+from .application_initializer import ApplicationInitializer
+from .service_initializer import ServiceInitializer
+from .cache_initializer import CacheInitializer
+from .context_initializer import ContextInitializer
