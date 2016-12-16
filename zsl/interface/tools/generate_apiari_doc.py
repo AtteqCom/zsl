@@ -6,8 +6,10 @@ in the documentary comments. Then outputs it to a file.
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
-import importer
+from . import importer
 importer.append_asl_path_to_pythonpath()
 from zsl.interface.importer import initialize_cli_application, InitializationContext
 initialize_cli_application(InitializationContext(unit_test=False))
@@ -122,4 +124,4 @@ if __name__ == "__main__":
     for m in TaskRouter(service_application).get_task_packages() + get_method_packages():
         m = importlib.import_module(m)
         d.docmodule(m)
-    print d.get_doc()
+    print(d.get_doc())

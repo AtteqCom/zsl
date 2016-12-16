@@ -4,6 +4,7 @@ Helper functions for working with XML and ElementTree
 
 import xml.etree.cElementTree as ET
 import urllib2
+from functools import reduce
 
 
 class NotValidXmlException(Exception):

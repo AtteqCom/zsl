@@ -16,7 +16,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 # Initialize
-from importer import initialize_web_application
+from zsl.interface.importer import initialize_web_application
 
 initialize_web_application()
 

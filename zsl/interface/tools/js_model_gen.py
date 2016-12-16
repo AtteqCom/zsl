@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import importer
+from __future__ import print_function
+
+from zsl.interface.tools import importer
 importer.append_asl_path_to_pythonpath()
 from zsl.interface.importer import initialize_cli_application, InitializationContext
 initialize_cli_application(InitializationContext(unit_test=False))
@@ -56,4 +58,4 @@ if __name__ == "__main__":
         integrate_to_file("\n".join(models), args.file, start, end)
 
     else:
-        print "\n".join(models)
+        print("\n".join(models))

@@ -29,4 +29,4 @@ def get_callable(task):
     return getattr(task, TASK_PERFORM_METHOD)
 
 
-from injection_helper import instantiate
+from zsl.utils.injection_helper import instantiate

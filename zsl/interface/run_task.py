@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os
 # TODO: Consider removing automatic path initialization!
@@ -10,4 +11,4 @@ from zsl.interface.run import run_task
 
 # Run it!
 if __name__ == "__main__":
-    print run_task(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
+    print(run_task(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None))

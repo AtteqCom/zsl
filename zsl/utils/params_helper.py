@@ -5,6 +5,7 @@ Helpers for parameter handling
 """
 
 import inspect
+from functools import reduce
 
 
 class RequestException(Exception):

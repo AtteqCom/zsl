@@ -4,8 +4,7 @@
 .. moduleauthor:: Martin Babka
 """
 
-from importer import initialize_cli_application
-from zsl.interface.importer import InitializationContext
+from zsl.interface.importer import InitializationContext, initialize_cli_application
 initialize_cli_application(InitializationContext(unit_test=False))
 
 from zsl.router.method import identity_responder, set_default_responder
