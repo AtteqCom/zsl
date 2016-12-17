@@ -6,7 +6,6 @@
 """
 from __future__ import unicode_literals
 from builtins import str
-from past.builtins import basestring
 
 import json
 
@@ -393,11 +392,11 @@ class CrossdomainWebTaskResponder(Responder):
             methods = ', '.join(sorted(x.upper() for x in methods))
         self.methods = methods
 
-        if headers is not None and not isinstance(headers, basestring):
+        if headers is not None and not isinstance(headers, (str, bytes)):
             headers = ', '.join(x.upper() for x in headers)
         self.headers = headers
 
-        if not isinstance(origin, basestring):
+        if not isinstance(origin, (str, bytes)):
             origin = ', '.join(origin)
         self.origin = origin
 
