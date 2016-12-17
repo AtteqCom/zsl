@@ -99,10 +99,10 @@ class AppModel(object):
                 d[k] = d[k].get_attributes()
 
             elif isinstance(d[k], list):
-                d[k] = map(convert, d[k])
+                d[k] = list(map(convert, d[k]))
 
             elif isinstance(d[k], tuple):
-                d[k] = map(convert, d[k])
+                d[k] = list(map(convert, d[k]))
                 d[k] = tuple(d[k])
 
             elif isinstance(d[k], dict):

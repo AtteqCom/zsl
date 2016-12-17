@@ -42,7 +42,7 @@ def run_task(task, data=None):
 
     ..param:
     """
-    if not isinstance(data, str) and not isinstance(data, unicode):
+    if not isinstance(data, (str, bytes)):
         data = json.dumps(data)
     # Open the data from file, if necessary.
     elif data is not None and data.startswith("file://"):

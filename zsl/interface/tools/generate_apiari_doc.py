@@ -87,7 +87,7 @@ class ApiariDoc(object, pydoc.Doc):
             wl = white_space_at_beginning(l)
             if m > wl:
                 m = wl
-        apistr = map(lambda x: x[m:], apistr)
+        apistr = [x[m:] for x in apistr]
 
         self._docs.append("\n".join(apistr))
 

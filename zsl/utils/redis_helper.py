@@ -4,7 +4,7 @@ Modul na ulahcenie prace s redisom
 .. moduleauthor::  Peter Morihladko
 """
 from __future__ import unicode_literals
-
+from future.utils import iteritems
 from builtins import object
 from functools import partial
 from zsl.utils.injection_helper import inject
@@ -12,7 +12,7 @@ from flask.config import Config
 
 
 def redis_key(*args):
-    return ':'.join(map(str, filter(lambda a: a is not None, args)))
+    return ':'.join(str(a) for a in args if a is not None)
 
 
 class Keymaker(object):
@@ -27,5 +27,5 @@ class Keymaker(object):
     def __init__(self, keys, prefix=None, config=None):
         project_specific_prefix = config.get('REDIS', {}).get('prefix')
 
-        for method, key in keys.items():
+        for method, key in iteritems(keys):
             setattr(self, method, partial(redis_key, project_specific_prefix, prefix, key))

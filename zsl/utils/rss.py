@@ -4,6 +4,7 @@
 .. moduleauthor:: Peter Morihladko
 """
 from __future__ import unicode_literals
+from future.utils import iteritems
 
 import xml.etree.cElementTree as ET
 
@@ -14,7 +15,7 @@ def complex_el_from_dict(parent, data, key):
 
     if isinstance(value, dict):
         if '_attr' in value:
-            for a_name, a_value in value['_attr'].items():
+            for a_name, a_value in iteritems(value['_attr']):
                 el.set(a_name, a_value)
 
         if '_text' in value:
@@ -57,7 +58,7 @@ def rss_create(channel, articles):
         element_from_dict(item, article, 'description')
         element_from_dict(item, article, 'link')
 
-        for key in article.keys():
+        for key in article:
             complex_el_from_dict(item, article, key)
 
     return ET.ElementTree(rss)

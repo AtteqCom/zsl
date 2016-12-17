@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from builtins import zip
 from builtins import object
 from sqlalchemy import desc, asc
 from string import split
@@ -75,7 +76,7 @@ class Sorter(object):
     def apply_sorter(self, q, cls):
         if self.is_enabled():
             sorter_settings = []
-            for (field, order) in zip(self.get_fields(), self.get_orders()):
+            for field, order in zip(self.get_fields(), self.get_orders()):
                 if field in self._mappings:
                     (cls, mapped_field) = self._mappings[field]
                     attr = getattr(cls, mapped_field)

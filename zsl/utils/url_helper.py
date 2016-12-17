@@ -10,14 +10,14 @@ import re
 import urllib
 
 
-def slugify(value, unicode=False):
+def slugify(value, allow_unicode=False):
     """
     Normalizes string, converts to lowercase, removes non-alpha characters,
     and converts spaces to hyphens.
     """
     value = str(value)
 
-    if unicode:
+    if allow_unicode:
         value = unicodedata.normalize('NFKC', value)
         value = re.sub(r'[^\w\s-]', '', value, flags=re.U).strip().lower()
         return re.sub(r'[-\s]+', '-', value, flags=re.U)

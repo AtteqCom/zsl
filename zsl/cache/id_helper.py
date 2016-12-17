@@ -50,7 +50,7 @@ def model_key_generator(model):
         """
         d = app_model.__dict__
         related = set()
-        for key in d.keys():
+        for key in d:
             v = d[key]
             if isinstance(v, AppModel):
                 related.add(prefix + key + '=' + create_key_object_prefix(v))
