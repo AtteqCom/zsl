@@ -73,8 +73,8 @@ class TestCommandDispatcher(unittest.TestCase):
                           sum([2, 4, 6]),
                           "Command doesn't support kwarg parameters")
 
-        self.assertRaises(KeyError,
-                          dispatcher.execute_command('error_command'))
+        with self.assertRaises(KeyError):
+            dispatcher.execute_command('error_command')
 
     def test_bound(self):
         dispatcher = self.dispatcher
