@@ -4,11 +4,12 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
+# noinspection PyCompatibility
 from builtins import str
 from builtins import int
 from builtins import map
 from builtins import object
-from future.utils import iteritems
+from future.utils import viewitems
 
 from datetime import datetime, date
 from zsl.utils.date_helper import format_date_portable, format_datetime_portable
@@ -54,7 +55,7 @@ class AppModel(object):
         self._id_name = id_name
 
     def set_from_raw_data(self, raw):
-        for k, v in iteritems(raw):
+        for k, v in viewitems(raw):
             if isinstance(v, (type(None), str, int, float, bool)):
                 if k in self._hints[DATE_DATA] and v is not None:
                     d = datetime.strptime(v, self._hints[DATE_DATA][k]).date()
@@ -106,7 +107,7 @@ class AppModel(object):
                 d[k] = tuple(d[k])
 
             elif isinstance(d[k], dict):
-                for key, value in iteritems(getattr(self, k)):
+                for key, value in viewitems(getattr(self, k)):
                     d[k][key] = convert(value)
 
         return d

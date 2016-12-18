@@ -4,7 +4,7 @@
 .. moduleauthor:: Peter Morihladko
 """
 from __future__ import unicode_literals
-from future.utils import iteritems
+from future.utils import viewitems
 
 from sqlalchemy.orm import class_mapper, joinedload
 from sqlalchemy import desc, asc
@@ -31,7 +31,7 @@ def filter_from_url_arg(model_cls, query, arg):
 
         operator = None
         method = None
-        for op, m in iteritems(operator_to_method):
+        for op, m in viewitems(operator_to_method):
             if op in expr:
                 operator = op
                 method = m
@@ -121,7 +121,7 @@ def create_related_tree(fields):
     while len(q) > 0:
         node = q.pop()
 
-        for k, v in iteritems(node):
+        for k, v in viewitems(node):
             if len(v) > 0:
                 q.append(v)
             else:

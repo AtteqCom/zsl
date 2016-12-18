@@ -2,7 +2,7 @@
 Helper functions for working with XML and ElementTree
 """
 from __future__ import unicode_literals
-from future.utils import iteritems
+from future.utils import viewitems
 
 import xml.etree.cElementTree as ET
 import requests
@@ -58,7 +58,7 @@ def attrib_to_dict(element, *args, **kwargs):
         return {key: element.get(key) for key in args}
 
     if len(kwargs) > 0:
-        return {new_key: element.get(old_key) for new_key, old_key in iteritems(kwargs)}
+        return {new_key: element.get(old_key) for new_key, old_key in viewitems(kwargs)}
 
     return element.attrib
 

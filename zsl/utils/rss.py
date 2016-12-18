@@ -4,7 +4,7 @@
 .. moduleauthor:: Peter Morihladko
 """
 from __future__ import unicode_literals
-from future.utils import iteritems
+from future.utils import viewitems
 
 import xml.etree.cElementTree as ET
 
@@ -15,7 +15,7 @@ def complex_el_from_dict(parent, data, key):
 
     if isinstance(value, dict):
         if '_attr' in value:
-            for a_name, a_value in iteritems(value['_attr']):
+            for a_name, a_value in viewitems(value['_attr']):
                 el.set(a_name, a_value)
 
         if '_text' in value:

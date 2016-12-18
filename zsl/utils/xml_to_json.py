@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from future.utils import iteritems
+from future.utils import viewitems
 
 
 class XmlToJsonException(Exception):
@@ -50,7 +50,7 @@ def xml_to_json(element, definition, required=False):
 def _parse_dict(element, definition):
     sub_dict = {}
 
-    for name, subdef in iteritems(definition):
+    for name, subdef in viewitems(definition):
         (name, required) = _parse_name(name)
 
         sub_dict[name] = xml_to_json(element, subdef, required)

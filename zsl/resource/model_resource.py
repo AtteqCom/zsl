@@ -13,7 +13,7 @@ The basic way to use them is as follows:
 """
 from __future__ import unicode_literals
 from builtins import object
-from future.utils import iteritems
+from future.utils import viewitems
 from builtins import int
 
 from sqlalchemy.orm import class_mapper
@@ -36,7 +36,7 @@ def dict_pick(dictionary, allowed_keys):
     """
     Return a dictionary only with keys found in `allowed_keys`
     """
-    return {key: value for key, value in iteritems(dictionary) if key in allowed_keys}
+    return {key: value for key, value in viewitems(dictionary) if key in allowed_keys}
 
 
 def page_to_offset(params):
@@ -351,7 +351,7 @@ class ModelResource(SqlSesionMixin):
         if model is None:
             return None
 
-        for name, value in iteritems(fields.items):
+        for name, value in viewitems(fields.items):
             setattr(model, name, value)
 
         return model

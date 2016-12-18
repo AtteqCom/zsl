@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from builtins import object
-from future.utils import iteritems
+from future.utils import viewitems
 from sqlalchemy.sql import func
 
 
@@ -117,7 +117,7 @@ class QueryFilter(object):
         hints = self._query_filter[FILTER_HINT]
         values = self._query_filter[FILTER_VALUES]
 
-        for k, v in iteritems(values):
+        for k, v in viewitems(values):
             if v is None and not self._allow_null:
                 continue
 
