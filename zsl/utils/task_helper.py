@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.task_helper`
+:mod:`zsl.utils.task_helper`
 
 .. moduleauthor:: Martin Babka
 """

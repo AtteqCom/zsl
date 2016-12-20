@@ -1,5 +1,5 @@
 """
-:mod:`asl.task.task_data`
+:mod:`zsl.task.task_data`
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """

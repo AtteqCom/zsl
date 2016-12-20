@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.file_helper`
+:mod:`zsl.utils.file_helper`
 
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>, Martin Babka <babka@atteq.com>
 """

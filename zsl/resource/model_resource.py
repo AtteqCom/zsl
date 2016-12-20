@@ -1,5 +1,5 @@
 """
-:mod:`asl.resource.model_resource` -- REST for a DB model.
+:mod:`zsl.resource.model_resource` -- REST for a DB model.
 ==========================================================
 
 Resources provide a way how to directly access DB tables (raw models) and perform CRUD operations upon them.

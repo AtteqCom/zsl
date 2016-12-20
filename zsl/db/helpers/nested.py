@@ -1,5 +1,5 @@
 """
-:mod:`asl.db.helpers.nested`
+:mod:`zsl.db.helpers.nested`
 
 TODO presun do asl.db.helpers
 

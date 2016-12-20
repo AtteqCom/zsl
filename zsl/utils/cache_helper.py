@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.cache_helper`
+:mod:`zsl.utils.cache_helper`
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """

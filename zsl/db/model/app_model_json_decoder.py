@@ -1,5 +1,5 @@
 """
-:mod:`asl.db.model.app_model_json_decoder`
+:mod:`zsl.db.model.app_model_json_decoder`
 
 .. moduleauthor:: Martin Babka
 """

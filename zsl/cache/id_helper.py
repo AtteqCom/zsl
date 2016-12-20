@@ -1,5 +1,5 @@
 """
-:mod:`asl.cache.id_helper`
+:mod:`zsl.cache.id_helper`
 
 .. moduleauthor:: Martin Babka
 """

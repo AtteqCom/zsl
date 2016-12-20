@@ -1,5 +1,5 @@
 """
-:mod:`asl.interface.gearman.task_filler`
+:mod:`zsl.interface.gearman.task_filler`
 
 .. moduleauthor:: Martin Babka
 """

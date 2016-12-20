@@ -1,5 +1,5 @@
 """
-:mod:`asl.application.initializers` -- ASL initializers
+:mod:`zsl.application.initializers` -- zsl initializers
 =======================================================
 
    :platform: Unix, Windows

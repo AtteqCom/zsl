@@ -1,5 +1,5 @@
 """
-:mod:`asl.interface.gearman.worker`
+:mod:`zsl.interface.gearman.worker`
 
 .. moduleauthor:: Martin
 """

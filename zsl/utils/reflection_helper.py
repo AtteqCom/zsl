@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.reflection_helper`
+:mod:`zsl.utils.reflection_helper`
 
 .. moduleauthor:: Martin Babka
 """

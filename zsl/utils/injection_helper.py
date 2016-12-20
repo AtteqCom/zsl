@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.injection_helper`
+:mod:`zsl.utils.injection_helper`
 
 .. moduleauthor:: Martin Babka
 """

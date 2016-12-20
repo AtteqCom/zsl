@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.request_helper`
+:mod:`zsl.utils.request_helper`
 
 .. moduleauthor:: Martin Babka
 """

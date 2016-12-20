@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.string_helper`
+:mod:`zsl.utils.string_helper`
 
 .. moduleauthor:: Martin Babka
 """

@@ -1,5 +1,5 @@
 """
-:mod:`asl.interface.webservice.performers.method`
+:mod:`zsl.interface.webservice.performers.method`
 
 .. moduleauthor:: Martin Babka
 """

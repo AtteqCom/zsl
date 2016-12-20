@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.type_helper`
+:mod:`zsl.utils.type_helper`
 
 .. moduleauthor:: peter
 """

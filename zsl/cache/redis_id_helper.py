@@ -1,5 +1,5 @@
 """
-:mod:`asl.cache.redis_id_helper`
+:mod:`zsl.cache.redis_id_helper`
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """

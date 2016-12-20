@@ -1,5 +1,5 @@
 """
-:mod:`asl.interface.webservice.utils.response_headers`
+:mod:`zsl.interface.webservice.utils.response_headers`
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """

@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.deploy.js_model_generator`
+:mod:`zsl.utils.deploy.js_model_generator`
 
 .. moduleauthor:: Peter Morihladko
 """

@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.rss`
+:mod:`zsl.utils.rss`
 
 .. moduleauthor:: Peter Morihladko
 """

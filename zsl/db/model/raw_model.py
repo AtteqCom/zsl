@@ -1,5 +1,5 @@
 """
-:mod:`asl.db.model.raw_model`
+:mod:`zsl.db.model.raw_model`
 
 .. moduleauthor:: Martin Babka
 """

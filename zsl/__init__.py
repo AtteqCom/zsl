@@ -1,5 +1,5 @@
 """
-:mod:`asl` -- ASL module
+:mod:`zsl` -- zsl module
 ========================
 
 Main service module.

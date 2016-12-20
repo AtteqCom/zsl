@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.php_helper`
+:mod:`zsl.utils.php_helper`
 
 .. moduleauthor:: Peter Morihladko
 

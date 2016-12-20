@@ -1,5 +1,5 @@
 """
-:mod:`asl.utils.url_helper`
+:mod:`zsl.utils.url_helper`
 
 .. moduleauthor:: Peter Morihladko
 """
