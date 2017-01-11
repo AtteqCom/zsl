@@ -1,7 +1,7 @@
 DEFAULT_PAGE_RECORD_COUNT = 25
 
-class Pagination(object):
 
+class Pagination(object):
     def __init__(self, pagination):
         if 'offset' in pagination:
             self._offset = int(pagination['offset'])

@@ -10,9 +10,9 @@ from zsl.application.initializers import injection_module
 app = service_application
 
 
-class LoggerInitializer:
-
-    def _create_handler(self, handler_settings):
+class LoggerInitializer(object):
+    @staticmethod
+    def _create_handler(handler_settings):
         parameters = handler_settings['parameters'] if 'parameters' in handler_settings else {}
         handler_type = handler_settings['type']
 
@@ -36,7 +36,8 @@ class LoggerInitializer:
         handler.setFormatter(Formatter('[%(asctime)s %(name)s %(filename)s:%(levelname)s] %(message)s'))
         return handler
 
-    def _check_deprecated_config_properties(self, config):
+    @staticmethod
+    def _check_deprecated_config_properties(config):
         deprecated_properties = ['LOG_HANDLER', 'LOG_LEVEL', 'SYSLOG_PARAMS', 'DATABASE_LOG_LEVEL']
         log = logging.getLogger(app.logger_name)
 
@@ -52,14 +53,14 @@ class LoggerInitializer:
             scope=singleton
         )
 
-        def getChild(self, suffix):
+        def get_child(self, suffix):
             name = self.name + "." + suffix
             logger_child = logging.getLogger(name)
-            logger_child.getChild = getChild
+            logger_child.getChild = get_child
             return logger_child
 
         if app.config.get('IS_USING_MEDIEVAL_SOFTWARE', False):
-            logging.Logger.getChild = getChild
+            logging.Logger.getChild = get_child
 
         errors = []
 

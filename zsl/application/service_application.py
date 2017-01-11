@@ -6,9 +6,9 @@ from flask_injector import FlaskInjector
 
 
 class AtteqServiceFlask(Flask):
-    '''
+    """
     Atteq Service Flask application.
-    '''
+    """
 
     VERSION = '1.1.4'
 
@@ -21,7 +21,7 @@ class AtteqServiceFlask(Flask):
         self._dependencies_initialized = False
         self.config.from_object('settings.default_settings')
         asl_settings = os.environ.get('ASL_SETTINGS')
-        if not asl_settings is None:
+        if asl_settings is not None:
             self.config.from_envvar('ASL_SETTINGS')
 
     def initialize_dependencies(self, initialization_context):

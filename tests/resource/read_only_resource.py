@@ -1,8 +1,8 @@
-'''
+"""
 Created on May 14, 2014
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
-'''
+"""
 from zsl.unittest import TestCase
 
 from sqlalchemy.ext.declarative import declarative_base

@@ -1,8 +1,8 @@
-'''
+"""
 :mod:`asl.interface.tools.importer`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 
 import sys
 import os

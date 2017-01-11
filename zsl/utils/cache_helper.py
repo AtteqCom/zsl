@@ -1,8 +1,8 @@
-'''
+"""
 :mod:`asl.utils.cache_helper`
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
-'''
+"""
 from zsl.application.service_application import service_application
 from zsl.utils.injection_helper import inject
 from zsl.cache.id_helper import IdHelper, model_key_generator, create_key_object_prefix,\
@@ -27,7 +27,8 @@ class CacheDecorator:
 
         return self.get_wrapped_fn()
 
-    def is_caching(self, *args):
+    @staticmethod
+    def is_caching(*args):
         jc = JobContext.get_current_context()
         if 'cache' not in jc.job.data:
             cs = True  # TODO: Default
@@ -46,10 +47,12 @@ class CacheDecorator:
         key = create_key_for_data(prefix, args[1], self._key_params)
         return key
 
-    def get_decoder(self):
+    @staticmethod
+    def get_decoder():
         return app_model_decoder_fn
 
-    def get_encoder(self):
+    @staticmethod
+    def get_encoder():
         return app_model_encoder_fn
 
 
@@ -116,9 +119,9 @@ class CacheModelDecorator(CacheDecorator):
 
 
 def cache_model(key_params, timeout='default'):
-    '''
+    """
     Caching decorator for app models in task.perform
-    '''
+    """
     def decorator_fn(fn):
         return CacheModelDecorator().decorate(key_params, timeout, fn)
 
@@ -148,9 +151,9 @@ class CachePageDecorator(CacheDecorator):
 
 
 def cache_page(key_params, timeout='default'):
-    '''
+    """
     Cache a page (slice) of a list of AppModels
-    '''
+    """
     def decorator_fn(fn):
         d = CachePageDecorator()
         return d.decorate(key_params, timeout, fn)
@@ -170,9 +173,9 @@ def cache_filtered_page(filter_param='filter', pagination_param='pagination', so
 
 
 def create_key_for_data(prefix, data, key_params):
-    '''
-    From ``data`` params in task create corresponding key with help of ``key_params`` (defined in decorator) 
-    '''
+    """
+    From ``data`` params in task create corresponding key with help of ``key_params`` (defined in decorator)
+    """
     d = data.get_data()
     values = []
     for k in key_params:

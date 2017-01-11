@@ -1,8 +1,8 @@
-'''
+"""
 :mod:`asl.cache.id_helper`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 import abc
 from zsl.db.model.app_model_json_decoder import get_json_decoder
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
@@ -41,11 +41,11 @@ def create_key_object_prefix(obj):
 def model_key_generator(model):
     # TODO: Test
     def get_app_model_related_fields(app_model, prefix=''):
-        '''
+        """
         Fetches the list of related fields of the model.
          - checks for the AppModel instances.
          - checks in the lists and tuples.
-        '''
+        """
         d = app_model.__dict__
         related = set()
         for key in d.keys():

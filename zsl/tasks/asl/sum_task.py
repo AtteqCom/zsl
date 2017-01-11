@@ -1,15 +1,15 @@
-'''
+"""
 Created on 22.12.2012
 
 @author: Martin Babka
-'''
+"""
 
 from zsl.task.task_decorator import json_input, json_output
 from zsl.application.service_application import AtteqServiceFlask
 from injector import inject
 
-class SumTask(object):
 
+class SumTask(object):
     @inject(app=AtteqServiceFlask)
     def __init__(self, app):
         self._app = app

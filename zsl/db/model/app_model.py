@@ -1,8 +1,8 @@
-'''
+"""
 :mod:`asl.db.model.app_model`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 
 from datetime import datetime, date
 from zsl.utils.date_helper import format_date_portable, format_datetime_portable
@@ -15,32 +15,33 @@ RELATED_FIELDS_HINTS = 'hints'
 
 
 class AppModel:
-    '''
+    """
     ``AppModel``s are used as a thin and simple communication objects. Also they can be saved into cache.
-    '''
+    """
 
     _not_serialized_attributes = ['_not_serialized_attributes', '_hints', '_id_name']
 
     def __init__(self, raw, id_name='id', hints=None):
-        '''
+        """
         The application model model constructor.
 
         @param raw: Dictionary of properties of the raw data.
         @param id_name: Name of the identifier property.
         @param hints: Tells which of the raw attributes are date or datetime string and what is theirs format
                       Example: {DATE_DATA: {'birthday': '%d.%m.%Y'}, DATETIME_DATA: {'created': '%Y-%m-%d %H:%M:%S'}}
-                      this attributes are then saved in the standard zsl service date/datetime format (consult zsl.utils.date_helper)
-        '''
+                      this attributes are then saved in the standard zsl service date/datetime format (consult
+                      zsl.utils.date_helper)
+        """
 
-        if hints == None:
+        if hints is None:
             self._hints = {DATE_DATA: {}, DATETIME_DATA: {}, RELATED_FIELDS: {}}
         else:
             self._hints = hints
-            if not DATE_DATA in self._hints:
+            if DATE_DATA not in self._hints:
                 self._hints[DATE_DATA] = {}
-            if not DATETIME_DATA in self._hints:
+            if DATETIME_DATA not in self._hints:
                 self._hints[DATETIME_DATA] = {}
-            if not RELATED_FIELDS in self._hints:
+            if RELATED_FIELDS not in self._hints:
                 self._hints[RELATED_FIELDS] = {}
 
         self.set_from_raw_data(raw)
@@ -49,10 +50,10 @@ class AppModel:
     def set_from_raw_data(self, raw):
         for (k, v) in raw.items():
             if isinstance(v, (type(None), str, int, long, float, bool, unicode)):
-                if k in self._hints[DATE_DATA] and v != None:
+                if k in self._hints[DATE_DATA] and v is not None:
                     d = datetime.strptime(v, self._hints[DATE_DATA][k]).date()
                     setattr(self, k, format_date_portable(d))
-                elif k in self._hints[DATETIME_DATA] and v != None:
+                elif k in self._hints[DATETIME_DATA] and v is not None:
                     d = datetime.strptime(v, self._hints[DATETIME_DATA][k])
                     setattr(self, k, format_datetime_portable(d))
                 else:

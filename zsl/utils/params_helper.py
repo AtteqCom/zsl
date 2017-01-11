@@ -18,7 +18,7 @@ def required_params(data, *r_params):
 
     :param data: data to check
     :type data: dict
-    :param required_params: required parameters
+    :param r_params: required parameters
     :raise RequestException: if params not in data
     """
 

@@ -1,15 +1,16 @@
 from sqlalchemy import desc, asc
 from string import split
 
-DEFAULT_SORT_ORDER = 'ASC' # If changed, look at the condition in apply_sorter if self.get_order() == "DESC":.
+DEFAULT_SORT_ORDER = 'ASC'  # If changed, look at the condition in apply_sorter if self.get_order() == "DESC":.
+
 
 class Sorter(object):
-    '''
+    """
     Helper class for applying ordering criteria to query.
-    '''
+    """
 
-    def __init__(self, sorter, mappings = []):
-        '''
+    def __init__(self, sorter, mappings=None):
+        """
         sorter = {'sortby': string, 'sort': string}
             sortby - string of comma-separated column names by which you want to order
             sort - string of comma-separated values 'ASC'/'DESC' (order direction) which
@@ -35,16 +36,21 @@ class Sorter(object):
                 'sport': (Sport, 'name'),
             }
 
-        '''
+        """
+        if mappings is None:
+            mappings = []
+
         if 'sortby' in sorter:
             self._fields = split(sorter['sortby'], ',')
 
             if 'sort' in sorter:
                 self._orders = split(sorter['sort'], ',')
                 if len(self._orders) == 1:
-                    self._orders = self._orders * len(self._fields)
+                    self._orders *= len(self._fields)
                 elif len(self._orders) != len(self._fields):
-                    raise Exception(u'zsl.db.helpers.Sorter: Number of order settings is nor zero nor one nor equal to number of sortby columns.')
+                    raise Exception(
+                        u'zsl.db.helpers.Sorter: Number of order settings is nor zero nor one nor equal to number of'
+                        u'sortby columns.')
 
             else:
                 self._orders = [DEFAULT_SORT_ORDER] * len(self._fields)
@@ -73,7 +79,7 @@ class Sorter(object):
                     attr = getattr(cls, mapped_field)
                 else:
                     attr = getattr(cls, field)
-                if order == "DESC": # If changed, look at the DEFAULT_SORT_ORDER definition.
+                if order == "DESC":  # If changed, look at the DEFAULT_SORT_ORDER definition.
                     sorter_settings.append(desc(attr))
                 else:
                     sorter_settings.append(asc(attr))

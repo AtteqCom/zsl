@@ -7,14 +7,15 @@ from zsl.application.initializers import injection_module
 
 class ApplicationInitializer(object):
     """
-    :class:`zsl.application.initializers.ApplicationInitializer` adds the injection capability of the application object.
-    The application object is bound as `AtteqServiceFlask`.
+    :class:`zsl.application.initializers.ApplicationInitializer` adds the injection capability of the application
+    object. The application object is bound as `AtteqServiceFlask`.
     """
 
-    def initialize(self, binder):
-        '''
+    @staticmethod
+    def initialize(binder):
+        """
         Initialization method which bounds the application object to `AtteqServiceFlask` key.
-        '''
+        """
         # Bind app
         binder.bind(
             AtteqServiceFlask,
@@ -37,9 +38,9 @@ class ApplicationInitializer(object):
 
 @injection_module
 def application_initializer_module(binder):
-    '''
+    """
     Application initializer - just for the injection capability of the application object.
 
     See :class:`zsl.application.initializers.ApplicationInitializer`.
-    '''
+    """
     ApplicationInitializer().initialize(binder)

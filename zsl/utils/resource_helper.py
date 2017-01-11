@@ -17,7 +17,7 @@ class MethodNotImplementedException(Exception):
 def parse_resource_path(path):
     splits = path.split('/')
 
-    return (splits[0], splits[1:])
+    return splits[0], splits[1:]
 
 
 def get_method(resource, method):
@@ -86,9 +86,9 @@ def get_resource_task(resource_path):
 
 
 def create_model_resource(resource_map, name):
-    '''
+    """
     Create a model resource from a dict ``resource_map`` {'resource name': ('model package', 'model class')}
-    '''
+    """
     try:
         resource_description = resource_map[name]
         if len(resource_description) == 2:

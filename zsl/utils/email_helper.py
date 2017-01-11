@@ -4,8 +4,8 @@ from email.mime.multipart import MIMEMultipart
 from zsl.application.service_application import service_application as app
 
 
-def send_email(sender, receivers, subject, text = None, html = None, charset = 'utf-8'):
-    '''
+def send_email(sender, receivers, subject, text=None, html=None, charset='utf-8'):
+    """
     Sends an email.
 
     @param sender: Sender as string or None for default got from config.
@@ -14,7 +14,7 @@ def send_email(sender, receivers, subject, text = None, html = None, charset = '
     @param text: Plain text message.
     @param html: Html message.
     @param charset: Charset.
-    '''
+    """
     smtp_config = app.config['SMTP']
 
     # Receivers must be an array.
@@ -49,6 +49,6 @@ def send_email(sender, receivers, subject, text = None, html = None, charset = '
     msg['To'] = ", ".join(receivers)
 
     # Send.
-    smtp_server= smtplib.SMTP(**(smtp_config['SERVER']))
+    smtp_server = smtplib.SMTP(**(smtp_config['SERVER']))
     smtp_server.sendmail(sender, receivers, msg.as_string())
     smtp_server.quit()

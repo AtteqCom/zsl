@@ -1,10 +1,11 @@
-'''
+"""
 :mod:`asl.db.model.app_model_json_decoder`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 from json.decoder import JSONDecoder, WHITESPACE
 from zsl.utils.import_helper import fetch_class
+
 
 def get_json_decoder(full_class_name, hints=None):
     class AppModelJSONDecoder(JSONDecoder):

@@ -1,61 +1,80 @@
 from sqlalchemy.sql import func
-#from zsl.application.service_application import service_application
 
-class OperatorEq:
-    def apply(self, q, attr, v):
+
+# from zsl.application.service_application import service_application
+
+class OperatorEq(object):
+    @staticmethod
+    def apply(q, attr, v):
         return q.filter(attr == v)
 
-class OperatorNeq:
-    def apply(self, q, attr, v):
+
+class OperatorNeq(object):
+    @staticmethod
+    def apply(q, attr, v):
         return q.filter(attr != v)
 
-class OperatorLike:
-    def apply(self, q, attr, v):
+
+class OperatorLike(object):
+    @staticmethod
+    def apply(q, attr, v):
         return q.filter(attr.like(u'%{0}%'.format(v)))
 
-class OperatorLeftLike:
-    '''
-        Left side of string is like ...
-    '''
-    def apply(self, q, attr, v):
+
+class OperatorLeftLike(object):
+    """
+    Left side of string is like ...
+    """
+
+    @staticmethod
+    def apply(q, attr, v):
         return q.filter(attr.like(u'{0}%'.format(v)))
 
-class OperatorRightLike:
-    '''
-        Right side of string is like ...
-    '''
-    def apply(self, q, attr, v):
+
+class OperatorRightLike(object):
+    """
+    Right side of string is like ...
+    """
+
+    @staticmethod
+    def apply(q, attr, v):
         return q.filter(attr.like(u'%{0}'.format(v)))
 
-class OperatorBetween:
-    def apply(self, q, attr, v):
+
+class OperatorBetween(object):
+    @staticmethod
+    def apply(q, attr, v):
         return q.filter(attr.between(v[0], v[1]))
 
 
-class OperatorCompareDates:
-    '''
-        Compares only dates, year is not taken into account.
-        Compared date value must be string in format '%m-%d'
-    '''
+class OperatorCompareDates(object):
+    """
+    Compares only dates, year is not taken into account.
+    Compared date value must be string in format '%m-%d'
+    """
 
-    def apply(self, q, attr, v):
+    @staticmethod
+    def apply(q, attr, v):
         return q.filter(func.date_format(attr, '%m-%d') == v)
 
-class RelationshipOperatorContains:
-    def apply(self, q, attr, v):
+
+class RelationshipOperatorContains(object):
+    @staticmethod
+    def apply(q, attr, v):
         return q.filter(attr.contains(v))
 
 
 FILTER_HINT = 'hint'
 FILTER_VALUES = 'values'
 
-class QueryFilter(object):
-    '''
-    Helper class for applying filter criteria to query.
-    '''
 
-    def __init__(self, query_filter, mappings = [], allow_null = False):
-        '''
+class QueryFilter(object):
+    """
+    Helper class for applying filter criteria to query.
+    """
+
+    def __init__(self, query_filter, mappings=None, allow_null=False):
+        """
         query_filter = {FILTER_VALUES: dict, FILTER_HINT: dict}
                 - FILTER_VALUES dictionary (see example)
                 - FILTER_HINTS dictionary - tells which operator (OperatorEq, OperatorBetween, ...)
@@ -83,7 +102,9 @@ class QueryFilter(object):
                     it doesn`t have to be mentioned in mappings
                   - if allow_null == False, key 'lastname_initial' from FILTER_VALUES will be ignored
                   - Celebrity is a sqlalechemy db model
-        '''
+        """
+        if mappings is None:
+            mappings = []
 
         self._query_filter = query_filter
         self._allow_null = allow_null
@@ -94,7 +115,7 @@ class QueryFilter(object):
         values = self._query_filter[FILTER_VALUES]
 
         for (k, v) in values.items():
-            if v == None and not self._allow_null:
+            if v is None and not self._allow_null:
                 continue
 
             if k in self._mappings:

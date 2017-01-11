@@ -16,9 +16,10 @@ class SessionHolder:
         return self._sess_cls()
 
 
-class DatabaseInitializer:
+class DatabaseInitializer(object):
 
-    def initialize(self, binder):
+    @staticmethod
+    def initialize(binder):
         config = binder.injector.get(Config)
         engine = create_engine(config['DATABASE_URI'], **config['DATABASE_ENGINE_PROPS'])
 

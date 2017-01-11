@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 :mod:`zsl.utils.date_helper`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 from datetime import date, timedelta
+
 
 def format_datetime_portable(ts):
     return '{0.year:{1}}-{0.month:{1}}-{0.day:{1}}T{0.hour:{1}}:{0.minute:{1}}:{0.second:{1}}'.format(ts, '02')
 
+
 def format_date_portable(ts):
     return '{0.year:{1}}-{0.month:{1}}-{0.day:{1}}'.format(ts, '02')
 
-def format_datetime_relative(dt):
 
+def format_datetime_relative(dt):
     today = date.today()
     yesterday = today - timedelta(days=1)
 
@@ -26,8 +28,8 @@ def format_datetime_relative(dt):
 
     return text
 
-def format_date_relative(d):
 
+def format_date_relative(d):
     today = date.today()
     yesterday = today - timedelta(days=1)
 

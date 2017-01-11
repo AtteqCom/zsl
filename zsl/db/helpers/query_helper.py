@@ -1,14 +1,14 @@
-'''
+"""
 :mod:`asl.db.helpers.query_helper`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 from zsl.db.helpers.pagination import Pagination
 from zsl.db.helpers.sorter import Sorter
 from zsl.db.helpers.query_filter import QueryFilter
 
-class QueryHelper(object):
 
+class QueryHelper(object):
     def __init__(self, cls, query_filter, pagination, sorter):
         self._cls = cls
 

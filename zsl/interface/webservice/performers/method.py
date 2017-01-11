@@ -1,8 +1,8 @@
-'''
+"""
 :mod:`asl.interface.webservice.performers.method`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 from zsl.router.method import get_method_packages
 import importlib
 

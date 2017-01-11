@@ -1,8 +1,8 @@
-'''
+"""
 :mod:`asl.interface.gearman.run_worker`
 
 .. moduleauthor:: Martin Babka
-'''
+"""
 
 # Initialize app
 import importer
