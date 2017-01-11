@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals
 from zsl.application.service_application import service_application as app
 
 

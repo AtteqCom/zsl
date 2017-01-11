@@ -2,13 +2,16 @@
 Helper for nginx push stream module
 https://github.com/wandenberg/nginx-push-stream-module
 """
+from __future__ import unicode_literals
 
-import urllib
-import urllib2
+from builtins import object
+import requests
 import json
 
+from zsl.utils.url_helper import urlencode
 
-class NginxPusher:
+
+class NginxPusher(object):
     def __init__(self, server_path, channel_prefix=None):
         self._server_path = server_path
         self._channel_prefix = (channel_prefix + '.') if channel_prefix is not None else ''
@@ -22,7 +25,7 @@ class NginxPusher:
         """
 
         if type(msg) is not str:
-            msg = urllib.urlencode(msg)
+            msg = urlencode(msg)
 
         return self.push(channel_id, msg)
 
@@ -39,20 +42,16 @@ class NginxPusher:
         """
 
         channel_path = self.channel_path(channel_id)
-        response = urllib2.urlopen(channel_path, data)
+        response = requests.post(channel_path, data)
 
-        return json.dumps(response.read())
+        return response.json()
 
     def delete_channel(self, channel_id):
         """
         Deletes channel
         """
-        req = urllib2.Request(self.channel_path(channel_id))
-        req.get_method = lambda: 'DELETE'
-
-        response = urllib2.urlopen(req).read()
-
-        return response.read()
+        req = requests.delete(self.channel_path(channel_id))
+        return req
 
         # TODO channel stats
 

@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 from zsl.cache.cache_module import CacheModule
 import redis
 from zsl.application.service_application import service_application
@@ -40,12 +41,12 @@ class RedisCacheModule(CacheModule):
 
     def invalidate_key(self, key):
         pkey = self._prefix_key(key)
-        self.logger.debug(u"Key invalidation '{0}'.".format(key))
+        self.logger.debug("Key invalidation '{0}'.".format(key))
         self._client.delete(pkey)
 
     def set_key_expiration(self, key, timeout):
         pkey = self._prefix_key(key)
-        self.logger.debug(u"Key expiration '{0}' = {1}.".format(key, timeout))
+        self.logger.debug("Key expiration '{0}' = {1}.".format(key, timeout))
         self._client.expire(pkey, timeout)
 
     def contains_key(self, key):
@@ -79,5 +80,5 @@ class RedisCacheModule(CacheModule):
 
         for key in keylist:
             # This does not need to prefixed.
-            self.logger.debug(u'Invalidating key {0}.'.format(key))
+            self.logger.debug('Invalidating key {0}.'.format(key))
             self._client.delete(key)

@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 import json
 import gearman
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder

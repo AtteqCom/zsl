@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 
 import sys
 import os

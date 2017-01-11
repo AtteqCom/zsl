@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals
+from builtins import object
 from zsl.application.service_application import service_application
 from zsl.utils.injection_helper import inject
 from zsl.cache.id_helper import IdHelper, model_key_generator, create_key_object_prefix,\
@@ -13,7 +15,7 @@ import abc
 from zsl.task.job_context import JobContext
 
 
-class CacheDecorator:
+class CacheDecorator(object):
 
     @inject(id_helper=IdHelper)
     def __init__(self, id_helper):
@@ -71,7 +73,7 @@ class CacheOutputDecorator(CacheDecorator):
                 return self._id_helper.get_key(key)
             else:
                 ret_val = self._fn(*args)
-                if not (isinstance(ret_val, str) or isinstance(ret_val, unicode)):
+                if not isinstance(ret_val, (str, bytes)):
                     raise Exception("Can not cache non-string value. Is the serialization, json_output, already done?")
 
                 self._id_helper.set_key(key, ret_val, self._timeout)
@@ -180,9 +182,9 @@ def create_key_for_data(prefix, data, key_params):
     values = []
     for k in key_params:
         if k in d and type(d[k]) is list:
-            values.append(u"{0}:{1}".format(k, u" -".join(d[k])))
+            values.append("{0}:{1}".format(k, " -".join(d[k])))
         else:
             value = d[k] if k in d else ''
-            values.append(u"{0}:{1}".format(k, value))
+            values.append("{0}:{1}".format(k, value))
 
-    return u"{0}-{1}".format(prefix, u"-".join(values))
+    return "{0}-{1}".format(prefix, "-".join(values))

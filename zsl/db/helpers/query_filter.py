@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+from builtins import object
+from future.utils import viewitems
 from sqlalchemy.sql import func
 
 
@@ -18,7 +21,7 @@ class OperatorNeq(object):
 class OperatorLike(object):
     @staticmethod
     def apply(q, attr, v):
-        return q.filter(attr.like(u'%{0}%'.format(v)))
+        return q.filter(attr.like('%{0}%'.format(v)))
 
 
 class OperatorLeftLike(object):
@@ -28,7 +31,7 @@ class OperatorLeftLike(object):
 
     @staticmethod
     def apply(q, attr, v):
-        return q.filter(attr.like(u'{0}%'.format(v)))
+        return q.filter(attr.like('{0}%'.format(v)))
 
 
 class OperatorRightLike(object):
@@ -38,7 +41,7 @@ class OperatorRightLike(object):
 
     @staticmethod
     def apply(q, attr, v):
-        return q.filter(attr.like(u'%{0}'.format(v)))
+        return q.filter(attr.like('%{0}'.format(v)))
 
 
 class OperatorBetween(object):
@@ -114,7 +117,7 @@ class QueryFilter(object):
         hints = self._query_filter[FILTER_HINT]
         values = self._query_filter[FILTER_VALUES]
 
-        for (k, v) in values.items():
+        for k, v in viewitems(values):
             if v is None and not self._allow_null:
                 continue
 

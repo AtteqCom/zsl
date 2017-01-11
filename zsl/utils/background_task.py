@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from zsl_client import GearmanService, RawTask, JsonTask
 from zsl.application.service_application import service_application as app
 from functools import wraps

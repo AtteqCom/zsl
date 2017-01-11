@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 from __future__ import print_function
+from __future__ import unicode_literals
 
+from builtins import object
 """
 :mod:`zsl.interface.run`
 
@@ -16,7 +18,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 # Initialize
-from importer import initialize_web_application
+from zsl.interface.importer import initialize_web_application
 
 initialize_web_application()
 
@@ -40,7 +42,7 @@ def run_task(task, data=None):
 
     ..param:
     """
-    if not isinstance(data, str) and not isinstance(data, unicode):
+    if not isinstance(data, (str, bytes)):
         data = json.dumps(data)
     # Open the data from file, if necessary.
     elif data is not None and data.startswith("file://"):

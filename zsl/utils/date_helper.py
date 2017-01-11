@@ -4,6 +4,7 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 from datetime import date, timedelta
 
 
@@ -20,11 +21,11 @@ def format_datetime_relative(dt):
     yesterday = today - timedelta(days=1)
 
     if dt.strftime('%Y-%m-%d') == today.strftime('%Y-%m-%d'):
-        text = u'Dnes ' + dt.strftime('%H:%M')
+        text = 'Dnes ' + dt.strftime('%H:%M')
     elif dt.strftime('%Y-%m-%d') == yesterday.strftime('%Y-%m-%d'):
-        text = u'Včera ' + dt.strftime('%H:%M')
+        text = 'Včera ' + dt.strftime('%H:%M')
     else:
-        text = dt.strftime(u'%d.%m.%Y %H:%M')
+        text = dt.strftime('%d.%m.%Y %H:%M')
 
     return text
 
@@ -34,10 +35,10 @@ def format_date_relative(d):
     yesterday = today - timedelta(days=1)
 
     if d.strftime('%Y-%m-%d') == today.strftime('%Y-%m-%d'):
-        text = u'Dnes'
+        text = 'Dnes'
     elif d.strftime('%Y-%m-%d') == yesterday.strftime('%Y-%m-%d'):
-        text = u'Včera'
+        text = 'Včera'
     else:
-        text = d.strftime(u'%d.%m.%Y')
+        text = d.strftime('%d.%m.%Y')
 
     return text

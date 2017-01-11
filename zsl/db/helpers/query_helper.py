@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
+from builtins import object
 from zsl.db.helpers.pagination import Pagination
 from zsl.db.helpers.sorter import Sorter
 from zsl.db.helpers.query_filter import QueryFilter

@@ -3,6 +3,7 @@ Created on May 3, 2016
 
 @author: Martin Babka
 """
+from __future__ import unicode_literals
 import importlib
 
 

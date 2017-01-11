@@ -3,9 +3,11 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals
+from builtins import object
 
 
-class TaskData:
+class TaskData(object):
 
     def __init__(self, app, data):
         self._app = app

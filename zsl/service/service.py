@@ -3,7 +3,9 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 
+from builtins import object
 from zsl.application.service_application import AtteqServiceFlask, service_application
 from zsl.utils.injection_helper import inject
 from sqlalchemy.engine.base import Engine

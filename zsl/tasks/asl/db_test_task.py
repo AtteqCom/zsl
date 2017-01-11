@@ -3,7 +3,9 @@ Created on 24.12.2012
 
 @author: Martin Babka
 """
+from __future__ import unicode_literals
 
+from builtins import object
 from injector import inject
 import sqlalchemy.engine
 from zsl.application.service_application import AtteqServiceFlask

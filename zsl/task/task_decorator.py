@@ -4,6 +4,8 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>, Peter Morihladko <morihladko@atteq.com>, Jan Janco <janco@atteq.com>,
                   Lubos Pis <pis@atteq.com>
 """
+from __future__ import unicode_literals
+from builtins import str
 
 import json
 
@@ -156,9 +158,9 @@ def jsend_output(fail_exception_classes=None):
             try:
                 rv = f(*args, **kwargs)
             except fail_exception_classes as e:
-                return {'status': 'fail', 'data': {'message': unicode(e)}}
+                return {'status': 'fail', 'data': {'message': str(e)}}
             except Exception as e:
-                app.logger.error(unicode(e) + "\n" + traceback.format_exc())
+                app.logger.error(str(e) + "\n" + traceback.format_exc())
                 return {'status': 'error', 'message': 'Server error.'}
 
             if not isinstance(rv, dict) and rv is not None:
@@ -390,11 +392,11 @@ class CrossdomainWebTaskResponder(Responder):
             methods = ', '.join(sorted(x.upper() for x in methods))
         self.methods = methods
 
-        if headers is not None and not isinstance(headers, basestring):
+        if headers is not None and not isinstance(headers, (str, bytes)):
             headers = ', '.join(x.upper() for x in headers)
         self.headers = headers
 
-        if not isinstance(origin, basestring):
+        if not isinstance(origin, (str, bytes)):
             origin = ', '.join(origin)
         self.origin = origin
 

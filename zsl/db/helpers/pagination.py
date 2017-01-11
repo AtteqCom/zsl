@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 DEFAULT_PAGE_RECORD_COUNT = 25
 
 

@@ -1,10 +1,12 @@
+from __future__ import unicode_literals
+from builtins import object
 import importlib
 from zsl.utils.string_helper import underscore_to_camelcase
 from imp import reload
 from zsl.utils.task_helper import instantiate, get_callable
 
 
-class TaskRouter:
+class TaskRouter(object):
     def __init__(self, app):
         self._mappings = {}
         # Support for the settings with only one TASK_PACKAGE defined.

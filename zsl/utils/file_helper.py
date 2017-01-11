@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>, Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals
 import os
 import errno
 

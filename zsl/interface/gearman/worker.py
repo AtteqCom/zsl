@@ -3,7 +3,9 @@
 
 .. moduleauthor:: Martin
 """
-
+from __future__ import unicode_literals
+from builtins import object
+from builtins import str
 import socket
 import gearman
 import traceback
@@ -47,8 +49,8 @@ def execute_task(worker, job):
         app.logger.info("Stopping Gearman worker on demand flag set.")
         worker._should_stop = True
     except Exception as e:
-        app.logger.error(unicode(e) + "\n" + traceback.format_exc())
-        return {'task_name': job.data['path'], 'data': None, 'error': unicode(e)}
+        app.logger.error(str(e) + "\n" + traceback.format_exc())
+        return {'task_name': job.data['path'], 'data': None, 'error': str(e)}
 
 
 '''
@@ -57,7 +59,7 @@ Then uses task to get the task object and executes it.
 '''
 
 
-class Worker:
+class Worker(object):
     def __init__(self, app):
         self._app = app
         task_router.set_task_reloading(task_router.is_task_reloading() or app.config['RELOAD_GEARMAN'])

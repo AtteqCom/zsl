@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 import logging
 from zsl.application.service_application import service_application, AtteqServiceFlask
 from flask.config import Config

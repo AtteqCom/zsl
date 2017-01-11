@@ -3,6 +3,7 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
 from zsl.application.service_application import service_application
 from zsl.task.task_data import TaskData
 
@@ -29,4 +30,4 @@ def get_callable(task):
     return getattr(task, TASK_PERFORM_METHOD)
 
 
-from injection_helper import instantiate
+from zsl.utils.injection_helper import instantiate

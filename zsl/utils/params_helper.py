@@ -3,8 +3,11 @@ Helpers for parameter handling
 
 .. moduleauthor:: Peter Morihladko
 """
+from __future__ import unicode_literals
+from future.utils import viewitems
 
 import inspect
+from functools import reduce
 
 
 class RequestException(Exception):
@@ -52,6 +55,6 @@ def safe_args(fn, args):
         required_params(args, fn_args)
 
     if not fn_args.keywords:
-        return dict((key, value) for key, value in args.iteritems() if key in fn_args.args)
+        return {key: value for key, value in viewitems(args) if key in fn_args.args}
     else:
         return args

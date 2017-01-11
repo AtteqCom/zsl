@@ -3,7 +3,9 @@ Created on 22.12.2012
 
 @author: Martin Babka
 """
+from __future__ import unicode_literals
 
+from builtins import object
 from zsl.application.service_application import AtteqServiceFlask
 from injector import inject
 from zsl.task.job_context import JobContext, WebJobContext

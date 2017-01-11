@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
+from __future__ import unicode_literals
+from builtins import object
 from zsl.interface.webservice.utils.response_headers import append_headers
 from zsl.interface.webservice.utils.error_handler import error_handler
 from zsl.application.service_application import service_application

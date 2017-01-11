@@ -3,6 +3,8 @@
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import unicode_literals
+from future.utils import viewitems
 from zsl.application.service_application import service_application as _app
 import injector
 from injector import BindingKey, reraise, CallError
@@ -28,7 +30,7 @@ def inject(**bindings):
 
     def outer_wrapper(f):
         def function_wrapper(f):
-            for key, value in bindings.items():
+            for key, value in viewitems(bindings):
                 bindings[key] = BindingKey(value, None)
 
             @functools.wraps(f)

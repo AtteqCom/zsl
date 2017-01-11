@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from flask import Config
 import logging
 from sqlalchemy import create_engine
@@ -7,7 +9,7 @@ from injector import singleton
 from zsl.application.initializers import injection_module
 
 
-class SessionHolder:
+class SessionHolder(object):
 
     def __init__(self, sess_cls):
         self._sess_cls = sess_cls

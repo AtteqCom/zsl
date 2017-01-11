@@ -1,3 +1,7 @@
+from __future__ import unicode_literals
+from future.utils import viewitems
+
+
 class XmlToJsonException(Exception):
     pass
 
@@ -46,7 +50,7 @@ def xml_to_json(element, definition, required=False):
 def _parse_dict(element, definition):
     sub_dict = {}
 
-    for name, subdef in definition.items():
+    for name, subdef in viewitems(definition):
         (name, required) = _parse_name(name)
 
         sub_dict[name] = xml_to_json(element, subdef, required)
@@ -65,7 +69,9 @@ def _parse_tuple(element, definition, required):
     first = definition[0]
 
     if hasattr(first, '__call__'):
-        return first(*map(lambda d: xml_to_json(element, d), definition[1:]))
+        # TODO I think it could be done as without creating the array
+        # first(xml_to_json(element, d) for d in definition[1:]) test it
+        return first(*[xml_to_json(element, d) for d in definition[1:]])
 
     if not isinstance(first, str):
         raise XmlToJsonException('Tuple definition must start with function or string')

@@ -3,7 +3,10 @@
 
 .. moduleauthor:: Peter Morihladko
 """
+from __future__ import unicode_literals
 
+from builtins import range
+from builtins import object
 import json
 import importlib
 from zsl.utils.string_helper import camelcase_to_underscore, underscore_to_camelcase
@@ -116,7 +119,7 @@ class ModelGenerator(object):
 
         schema = "\n        ".join(json.dumps(schema, indent=4).split("\n"))
 
-        for i in xrange(len(callbacks)):
+        for i in range(len(callbacks)):
             schema = schema.replace('"__CALLBACK__%d"' % i, callbacks[i])
 
         return model_tpl.format(

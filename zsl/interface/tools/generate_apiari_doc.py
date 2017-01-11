@@ -6,8 +6,11 @@ in the documentary comments. Then outputs it to a file.
 
 .. moduleauthor:: Martin Babka
 """
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
 
-import importer
+from . import importer
 importer.append_asl_path_to_pythonpath()
 from zsl.interface.importer import initialize_cli_application, InitializationContext
 initialize_cli_application(InitializationContext(unit_test=False))
@@ -84,7 +87,7 @@ class ApiariDoc(object, pydoc.Doc):
             wl = white_space_at_beginning(l)
             if m > wl:
                 m = wl
-        apistr = map(lambda x: x[m:], apistr)
+        apistr = [x[m:] for x in apistr]
 
         self._docs.append("\n".join(apistr))
 
@@ -122,4 +125,4 @@ if __name__ == "__main__":
     for m in TaskRouter(service_application).get_task_packages() + get_method_packages():
         m = importlib.import_module(m)
         d.docmodule(m)
-    print d.get_doc()
+    print(d.get_doc())

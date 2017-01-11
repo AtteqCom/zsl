@@ -1,9 +1,12 @@
 """
 Helper functions for working with XML and ElementTree
 """
+from __future__ import unicode_literals
+from future.utils import viewitems
 
 import xml.etree.cElementTree as ET
-import urllib2
+import requests
+from functools import reduce
 
 
 class NotValidXmlException(Exception):
@@ -52,12 +55,10 @@ def attrib_to_dict(element, *args, **kwargs):
     attrib_to_dict(element, my_new_name = 'xml_atribute_name', ..)
     """
     if len(args) > 0:
-        # 2.7 return {key: element.get(key) for key in args}
-        return dict((key, element.get(key)) for key in args)
+        return {key: element.get(key) for key in args}
 
     if len(kwargs) > 0:
-        # 2.7 return {new_key: element.get(old_key) for new_key, old_key in kwargs.items()}
-        return dict((new_key, element.get(old_key)) for new_key, old_key in kwargs.items())
+        return {new_key: element.get(old_key) for new_key, old_key in viewitems(kwargs)}
 
     return element.attrib
 
@@ -66,8 +67,7 @@ def get_xml_root(xml_path):
     """
     Return root element from given xml_path as ElementTree Element
     """
-    xml_res = urllib2.urlopen(xml_path)
-    tree = ET.parse(xml_res)
+    tree = ET.fromstring(requests.get(xml_path).content)
     return tree.getroot()
 
 
