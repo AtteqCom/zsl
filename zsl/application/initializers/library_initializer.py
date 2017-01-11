@@ -1,12 +1,21 @@
 import logging
+import sys
+import os
+
 from flask import Config
 from zsl.application.initializers import injection_module
-import sys
-from zsl.vendor import append_paths
 
-class LibraryInitializer:
 
-    def initialize(self, binder):
+def append_paths(path, vendor_modules):
+    new_path = []
+    for v in vendor_modules:
+        new_path.append(path + os.sep + v)
+    sys.path = new_path + sys.path
+
+
+class LibraryInitializer(object):
+    @staticmethod
+    def initialize(binder):
         logger = binder.injector.get(logging.Logger)
         logger.debug("Initializing project external libraries.")
         config = binder.injector.get(Config)
@@ -20,6 +29,7 @@ class LibraryInitializer:
 
         logger.info("Current PYTHON_PATH={0}.".format(sys.path))
         logger.debug("Project external libraries initialized.")
+
 
 @injection_module
 def application_initializer_module(binder):

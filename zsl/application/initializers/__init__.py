@@ -8,8 +8,6 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 '''
 
-import zsl.vendor
-
 injection_views = []
 injection_modules = []
 
