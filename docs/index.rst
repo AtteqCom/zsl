@@ -27,22 +27,13 @@ run in any production except ours. It is too rigid, with minimum test coverage
 and lots of bad code practices. We open sourced it as way of motivation for us
 to make it better.
 
-How to use
-##########
-
 .. toctree::
    :glob:
+   :maxdepth: 1
 
    getting_started
-
-API
-####
-
-.. toctree::
-   :glob:
-
+   configuration
    api
-
 
 Indices and tables
 ==================

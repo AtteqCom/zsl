@@ -47,12 +47,12 @@ The minimum application layout has to contain:
 │   ├── app_settings.cfg 
 │   ├── default_settings.py
 │   └── __init__.py
-└── test 
+└── tests 
 ```
 
 ```bash
-export ASL_SETTINGS=`pwd`/settings/app_settings.cfg
-export APPLICATION_PACKAGE_PATH=`pwd`/app
+$ export ASL_SETTINGS=`pwd`/settings/app_settings.cfg
+$ export APPLICATION_PACKAGE_PATH=`pwd`/app
 ```
 
 ```python
