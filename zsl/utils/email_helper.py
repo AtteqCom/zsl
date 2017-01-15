@@ -1,3 +1,8 @@
+"""
+:mod:`zsl.utils.email_helper`
+-----------------------------
+"""
+
 from __future__ import unicode_literals
 import smtplib
 from email.mime.text import MIMEText
@@ -6,15 +11,14 @@ from zsl.application.service_application import service_application as app
 
 
 def send_email(sender, receivers, subject, text=None, html=None, charset='utf-8'):
-    """
-    Sends an email.
+    """Sends an email.
 
-    @param sender: Sender as string or None for default got from config.
-    @param receivers: String or array of recipients.
-    @param subject: Subject.
-    @param text: Plain text message.
-    @param html: Html message.
-    @param charset: Charset.
+    :param sender: Sender as string or None for default got from config.
+    :param receivers: String or array of recipients.
+    :param subject: Subject.
+    :param text: Plain text message.
+    :param html: Html message.
+    :param charset: Charset.
     """
     smtp_config = app.config['SMTP']
 

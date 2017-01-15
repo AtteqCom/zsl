@@ -1,5 +1,6 @@
 """
 :mod:`zsl.db.model.sql_alchemy`
+-------------------------------
 
 one base the rule them all
 

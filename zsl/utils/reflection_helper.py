@@ -1,5 +1,8 @@
 """
 :mod:`zsl.utils.reflection_helper`
+----------------------------------
+
+Helper module for OOP operations.
 
 .. moduleauthor:: Martin Babka
 """
@@ -7,6 +10,12 @@ from __future__ import unicode_literals
 
 
 def extend(instance, new_class):
+    """
+
+    :param instance:
+    :param new_class:
+    :return:
+    """
     instance.__class__ = type(
         '%s_extended_with_%s' % (instance.__class__.__name__, new_class.__name__),
         (new_class, instance.__class__,),

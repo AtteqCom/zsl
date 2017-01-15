@@ -1,5 +1,6 @@
 """
 :mod:`zsl.interface.gearman.run_worker`
+---------------------------------------
 
 .. moduleauthor:: Martin Babka
 """

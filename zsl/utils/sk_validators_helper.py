@@ -1,4 +1,11 @@
 # coding: utf-8
+"""
+:mod:`zsl.utils.sk_validators_helper`
+-------------------------------------
+
+Helper module for user form validation, in Slovak.
+"""
+# TODO make more general.
 
 from __future__ import unicode_literals
 from builtins import object
@@ -8,6 +15,7 @@ from time import strptime
 
 # from symbol import except_clause
 
+# TODO document this, ask Martin or Jan Janco
 class Validators(object):
     class Optional(wtforms.validators.Optional):
         def __init__(self, strip_whitespace=True):

@@ -1,5 +1,6 @@
 """
 :mod:`zsl.utils.file_helper`
+----------------------------
 
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>, Martin Babka <babka@atteq.com>
 """
@@ -9,9 +10,7 @@ import errno
 
 
 def makedirs(path):
-    """
-    Behaves like `mkdir -p <path>`. Without failure if the path exists.
-    """
+    """Behaves like `mkdir -p <path>`. Without failure if the path exists."""
     
     try:
         os.makedirs(path)

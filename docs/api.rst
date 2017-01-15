@@ -114,10 +114,6 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.interface.run
-   :members:
-   :undoc-members:
-
 .. automodule:: zsl.interface.importer
    :members:
    :undoc-members:
@@ -138,10 +134,6 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.utils.reflection_helper
-   :members:
-   :undoc-members:
-
 .. automodule:: zsl.utils
    :members:
    :undoc-members:
@@ -150,7 +142,7 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.utils.rss
+.. automodule:: zsl.utils.background_task
    :members:
    :undoc-members:
 
@@ -162,59 +154,7 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.utils.task_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.file_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.type_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.resource_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.sk_validators_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.php_helper
-   :members:
-   :undoc-members:
-
 .. automodule:: zsl.utils.date_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.xml_to_json
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.url_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.params_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.model_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.request_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.nginx_push_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.deploy.js_model_generator
    :members:
    :undoc-members:
 
@@ -222,23 +162,43 @@ API
    :members:
    :undoc-members:
 
+.. automodule:: zsl.utils.deploy.js_model_generator
+   :members:
+   :undoc-members:
+
 .. automodule:: zsl.utils.email_helper
    :members:
    :undoc-members:
 
-.. automodule:: zsl.utils.flask_decorator
+.. automodule:: zsl.utils.file_helper
    :members:
    :undoc-members:
 
-.. automodule:: zsl.utils.background_task
+.. automodule:: zsl.utils.gearman_helper
    :members:
    :undoc-members:
 
-.. automodule:: zsl.utils.string_helper
+.. automodule:: zsl.utils.import_helper
    :members:
    :undoc-members:
 
-.. automodule:: zsl.utils.xml_helper
+.. automodule:: zsl.utils.injection_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.model_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.nginx_push_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.params_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.php_helper
    :members:
    :undoc-members:
 
@@ -246,7 +206,47 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.utils.injection_helper
+.. automodule:: zsl.utils.reflection_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.resource_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.rss
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.security_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.sk_validators_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.string_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.task_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.type_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.url_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.xml_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.xml_to_json
    :members:
    :undoc-members:
 
@@ -266,7 +266,11 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.application.initializers.logger_initializer
+.. automodule:: zsl.application.initializers.context_initializer
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.application.initializers.database_initializer
    :members:
    :undoc-members:
 
@@ -274,11 +278,15 @@ API
    :members:
    :undoc-members:
 
+.. automodule:: zsl.application.initializers.logger_initializer
+   :members:
+   :undoc-members:
+
 .. automodule:: zsl.application.initializers.service_initializer
    :members:
    :undoc-members:
 
-.. automodule:: zsl.application.initializers.database_initializer
+.. automodule:: zsl.application.initializers.unittest_initializer
    :members:
    :undoc-members:
 
@@ -322,19 +330,19 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.cache.id_helper
-   :members:
-   :undoc-members:
-
 .. automodule:: zsl.cache.cache_module
    :members:
    :undoc-members:
 
-.. automodule:: zsl.cache.redis_id_helper
+.. automodule:: zsl.cache.id_helper
    :members:
    :undoc-members:
 
 .. automodule:: zsl.cache.redis_cache_module
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.cache.redis_id_helper
    :members:
    :undoc-members:
 

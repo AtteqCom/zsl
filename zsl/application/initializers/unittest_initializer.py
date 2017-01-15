@@ -1,3 +1,7 @@
+"""
+:mod:`zsl.application.initializers.unittest_initializer`
+--------------------------------------------------------
+"""
 from __future__ import unicode_literals
 from builtins import object
 from zsl.application.initializers import injection_module

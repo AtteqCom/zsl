@@ -1,5 +1,6 @@
 """
 :mod:`zsl.interface.webservice.utils.error_handler`
+---------------------------------------------------
 
 .. moduleauthor:: Martin Babka
 """

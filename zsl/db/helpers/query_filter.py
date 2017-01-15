@@ -1,3 +1,7 @@
+"""
+:mod:`zsl.db.helpers.query_filter`
+----------------------------------
+"""
 from __future__ import unicode_literals
 from builtins import object
 from future.utils import viewitems

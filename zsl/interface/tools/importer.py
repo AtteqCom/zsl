@@ -1,5 +1,6 @@
 """
 :mod:`zsl.interface.tools.importer`
+-----------------------------------
 
 .. moduleauthor:: Martin Babka
 """

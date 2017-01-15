@@ -20,6 +20,12 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
+# Init ASL
+from zsl.interface.importer import initialize_cli_application, InitializationContext
+
+initialize_cli_application(InitializationContext(unit_test=False))
+from zsl.application import service_application
+
 from recommonmark.parser import CommonMarkParser
 
 # -- General configuration ------------------------------------------------

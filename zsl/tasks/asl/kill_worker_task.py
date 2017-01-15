@@ -1,7 +1,10 @@
 """
+:mod:`zsl.tasks.asl.kill_worker_task`
+-------------------------------------
+
 Created on 22.12.2012
 
-@author: Martin Babka
+.. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
 

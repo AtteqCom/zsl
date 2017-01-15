@@ -1,5 +1,6 @@
 """
 :mod:`zsl.interface.gearman.worker`
+-----------------------------------
 
 .. moduleauthor:: Martin
 """

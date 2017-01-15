@@ -1,10 +1,10 @@
 """
 :mod:`zsl.db.helpers.nested`
-
-TODO presun do asl.db.helpers
+----------------------------
 
 .. moduleauthor:: peter
 """
+# TODO move to asl.db.helpers
 from __future__ import unicode_literals
 
 

@@ -1,5 +1,6 @@
 """
 :mod:`zsl.task.task_decorator`
+------------------------------
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>, Peter Morihladko <morihladko@atteq.com>, Jan Janco <janco@atteq.com>,
                   Lubos Pis <pis@atteq.com>

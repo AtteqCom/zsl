@@ -1,5 +1,6 @@
 """
 :mod:`zsl.interface.gearman.json_data_encoder`
+----------------------------------------------
 
 .. moduleauthor:: Martin Babka
 """

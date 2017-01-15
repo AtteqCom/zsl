@@ -1,5 +1,6 @@
 """
 :mod:`zsl.utils.injection_helper`
+---------------------------------
 
 .. moduleauthor:: Martin Babka
 """
@@ -31,7 +32,7 @@ def inject(**bindings):
     def outer_wrapper(f):
         def function_wrapper(f):
             for key, value in viewitems(bindings):
-                bindings[key] = BindingKey(value, None)
+                bindings[key] = BindingKey(value)
 
             @functools.wraps(f)
             def inject(*args, **kwargs):

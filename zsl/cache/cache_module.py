@@ -1,5 +1,6 @@
 """
 :mod:`zsl.cache.cache_module`
+-----------------------------
 
 .. moduleauthor:: Martin Babka
 """

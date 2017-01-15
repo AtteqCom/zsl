@@ -1,8 +1,9 @@
 """
 :mod:`zsl.interface.importer`
+-----------------------------
 
-The modules deals with the initialization of the basics - python path and then loads and initializes the application
-if necessary.
+The modules deals with the initialization of the basics - python path and then
+loads and initializes the application if necessary.
 
 .. moduleauthor:: Martin Babka
 """

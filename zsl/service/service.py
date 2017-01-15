@@ -1,5 +1,6 @@
 """
 :mod:`zsl.service.service`
+--------------------------
 
 .. moduleauthor:: Martin Babka
 """

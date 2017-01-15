@@ -1,5 +1,8 @@
 """
-Modul na ulahcenie prace s redisom
+:mod:`zsl.utils.redis_helper`
+-----------------------------
+
+Helper module for working with redis.
 
 .. moduleauthor::  Peter Morihladko
 """
@@ -12,16 +15,31 @@ from flask.config import Config
 
 
 def redis_key(*args):
+    """Create a string key from a hierarchical structure.
+
+    :param args: list of keys to denote hierarchy
+    :type args: list(str)
+    :return: string representation of args
+    :rtype: str
+
+    :Example:
+        >>> redis_key(['project', 'module', 'class'])
+        'project:module:class'
+    """
+    # TODO why there's `is not None`
     return ':'.join(str(a) for a in args if a is not None)
 
 
 class Keymaker(object):
+    """Keymaker is a class to generate an object to generate reddis keys.
+
+    :Example:
+        >>> article_keys = Keymaker(prefix='articles', keys={'full_article': 'full', 'short_article': 'short'})
+        >>> article_keys.full_article('today', 'ID214')
+        '$PROJECT_PREFIX:articles:full:today:ID214'
     """
-    Helper pre vytvaranie klucov k redisu v tvare 'sportky:daco:este:nieco..'
-    Priklad:
-        rkey = Keymaker(prefix='livescore', keys={'metoda': 'kluc', 'event': 'event', 'fav_event': 'favourite_event'}
-        rkey.fav_event('user', 'sport', 'day') -> 'sportky:favourite_event:user:sport:day'
-    """
+
+    # TODO I think this should be done in proper OOP
 
     @inject(config=Config)
     def __init__(self, keys, prefix=None, config=None):

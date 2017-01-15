@@ -1,5 +1,6 @@
 """
 :mod:`zsl.db.model.raw_model`
+-----------------------------
 
 .. moduleauthor:: Martin Babka
 """

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 :mod:`zsl.utils.date_helper`
+----------------------------
 
 .. moduleauthor:: Martin Babka
 """

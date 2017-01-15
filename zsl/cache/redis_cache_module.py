@@ -1,5 +1,6 @@
 """
 :mod:`zsl.cache.redis_cache_module`
+-----------------------------------
 
 .. moduleauthor:: Martin Babka
 """

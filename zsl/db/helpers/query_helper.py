@@ -1,5 +1,6 @@
 """
 :mod:`zsl.db.helpers.query_helper`
+----------------------------------
 
 .. moduleauthor:: Martin Babka
 """
