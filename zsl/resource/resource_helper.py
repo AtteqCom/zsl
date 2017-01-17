@@ -1,5 +1,6 @@
 """
-:mod:`asl.resource.resource_helper`
+:mod:`zsl.resource.resource_helper`
+-----------------------------------
 
 .. moduleauthor:: Peter Morihladko
 """

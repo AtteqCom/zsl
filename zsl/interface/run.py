@@ -1,14 +1,15 @@
 #!/usr/bin/python
+"""
+:mod:`zsl.interface.run`
+------------------------
 
+.. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 
 from builtins import object
-"""
-:mod:`zsl.interface.run`
 
-.. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
-"""
 
 # Initialize the path
 import sys

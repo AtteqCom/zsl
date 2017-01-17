@@ -1,5 +1,6 @@
 """
-:mod:`asl.interface.run_tests`
+:mod:`zsl.interface.run_tests`
+------------------------------
 
 .. moduleauthor:: Martin Babka
 """

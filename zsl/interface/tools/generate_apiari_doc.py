@@ -1,8 +1,9 @@
 """
+:mod:`zsl.interface.tools.generate_apiari_doc`
+----------------------------------------------
+
 Generates the API documentation suitable for the apiari.io. It parses all the files and finds the apiari.io definitions
 in the documentary comments. Then outputs it to a file.
-
-:mod:`asl.interface.tools.generate_apiari_doc`
 
 .. moduleauthor:: Martin Babka
 """

@@ -1,5 +1,6 @@
 """
-:mod:`asl.db.helpers.query_helper`
+:mod:`zsl.db.helpers.query_helper`
+----------------------------------
 
 .. moduleauthor:: Martin Babka
 """

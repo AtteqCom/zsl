@@ -1,5 +1,6 @@
 """
-:mod:`asl.router.method`
+:mod:`zsl.router.method`
+------------------------
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """

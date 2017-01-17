@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""
+:mod:`zsl.interface.tools.js_model_gen`
+---------------------------------------
+"""
 
 from __future__ import print_function
 from __future__ import unicode_literals

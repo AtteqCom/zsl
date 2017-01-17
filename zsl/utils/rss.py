@@ -1,5 +1,8 @@
 """
-:mod:`asl.utils.rss`
+:mod:`zsl.utils.rss`
+--------------------
+
+Helper function for handling rss.
 
 .. moduleauthor:: Peter Morihladko
 """
@@ -10,6 +13,16 @@ import xml.etree.cElementTree as ET
 
 
 def complex_el_from_dict(parent, data, key):
+    """Create element from a dict definition and add it to ``parent``.
+
+    :param parent: parent element
+    :type parent: Element
+    :param data: dictionary with elements definitions, it can be a simple \
+    {element_name: 'element_value'} or complex \
+    {element_name: {_attr: {name: value, name1: value1}, _text: 'text'}}
+    :param key: element name and key in ``data``
+    :return: created element
+    """
     el = ET.SubElement(parent, key)
     value = data[key]
 
@@ -28,8 +41,16 @@ def complex_el_from_dict(parent, data, key):
 
 
 def element_from_dict(parent, data, element):
-    """
-    Vytvori element z ``data``, tak, ze text bude hodnota v data + dany kluc vyhodi z data
+    """Create ``element`` to ``parent`` and sets its value to data[element], which
+    will be removed from the ``data``.
+
+    :param parent: parent element
+    :type parent: Element
+    :param data: dictionary where data[element] is desired value
+    :type data: dict(str, str)
+    :param element: name of the new element
+    :type element: str
+    :return: created element
     """
     el = ET.SubElement(parent, element)
     el.text = data.pop(element)
@@ -38,7 +59,22 @@ def element_from_dict(parent, data, element):
 
 
 def rss_create(channel, articles):
+    """Create RSS xml feed.
+
+    :param channel: channel info [title, link, description, language]
+    :type channel: dict(str, str)
+    :param articles: list of articles, an article is a dictionary with some \
+    required fields [title, description, link] and any optional, which will \
+    result to `<dict_key>dict_value</dict_key>`
+    :type articles: list(dict(str,str))
+    :return: root element
+    :rtype: ElementTree.Element
+    """
     channel = channel.copy()
+
+    # TODO use deepcopy
+    # list will not clone the dictionaries in the list and `elemen_from_dict`
+    # pops items from them
     articles = list(articles)
 
     rss = ET.Element('rss')

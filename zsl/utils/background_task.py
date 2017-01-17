@@ -1,3 +1,7 @@
+"""
+:mod:`zsl.utils.background_task`
+--------------------------------
+"""
 from __future__ import unicode_literals
 from zsl_client import GearmanService, RawTask, JsonTask
 from zsl.application.service_application import service_application as app
@@ -8,9 +12,8 @@ __author__ = 'Peter Morihladko'
 
 
 def background_task_method(task):
-    """
-    Decorate an object method as a background task (called with help of
-    gearman)
+    """Decorate an object method as a background task (called with help of
+    gearman).
 
     You have to create a task which will handle the gearman call. The
     method arguments will be encoded as JSON.

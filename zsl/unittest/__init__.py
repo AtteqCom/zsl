@@ -1,3 +1,8 @@
+"""
+:mod:`zsl.unittest`
+-------------------
+"""
+
 from __future__ import unicode_literals
 from zsl.interface.importer import initialize_cli_application, InitializationContext
 import unittest

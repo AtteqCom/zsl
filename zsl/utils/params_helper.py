@@ -1,4 +1,7 @@
 """
+:mod:`zsl.utils.params_helper`
+------------------------------
+
 Helpers for parameter handling
 
 .. moduleauthor:: Peter Morihladko
@@ -11,18 +14,18 @@ from functools import reduce
 
 
 class RequestException(Exception):
+    """Exception raised on bad request"""
     pass
 
 
 def required_params(data, *r_params):
-    """
-    Check if given parameters are in the given dict, if not raise
-    an exception
+    """Check if given parameters are in the given dict, if not raise an
+    exception.
 
     :param data: data to check
     :type data: dict
     :param r_params: required parameters
-    :raise RequestException: if params not in data
+    :raises RequestException: if params not in data
     """
 
     if not reduce(lambda still_valid, param: still_valid and param in data,
@@ -35,18 +38,17 @@ def msg_err_missing_params(*params):
 
 
 def safe_args(fn, args):
-    """
-    Check if ``args`` as a dictionary has the required parameters of
-    ``fn`` function and filter any waste parameters so ``fn`` can be
-    safely called with them
+    """Check if ``args`` as a dictionary has the required parameters of ``fn``
+    function and filter any waste parameters so ``fn`` can be safely called
+    with them.
 
     :param fn: function object
-    :type fn: callable
+    :type fn: Callable
     :param args: dictionary of parameters
     :type args: dict
     :return: dictionary to be used as named params for the ``fn``
     :rtype: dict
-    '"""
+    """
     fn_args = inspect.getargspec(fn)
 
     if fn_args.defaults:

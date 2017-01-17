@@ -1,5 +1,6 @@
 """
-:mod:`asl.interface.webservice.performers.default`
+:mod:`zsl.interface.webservice.performers.default`
+--------------------------------------------------
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """

@@ -1,3 +1,7 @@
+"""
+:mod:`zsl.tasks.asl.schedule_kill_worker_task`
+----------------------------------------------
+"""
 from __future__ import unicode_literals
 from builtins import object
 from zsl.application.service_application import AtteqServiceFlask

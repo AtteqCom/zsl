@@ -1,7 +1,10 @@
 """
+:mod:`zsl.tasks.asl.cors_test_task`
+-----------------------------------
+
 Created on 22.12.2012
 
-@author: Martin Babka <babka@atteq.com>
+.. moduleauthor:: Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
 

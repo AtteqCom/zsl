@@ -1,3 +1,9 @@
+"""
+:mod:`zsl.utils.import_helper`
+------------------------------
+
+.. moduleauthor:: Martin Babka
+"""
 from __future__ import unicode_literals
 import gearman
 import json

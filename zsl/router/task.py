@@ -1,3 +1,7 @@
+"""
+:mod:`zsl.router.task`
+------------------------
+"""
 from __future__ import unicode_literals
 from builtins import object
 import importlib
@@ -51,7 +55,7 @@ class TaskRouter(object):
         # finding the path in task packages
         module = None
         for task_package in self.get_task_packages():
-            module_name = "{0}.{1}".format(task_package, ".".join(path))
+            module_name = "{0}.{1}".format(task_package, ".".join(path[:-1]))
 
             try:
                 self._app.logger.debug("Trying to load module with name '%s' and class name '%s'.", module_name,

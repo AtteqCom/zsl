@@ -1,5 +1,6 @@
 """
-:mod:`asl.db.model.app_model`
+:mod:`zsl.db.model.app_model`
+-----------------------------
 
 .. moduleauthor:: Martin Babka
 """
@@ -22,8 +23,10 @@ RELATED_FIELDS_HINTS = 'hints'
 
 
 class AppModel(object):
-    """
-    ``AppModel``s are used as a thin and simple communication objects. Also they can be saved into cache.
+    """AppModel's are used as a thin and simple communication objects. Also
+    they can be saved into cache.
+
+    .. automethod:: __init__
     """
 
     _not_serialized_attributes = ['_not_serialized_attributes', '_hints', '_id_name']
@@ -32,12 +35,12 @@ class AppModel(object):
         """
         The application model model constructor.
 
-        @param raw: Dictionary of properties of the raw data.
-        @param id_name: Name of the identifier property.
-        @param hints: Tells which of the raw attributes are date or datetime string and what is theirs format
-                      Example: {DATE_DATA: {'birthday': '%d.%m.%Y'}, DATETIME_DATA: {'created': '%Y-%m-%d %H:%M:%S'}}
-                      this attributes are then saved in the standard zsl service date/datetime format (consult
-                      zsl.utils.date_helper)
+        :param raw: Dictionary of properties of the raw data.
+        :param id_name: Name of the identifier property.
+        :param hints: Tells which of the raw attributes are date or datetime string and what is theirs format \
+        Example: ``{DATE_DATA: {'birthday': '%d.%m.%Y'}, DATETIME_DATA: {'created': '%Y-%m-%d %H:%M:%S' }}`` \
+        this attributes are then saved in the standard zsl service date/datetime format (consult \
+        zsl.utils.date_helper)
         """
 
         if hints is None:

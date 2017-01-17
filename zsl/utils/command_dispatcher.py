@@ -1,5 +1,6 @@
 """
-:mod:`asl.utils.command_dispatcher`
+:mod:`zsl.utils.command_dispatcher`
+-----------------------------------
 
 .. moduleauthor:: peter morihladko
 """

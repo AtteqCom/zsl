@@ -1,3 +1,11 @@
+"""
+:mod:`zsl.utils.resource_helper`
+--------------------------------
+
+Helper module for resource management.
+"""
+#TODO describe what model resource is and use cases
+
 from __future__ import unicode_literals
 import importlib
 from flask import request
@@ -12,16 +20,33 @@ resource_packages = app.config['RESOURCE_PACKAGES'] if 'RESOURCE_PACKAGES' in ap
 
 
 class MethodNotImplementedException(Exception):
+    """Exception raised on missing method"""
     pass
 
 
 def parse_resource_path(path):
+    """Split the path to its elements.
+
+    :param path: URL path
+    :type path: str
+    :return: name and rest of the path
+    :rtype: tuple(str, list(str))
+    """
     splits = path.split('/')
 
     return splits[0], splits[1:]
 
 
 def get_method(resource, method):
+    """Test and return a method by name on resource.
+
+    :param resource: resource object
+    :type resource: object
+    :param method: method name
+    :type method: str
+    :return: bounded method
+    :raises MethodNotImplementedException: when method not found
+    """
     if hasattr(resource, method) and callable(getattr(resource, method)):
         return getattr(resource, method)
     else:
@@ -29,6 +54,13 @@ def get_method(resource, method):
 
 
 def get_resource_task(resource_path):
+    """Search and return a bounded method for given path.
+
+    :param resource_path: resource path
+    :type resource_path: str
+    :return: bounded method or None when not found
+    :raises NameError: when can't find given resource by path
+    """
     class_name = underscore_to_camelcase(resource_path) + 'Resource'
 
     resource = None
@@ -87,8 +119,13 @@ def get_resource_task(resource_path):
 
 
 def create_model_resource(resource_map, name):
-    """
-    Create a model resource from a dict ``resource_map`` {'resource name': ('model package', 'model class')}
+    """Create a model resource from a dict ``resource_map``
+    {'resource name': ('model package', 'model class')}
+
+    :param resource_map: dict with resource descriptions
+    :type resource_map: dict(str, tuple(str))
+    :param name: name of the concrete resource
+    :return: instantiated model resource
     """
     try:
         resource_description = resource_map[name]

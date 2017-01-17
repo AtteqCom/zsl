@@ -1,3 +1,7 @@
+"""
+:mod:`zsl.application.initializers.service_initializer`
+-------------------------------------------------------
+"""
 from __future__ import unicode_literals
 from builtins import object
 from injector import singleton

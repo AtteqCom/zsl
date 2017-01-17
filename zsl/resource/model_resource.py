@@ -1,13 +1,15 @@
 """
-:mod:`asl.resource.model_resource` -- REST for a DB model.
-==========================================================
+:mod:`zsl.resource.model_resource` -- REST for a DB model.
+----------------------------------------------------------
 
-Resources provide a way how to directly access DB tables (raw models) and perform CRUD operations upon them.
-The default classes of the models should be overriden to provide more logic or restrictions if wanted.
+Resources provide a way how to directly access DB tables (raw models) and
+perform CRUD operations upon them. The default classes of the models should be
+overridden to provide more logic or restrictions if wanted.
 
 The basic way to use them is as follows:
  - The models can be defined in the __exposer__.py which is set up at settings.
- - To override just override the basic methods - `create`, `read`, `update`, `delete`.
+ - To override just override the basic methods - `create`, `read`, `update`,
+   `delete`.
 
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 """
@@ -72,14 +74,12 @@ class ResourceQueryContext(object):
      - holds the given filter and splits it to the given field array (parsed from the arguments)
 
     .. automethod:: __init__
-    .. automethod:: `get_params` Params are given as the part of the path in URL. For example GET /entities/1 will have
-    1 in the params
-    .. automethod:: `get_args` Args are in the query part of the url ?related=&filter_by etc.
-    .. automethod:: `get_data` Body of the request.
-    .. automethod:: `get_row_id` First parameter, if given, else None. Handy for GET requests.
-    .. automethod:: `get_related` Related argument - parsed as array, original argument containing the list of comma
-    delimited models which should be fetched along with the resource.
-    .. automethod:: `get_filter_by` Filter argument - list of filters
+    .. automethod:: get_params 
+    .. automethod:: get_args 
+    .. automethod:: get_data 
+    .. automethod:: get_row_id 
+    .. automethod:: get_related 
+    .. automethod:: get_filter_by 
     """
 
     def __init__(self, params, args, data):
@@ -99,27 +99,37 @@ class ResourceQueryContext(object):
                 set(self._args.get('related', [])) | set(related_from_fields(self._args['fields'])))
 
     def get_params(self):
+        """Params are given as the part of the path in URL. For example GET /entities/1 will have.
+        1 in the params.
+        """
         return self._params
 
     params = property(get_params)
 
     def get_args(self):
+        """Args are in the query part of the url ?related=&filter_by etc."""
         return self._args
 
     args = property(get_args)
 
     def get_data(self):
+        """Body of the request."""
         return self._data
 
     data = property(get_data)
 
     def get_row_id(self):
+        """First parameter, if given, else None. Handy for GET requests."""
         return None if len(self.params) == 0 else self.params[0]
 
     def get_related(self):
+        """Related argument - parsed as array, original argument containing the
+        list of comma delimited models which should be fetched along with the resource.
+        """
         return self._args.get('related', None)
 
     def get_filter_by(self):
+        """Filter argument - list of filters."""
         return self._args.get('filter_by', None)
 
 
@@ -520,12 +530,9 @@ class ReadOnlyResourceMixin(object):
     The mixin to be used to forbid the update/delete and create operations.
     Remember the Python's MRO and place this mixin at the right place in the inheritance declaration.
 
-    .. automethod:: create Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not
-    available.
-    .. automethod:: update Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not
-    available.
-    .. automethod:: delete Just raises ReadOnlyResourceUpdateOperationException to indicate that this method is not
-    available.
+    .. automethod:: create
+    .. automethod:: update
+    .. automethod:: delete 
     """
 
     OPERATION_CREATE = 'create'
@@ -534,12 +541,33 @@ class ReadOnlyResourceMixin(object):
 
     @staticmethod
     def create(params, args, data):
+        """Raises exception.
+        
+        Just raises ReadOnlyResourceUpdateOperationException to indicate
+        that this method is not available.
+
+        :raises ReadOnlyResourceUpdateOperationException: when accessed  
+        """
         raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_CREATE)
 
     @staticmethod
     def update(params, args, data):
+        """Raises exception.
+        
+        Just raises ReadOnlyResourceUpdateOperationException to indicate
+        that this method is not available.
+
+        :raises ReadOnlyResourceUpdateOperationException: when accessed  
+        """
         raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_UPDATE)
 
     @staticmethod
     def delete(params, args, data):
+        """Raises exception.
+        
+        Just raises ReadOnlyResourceUpdateOperationException to indicate
+        that this method is not available.
+
+        :raises ReadOnlyResourceUpdateOperationException: when accessed  
+        """
         raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_DELETE)

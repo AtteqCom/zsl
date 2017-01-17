@@ -1,3 +1,7 @@
+"""
+:mod:`zsl.interface.gearman.importer`
+-------------------------------------
+"""
 from __future__ import unicode_literals
 import sys
 import os

@@ -1,11 +1,15 @@
+"""
+:mod:`zsl.utils.deploy.integrator`
+----------------------------------
+"""
+
 from __future__ import unicode_literals
 import tempfile
 import os
 
 
 def integrate_to_file(what, filename, start_line, end_line):
-    """
-    WARNING this is working every second run.. so serious bug
+    """WARNING this is working every second run.. so serious bug
     Integrate content into a file withing "line marks"
     """
 
