@@ -33,6 +33,9 @@ to make it better.
 
    getting_started
    configuration
+   dependency_injection
+   services
+   logging
    api
 
 Indices and tables
