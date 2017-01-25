@@ -24,7 +24,7 @@ from zsl.resource.resource_helper import filter_from_url_arg, apply_related, cre
 from functools import partial
 from zsl.db.helpers import app_models
 from zsl.db.helpers.nested import nested_models, nested_model
-from zsl.service.service import transactional, SqlSesionMixin
+from zsl.service.service import transactional, TransactionalSupport
 from zsl.utils.injection_helper import inject
 from zsl.cache.cache_module import CacheModule
 from zsl.cache.id_helper import IdHelper, create_key_class_prefix
@@ -133,7 +133,7 @@ class ResourceQueryContext(object):
         return self._args.get('filter_by', None)
 
 
-class ModelResource(SqlSesionMixin):
+class ModelResource(TransactionalSupport):
     """
     ModelResource works only for tables with a single-column identifier (key).
 
