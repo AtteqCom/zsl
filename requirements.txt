@@ -3,7 +3,6 @@ zsl_client
 click==6.6
 Flask==0.11.1
 Flask-Injector==0.8.0
-gearman==2.0.2
 injector==0.11.1
 itsdangerous==0.24
 Jinja2==2.8

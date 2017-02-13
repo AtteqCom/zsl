@@ -5,19 +5,13 @@
 .. moduleauthor:: Martin
 """
 from __future__ import unicode_literals
-from builtins import object
-from builtins import str
-import socket
 import gearman
-import traceback
-from zsl.application.service_application import service_application
-from zsl.router import task_router
+
+from zsl import inject, Config
+from zsl.application.service_application import ServiceApplication
+from zsl.router.task import TaskRouter
+from zsl.interface.task_queue import Worker, execute_task
 from zsl.interface.gearman.json_data_encoder import JSONDataEncoder
-from zsl.task.job_context import JobContext
-
-
-class KillWorkerException(Exception):
-    pass
 
 
 class ReloadingWorker(gearman.GearmanWorker):
@@ -33,42 +27,16 @@ class ReloadingWorker(gearman.GearmanWorker):
         return True
 
 
-app = service_application
+class GearmanWorker(Worker):
+    def __init__(self):
+        super(GearmanWorker, self).__init__()
 
-
-def execute_task(worker, job):
-    app.logger.info("Job fetched, preparing the task '{0}'.".format(job.data['path']))
-
-    try:
-        (task, task_callable) = task_router.route(job.data['path'])
-        jc = JobContext(job, task, task_callable)
-        JobContext.set_current_context(jc)
-        data = worker.logical_worker.execute_task(jc)
-        app.logger.info("Task {0} executed successfully.".format(job.data['path']))
-        return {'task_name': job.data['path'], 'data': data}
-    except KillWorkerException as e:
-        app.logger.info("Stopping Gearman worker on demand flag set.")
-        worker._should_stop = True
-    except Exception as e:
-        app.logger.error(str(e) + "\n" + traceback.format_exc())
-        return {'task_name': job.data['path'], 'data': None, 'error': str(e)}
-
-
-'''
-Class responsible for connecting to the Gearman server and grabbing tasks.
-Then uses task to get the task object and executes it.
-'''
-
-
-class Worker(object):
-    def __init__(self, app):
-        self._app = app
-        task_router.set_task_reloading(task_router.is_task_reloading() or app.config['RELOAD_GEARMAN'])
         self.gearman_worker = ReloadingWorker(
-            ["{0}:{1}".format(app.config['GEARMAN']['host'], app.config['GEARMAN']['port'])])
-        self.gearman_worker.set_client_id("zsl-client-{0}".format(socket.gethostname()))
+            ["{0}:{1}".format(self._config['GEARMAN']['host'],
+                              self._config['GEARMAN']['port'])])
+        self.gearman_worker.set_client_id(self._get_client_id())
         self.gearman_worker.data_encoder = JSONDataEncoder
-        self.gearman_worker.register_task(self._app.config['GEARMAN_TASK_NAME'], execute_task)
+        self.gearman_worker.register_task(self._config['GEARMAN_TASK_NAME'], execute_task)
         self.gearman_worker.logical_worker = self
 
     def execute_task(self, job_context):

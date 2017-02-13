@@ -11,3 +11,9 @@ Main service module.
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
+
+from flask.config import Config
+
+# TODO add inject
+
+# TODO add service_application

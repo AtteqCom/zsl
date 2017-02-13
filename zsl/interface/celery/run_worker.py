@@ -1,8 +1,8 @@
 """
-:mod:`zsl.interface.gearman.run_worker`
+:mod:`zsl.interface.celery.run_worker`
 ---------------------------------------
 
-.. moduleauthor:: Martin Babka
+.. moduleauthor:: Peter Morihladko
 """
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -11,7 +11,7 @@ from __future__ import unicode_literals
 from zsl.interface.importer import initialize_cli_application, InitializationContext
 initialize_cli_application(InitializationContext(unit_test=False))
 
-from zsl.interface.gearman.worker import Worker
+from zsl.interface.celery.worker import Worker
 
 
 def main():

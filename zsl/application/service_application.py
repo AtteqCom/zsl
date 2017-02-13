@@ -56,6 +56,8 @@ class AtteqServiceFlask(Flask):
         else:
             return AtteqServiceFlask.VERSION + ":" + v
 
+ServiceApplication = AtteqServiceFlask
+
 if not is_initialized():
     raise Exception("Can not instantiate ServiceApplication object, the service is not initialized.")
 service_application = AtteqServiceFlask("zsl.application")
