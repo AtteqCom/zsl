@@ -6,13 +6,12 @@
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 """
 from __future__ import print_function
-from __future__ import unicode_literals
+#from __future__ import unicode_literals
 
 from builtins import object
 
 
 # Initialize the path
-import sys
 import click
 
 # Initialize
@@ -21,10 +20,7 @@ from zsl.interface.importer import initialize_web_application
 initialize_web_application()
 
 import json
-from zsl import Config
-from zsl.utils.injection_helper import inject
 from zsl.router import task_router
-from zsl.interface.task_queue import Worker
 from zsl.task.job_context import JobContext
 from zsl.application import service_application
 
@@ -91,10 +87,10 @@ def run_celery_worker(argv):
 
     :param argv: arguments for celery worker
     """
-    from zsl.interface.celery.worker import CeleryWorker
+    from zsl.interface.celery.worker import CeleryTaskQueueWorker
 
-    worker = CeleryWorker()
-    worker.run(argv)
+    w = CeleryTaskQueueWorker()
+    w.run(argv)
 
 
 def run_gearman_worker():

@@ -2,23 +2,19 @@ import sys
 
 from celery import Celery
 
-from zsl import Config
-from zsl.application.service_application import ServiceApplication
-from zsl.utils.injection_helper import inject
-from zsl.router.task import TaskRouter
-from zsl.interface.task_queue import Worker, execute_task
+from zsl.interface.task_queue import TaskQueueWorker, execute_task
 
 
-class CeleryWorker(Worker):
+class CeleryTaskQueueWorker(TaskQueueWorker):
     """Worker implementation for Celery task queue.
     """
-    _APP_NAME = 'zsl'
-    _TASK_NAME = 'execute_task'
+    _DEFAULT_APP_NAME = 'zsl'
 
     def __init__(self):
-        super(CeleryWorker, self).__init__()
+        super(CeleryTaskQueueWorker, self).__init__()
 
-        self.celery_app = Celery(self._APP_NAME, backend='rpc', broker='redis://localhost')
+        self.celery_app = Celery(self._config.get('CELERY_APP_NAME', self._DEFAULT_APP_NAME), backend='rpc',
+                                 broker='redis://localhost')
         self.celery_app.task(execute_task)
 
     def execute_task(self, job_context):

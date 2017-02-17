@@ -15,11 +15,10 @@ class KillWorkerException(Exception):
     pass
 
 
-class Worker(with_metaclass(abc.ABCMeta, object)):
+class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
     """Class responsible for connecting to the Gearman server and grabbing
     tasks. Then uses task to get the task object and executes it.
     """
-    __metaclass__ = abc.ABCMeta
 
     @inject(app=ServiceApplication, config=Config)
     def __init__(self, app, config):
@@ -27,7 +26,6 @@ class Worker(with_metaclass(abc.ABCMeta, object)):
         self._app = app
         self._config = config
         self._task_router = task_router
-
 
         self._should_stop = False
 
@@ -48,14 +46,16 @@ class Worker(with_metaclass(abc.ABCMeta, object)):
 
 
 @inject(app=ServiceApplication)
-def execute_task(app, task_router, worker, job):
+def execute_task(worker, job, app):
+    # type: (ReloadingWorker, GearmanJob, ServiceApplication) -> None
+
     app.logger.info("Job fetched, preparing the task '{0}'.".format(job.data['path']))
 
     try:
         (task, task_callable) = task_router.route(job.data['path'])
         jc = JobContext(job, task, task_callable)
         JobContext.set_current_context(jc)
-        data = worker.execute_task(jc)
+        data = worker.logical_worker.execute_task(jc)
         app.logger.info("Task {0} executed successfully.".format(job.data['path']))
         return {'task_name': job.data['path'], 'data': data}
     except KillWorkerException as e:

@@ -7,10 +7,7 @@
 from __future__ import unicode_literals
 import gearman
 
-from zsl import inject, Config
-from zsl.application.service_application import ServiceApplication
-from zsl.router.task import TaskRouter
-from zsl.interface.task_queue import Worker, execute_task
+from zsl.interface.task_queue import TaskQueueWorker, execute_task
 from zsl.interface.gearman.json_data_encoder import JSONDataEncoder
 
 
@@ -27,9 +24,9 @@ class ReloadingWorker(gearman.GearmanWorker):
         return True
 
 
-class GearmanWorker(Worker):
+class GearmanTaskQueueWorker(TaskQueueWorker):
     def __init__(self):
-        super(GearmanWorker, self).__init__()
+        super(GearmanTaskQueueWorker, self).__init__()
 
         self.gearman_worker = ReloadingWorker(
             ["{0}:{1}".format(self._config['GEARMAN']['host'],
