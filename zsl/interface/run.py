@@ -10,8 +10,6 @@ from __future__ import print_function
 
 from builtins import object
 
-
-# Initialize the path
 import click
 
 # Initialize
@@ -27,6 +25,7 @@ from zsl.application import service_application
 conf = service_application.config
 
 
+# TODO after #13 import it from job_context
 class Job(object):
     def __init__(self, data):
         self.data = {'data': data}
@@ -87,9 +86,14 @@ def run_celery_worker(argv):
 
     :param argv: arguments for celery worker
     """
-    from zsl.interface.celery.worker import CeleryTaskQueueWorker
+    from zsl.interface.celery.worker import CeleryTaskQueueWorkerModule, CeleryTaskQueueWorker
 
-    w = CeleryTaskQueueWorker()
+    # TODO remove this hack after lazy initialization #13
+    injector = service_application.get_injector()
+    worker_injector = injector.create_child_injector(CeleryTaskQueueWorkerModule)
+    service_application.set_injector(worker_injector)
+
+    w = worker_injector.get(CeleryTaskQueueWorker)
     w.run(argv)
 
 

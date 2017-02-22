@@ -6,8 +6,10 @@
 """
 from __future__ import unicode_literals
 import gearman
+from gearman.job import GearmanJob
 
-from zsl.interface.task_queue import TaskQueueWorker, execute_task
+from zsl.interface.task_queue import TaskQueueWorker
+from zsl.task.job_context import Job
 from zsl.interface.gearman.json_data_encoder import JSONDataEncoder
 
 
@@ -19,9 +21,14 @@ class ReloadingWorker(gearman.GearmanWorker):
     def on_job_complete(self, current_job, job_result):
         super(ReloadingWorker, self).on_job_complete(current_job, job_result)
         if self._should_stop:
-            app.logger.info("Stopping Gearman worker on demand - quitting.")
             quit()
         return True
+
+
+def job_from_gearman_job(gearman_job):
+    # type: (GearmanJob) -> Job
+
+    return Job(gearman_job.data)
 
 
 class GearmanTaskQueueWorker(TaskQueueWorker):
@@ -33,12 +40,27 @@ class GearmanTaskQueueWorker(TaskQueueWorker):
                               self._config['GEARMAN']['port'])])
         self.gearman_worker.set_client_id(self._get_client_id())
         self.gearman_worker.data_encoder = JSONDataEncoder
-        self.gearman_worker.register_task(self._config['GEARMAN_TASK_NAME'], execute_task)
+        self.gearman_worker.register_task(self._config['GEARMAN_TASK_NAME'], self.execute_gearman_job)
         self.gearman_worker.logical_worker = self
 
-    def execute_task(self, job_context):
-        self._app.logger.info("Executing task.")
-        return job_context.task_callable(job_context.task_data)
+        self._current_worker = None
+
+    def stop_worker(self):
+        self._app.logger.info("Stopping Gearman worker on demand - quitting.")
+        self._current_worker._should_stop = True
+
+    def execute_gearman_job(self, worker, job):
+        # type: (ReloadingWorker, GearmanJob) -> dict
+        """
+
+        :param worker:
+        :param job:
+        :return:
+        """
+        job = job_from_gearman_job(job)
+        self._current_worker = worker
+
+        return self.execute_job(job)
 
     def run(self):
         self._app.logger.info("Running the worker.")

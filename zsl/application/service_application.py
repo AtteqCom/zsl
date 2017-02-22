@@ -8,6 +8,7 @@ import os
 
 from zsl.interface.importer import is_initialized
 from flask_injector import FlaskInjector
+from injector import Injector
 
 
 class AtteqServiceFlask(Flask):
@@ -44,6 +45,7 @@ class AtteqServiceFlask(Flask):
         return self._dependencies_initialized
 
     def get_injector(self):
+        # type: () -> Injector
         return self._injector
 
     def set_injector(self, injector):

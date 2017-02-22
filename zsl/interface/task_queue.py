@@ -8,11 +8,29 @@ from zsl.application.service_application import ServiceApplication
 from zsl import Config
 from zsl.utils.injection_helper import inject
 from zsl.router import task_router
-from zsl.task.job_context import JobContext
+from zsl.task.job_context import JobContext, Job
 
 
 class KillWorkerException(Exception):
     pass
+
+
+@inject(app=ServiceApplication)
+def execute_job(job, app):
+    # type: (Job, ServiceApplication) -> dict
+
+    app.logger.info("Job fetched, preparing the task '{0}'.".format(job.path))
+
+    task, task_callable = task_router.route(job.path)
+    jc = JobContext(job, task, task_callable)
+    JobContext.set_current_context(jc)
+
+    app.logger.info("Executing task.")
+    result = jc.task_callable(jc.task_data)
+
+    app.logger.info("Task {0} executed successfully.".format(job.path))
+
+    return {'task_name': job.path, 'data': result}
 
 
 class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
@@ -36,33 +54,35 @@ class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
     def _get_client_id():
         return "zsl-client-{0}".format(socket.gethostname())
 
-    @abc.abstractmethod
-    def execute_task(self, job_context):
-        pass
+    def handle_exception(self, e, task_path):
+        self._app.logger.error(str(e) + "\n" + traceback.format_exc())
+        return {'task_name': task_path, 'data': None, 'error': str(e)}
+
+    def execute_job(self, job):
+        # type: (Job) -> dict
+        """
+
+        :param job:
+        :return:
+        """
+        try:
+            return execute_job(job)
+
+        except KillWorkerException:
+            self._app.logger.info("Stopping Gearman worker on demand flag set.")
+            self.stop_worker()
+
+        except Exception as e:
+            return self.handle_exception(e, job.path)
 
     @abc.abstractmethod
     def run(self):
         pass
 
+    @abc.abstractmethod
+    def stop_worker(self):
+        pass
 
-@inject(app=ServiceApplication)
-def execute_task(worker, job, app):
-    # type: (ReloadingWorker, GearmanJob, ServiceApplication) -> None
 
-    app.logger.info("Job fetched, preparing the task '{0}'.".format(job.data['path']))
-
-    try:
-        (task, task_callable) = task_router.route(job.data['path'])
-        jc = JobContext(job, task, task_callable)
-        JobContext.set_current_context(jc)
-        data = worker.logical_worker.execute_task(jc)
-        app.logger.info("Task {0} executed successfully.".format(job.data['path']))
-        return {'task_name': job.data['path'], 'data': data}
-    except KillWorkerException as e:
-        app.logger.info("Stopping Gearman worker on demand flag set.")
-        worker._should_stop = True
-    except Exception as e:
-        app.logger.error(str(e) + "\n" + traceback.format_exc())
-        return {'task_name': job.data['path'], 'data': None, 'error': str(e)}
 
 
