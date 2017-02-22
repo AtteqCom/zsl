@@ -28,13 +28,8 @@ def underscore_to_camelcase(value):
         >>> underscore_to_camelcase('camel_case')
         'camelCase'
     """
-    def camelcase():
-        while True:
-            yield str.capitalize
-
     value = str(value)
-    c = camelcase()
-    return "".join(c.next()(x) if x else '_' for x in value.split("_"))
+    return "".join(x.title() if x else '_' for x in value.split("_"))
 
 
 def camelcase_to_underscore(name):
