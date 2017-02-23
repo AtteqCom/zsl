@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 from flask import Flask
 import os
+from typing import Union
 
 from zsl.interface.importer import is_initialized
 from flask_injector import FlaskInjector
@@ -50,6 +51,14 @@ class AtteqServiceFlask(Flask):
 
     def set_injector(self, injector):
         self._injector = injector
+
+    def add_injector_module(self, modules):
+        # type: (Union[object, list]) -> Injector
+        # TODO remove this hack after lazy initialization #13
+        injector = self.get_injector().create_child_injector(modules)
+        self.set_injector(injector)
+
+        return injector
 
     def get_version(self):
         v = self.config.get('VERSION')

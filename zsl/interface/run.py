@@ -86,14 +86,11 @@ def run_celery_worker(argv):
 
     :param argv: arguments for celery worker
     """
-    from zsl.interface.celery.worker import CeleryTaskQueueWorkerModule, CeleryTaskQueueWorker
+    from zsl.interface.celery.worker import CeleryTaskQueueMainWorkerModule, CeleryTaskQueueWorkerBase
 
-    # TODO remove this hack after lazy initialization #13
-    injector = service_application.get_injector()
-    worker_injector = injector.create_child_injector(CeleryTaskQueueWorkerModule)
-    service_application.set_injector(worker_injector)
+    injector = service_application.add_injector_module(CeleryTaskQueueMainWorkerModule)
 
-    w = worker_injector.get(CeleryTaskQueueWorker)
+    w = injector.get(CeleryTaskQueueWorkerBase)
     w.run(argv)
 
 
