@@ -51,12 +51,6 @@ class GearmanTaskQueueWorker(TaskQueueWorker):
 
     def execute_gearman_job(self, worker, job):
         # type: (ReloadingWorker, GearmanJob) -> dict
-        """
-
-        :param worker:
-        :param job:
-        :return:
-        """
         job = job_from_gearman_job(job)
         self._current_worker = worker
 

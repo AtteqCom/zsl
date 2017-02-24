@@ -7,10 +7,10 @@
 from __future__ import unicode_literals
 from builtins import object
 from typing import Callable
+from abc import abstractmethod
 
 from zsl.task.task_data import TaskData
 from zsl.application.service_application import service_application
-from abc import abstractmethod
 
 
 class Job(object):
@@ -21,8 +21,7 @@ class Job(object):
 
     @property
     def path(self):
-        """
-        Job's path.
+        """Job's path.
 
         :getter: Returns job's path
         :type: str
@@ -31,18 +30,16 @@ class Job(object):
 
     @property
     def payload(self):
-        """
-        Data part of job.
+        """Data part of job.
 
-        ;getter: Returns job's payload
+        :getter: Returns job's payload
         :type: dict
         """
         return self.data['data']
 
     @property
     def is_valid(self):
-        """
-        Validity of job's data.
+        """Validity of job's data.
 
         :getter: Returns if job's data are valid
         :type: bool
@@ -51,8 +48,7 @@ class Job(object):
 
 
 class JobContext(object):
-    """Job Context
-    """
+    """Job Context"""
 
     _current_context = None
 
@@ -90,9 +86,8 @@ def web_task_redirect(location):
 
 class WebJobContext(JobContext):
     def __init__(self, path, data, task, task_callable, request):
-        """
-        Constructor
-        """
+        """Constructor"""
+
         self.job = Job({'data': data, 'path': path})
         self.task = task
         self.task_callable = task_callable

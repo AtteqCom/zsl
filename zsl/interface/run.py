@@ -60,7 +60,7 @@ def shell():
 @click.argument('data', default=None, required=False)
 def task(task, data=None):
     """
-    .. autofunction:: run_task
+    .. autofunction:: task
     Runs the given task
 
     ..param:
@@ -105,7 +105,7 @@ def run_gearman_worker():
 @click.argument('task_queue', type=click.Choice(['celery', 'gearman']))
 @click.argument('argv', nargs=-1, type=click.UNPROCESSED)
 @click.pass_context
-def worker(ctx, task_queue, argv):
+def worker(_, task_queue, argv):
     if task_queue == 'celery':
         run_celery_worker(argv)
     elif task_queue == 'gearman':

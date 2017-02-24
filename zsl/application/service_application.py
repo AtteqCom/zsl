@@ -55,6 +55,14 @@ class AtteqServiceFlask(Flask):
     def add_injector_module(self, modules):
         # type: (Union[object, list]) -> Injector
         # TODO remove this hack after lazy initialization #13
+        """Add an injector module to current injector.
+
+        It will create a child injector with given modules and it will place it
+        as the application injector.
+        :param modules: list of modules
+        :return: the new injector
+        :rtype: Injector
+        """
         injector = self.get_injector().create_child_injector(modules)
         self.set_injector(injector)
 
