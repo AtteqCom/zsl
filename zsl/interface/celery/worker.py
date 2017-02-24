@@ -18,8 +18,8 @@ class CeleryTaskQueueWorkerBase(TaskQueueWorker):
         # type: (Config) -> None
         super(CeleryTaskQueueWorkerBase, self).__init__()
 
-        self.celery_app = Celery('zsl', backend='rpc', broker='redis://localhost')
-        self.celery_app.config_from_object(config.get('CELERY_CONFIG'))
+        self.celery_app = Celery()
+        self.celery_app.config_from_object(config['CELERY'])
 
     def execute_celery_task(self, job_data):
         job = Job(job_data)
