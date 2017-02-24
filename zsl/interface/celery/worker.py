@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import sys
 
 from celery import Celery, shared_task
@@ -72,3 +74,4 @@ class CeleryTaskQueueOutsideWorkerModule(Module):
 def execute_task(job_data, worker):
     # type: (object, CeleryTaskQueueWorkerBase) -> dict
     return worker.execute_celery_task(job_data)
+

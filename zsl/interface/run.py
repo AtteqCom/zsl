@@ -6,11 +6,12 @@
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 """
 from __future__ import print_function
-#from __future__ import unicode_literals
+from __future__ import unicode_literals
 
 from builtins import object
 
 import click
+click.disable_unicode_literals_warning = True
 
 # Initialize
 from zsl.interface.importer import initialize_web_application
