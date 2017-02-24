@@ -27,6 +27,13 @@ class ReloadingWorker(gearman.GearmanWorker):
 
 def job_from_gearman_job(gearman_job):
     # type: (GearmanJob) -> Job
+    """Creates zsl job from gearman job.
+
+    :param gearman_job: gearman job
+    :type gearman_job: GearmanJob
+    :return: zsl job
+    :rtype: Job
+    """
 
     return Job(gearman_job.data)
 
