@@ -4,12 +4,12 @@
 """
 from __future__ import unicode_literals
 from builtins import object
+
 import logging
 import sys
 import os
 
-from flask import Config
-from zsl.application.initializers import injection_module
+from zsl import Config, inject
 
 
 def append_paths(path, vendor_modules):
@@ -20,11 +20,11 @@ def append_paths(path, vendor_modules):
 
 
 class LibraryInitializer(object):
+    """Add vendor modules to current path."""
     @staticmethod
-    def initialize(binder):
-        logger = binder.injector.get(logging.Logger)
-        logger.debug("Initializing project external libraries.")
-        config = binder.injector.get(Config)
+    @inject(config=Config)
+    def initialize(config):
+        logging.debug("Initializing project external libraries.")
 
         external_libraries = config.get('EXTERNAL_LIBRARIES', None)
         if external_libraries is None:
@@ -33,10 +33,5 @@ class LibraryInitializer(object):
         vendor_path = external_libraries['vendor_path']
         append_paths(vendor_path, external_libraries['libs'])
 
-        logger.info("Current PYTHON_PATH={0}.".format(sys.path))
-        logger.debug("Project external libraries initialized.")
-
-
-@injection_module
-def application_initializer_module(binder):
-    LibraryInitializer().initialize(binder)
+        logging.info("Current PYTHON_PATH={0}.".format(sys.path))
+        logging.debug("Project external libraries initialized.")

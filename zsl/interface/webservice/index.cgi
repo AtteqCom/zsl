@@ -1,12 +1,13 @@
 #!/usr/bin/python
 
-from asl.interface.importer import initialize_web_application
-initialize_web_application()
+from zsl import Zsl
+from zsl.application.containers.web_container import WebContainer
 
-# Now import the application and the remaining stuff.
-from asl.application import service_application
+
 
 # Run it!
 if __name__ == "__main__":
+	service_application = Zsl(__name__, modules=WebContainer.modules())
+
 	from wsgiref.handlers import CGIHandler
-	CGIHandler().run(service_application)
+	CGIHandler().run(app)

@@ -6,6 +6,11 @@
 from __future__ import unicode_literals
 # Now import the application and the remaining stuff.
 
+from zsl.interface.webservice.performers.default import create_not_found_mapping
+from zsl.interface.webservice.performers.resource import create_resource_mapping
+from zsl.interface.webservice.performers.task import create_web_task
+from zsl.interface.webservice.performers.method import call_exposers_in_method_packages
+
 
 def load_peformers():
     """
@@ -13,10 +18,10 @@ def load_peformers():
     application objects. This makes the initialization procedure run in the time when it is necessary and has every
     required resources.
     """
-    __import__('zsl.interface.webservice.performers.default')
-    __import__('zsl.interface.webservice.performers.resource')
-    __import__('zsl.interface.webservice.performers.task')
-    __import__('zsl.interface.webservice.performers.method')
+    create_not_found_mapping()
+    create_resource_mapping()
+    create_web_task()
+    call_exposers_in_method_packages()
 
 
 def load():

@@ -7,20 +7,20 @@
 from __future__ import unicode_literals
 from zsl.cache.cache_module import CacheModule
 import redis
-from zsl.application.service_application import service_application
+
+from zsl import inject, Zsl, Config
 
 
 class RedisCacheModule(CacheModule):
-    """
-    Abstraction layer for caching.
-    """
+    """Abstraction layer for caching."""
 
-    def __init__(self):
-        """
-        Abstraction layer for caching.
-        """
-        self._app = service_application
-        redis_conf = self._app.config['REDIS']
+    @inject(app=Zsl, config=Config)
+    def __init__(self, app, config):
+        """Abstraction layer for caching."""
+        self._app = app
+        self._config = config
+
+        redis_conf = self._config['REDIS']
         self._client = redis.StrictRedis(
             host=redis_conf['host'],
             port=redis_conf['port'],
@@ -29,8 +29,8 @@ class RedisCacheModule(CacheModule):
         )
         self.logger = self._app.logger.getChild('cache')
         self.logger.debug("Redis client created.")
-        self._cache_prefix = service_application.config[
-            'CACHE_PREFIX'] + ':' if 'CACHE_PREFIX' in service_application.config else ''
+        self._cache_prefix = self._config[
+            'CACHE_PREFIX'] + ':' if 'CACHE_PREFIX' in self._config else ''
 
     def _prefix_key(self, key):
         return self._cache_prefix + key
@@ -74,7 +74,7 @@ class RedisCacheModule(CacheModule):
     def invalidate_by_glob(self, glob):
         pglob = self._prefix_key(glob)
 
-        if self._app.config.get('IS_USING_MEDIEVAL_SOFTWARE', False):
+        if self._config.get('IS_USING_MEDIEVAL_SOFTWARE', False):
             keylist = self._client.keys(pglob)
         else:
             keylist = self._client.scan_iter(pglob)

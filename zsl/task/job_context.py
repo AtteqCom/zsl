@@ -10,7 +10,6 @@ from typing import Callable
 from abc import abstractmethod
 
 from zsl.task.task_data import TaskData
-from zsl.application.service_application import service_application
 
 
 class Job(object):
@@ -60,7 +59,7 @@ class JobContext(object):
         self.job = job
         self.task = task
         self.task_callable = task_callable
-        self.task_data = TaskData(service_application, self.job.payload)
+        self.task_data = TaskData(self.job.payload)
 
         JobContext.set_current_context(None)
 
@@ -91,7 +90,7 @@ class WebJobContext(JobContext):
         self.job = Job({'data': data, 'path': path})
         self.task = task
         self.task_callable = task_callable
-        self.task_data = TaskData(service_application, data)
+        self.task_data = TaskData(data)
         self._request = request
         self._responders = []
 

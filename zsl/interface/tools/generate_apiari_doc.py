@@ -11,10 +11,6 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from . import importer
-importer.append_asl_path_to_pythonpath()
-from zsl.interface.importer import initialize_cli_application, InitializationContext
-initialize_cli_application(InitializationContext(unit_test=False))
 
 import pydoc
 import inspect

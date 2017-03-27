@@ -8,8 +8,6 @@ from future.utils import viewitems
 from sqlalchemy.sql import func
 
 
-# from zsl.application.service_application import service_application
-
 class OperatorEq(object):
     @staticmethod
     def apply(q, attr, v):

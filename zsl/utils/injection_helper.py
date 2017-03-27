@@ -6,18 +6,19 @@
 """
 from __future__ import unicode_literals
 from future.utils import viewitems
-from zsl.application.service_application import service_application as _app
 import injector
 from injector import BindingKey, reraise, CallError
 import inspect
 import functools
 
+from zsl._state import get_current_app
+
 
 def instantiate(cls):
-    injector = _app.get_injector()
+    inj = get_current_app().injector
 
     if hasattr(cls, "__new__"):
-        task = injector.create_object(cls)
+        task = inj.create_object(cls)
     else:
         task = cls()
 
@@ -35,9 +36,9 @@ def inject(**bindings):
                 bindings[key] = BindingKey(value)
 
             @functools.wraps(f)
-            def inject(*args, **kwargs):
-                injector = _app.get_injector()
-                dependencies = injector.args_to_inject(
+            def _inject(*args, **kwargs):
+                inj = get_current_app().injector
+                dependencies = inj.args_to_inject(
                     function=f,
                     bindings=bindings,
                     owner_key=f
@@ -48,7 +49,7 @@ def inject(**bindings):
                 except TypeError as e:
                     reraise(e, CallError(f, args, dependencies, e))
 
-            return inject
+            return _inject
 
         '''
         Just a convenience method - delegates everything to wrapper.
@@ -58,7 +59,7 @@ def inject(**bindings):
             """
             Properly installs the injector into the object so that the injection can be performed.
             """
-            inj = _app.get_injector()
+            inj = get_current_app().injector
             # Install injector into the self instance if this is a method call.
             inj.install_into(a[0])
 
@@ -76,4 +77,4 @@ def inject(**bindings):
 
 
 def bind(interface, to=None, scope=None):
-    _app.get_injector().binder.bind(interface, to, scope)
+    get_current_app().injector.binder.bind(interface, to, scope)

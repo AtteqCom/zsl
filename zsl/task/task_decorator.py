@@ -8,11 +8,11 @@
 from __future__ import unicode_literals
 from builtins import str
 
+import logging
 import json
 
 from datetime import timedelta
 from flask import request
-from zsl.application.service_application import service_application as app
 from zsl.task.task_data import TaskData
 from zsl.db.model import AppModelJSONEncoder
 from zsl.task.job_context import JobContext, WebJobContext, Responder
@@ -21,6 +21,8 @@ from functools import wraps
 from os.path import os
 from zsl.utils.file_helper import makedirs
 from zsl.utils.security_helper import verify_security_data
+
+from zsl import inject, Zsl
 
 
 def log_output(f):
@@ -31,7 +33,7 @@ def log_output(f):
     @wraps(f)
     def wrapper_fn(*args, **kwargs):
         res = f(*args, **kwargs)
-        app.logger.debug("Logging result %s.", res)
+        logging.debug("Logging result %s.", res)
         return res
 
     return wrapper_fn
@@ -71,7 +73,7 @@ def json_input(f):
         task_data = _get_data_from_args(args)
 
         if task_data is None:
-            app.logger.error("Task data is empty during JSON decoding.")
+            logging.error("Task data is empty during JSON decoding.")
 
         if task_data.get_data():
             try:
@@ -79,7 +81,7 @@ def json_input(f):
                 if not request.json and task_data is not None and not task_data.is_skipping_json():
                     task_data.transform_data(json.loads)
             except (ValueError, RuntimeError):
-                app.logger.error("Exception while processing JSON input decorator.")
+                logging.error("Exception while processing JSON input decorator.")
                 task_data.transform_data(json.loads)
         else:
             task_data.transform_data(lambda _: {})
@@ -161,12 +163,12 @@ def jsend_output(fail_exception_classes=None):
             except fail_exception_classes as e:
                 return {'status': 'fail', 'data': {'message': str(e)}}
             except Exception as e:
-                app.logger.error(str(e) + "\n" + traceback.format_exc())
+                logging.error(str(e) + "\n" + traceback.format_exc())
                 return {'status': 'error', 'message': 'Server error.'}
 
             if not isinstance(rv, dict) and rv is not None:
                 msg = 'jsend_output decorator error: task must return dict or None.'
-                app.logger.error(msg + '\ntask return value: {0}'.format(rv))
+                logging.error(msg + '\ntask return value: {0}'.format(rv))
                 return {'status': 'error', 'message': 'Server error.'}
 
             return {'status': 'success', 'data': rv}
@@ -213,7 +215,7 @@ def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
             rv = {'data': ret_val}
     except:
         exc = traceback.format_exc()
-        app.logger.error(exc)
+        logging.error(exc)
         rv = {'error': "{0}".format(exc)}
 
     return json.dumps(rv)
@@ -333,7 +335,7 @@ def file_upload(f):
         task_data = _get_data_from_args(args)
 
         if task_data is None:
-            app.logger.error("Task data is empty during FilesUploadDecorator.")
+            logging.error("Task data is empty during FilesUploadDecorator.")
 
         task_data.transform_data(lambda _: request.files.getlist('file'))
         return f(*args, **kwargs)
@@ -388,7 +390,10 @@ class CrossdomainWebTaskResponder(Responder):
     source: http://flask.pocoo.org/snippets/56/
     """
 
-    def __init__(self, origin=None, methods=None, headers=None, max_age=21600):
+    @inject(app=Zsl)
+    def __init__(self, origin=None, methods=None, headers=None, max_age=21600, app=Injected):
+        self._app = app
+
         if methods is not None:
             methods = ', '.join(sorted(x.upper() for x in methods))
         self.methods = methods
@@ -409,7 +414,7 @@ class CrossdomainWebTaskResponder(Responder):
         if self.methods is not None:
             return self.methods
 
-        options_resp = app.make_default_options_response()
+        options_resp = self._app.make_default_options_response()
         return options_resp.headers['allow']
 
     def respond(self, resp):

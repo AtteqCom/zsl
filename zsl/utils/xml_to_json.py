@@ -10,13 +10,13 @@ from future.utils import viewitems
 
 class XmlToJsonException(Exception):
     """Exception raised during converting xml to json."""
-    #TODO make use of build in exception, see bug #13299
+    # TODO make use of build in exception, see bug #13299
     pass
 
 
 class NotCompleteXmlException(Exception):
     """Exception raised during parsing an invalid XML."""
-    #TODO make use of build in exception, see bug #13299
+    # TODO make use of build in exception, see bug #13299
     pass
 
 

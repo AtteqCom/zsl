@@ -6,7 +6,6 @@ Created on May 14, 2014
 from zsl.unittest import TestCase
 
 from zsl.resource.model_resource import ModelResource
-from zsl.application.service_application import service_application
 from tests.resource.resource_test_helper import DummyModel, create_resource_test_data
 
 

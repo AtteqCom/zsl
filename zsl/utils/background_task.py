@@ -3,10 +3,14 @@
 --------------------------------
 """
 from __future__ import unicode_literals
+
+from typing import Callable
+
+from zsl import inject, Config
 from zsl_client import GearmanService, RawTask, JsonTask
-from zsl.application.service_application import service_application as app
 from functools import wraps
 from zsl.utils.params_helper import required_params
+
 
 __author__ = 'Peter Morihladko'
 
@@ -27,19 +31,36 @@ def background_task_method(task):
     # TODO vytvorit este vseobecny background_task nielen pre metody
 
     def decorator_fn(fn):
-        if 'GEARMAN' not in app.config or 'host' not in app.config['GEARMAN'] or 'GEARMAN_TASK_NAME' not in app.config:
-            raise Exception("Missing gearman settings (trying to use backgorund task)")
 
-        gearman_host = (app.config['GEARMAN']['host'], app.config['GEARMAN']['port']) if app.config['GEARMAN']['port'] \
-            else app.config['GEARMAN']['host']
-        gearman = GearmanService({'HOST': [gearman_host], 'TASK_NAME': app.config['GEARMAN_TASK_NAME']})
-        gearman.set_blocking(False)
+        gearman = None
+
+        @inject(config=Config)
+        def gearman_connect(config):
+            # type: (Config) -> GearmanService
+            if 'GEARMAN' not in config or 'host' not in config['GEARMAN'] or 'GEARMAN_TASK_NAME' not in config:
+                raise Exception("Missing gearman settings (trying to use backgorund task)")
+
+            gearman_host = (config['GEARMAN']['host'], config['GEARMAN']['port']) if config['GEARMAN']['port'] \
+                else config['GEARMAN']['host']
+            gearman_service = GearmanService({'HOST': [gearman_host], 'TASK_NAME': config['GEARMAN_TASK_NAME']})
+            gearman_service.set_blocking(False)
+
+            return gearman_service
+
+        def get_gearman_client():
+            # type: () -> GearmanService
+            global gearman
+
+            if not gearman:
+                gearman = gearman_connect()
+
+            return gearman
 
         @wraps(fn)
         def background_task_decorator(*args, **kwargs):
             # The first of the args is self.
             t = RawTask(task, dict(method=fn.__name__, args=args[1:], kwargs=kwargs))
-            t_result = gearman.call(t, [JsonTask])
+            t_result = get_gearman_client().call(t, [JsonTask])
             return t_result.result
 
         background_task_decorator._background_fn = fn

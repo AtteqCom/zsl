@@ -6,13 +6,9 @@
 """
 from __future__ import unicode_literals
 
-from zsl.interface.importer import InitializationContext, initialize_cli_application
-initialize_cli_application(InitializationContext(unit_test=False))
-
 from zsl.router.method import identity_responder, set_default_responder
 import importlib
 import unittest
-from zsl.application.service_application import service_application
 
 _test_responder_set = False
 

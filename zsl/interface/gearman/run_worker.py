@@ -7,17 +7,16 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-# Initialize app
-from zsl.interface.importer import initialize_cli_application, InitializationContext
-initialize_cli_application(InitializationContext(unit_test=False))
-
-from zsl.interface.gearman.worker import GearmanTaskQueueWorker
+from zsl import Zsl
+from zsl.application.containers.gearman_container import GearmanContainer
 
 
 def main():
-    print("Initializing Gearman worker.")
-    w = GearmanTaskQueueWorker()
-    w.run()
+    print("Initializing app.")
+
+    app = Zsl(__name__, modules=GearmanContainer.modules())
+    app.run_worker()
+
 
 if __name__ == "__main__":
     main()

@@ -5,7 +5,7 @@ from sqlalchemy.sql.sqltypes import VARCHAR, INTEGER
 from sqlalchemy.sql.schema import Column
 from zsl.utils.injection_helper import inject
 from sqlalchemy.engine.base import Engine
-from zsl.application.initializers.database_initializer import SessionHolder
+from zsl.application.modules.alchemy_module import SessionHolder
 
 
 Base = declarative_base()

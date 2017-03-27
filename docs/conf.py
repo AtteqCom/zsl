@@ -18,13 +18,8 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('..'))
-
-# Init ASL
-from zsl.interface.importer import initialize_cli_application, InitializationContext
-
-initialize_cli_application(InitializationContext(unit_test=False))
-from zsl.application import service_application
 
 from recommonmark.parser import CommonMarkParser
 
@@ -38,9 +33,9 @@ from recommonmark.parser import CommonMarkParser
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.ifconfig',
-    'sphinx.ext.viewcode']
+              'sphinx.ext.intersphinx',
+              'sphinx.ext.ifconfig',
+              'sphinx.ext.viewcode']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -87,7 +82,6 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
-
 # -- Options for HTML output ----------------------------------------------
 
 import sphinx_rtd_theme
@@ -109,12 +103,10 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'zsldoc'
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -144,7 +136,6 @@ latex_documents = [
      u'Atteq s.r.o.', 'manual'),
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
@@ -153,7 +144,6 @@ man_pages = [
     (master_doc, 'zsl', u'zsl Documentation',
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -165,9 +155,6 @@ texinfo_documents = [
      author, 'zsl', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}

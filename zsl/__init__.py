@@ -12,8 +12,16 @@ Main service module.
 """
 from __future__ import unicode_literals
 
-from flask.config import Config
+from flask import Config
 
-# TODO add inject
+from injector import Module
 
-# TODO add service_application
+from zsl.application.initialization_context import InitializationContext as ApplicationContext
+
+from zsl.utils.injection_helper import inject
+from zsl.application.service_application import ServiceApplication
+
+Zsl = ServiceApplication
+
+# placeholder for default value used in function declaration for arguments which will be injected
+Injected = None
