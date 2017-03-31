@@ -9,6 +9,12 @@ setup(name='zsl',
       author_email='open.source@atteq.com',
       url='https://github.com/AtteqCom/zsl',
       license='MIT',
+      install_requires=[
+        'injector',
+        'flask',
+        'flask_injector',
+        'future'
+      ],
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Programming Language :: Python :: 2.7',
