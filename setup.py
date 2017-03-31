@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 EXCLUDE_FROM_PACKAGES = ['tests', 'tests.*']
 
 setup(name='zsl',
-      version='0.9',
+      version='0.11.0',
       description='zsl application framework for web based services',
       author='Atteq s.r.o.',
       author_email='open.source@atteq.com',
