@@ -135,7 +135,18 @@ class AtteqServiceFlask(Flask):
         else:
             return AtteqServiceFlask.VERSION + ":" + v
 
-    run_web = Flask.run
+    def run_web(self, host='127.0.0.1', port=5000, debug=False, **options):
+
+        options.setdefault('use_debugger', self.config.get('USE_DEBUGGER', False))
+        options.setdefault('use_reloader', self.config.get('USE_RELOADER', False))
+
+        return self.run(
+            host=self.config.get('FLASK_HOST', host),
+            port=self.config.get('FLASK_PORT', port),
+            debug=self.config.get('DEBUG', debug),
+            **options
+        )
+
     """Alias for Flask.run"""
 
     def run_worker(self, *args, **kwargs):
