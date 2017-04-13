@@ -50,11 +50,13 @@ def web():
     app.run_web()
 
 
-@cli.command(help="open interactive shell (bpython) with the ZSL environment")
-def shell():
+@cli.command(help="open interactive shell (bpython) with the ZSL environment",
+             context_settings=dict(ignore_unknown_options=True))
+@click.argument('args', nargs=-1, type=click.UNPROCESSED)
+def shell(args):
     import bpython
 
-    bpython.embed()
+    bpython.embed(args=list(args))
 
 
 @run.command(help="execute task")
