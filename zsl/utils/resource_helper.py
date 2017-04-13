@@ -123,13 +123,15 @@ def get_resource_task(resource_path, config=Injected):
 
 
 @inject(app=Zsl)
-def create_model_resource(resource_map, name):
+def create_model_resource(resource_map, name, app=Injected):
     """Create a model resource from a dict ``resource_map``
     {'resource name': ('model package', 'model class')}
 
     :param resource_map: dict with resource descriptions
     :type resource_map: dict(str, tuple(str))
     :param name: name of the concrete resource
+    :param app: current application, injected
+    :type app: Zsl
     :return: instantiated model resource
     """
     try:
@@ -147,4 +149,4 @@ def create_model_resource(resource_map, name):
     module = importlib.import_module(module_name)
     model_cls = getattr(module, model_name)
 
-    return app.get_injector().create_object(resource_class, {'model_cls': model_cls})
+    return app.injector.create_object(resource_class, {'model_cls': model_cls})

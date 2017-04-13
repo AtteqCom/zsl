@@ -5,11 +5,13 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
-
 from builtins import object
+
+import logging
+from functools import wraps
+
 from sqlalchemy.engine.base import Engine
 from zsl.application.modules.alchemy_module import SessionHolder
-from functools import wraps
 
 from zsl import inject, Zsl, Injected
 
@@ -43,21 +45,20 @@ class Service(TransactionalSupport):
 
 def transactional(f):
     @wraps(f)
-    @inject(app=Zsl)
-    def transactional_f(app=Injected, *args, **kwargs):
+    def transactional_f(*args, **kwargs):
         trans_close = False
 
         service_instance = args[0]
 
         try:
-            app.logger.debug("Entering transactional method.")
+            logging.debug("Entering transactional method.")
             if service_instance._orm is None:
                 service_instance._orm = service_instance._session_holder()
 
             if not service_instance._in_transaction:
                 trans_close = True
                 service_instance._in_transaction = True
-                app.logger.debug("Transaction opened.")
+                logging.debug("Transaction opened.")
 
             rv = f(*args, **kwargs)
 
@@ -68,12 +69,12 @@ def transactional(f):
                     for c in callbacks:
                         c()
 
-                app.logger.debug("Commit.")
+                logging.debug("Commit.")
                 service_instance._orm.commit()
 
             return rv
         except:
-            app.logger.debug("Rollback.")
+            logging.debug("Rollback.")
             if trans_close and service_instance._orm is not None:
                 service_instance._orm.rollback()
             raise

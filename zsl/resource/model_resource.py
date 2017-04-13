@@ -150,7 +150,7 @@ class ModelResource(TransactionalSupport):
         Create Model CRUD resource for ``model_cls``
         """
 
-        self.init_sql_session()
+        super(ModelResource, self).__init__()
 
         self.model_cls = model_cls
 
