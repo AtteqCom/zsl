@@ -7,11 +7,11 @@
 from __future__ import unicode_literals
 
 from builtins import object
-from zsl.application.service_application import AtteqServiceFlask, service_application
-from zsl.utils.injection_helper import inject
 from sqlalchemy.engine.base import Engine
-from zsl.application.initializers.database_initializer import SessionHolder
+from zsl.application.modules.alchemy_module import SessionHolder
 from functools import wraps
+
+from zsl import inject, Zsl, Injected
 
 
 class TransactionalSupport(object):
@@ -31,7 +31,7 @@ class Service(TransactionalSupport):
     Main service class.
     """
 
-    @inject(app=AtteqServiceFlask, engine=Engine)
+    @inject(app=Zsl, engine=Engine)
     def __init__(self, app, engine):
         """
         Constructor - initializes and injects the needed libraries.
@@ -43,20 +43,21 @@ class Service(TransactionalSupport):
 
 def transactional(f):
     @wraps(f)
-    def transactional_f(*args, **kwargs):
+    @inject(app=Zsl)
+    def transactional_f(app=Injected, *args, **kwargs):
         trans_close = False
 
         service_instance = args[0]
 
         try:
-            service_application.logger.debug("Entering transactional method.")
+            app.logger.debug("Entering transactional method.")
             if service_instance._orm is None:
                 service_instance._orm = service_instance._session_holder()
 
             if not service_instance._in_transaction:
                 trans_close = True
                 service_instance._in_transaction = True
-                service_application.logger.debug("Transaction opened.")
+                app.logger.debug("Transaction opened.")
 
             rv = f(*args, **kwargs)
 
@@ -67,12 +68,12 @@ def transactional(f):
                     for c in callbacks:
                         c()
 
-                service_application.logger.debug("Commit.")
+                app.logger.debug("Commit.")
                 service_instance._orm.commit()
 
             return rv
         except:
-            service_application.logger.debug("Rollback.")
+            app.logger.debug("Rollback.")
             if trans_close and service_instance._orm is not None:
                 service_instance._orm.rollback()
             raise

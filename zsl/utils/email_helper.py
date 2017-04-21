@@ -7,10 +7,12 @@ from __future__ import unicode_literals
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from zsl.application.service_application import service_application as app
+
+from zsl import inject, Config, Injected
 
 
-def send_email(sender, receivers, subject, text=None, html=None, charset='utf-8'):
+@inject(config=Config)
+def send_email(sender, receivers, subject, text=None, html=None, charset='utf-8', config=Injected):
     """Sends an email.
 
     :param sender: Sender as string or None for default got from config.
@@ -19,8 +21,9 @@ def send_email(sender, receivers, subject, text=None, html=None, charset='utf-8'
     :param text: Plain text message.
     :param html: Html message.
     :param charset: Charset.
+    :param config: Current configuration
     """
-    smtp_config = app.config['SMTP']
+    smtp_config = config['SMTP']
 
     # Receivers must be an array.
     if not isinstance(receivers, list) and not isinstance(receivers, tuple):

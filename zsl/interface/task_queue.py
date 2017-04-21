@@ -13,10 +13,9 @@ import abc
 import traceback
 import socket
 
-from zsl.application.service_application import ServiceApplication
-from zsl import Config
+from zsl import Zsl, Config, Injected
 from zsl.utils.injection_helper import inject
-from zsl.router import task_router
+from zsl.router.task import TaskRouter
 from zsl.task.job_context import JobContext, Job
 
 
@@ -25,15 +24,17 @@ class KillWorkerException(Exception):
     pass
 
 
-@inject(app=ServiceApplication)
-def execute_job(job, app):
+@inject(app=Zsl, task_router=TaskRouter)
+def execute_job(job, app=Injected, task_router=Injected):
     # type: (Job, ServiceApplication) -> dict
     """Execute a job.
 
     :param job: job to execute
     :type job: Job
-    :param app: service application instance
+    :param app: service application instance, injected
     :type app: ServiceApplication
+    :param task_router: task router instance, injected
+    :type task_router: TaskRouter
     :return: task result
     :rtype: dict
     """
@@ -60,8 +61,8 @@ class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
     It should be able to run as a stand alone application.
     """
 
-    @inject(app=ServiceApplication, config=Config)
-    def __init__(self, app, config):
+    @inject(app=Zsl, config=Config, task_router=TaskRouter)
+    def __init__(self, app, config, task_router):
         # type: (ServiceApplication, Config) -> None
         self._app = app
         self._config = config

@@ -70,22 +70,6 @@ class CeleryTaskQueueMainWorker(CeleryTaskQueueWorkerBase):
         self.celery_worker = self.celery_app.worker_main((sys.argv[0],) + argv)
 
 
-class CeleryTaskQueueMainWorkerModule(Module):
-    """Injector module for celery main worker."""
-    @singleton
-    @provides(CeleryTaskQueueWorkerBase)
-    def provide_worker(self):
-        return CeleryTaskQueueMainWorker()
-
-
-class CeleryTaskQueueOutsideWorkerModule(Module):
-    """Injector module for celery outside worker."""
-    @singleton
-    @provides(CeleryTaskQueueWorkerBase)
-    def provide_worker(self):
-        return CeleryTaskQueueMainWorker()
-
-
 @shared_task
 @inject(worker=CeleryTaskQueueWorkerBase)
 def zsl_task(job_data, worker):

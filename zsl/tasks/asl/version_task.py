@@ -9,9 +9,10 @@ Created on 24.12.2012
 from __future__ import unicode_literals
 
 from builtins import object
-from zsl.application.service_application import service_application
-from zsl.task.task_decorator import json_output
 import sqlalchemy
+
+from zsl import inject, Zsl
+from zsl.task.task_decorator import json_output
 
 
 class VersionTask(object):
@@ -19,9 +20,13 @@ class VersionTask(object):
     Shows the versions of ASL and the various used libraries.
     """
 
+    @inject(app=Zsl)
+    def __init__(self, app):
+        self._app = app
+
     @json_output
     def perform(self, data):
         return {
-            "ASL": service_application.VERSION,
+            "ASL": self._app.VERSION,
             "SqlAlchemy": sqlalchemy.__version__
         }

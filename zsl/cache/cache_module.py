@@ -5,12 +5,13 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
+from future.utils import with_metaclass
 
 from builtins import object
 import abc
 
 
-class CacheModule(object):
+class CacheModule(with_metaclass(abc.ABCMeta, object)):
     """
     Cache abstraction layer - module for caching.
     """

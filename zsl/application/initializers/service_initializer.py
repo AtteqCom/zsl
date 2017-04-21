@@ -4,22 +4,30 @@
 """
 from __future__ import unicode_literals
 from builtins import object
-from injector import singleton
-import logging
-from zsl.application.initializers import injection_module
-from zsl.utils.string_helper import camelcase_to_underscore
-from zsl.application import service_application
 
 import importlib
+import logging
+
+from injector import singleton, Binder
+
+from zsl import inject, Config, Injected
+from zsl.utils.string_helper import camelcase_to_underscore
 
 
 class ServiceInitializer(object):
-    """
-    Initializer handling the service injection.
-    """
-
+    """Add outside services to application injector."""
     @staticmethod
-    def _bind_service(package_name, cls_name, binder):
+    @inject(binder=Binder)
+    def _bind_service(package_name, cls_name, binder=Injected):
+        """Bind service to application injector.
+
+        :param package_name: service package
+        :type package_name: str
+        :param cls_name: service class
+        :type cls_name: str
+        :param binder: current application binder, injected
+        :type binder: Binder
+        """
         module = importlib.import_module(package_name)
         cls = getattr(module, cls_name)
 
@@ -28,15 +36,17 @@ class ServiceInitializer(object):
             to=binder.injector.create_object(cls),
             scope=singleton
         )
-        logger = binder.injector.get(logging.Logger)
-        logger.debug("Created {0} binding.".format(cls))
+        logging.debug("Created {0} binding.".format(cls))
 
     @staticmethod
-    def initialize(binder):
+    @inject(config=Config)
+    def initialize(config):
+        """Initialize method.
+
+        :param config: current application config, injected
+        :type config: Config
         """
-        Initialization method.
-        """
-        service_injection_config = service_application.config['SERVICE_INJECTION']
+        service_injection_config = config['SERVICE_INJECTION']
 
         if not isinstance(service_injection_config, (tuple, list)):
             service_injection_config = (service_injection_config,)
@@ -44,7 +54,7 @@ class ServiceInitializer(object):
         for si_conf in service_injection_config:
             if isinstance(si_conf, str):
                 package_name, cls_name = si_conf.rsplit('.', 1)
-                ServiceInitializer._bind_service(package_name, cls_name, binder)
+                ServiceInitializer._bind_service(package_name, cls_name)
             elif isinstance(si_conf, dict):
                 services = si_conf['list']
                 service_package = si_conf['package']
@@ -52,9 +62,4 @@ class ServiceInitializer(object):
                 for cls_name in services:
                     module_name = camelcase_to_underscore(cls_name)
                     package_name = "{0}.{1}".format(service_package, module_name)
-                    ServiceInitializer._bind_service(package_name, cls_name, binder)
-
-
-@injection_module
-def application_initializer_module(binder):
-    ServiceInitializer().initialize(binder)
+                    ServiceInitializer._bind_service(package_name, cls_name)

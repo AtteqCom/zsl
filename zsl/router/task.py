@@ -4,21 +4,28 @@
 """
 from __future__ import unicode_literals
 from builtins import object
+
 import importlib
-from zsl.utils.string_helper import underscore_to_camelcase
 from imp import reload
+
+from zsl import inject, Zsl, Config
+from zsl.utils.string_helper import underscore_to_camelcase
 from zsl.utils.task_helper import instantiate, get_callable
 
 
 class TaskRouter(object):
-    def __init__(self, app):
+
+    @inject(app=Zsl, config=Config)
+    def __init__(self, app, config):
+        # type: (Zsl, Config) -> None
+        self._app = app
+        self._config = config
         self._mappings = {}
         # Support for the settings with only one TASK_PACKAGE defined.
-        self._task_packages = (app.config['TASK_PACKAGE'],) if 'TASK_PACKAGE' in app.config else app.config[
+        self._task_packages = (self._config['TASK_PACKAGE'],) if 'TASK_PACKAGE' in self._config else self._config[
             'TASK_PACKAGES']
-        self._app = app
-        self._task_reloading = app.config['RELOAD']
-        self._debug = app.config['DEBUG']
+        self._task_reloading = self._config['RELOAD']
+        self._debug = self._config['DEBUG']
 
     def get_task_packages(self):
         return self._task_packages

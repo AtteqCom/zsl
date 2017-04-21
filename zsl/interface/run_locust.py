@@ -6,9 +6,6 @@ from __future__ import unicode_literals
 # EASY-INSTALL-ENTRY-SCRIPT: 'locustio==0.7.2','console_scripts','locust'
 __requires__ = 'locustio==0.7.2'
 
-from zsl.interface.importer import initialize_cli_application, InitializationContext
-initialize_cli_application(InitializationContext(unit_test=False))
-
 import sys
 from pkg_resources import load_entry_point
 

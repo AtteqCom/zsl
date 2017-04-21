@@ -1,72 +1,131 @@
 """
-:mod:`zsl.application.service_initializer`
+:mod:`zsl.application.service_application`
 ------------------------------------------
 """
 from __future__ import unicode_literals
-from flask import Flask
-import os
-from typing import Union
 
-from zsl.interface.importer import is_initialized
+import os
+from typing import Callable
+
+from flask import Flask, Config
 from flask_injector import FlaskInjector
-from injector import Injector
+from injector import Injector, Binder, singleton
+
+from zsl._state import set_current_app
+from zsl.utils.warnings import deprecated
+from zsl.application.initialization_context import InitializationContext
 
 
 class AtteqServiceFlask(Flask):
-    """
-    Atteq Service Flask application.
-    """
+    """Atteq Service Flask application."""
 
     VERSION = '1.1.4'
 
     def __init__(self, import_name, static_path=None, static_url_path=None,
                  static_folder='static', template_folder='templates',
-                 instance_path=None, instance_relative_config=False):
-        Flask.__init__(self, import_name, static_path, static_url_path,
-                       static_folder, template_folder, instance_path,
-                       instance_relative_config)
+                 instance_path=None, instance_relative_config=False,
+                 modules=None):
+
+        super(AtteqServiceFlask, self).__init__(import_name, static_path, static_url_path,
+                                                static_folder, template_folder, instance_path,
+                                                instance_relative_config)
+
         self._dependencies_initialized = False
+        self._is_initialized = False
+
+        self._injector = None
+        self._worker = None
+
+        self._configure()
+
+        if not modules:
+            from zsl.application.containers.core_container import CoreContainer
+            modules = CoreContainer.modules()
+
+        self._configure_injector(modules)
+
+        self._initialize()
+
+        self._dependencies_initialized = True
+
+    def _configure(self):
+        """Read the configuration from config files."""
         self.config.from_object('settings.default_settings')
+
         asl_settings = os.environ.get('ASL_SETTINGS')
         if asl_settings is not None:
             self.config.from_envvar('ASL_SETTINGS')
 
-    def initialize_dependencies(self, initialization_context):
-        from zsl.application.initializers import injection_views, injection_modules
-        self._initialization_context = initialization_context
-        self._flask_injector = FlaskInjector(self, injection_views + injection_modules)
-        self.set_injector(self._flask_injector.injector)
-        self.logger.debug("Injector configuration {0}, {1}.".format(injection_views, injection_modules))
+    def _initialize(self):
+        """Run the initializers."""
+        ctx = self.injector.get(InitializationContext)
+
+        ctx.initialize()
+
+    def _register(self):
+        """Register the current instance into application stack."""
+        set_current_app(self)
+
+    def _get_app_module(self):
+        # type: () -> Callable
+        """Returns a module which binds the current app and configuration.
+
+        :return: configuration callback
+        :rtype: Callable
+        """
+        def configure(binder):
+            # type: (Binder) -> Callable
+            binder.bind(AtteqServiceFlask, to=self, scope=singleton)
+            binder.bind(Config, to=self.config, scope=singleton)
+
+        return configure
+
+    def _configure_injector(self, modules):
+        """Create the injector and install the modules.
+
+        There is a necessary order of calls. First we have to bind `Config` and
+        `Zsl`, then we need to register the app into the global stack and then
+        we can install all other modules, which can use `Zsl` and `Config`
+        injection.
+
+        :param modules: list of injection modules
+        :type modules: list
+        """
+        self._flask_injector = FlaskInjector(self, [self._get_app_module()])
+        self.injector = self._flask_injector.injector
+
+        self._register()
+
+        for module in modules:
+            self.injector.binder.install(module)
+
+        self.logger.debug("Injector configuration {0}.".format(modules))
         self._dependencies_initialized = True
 
+    @deprecated
     def get_initialization_context(self):
-        return self._initialization_context
+        return self.injector.get(InitializationContext)
 
     def is_initialized(self):
         return self._dependencies_initialized
 
-    def get_injector(self):
+    @property
+    def injector(self):
         # type: () -> Injector
         return self._injector
 
+    @injector.setter
+    def injector(self, value):
+        self._injector = value
+
+    @deprecated
+    def get_injector(self):
+        # type: () -> Injector
+        return self.injector
+
+    @deprecated
     def set_injector(self, injector):
-        self._injector = injector
-
-    def add_injector_module(self, modules):
-        # type: (Union[object, list]) -> Injector
-        # TODO remove this hack after lazy initialization #13
-        """Add an injector module to current injector.
-
-        It will create a child injector with given modules and it will place it
-        as the application injector.
-        :param modules: list of modules
-        :return: the new injector
-        :rtype: Injector
-        """
-        injector = self.get_injector().create_child_injector(modules)
-        self.set_injector(injector)
-
-        return injector
+        self.injector = injector
 
     def get_version(self):
         v = self.config.get('VERSION')
@@ -75,8 +134,19 @@ class AtteqServiceFlask(Flask):
         else:
             return AtteqServiceFlask.VERSION + ":" + v
 
-ServiceApplication = AtteqServiceFlask
+    run_web = Flask.run
+    """Alias for Flask.run"""
 
-if not is_initialized():
-    raise Exception("Can not instantiate ServiceApplication object, the service is not initialized.")
-service_application = AtteqServiceFlask("zsl.application")
+    def run_worker(self, *args, **kwargs):
+        """Run the app as a task queue worker.
+
+        The worker instance is given as a DI module.
+        """
+        from zsl.interface.task_queue import TaskQueueWorker
+
+        worker = self.injector.get(TaskQueueWorker)
+
+        worker.run(*args, **kwargs)
+
+
+ServiceApplication = AtteqServiceFlask

@@ -8,28 +8,17 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from builtins import object
-
+import json
 import click
 click.disable_unicode_literals_warning = True
 
-# Initialize
-from zsl.interface.importer import initialize_web_application
 
-initialize_web_application()
+from zsl import Zsl
+from zsl.task.job_context import JobContext, Job
 
-import json
-from zsl.router import task_router
-from zsl.task.job_context import JobContext
-from zsl.application import service_application
-
-conf = service_application.config
-
-
-# TODO after #13 import it from job_context
-class Job(object):
-    def __init__(self, data):
-        self.data = {'data': data}
+from zsl.application.containers.web_container import WebContainer
+from zsl.application.containers.celery_container import CeleryContainer
+from zsl.router.task import TaskRouter
 
 
 @click.group()
@@ -39,12 +28,14 @@ def run():
 
 @run.command()
 def web():
-    service_application.run(
-        host=conf.get('FLASK_HOST', '127.0.0.1'),
-        port=conf.get('FLASK_PORT'),
-        debug=conf.get('DEBUG', False),
-        use_debugger=conf.get('USE_DEBUGGER', False),
-        use_reloader=conf.get('USE_RELOADER', False)
+    app = Zsl(__name__, modules=WebContainer.modules())
+
+    app.run_web(
+        host=app.config.get('FLASK_HOST', '127.0.0.1'),
+        port=app.config.get('FLASK_PORT', 3000),
+        debug=app.config.get('DEBUG', False),
+        use_debugger=app.config.get('USE_DEBUGGER', False),
+        use_reloader=app.config.get('USE_RELOADER', False)
     )
 
 
@@ -65,12 +56,18 @@ def task(task, data=None):
 
     ..param:
     """
-    if not isinstance(data, (str, bytes)):
+    app = Zsl(__name__)
+
+    if not data:
+        data = {'data': None, 'path': task}
+    elif not isinstance(data, (str, bytes)):
         data = json.dumps(data)
     # Open the data from file, if necessary.
     elif data is not None and data.startswith("file://"):
         with open(data[len("file://"):]) as f:
             data = f.read()
+
+    task_router = app.injector.get(TaskRouter)
 
     # Prepare the task.
     job = Job(data)
@@ -79,20 +76,18 @@ def task(task, data=None):
     JobContext.set_current_context(jc)
 
     # Run the task.
-    return jc.task_callable(jc.task_data)
+    click.echo(jc.task_callable(jc.task_data))
 
 
-def run_celery_worker(argv):
+def run_celery_worker(worker_args):
+    """Ru Zsl celery worker.
+
+    :param worker_args: arguments for celery worker
     """
 
-    :param argv: arguments for celery worker
-    """
-    from zsl.interface.celery.worker import CeleryTaskQueueMainWorkerModule, CeleryTaskQueueWorkerBase
+    app = Zsl(__name__, modules=CeleryContainer.modules())
 
-    injector = service_application.add_injector_module(CeleryTaskQueueMainWorkerModule)
-
-    w = injector.get(CeleryTaskQueueWorkerBase)
-    w.run(argv)
+    app.run_worker(worker_args)
 
 
 def run_gearman_worker():

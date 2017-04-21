@@ -8,10 +8,11 @@ from __future__ import unicode_literals
 from builtins import object
 from zsl.interface.webservice.utils.response_headers import append_headers
 from zsl.interface.webservice.utils.error_handler import error_handler
-from zsl.application.service_application import service_application
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
 import json
 from flask.wrappers import Response
+
+from zsl import inject, Config, Zsl, Injected
 
 
 @append_headers
@@ -54,16 +55,19 @@ class Performer(object):
         return responder(rv)
 
 
-def route(path, **options):
+# TODO this is a blind refactor, should be redone utilizing DI from the start
+@inject(app=Zsl)
+def route(path, app=Injected, **options):
     def _decorator(f):
-        routed_function = service_application.route("/method" + path, **options)
+        routed_function = app.route("/method" + path, **options)
         return routed_function(Performer(f))
 
     return _decorator
 
 
-def get_method_packages():
-    method_package = service_application.config.get('METHOD_PACKAGE')
+@inject(config=Config)
+def get_method_packages(config):
+    method_package = config.get('METHOD_PACKAGE')
     if method_package is None:
         return ()
 

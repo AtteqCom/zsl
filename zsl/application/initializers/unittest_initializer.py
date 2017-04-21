@@ -4,32 +4,28 @@
 """
 from __future__ import unicode_literals
 from builtins import object
-from zsl.application.initializers import injection_module
-from zsl.application.service_application import service_application
+
+from zsl import ApplicationContext, Config, inject
 
 
 class UnitTestInitializer(object):
-    """
-    Initializer handling the unit test settings.
-    """
+    """Initializer handling the unit test settings."""
+    @staticmethod
+    @inject(config=Config)
+    def initialize(config):
 
-    def initialize(self, binder):
-
-        if not self.is_unit_testing():
+        if not UnitTestInitializer.is_unit_testing():
             return
 
-        if 'TEST_DATABASE_URI' in service_application.config:
-            service_application.config['DATABASE_URI'] = service_application.config['TEST_DATABASE_URI']
+        if 'TEST_DATABASE_URI' in config:
+            config['DATABASE_URI'] = config['TEST_DATABASE_URI']
 
-        if 'TEST_DATABASE_ENGINE_PROPS' in service_application.config:
-            service_application.config['DATABASE_ENGINE_PROPS'] = service_application.config[
+        if 'TEST_DATABASE_ENGINE_PROPS' in config:
+            config['DATABASE_ENGINE_PROPS'] = config[
                 'TEST_DATABASE_ENGINE_PROPS']
 
     @staticmethod
-    def is_unit_testing():
-        return service_application.get_initialization_context().unit_testing
+    @inject(ctx=ApplicationContext)
+    def is_unit_testing(ctx):
+        return ctx.unit_testing
 
-
-@injection_module
-def application_initializer_module(binder):
-    UnitTestInitializer().initialize(binder)

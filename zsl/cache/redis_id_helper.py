@@ -5,29 +5,32 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
+
+import logging
+
+from zsl import inject, Config
 from zsl.cache.id_helper import IdHelper, decoder_identity, encoder_identity, \
     model_key_generator
-from zsl.utils.injection_helper import inject
 from zsl.cache.redis_cache_module import RedisCacheModule
-from zsl.application.service_application import service_application
 
 
 class RedisIdHelper(IdHelper):
     CACHE_DEFAULT_TIMEOUT = 300
 
-    @inject(redis_cache_module=RedisCacheModule)
-    def __init__(self, redis_cache_module):
+    @inject(config=Config, redis_cache_module=RedisCacheModule)
+    def __init__(self, config, redis_cache_module):
         """
         Creates the id helper for caching support of AppModels.
         """
+        self._config = config
         self._redis_cache_module = redis_cache_module
 
-        if 'CACHE_TIMEOUTS' in service_application.config:
-            self._cache_timeouts = service_application.config['CACHE_TIMEOUTS']
+        if 'CACHE_TIMEOUTS' in self._config:
+            self._cache_timeouts = self._config['CACHE_TIMEOUTS']
         else:
             self._cache_timeouts = None
-        self._cache_default_timeout = service_application.config.get('CACHE_DEFAULT_TIMEOUT',
-                                                                     RedisIdHelper.CACHE_DEFAULT_TIMEOUT)
+        self._cache_default_timeout = self._config.get('CACHE_DEFAULT_TIMEOUT',
+                                                       RedisIdHelper.CACHE_DEFAULT_TIMEOUT)
 
     def get_timeout(self, key, value, timeout):
         if self._cache_timeouts is None:
@@ -37,7 +40,7 @@ class RedisIdHelper(IdHelper):
 
     def gather_page(self, page_key, decoder=decoder_identity):
         page_keys = self._redis_cache_module.get_list(page_key)
-        service_application.logger.debug("Fetching page {0} from redis using keys {1}.".format(page_key, page_keys))
+        logging.debug("Fetching page {0} from redis using keys {1}.".format(page_key, page_keys))
 
         p = []
         for k in page_keys:

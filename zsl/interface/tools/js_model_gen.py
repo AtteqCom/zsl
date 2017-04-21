@@ -7,11 +7,6 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from zsl.interface.tools import importer
-importer.append_asl_path_to_pythonpath()
-from zsl.interface.importer import initialize_cli_application, InitializationContext
-initialize_cli_application(InitializationContext(unit_test=False))
-
 from zsl.utils.deploy.js_model_generator import ModelGenerator
 from zsl.utils.deploy.integrator import integrate_to_file
 

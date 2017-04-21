@@ -4,19 +4,18 @@
 
 Helper module for resource management.
 """
-#TODO describe what model resource is and use cases
+# TODO describe what model resource is and use cases
 
 from __future__ import unicode_literals
 import importlib
+import logging
 from flask import request
 
-from zsl.application.service_application import service_application as app
 from zsl.utils.string_helper import underscore_to_camelcase
 from zsl.utils.task_helper import instantiate
 from zsl.resource.model_resource import ModelResource
 
-resource_packages = app.config['RESOURCE_PACKAGES'] if 'RESOURCE_PACKAGES' in app.config else (
-    app.config['RESOURCE_PACKAGE'],)
+from zsl import inject, Config, Injected, Zsl
 
 
 class MethodNotImplementedException(Exception):
@@ -53,15 +52,20 @@ def get_method(resource, method):
         raise MethodNotImplementedException()
 
 
-def get_resource_task(resource_path):
+@inject(config=Config)
+def get_resource_task(resource_path, config=Injected):
     """Search and return a bounded method for given path.
 
     :param resource_path: resource path
     :type resource_path: str
+    :param config: current configuration, injected
+    :type config: Config
     :return: bounded method or None when not found
     :raises NameError: when can't find given resource by path
     """
     class_name = underscore_to_camelcase(resource_path) + 'Resource'
+
+    resource_packages = config['RESOURCE_PACKAGES'] if 'RESOURCE_PACKAGES' in config else (config['RESOURCE_PACKAGE'],)
 
     resource = None
     for resource_package in resource_packages:
@@ -87,7 +91,7 @@ def get_resource_task(resource_path):
                 resource = exposer.get_resource(class_name)
                 break
             except Exception as e:
-                app.logger.error("Can not load resource {0} [{1}].".format(resource_path, e))
+                logging.error("Can not load resource {0} [{1}].".format(resource_path, e))
                 pass
 
     if resource is None:
@@ -107,10 +111,10 @@ def get_resource_task(resource_path):
             return get_method(resource, 'delete')
 
         else:
-            app.logger.error("Invalid request method [%s] is requested for path [%s]", request.method, resource_path)
+            logging.error("Invalid request method [%s] is requested for path [%s]", request.method, resource_path)
 
     except MethodNotImplementedException:
-        app.logger.error(
+        logging.error(
             "MethodNotImplementedException raised for method [%s] and path [%s]",
             request.method,
             resource_path
@@ -118,6 +122,7 @@ def get_resource_task(resource_path):
         return None
 
 
+@inject(app=Zsl)
 def create_model_resource(resource_map, name):
     """Create a model resource from a dict ``resource_map``
     {'resource name': ('model package', 'model class')}

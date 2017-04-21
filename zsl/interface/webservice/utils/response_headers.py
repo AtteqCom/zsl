@@ -5,27 +5,28 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
-from zsl.application.service_application import service_application
 from flask import Response
 from flask.helpers import make_response
 from functools import wraps
 
+from zsl import inject, Zsl, Config, Injected
 
-def append_crossdomain(response):
-    conf = service_application.config
 
+@inject(config=Config)
+def append_crossdomain(response, config=Injected):
     # The CORS has already been setup.
     if 'Access-Control-Allow-Origin' in response.headers:
         return
 
-    if conf.get('ALLOW_ORIGIN'):
-        response.headers['Access-Control-Allow-Origin'] = conf.get('ALLOW_ORIGIN')
+    if config.get('ALLOW_ORIGIN'):
+        response.headers['Access-Control-Allow-Origin'] = config.get('ALLOW_ORIGIN')
     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, DELETE'
     response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type'
 
 
-def append_asl(response):
-    response.headers['ASL-Flask-Layer'] = service_application.get_version()
+@inject(app=Zsl)
+def append_asl(response, app=Injected):
+    response.headers['ASL-Flask-Layer'] = app.get_version()
 
 
 def append_cache(response):

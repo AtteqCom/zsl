@@ -6,13 +6,13 @@
 """
 from __future__ import unicode_literals
 from builtins import object
-from zsl.application.service_application import service_application
 from zsl.utils.injection_helper import inject
 from zsl.cache.id_helper import IdHelper, model_key_generator, create_key_object_prefix,\
     app_model_decoder_fn, app_model_encoder_fn
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
 import json
 import abc
+import logging
 from zsl.task.job_context import JobContext
 
 
@@ -21,7 +21,7 @@ class CacheDecorator(object):
     @inject(id_helper=IdHelper)
     def __init__(self, id_helper):
         self._id_helper = id_helper
-        service_application.logger.debug("Initializing CacheDecorator.")
+        logging.debug("Initializing CacheDecorator.")
 
     def decorate(self, key_params, timeout, fn):
         self._key_params = key_params
@@ -38,7 +38,7 @@ class CacheDecorator(object):
         else:
             cs = bool(jc.job.data['cache'])
 
-        service_application.logger.debug("Cache status: '%s'.", cs)
+        logging.debug("Cache status: '%s'.", cs)
         return cs
 
     @abc.abstractmethod
@@ -67,10 +67,10 @@ class CacheOutputDecorator(CacheDecorator):
                 return self._fn(*args)
 
             key = self.get_data_key(*args)
-            service_application.logger.debug("Initializing CacheOutputDecorator - key %s.", key)
+            logging.debug("Initializing CacheOutputDecorator - key %s.", key)
 
             if self._id_helper.check_key(key):
-                service_application.logger.debug("Retrieved from cache.")
+                logging.debug("Retrieved from cache.")
                 return self._id_helper.get_key(key)
             else:
                 ret_val = self._fn(*args)
@@ -78,7 +78,7 @@ class CacheOutputDecorator(CacheDecorator):
                     raise Exception("Can not cache non-string value. Is the serialization, json_output, already done?")
 
                 self._id_helper.set_key(key, ret_val, self._timeout)
-                service_application.logger.debug("Newly fetched into the cache.")
+                logging.debug("Newly fetched into the cache.")
                 return ret_val
 
         return wrapped_fn
@@ -99,11 +99,11 @@ class CacheModelDecorator(CacheDecorator):
                 return self._fn(*args)
 
             key = self.get_data_key(*args)
-            service_application.logger.debug("Initializing CacheModelDecorator - key %s.", key)
+            logging.debug("Initializing CacheModelDecorator - key %s.", key)
 
             if self._id_helper.check_key(key):
                 model_key = self._id_helper.get_key(key)
-                service_application.logger.debug("Retrieved from cache %s.", model_key)
+                logging.debug("Retrieved from cache %s.", model_key)
 
                 if self._id_helper.check_key(model_key):
                     return self.get_decoder()(model_key, self._id_helper.get_key(model_key))
@@ -115,7 +115,7 @@ class CacheModelDecorator(CacheDecorator):
             model_key = model_key_generator(model)
             self._id_helper.set_key(key, model_key, self._timeout)
             self._id_helper.set_key(model_key, encoded_model, self._timeout)
-            service_application.logger.debug("Newly fetched into the cache.")
+            logging.debug("Newly fetched into the cache.")
             return model
 
         return wrapped_fn
@@ -139,15 +139,15 @@ class CachePageDecorator(CacheDecorator):
                 return self._fn(*args)
 
             page_key = self.get_data_key(*args)
-            service_application.logger.debug("Initializing CachePageDecorator - key %s.", page_key)
+            logging.debug("Initializing CachePageDecorator - key %s.", page_key)
 
             if self._id_helper.check_page(page_key):
-                service_application.logger.debug("Retrieved from cache %s.", page_key)
+                logging.debug("Retrieved from cache %s.", page_key)
                 return self._id_helper.gather_page(page_key, self.get_decoder())
 
             page = self._fn(*args)
             self._id_helper.fill_page(page_key, page, self._timeout, self.get_encoder())
-            service_application.logger.debug("Newly fetched into the cache.")
+            logging.debug("Newly fetched into the cache.")
             return page
 
         return wrapped_fn

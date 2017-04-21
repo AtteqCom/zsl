@@ -20,9 +20,10 @@ def get_app(environ):
     if 'ASL_IMPORT_SCRIPT' in os.environ:
         execfile(os.environ['ASL_IMPORT_SCRIPT'])
 
-    from zsl.interface.importer import initialize_web_application
-    initialize_web_application()
-    from zsl.application.service_application import service_application
+    from zsl import Zsl
+    from zsl.application.containers.web_container import WebContainer
+
+    service_application = Zsl(__name__, modules=WebContainer.modules())
     return service_application
 
 

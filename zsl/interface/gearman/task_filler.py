@@ -7,16 +7,17 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-# Initialize app
-from zsl.interface.importer import initialize_cli_application, InitializationContext
-initialize_cli_application(InitializationContext(unit_test=False))
 
 import sys
 import gearman
 import json
-from zsl.application.service_application import service_application as app
+
+from zsl import Zsl
 
 if __name__ == "__main__":
+
+    app = Zsl(__name__)
+
     if len(sys.argv) != 3:
         sys.stderr.write("Usage: task_filler.py <task name> <task data (file:// for file input, otherwise raw data)>\n")
         exit(1)
