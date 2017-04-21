@@ -5,9 +5,11 @@
 from __future__ import unicode_literals
 from flask import Flask
 import os
+from typing import Union
 
 from zsl.interface.importer import is_initialized
 from flask_injector import FlaskInjector
+from injector import Injector
 
 
 class AtteqServiceFlask(Flask):
@@ -44,10 +46,27 @@ class AtteqServiceFlask(Flask):
         return self._dependencies_initialized
 
     def get_injector(self):
+        # type: () -> Injector
         return self._injector
 
     def set_injector(self, injector):
         self._injector = injector
+
+    def add_injector_module(self, modules):
+        # type: (Union[object, list]) -> Injector
+        # TODO remove this hack after lazy initialization #13
+        """Add an injector module to current injector.
+
+        It will create a child injector with given modules and it will place it
+        as the application injector.
+        :param modules: list of modules
+        :return: the new injector
+        :rtype: Injector
+        """
+        injector = self.get_injector().create_child_injector(modules)
+        self.set_injector(injector)
+
+        return injector
 
     def get_version(self):
         v = self.config.get('VERSION')
@@ -55,6 +74,8 @@ class AtteqServiceFlask(Flask):
             return AtteqServiceFlask.VERSION
         else:
             return AtteqServiceFlask.VERSION + ":" + v
+
+ServiceApplication = AtteqServiceFlask
 
 if not is_initialized():
     raise Exception("Can not instantiate ServiceApplication object, the service is not initialized.")

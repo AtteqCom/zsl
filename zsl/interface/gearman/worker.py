@@ -5,19 +5,12 @@
 .. moduleauthor:: Martin
 """
 from __future__ import unicode_literals
-from builtins import object
-from builtins import str
-import socket
 import gearman
-import traceback
-from zsl.application.service_application import service_application
-from zsl.router import task_router
+from gearman.job import GearmanJob
+
+from zsl.interface.task_queue import TaskQueueWorker
+from zsl.task.job_context import Job
 from zsl.interface.gearman.json_data_encoder import JSONDataEncoder
-from zsl.task.job_context import JobContext
-
-
-class KillWorkerException(Exception):
-    pass
 
 
 class ReloadingWorker(gearman.GearmanWorker):
@@ -28,52 +21,47 @@ class ReloadingWorker(gearman.GearmanWorker):
     def on_job_complete(self, current_job, job_result):
         super(ReloadingWorker, self).on_job_complete(current_job, job_result)
         if self._should_stop:
-            app.logger.info("Stopping Gearman worker on demand - quitting.")
             quit()
         return True
 
 
-app = service_application
+def job_from_gearman_job(gearman_job):
+    # type: (GearmanJob) -> Job
+    """Creates zsl job from gearman job.
+
+    :param gearman_job: gearman job
+    :type gearman_job: GearmanJob
+    :return: zsl job
+    :rtype: Job
+    """
+
+    return Job(gearman_job.data)
 
 
-def execute_task(worker, job):
-    app.logger.info("Job fetched, preparing the task '{0}'.".format(job.data['path']))
+class GearmanTaskQueueWorker(TaskQueueWorker):
+    def __init__(self):
+        super(GearmanTaskQueueWorker, self).__init__()
 
-    try:
-        (task, task_callable) = task_router.route(job.data['path'])
-        jc = JobContext(job, task, task_callable)
-        JobContext.set_current_context(jc)
-        data = worker.logical_worker.execute_task(jc)
-        app.logger.info("Task {0} executed successfully.".format(job.data['path']))
-        return {'task_name': job.data['path'], 'data': data}
-    except KillWorkerException as e:
-        app.logger.info("Stopping Gearman worker on demand flag set.")
-        worker._should_stop = True
-    except Exception as e:
-        app.logger.error(str(e) + "\n" + traceback.format_exc())
-        return {'task_name': job.data['path'], 'data': None, 'error': str(e)}
-
-
-'''
-Class responsible for connecting to the Gearman server and grabbing tasks.
-Then uses task to get the task object and executes it.
-'''
-
-
-class Worker(object):
-    def __init__(self, app):
-        self._app = app
-        task_router.set_task_reloading(task_router.is_task_reloading() or app.config['RELOAD_GEARMAN'])
         self.gearman_worker = ReloadingWorker(
-            ["{0}:{1}".format(app.config['GEARMAN']['host'], app.config['GEARMAN']['port'])])
-        self.gearman_worker.set_client_id("zsl-client-{0}".format(socket.gethostname()))
+            ["{0}:{1}".format(self._config['GEARMAN']['host'],
+                              self._config['GEARMAN']['port'])])
+        self.gearman_worker.set_client_id(self._get_client_id())
         self.gearman_worker.data_encoder = JSONDataEncoder
-        self.gearman_worker.register_task(self._app.config['GEARMAN_TASK_NAME'], execute_task)
+        self.gearman_worker.register_task(self._config['GEARMAN_TASK_NAME'], self.execute_gearman_job)
         self.gearman_worker.logical_worker = self
 
-    def execute_task(self, job_context):
-        self._app.logger.info("Executing task.")
-        return job_context.task_callable(job_context.task_data)
+        self._current_worker = None
+
+    def stop_worker(self):
+        self._app.logger.info("Stopping Gearman worker on demand - quitting.")
+        self._current_worker._should_stop = True
+
+    def execute_gearman_job(self, worker, job):
+        # type: (ReloadingWorker, GearmanJob) -> dict
+        job = job_from_gearman_job(job)
+        self._current_worker = worker
+
+        return self.execute_job(job)
 
     def run(self):
         self._app.logger.info("Running the worker.")

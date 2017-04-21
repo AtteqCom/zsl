@@ -6,29 +6,63 @@
 """
 from __future__ import unicode_literals
 from builtins import object
+from typing import Callable
+from abc import abstractmethod
+
 from zsl.task.task_data import TaskData
 from zsl.application.service_application import service_application
-from abc import abstractmethod
 
 
 class Job(object):
     def __init__(self, data):
+        # type: (dict) -> None
+
         self.data = data
+
+    @property
+    def path(self):
+        """Job's path.
+
+        :getter: Returns job's path
+        :type: str
+        """
+        return self.data['path']
+
+    @property
+    def payload(self):
+        """Data part of job.
+
+        :getter: Returns job's payload
+        :type: dict
+        """
+        return self.data['data']
+
+    @property
+    def is_valid(self):
+        """Validity of job's data.
+
+        :getter: Returns if job's data are valid
+        :type: bool
+        """
+        return self.data and 'path' in self.data and 'data' in self.data
 
 
 class JobContext(object):
-    """
-    Job Context
-    """
+    """Job Context"""
+
+    _current_context = None
+
     def __init__(self, job, task, task_callable):
+        # type: (Job, object, Callable) -> None
         """
         Constructor
         """
-        self.job = Job(job.data)
+        self.job = job
         self.task = task
         self.task_callable = task_callable
-        self.task_data = TaskData(service_application, self.job.data['data'])
-        self._current_context = None
+        self.task_data = TaskData(service_application, self.job.payload)
+
+        JobContext.set_current_context(None)
 
     @classmethod
     def get_current_context(cls):
@@ -52,9 +86,8 @@ def web_task_redirect(location):
 
 class WebJobContext(JobContext):
     def __init__(self, path, data, task, task_callable, request):
-        """
-        Constructor
-        """
+        """Constructor"""
+
         self.job = Job({'data': data, 'path': path})
         self.task = task
         self.task_callable = task_callable

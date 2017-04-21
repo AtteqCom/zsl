@@ -10,13 +10,8 @@ from __future__ import unicode_literals
 
 from builtins import object
 
-
-# Initialize the path
-import sys
-import os
-
-# TODO: Consider removing automatic path initialization!
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+import click
+click.disable_unicode_literals_warning = True
 
 # Initialize
 from zsl.interface.importer import initialize_web_application
@@ -31,14 +26,41 @@ from zsl.application import service_application
 conf = service_application.config
 
 
+# TODO after #13 import it from job_context
 class Job(object):
     def __init__(self, data):
         self.data = {'data': data}
 
 
-def run_task(task, data=None):
+@click.group()
+def run():
+    pass
+
+
+@run.command()
+def web():
+    service_application.run(
+        host=conf.get('FLASK_HOST', '127.0.0.1'),
+        port=conf.get('FLASK_PORT'),
+        debug=conf.get('DEBUG', False),
+        use_debugger=conf.get('USE_DEBUGGER', False),
+        use_reloader=conf.get('USE_RELOADER', False)
+    )
+
+
+@run.command()
+def shell():
+    import bpython
+
+    bpython.embed()
+
+
+@run.command()
+@click.argument('task')
+@click.argument('data', default=None, required=False)
+def task(task, data=None):
     """
-    .. autofunction:: run_task
+    .. autofunction:: task
     Runs the given task
 
     ..param:
@@ -60,39 +82,36 @@ def run_task(task, data=None):
     return jc.task_callable(jc.task_data)
 
 
-def run_shell():
-    import bpython
+def run_celery_worker(argv):
+    """
 
-    bpython.embed()
+    :param argv: arguments for celery worker
+    """
+    from zsl.interface.celery.worker import CeleryTaskQueueMainWorkerModule, CeleryTaskQueueWorkerBase
 
+    injector = service_application.add_injector_module(CeleryTaskQueueMainWorkerModule)
 
-def run_webapp():
-    service_application.run(
-        host=conf.get('FLASK_HOST', '127.0.0.1'),
-        port=conf.get('FLASK_PORT'),
-        debug=conf.get('DEBUG', False),
-        use_debugger=conf.get('USE_DEBUGGER', False),
-        use_reloader=conf.get('USE_RELOADER', False)
-    )
+    w = injector.get(CeleryTaskQueueWorkerBase)
+    w.run(argv)
 
 
-def main():
-    cmd = sys.argv[1] if len(sys.argv) > 1 else None
+def run_gearman_worker():
+    from zsl.interface.gearman.run_worker import main
 
-    if cmd == 'shell':
-        run_shell()
+    main()
 
-    elif cmd == 'task':
-        run_task(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
 
-    elif cmd == 'web':
-        run_webapp()
-
-    else:
-        print("Usage: run_webappy.py <command>. You provided no or invalid command - choose one from 'shell', 'task' "
-              "or 'web'.", file=sys.stderr)
+@run.command(context_settings=dict(ignore_unknown_options=True))
+@click.argument('task_queue', type=click.Choice(['celery', 'gearman']))
+@click.argument('argv', nargs=-1, type=click.UNPROCESSED)
+@click.pass_context
+def worker(_, task_queue, argv):
+    if task_queue == 'celery':
+        run_celery_worker(argv)
+    elif task_queue == 'gearman':
+        run_gearman_worker()
 
 
 # Run it!
 if __name__ == "__main__":
-    main()
+    run()

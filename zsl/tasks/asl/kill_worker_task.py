@@ -12,7 +12,7 @@ from builtins import object
 from zsl.application.service_application import AtteqServiceFlask
 from injector import inject
 from zsl.task.job_context import JobContext, WebJobContext
-from zsl.interface.gearman.worker import KillWorkerException
+from zsl.interface.task_queue import KillWorkerException
 
 
 class KillWorkerTask(object):
