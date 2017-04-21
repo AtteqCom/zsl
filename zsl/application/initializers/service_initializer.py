@@ -24,7 +24,7 @@ class ServiceInitializer(object):
         :param package_name: service package
         :type package_name: str
         :param cls_name: service class
-        :param cls_name: str
+        :type cls_name: str
         :param binder: current application binder, injected
         :type binder: Binder
         """
