@@ -33,17 +33,17 @@ class ModelResourceTest(TestCase):
         test_dummy = dummies[0]
         dummy = resource.read(test_dummy.id)
 
-        self._testAppModel(test_dummy, dummy, "read one")
+        self._testAppModel(test_dummy, dummy, "resource value should be equal its model")
 
     def testReadListAll(self):
         resource = TestRestResource()
 
         res_dummies = resource.read()
 
-        self.assertEqual(len(dummies), len(res_dummies), "list length")
+        self.assertEqual(len(dummies), len(res_dummies), "resources count should equal model count")
 
         for i, d in enumerate(res_dummies):
-            self._testAppModel(dummies[i], d, "list item")
+            self._testAppModel(dummies[i], d, "list item value should equal model item value")
 
     def testCreate(self):
         resource = TestRestResource()
@@ -54,7 +54,7 @@ class ModelResourceTest(TestCase):
 
         dummy = resource.read(dummy_result.get_id())
 
-        self.assertEqual(dummy_data['val'], dummy.val)
+        self.assertEqual(dummy_data['val'], dummy.val, "resource value should equal model value")
 
     def testUpdateOne(self):
         resource = TestRestResource()
@@ -66,7 +66,7 @@ class ModelResourceTest(TestCase):
 
         dummy = resource.read(dummy.get_id())
 
-        self.assertEqual(updated_value, dummy.val)
+        self.assertEqual(updated_value, dummy.val, "updated resource value should equal model value")
 
     def testUpdateAll(self):
         resource = TestRestResource()
@@ -76,7 +76,7 @@ class ModelResourceTest(TestCase):
         resource.update(params=None, args={}, data=[x._asdict() for x in updated_values])
 
         for dt in updated_values:
-            self._testAppModel(dt, resource.read(dt.id))
+            self._testAppModel(dt, resource.read(dt.id), "updated resource value should equal model value")
 
     def testDeleteOne(self):
         resource = TestRestResource()
@@ -87,7 +87,7 @@ class ModelResourceTest(TestCase):
 
         res_dummies = resource.read()
 
-        self.assertEqual(len(dummies) - 1, len(res_dummies))
+        self.assertEqual(len(dummies) - 1, len(res_dummies), "count of resources should decline by 1")
 
     def testDeleteAll(self):
         resource = TestRestResource()
@@ -96,4 +96,4 @@ class ModelResourceTest(TestCase):
 
         res_dummies = resource.read()
 
-        self.assertEqual(0, len(res_dummies))
+        self.assertEqual(0, len(res_dummies), "count of resources should be 0")
