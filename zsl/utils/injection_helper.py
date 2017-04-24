@@ -68,7 +68,7 @@ def inject(**bindings):
             # Call the method.
             return inject_f(f)(*a, **kwargs)
 
-        if inspect.getargspec(f)[0][0] == 'self':
+        if inspect.ismethod(f):
             return method_or_class_wrapper
         else:
             return function_wrapper(f)

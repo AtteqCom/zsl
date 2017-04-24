@@ -25,7 +25,7 @@ class AtteqServiceFlask(Flask):
     def __init__(self, import_name, static_path=None, static_url_path=None,
                  static_folder='static', template_folder='templates',
                  instance_path=None, instance_relative_config=False,
-                 modules=None):
+                 modules=None, config_object=None):
 
         super(AtteqServiceFlask, self).__init__(import_name, static_path, static_url_path,
                                                 static_folder, template_folder, instance_path,
@@ -37,7 +37,7 @@ class AtteqServiceFlask(Flask):
         self._injector = None
         self._worker = None
 
-        self._configure()
+        self._configure(config_object)
 
         if not modules:
             from zsl.application.containers.core_container import CoreContainer
@@ -49,9 +49,14 @@ class AtteqServiceFlask(Flask):
 
         self._dependencies_initialized = True
 
-    def _configure(self):
+    def _configure(self, config_object=None):
+        # type: (dict) -> None
         """Read the configuration from config files."""
-        self.config.from_object('settings.default_settings')
+
+        if config_object:
+            self.config.from_mapping(config_object)
+        else:
+            self.config.from_object('settings.default_settings')
 
         asl_settings = os.environ.get('ASL_SETTINGS')
         if asl_settings is not None:
