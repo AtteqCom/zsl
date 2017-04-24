@@ -1,9 +1,9 @@
-from zsl.unittest import TestCase
-
-from zsl.interface.run_tests import set_test_responder
-from zsl.utils.injection_helper import bind
 from flask.config import Config
+
+from zsl.unittest import TestCase
+from zsl.utils.injection_helper import bind
 from zsl.utils.redis_helper import Keymaker
+from zsl.utils.testing import set_test_responder
 
 __author__ = 'peter'
 

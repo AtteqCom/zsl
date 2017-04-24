@@ -3,12 +3,18 @@ from setuptools import setup, find_packages
 EXCLUDE_FROM_PACKAGES = ['tests', 'tests.*']
 
 setup(name='zsl',
-      version='0.9',
+      version='0.11.0',
       description='zsl application framework for web based services',
       author='Atteq s.r.o.',
       author_email='open.source@atteq.com',
       url='https://github.com/AtteqCom/zsl',
       license='MIT',
+      install_requires=[
+        'injector',
+        'flask',
+        'flask_injector',
+        'future'
+      ],
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Programming Language :: Python :: 2.7',

@@ -5,8 +5,8 @@
 Main service module.
 """
 from __future__ import unicode_literals
-from zsl.interface.run import run
+from zsl.interface.run import cli
 
 if __name__ == "__main__":
-    run()
+    cli()
 

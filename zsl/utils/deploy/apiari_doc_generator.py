@@ -1,8 +1,8 @@
 """
-:mod:`zsl.interface.tools.generate_apiari_doc`
-----------------------------------------------
+:mod:`zsl.utils.deploy.apiary_doc_generator`
+--------------------------------------------
 
-Generates the API documentation suitable for the apiari.io. It parses all the files and finds the apiari.io definitions
+Generates the API documentation suitable for the apiary.io. It parses all the files and finds the apiary.io definitions
 in the documentary comments. Then outputs it to a file.
 
 .. moduleauthor:: Martin Babka
@@ -11,19 +11,21 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import sys
+import os
 
 import pydoc
 import inspect
 import pkgutil
-from zsl.application import service_application
-from zsl.router.method import get_method_packages
-import sys
-import os
-from zsl.router.task import TaskRouter
 import importlib
+import logging
+
+from zsl import inject
+from zsl.router.method import get_method_packages
+from zsl.router.task import TaskRouter
 
 
-class ApiariDoc(object, pydoc.Doc):
+class ApiaryDoc(pydoc.Doc):
 
     _API_DOC_STR = "API Documentation:"
 
@@ -46,7 +48,7 @@ class ApiariDoc(object, pydoc.Doc):
         obj_id = self._get_obj_id(obj)
         if obj_id in self._done:
             return
-        service_application.logger.debug('Adding {0}.'.format(obj_id))
+        logging.debug('Adding {0}.'.format(obj_id))
         self._done.add(obj_id)
 
         apistr = ""
@@ -107,7 +109,7 @@ class ApiariDoc(object, pydoc.Doc):
             return
 
         for loader, module_name, _ispkg in pkgutil.iter_modules(obj.__path__):
-            service_application.logger.debug("Loading module {0} in {1}.".format(module_name, obj.__path__))
+            logging.debug("Loading module {0} in {1}.".format(module_name, obj.__path__))
             try:
                 module = loader.find_module(module_name).load_module(module_name)
                 self.docmodule(module)
@@ -117,9 +119,22 @@ class ApiariDoc(object, pydoc.Doc):
     def get_doc(self):
         return "FORMAT: 1A\n\n" + "\n\n".join(self._docs)
 
-if __name__ == "__main__":
-    d = ApiariDoc()
-    for m in TaskRouter(service_application).get_task_packages() + get_method_packages():
+
+@inject(task_router=TaskRouter)
+def generate_apiary_doc(task_router):
+    """Generate apiary documentation.
+
+    Create a Apiary generator and add application packages to it.
+
+    :param task_router: task router, injected
+    :type task_router: TaskRouter
+    :return: apiary generator
+    :rtype: ApiaryDoc
+    """
+    generator = ApiaryDoc()
+
+    for m in task_router.get_task_packages() + get_method_packages():
         m = importlib.import_module(m)
-        d.docmodule(m)
-    print(d.get_doc())
+        generator.docmodule(m)
+
+    return generator

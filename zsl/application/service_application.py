@@ -11,6 +11,7 @@ from flask import Flask, Config
 from flask_injector import FlaskInjector
 from injector import Injector, Binder, singleton
 
+from zsl import __version__
 from zsl._state import set_current_app
 from zsl.utils.warnings import deprecated
 from zsl.application.initialization_context import InitializationContext
@@ -19,7 +20,7 @@ from zsl.application.initialization_context import InitializationContext
 class AtteqServiceFlask(Flask):
     """Atteq Service Flask application."""
 
-    VERSION = '1.1.4'
+    VERSION = __version__
 
     def __init__(self, import_name, static_path=None, static_url_path=None,
                  static_folder='static', template_folder='templates',
