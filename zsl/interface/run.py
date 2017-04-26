@@ -44,9 +44,7 @@ def run():
 @run.command(help="run web server and serve the application")
 def web():
     from zsl.application.containers.web_container import WebContainer
-
     app = Zsl(__name__, modules=WebContainer.modules())
-
     app.run_web()
 
 
@@ -55,7 +53,6 @@ def web():
 @click.argument('args', nargs=-1, type=click.UNPROCESSED)
 def shell(args):
     import bpython
-
     bpython.embed(args=list(args))
 
 
@@ -64,11 +61,8 @@ def shell(args):
 @click.argument('data', default=None, required=False)
 def task(task_path, data=None):
     from zsl.interface.task import exec_task
-
     Zsl(__name__)
-
     result = exec_task(task_path, data)
-
     # Run the task.
     click.echo(result)
 
@@ -87,9 +81,7 @@ def run_celery_worker(worker_args):
 
 def run_gearman_worker():
     from zsl.application.containers.gearman_container import GearmanContainer
-
     print("Initializing app.")
-
     app = Zsl(__name__, modules=GearmanContainer.modules())
     app.run_worker()
 
@@ -109,9 +101,7 @@ def worker(_, task_queue, argv):
 @run.command(help="run unit tests")
 def tests():
     from zsl.utils.testing import load_and_run_tests
-
     Zsl(__name__)
-
     load_and_run_tests()
 
 
@@ -132,11 +122,8 @@ def generate():
 @click.option('--js-file', '-j', help='path to file to integrate to')
 def javascript_models(module, models, model_prefix, collection_prefix,
                       model_fn, collection_fn, marker, integrate, js_file):
-
     from zsl.utils.deploy.js_model_generator import generate_js_models
-
     Zsl(__name__)
-
     result = generate_js_models(module=module,
                                 models=models,
                                 model_prefix=model_prefix,
@@ -146,18 +133,14 @@ def javascript_models(module, models, model_prefix, collection_prefix,
                                 marker=marker,
                                 integrate=integrate,
                                 js_file=js_file)
-
     click.echo(result)
 
 
 @generate.command(help="generate documentation for Apiary")
 def apiary_doc():
     from zsl.utils.deploy.apiari_doc_generator import generate_apiary_doc
-
     Zsl(__name__)
-
     generator = generate_apiary_doc()
-
     click.echo(generator.get_doc())
 
 
@@ -178,6 +161,5 @@ if gearman:
     @click.argument('data', default=None, required=False)
     def task_filler(task_path, data):
         Zsl(__name__)
-
         exec_task_filler(task_path, data)
 
