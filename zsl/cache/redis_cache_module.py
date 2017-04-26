@@ -20,12 +20,13 @@ class RedisCacheModule(CacheModule):
         self._app = app
         self._config = config
 
-        redis_conf = self._config['REDIS']
+        redis_conf = self._config.get('REDIS', {})
+
         self._client = redis.StrictRedis(
-            host=redis_conf['host'],
-            port=redis_conf['port'],
-            db=redis_conf['db'] if 'db' in redis_conf else 0,
-            password=redis_conf['password'] if 'password' in redis_conf else None
+            host=redis_conf.get('host'),
+            port=redis_conf.get('port'),
+            db=redis_conf.get('db', 0),
+            password=redis_conf.get('password')
         )
         self.logger = self._app.logger.getChild('cache')
         self.logger.debug("Redis client created.")

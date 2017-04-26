@@ -8,7 +8,7 @@ from builtins import object
 import logging
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm.session import sessionmaker
+from sqlalchemy.orm.session import sessionmaker, Session
 from sqlalchemy.engine.base import Engine
 
 from injector import Module, provides, singleton, inject
@@ -21,6 +21,7 @@ class SessionHolder(object):
         self._sess_cls = sess_cls
 
     def __call__(self):
+        # type: () -> Session
         return self._sess_cls()
 
 

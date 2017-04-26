@@ -46,7 +46,7 @@ class ServiceInitializer(object):
         :param config: current application config, injected
         :type config: Config
         """
-        service_injection_config = config['SERVICE_INJECTION']
+        service_injection_config = config.get('SERVICE_INJECTION', ())
 
         if not isinstance(service_injection_config, (tuple, list)):
             service_injection_config = (service_injection_config,)

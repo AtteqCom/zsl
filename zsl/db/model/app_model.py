@@ -21,6 +21,8 @@ RELATED_FIELDS = 'related_fields'
 RELATED_FIELDS_CLASS = 'cls'
 RELATED_FIELDS_HINTS = 'hints'
 
+ISO_8601_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
+
 
 class AppModel(object):
     """AppModel's are used as a thin and simple communication objects. Also

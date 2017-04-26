@@ -19,10 +19,10 @@ from zsl.application.initializers.web_initializer import WebInitializer
 default_initializers = (LibraryInitializer, ServiceInitializer)
 
 #: Initializers used in unit test applications
-unittest_initializers = default_initializers + (UnitTestInitializer)
+unittest_initializers = default_initializers + (UnitTestInitializer,)
 
 #: Initializers used in unit web applications
-web_initializers = default_initializers + (WebInitializer)
+web_initializers = default_initializers + (WebInitializer,)
 
 
 class DefaultContextModule(Module):

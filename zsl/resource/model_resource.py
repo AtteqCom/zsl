@@ -14,24 +14,29 @@ The basic way to use them is as follows:
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
+
 from builtins import object
 from future.utils import viewitems
 from builtins import int
 
+import logging
+import json
+from hashlib import sha256
+from functools import partial
+from typing import Union, List
+
 from sqlalchemy.orm import class_mapper
+
 from zsl.resource.resource_helper import filter_from_url_arg, apply_related, create_related_tree, \
     related_from_fields, order_from_url_arg
-from functools import partial
 from zsl.db.helpers import app_models
 from zsl.db.helpers.nested import nested_models, nested_model
 from zsl.service.service import transactional, TransactionalSupport
 from zsl.utils.injection_helper import inject
 from zsl.cache.cache_module import CacheModule
 from zsl.cache.id_helper import IdHelper, create_key_class_prefix
-from hashlib import sha256
-import logging
-import json
 from zsl.utils.cache_helper import app_model_encoder_fn, app_model_decoder_fn
+from zsl.db.model.app_model import AppModel
 
 
 def dict_pick(dictionary, allowed_keys):
@@ -83,10 +88,18 @@ class ResourceQueryContext(object):
     """
 
     def __init__(self, params, args, data):
-        self._params = params
+        # type: (dict, list, dict) -> ()
         self._args = args.copy()
         self._args_original = args
         self._data = data
+
+        # test if params is a list
+        # TODO: replace this with a better is_list test
+        try:
+            len(params)
+            self._params = params
+        except TypeError:
+            self._params = [params]
 
         # Prepare fields and related.
         if 'related' in self._args:
@@ -98,25 +111,22 @@ class ResourceQueryContext(object):
             self._args['related'] = list(
                 set(self._args.get('related', [])) | set(related_from_fields(self._args['fields'])))
 
-    def get_params(self):
+    @property
+    def params(self):
         """Params are given as the part of the path in URL. For example GET /entities/1 will have.
         1 in the params.
         """
         return self._params
 
-    params = property(get_params)
-
-    def get_args(self):
+    @property
+    def args(self):
         """Args are in the query part of the url ?related=&filter_by etc."""
         return self._args
 
-    args = property(get_args)
-
-    def get_data(self):
+    @property
+    def data(self):
         """Body of the request."""
         return self._data
-
-    data = property(get_data)
 
     def get_row_id(self):
         """First parameter, if given, else None. Handy for GET requests."""
@@ -145,25 +155,29 @@ class ModelResource(TransactionalSupport):
     .. automethod:: _create_delete_one_query
     """
 
-    def __init__(self, model_cls):
+    def __init__(self, model_cls=None):
         """
         Create Model CRUD resource for ``model_cls``
         """
 
-        self.init_sql_session()
+        super(ModelResource, self).__init__()
 
-        self.model_cls = model_cls
+        if not model_cls:
+            self.model_cls = self.__model__
+        else:
+            self.model_cls = model_cls
 
-        mapper = class_mapper(model_cls)
+        mapper = class_mapper(self.model_cls)
         self._model_pk = mapper.primary_key[0]
         self._model_columns = [column.key for column in mapper.column_attrs]
 
-        self.to_filter = partial(filter_from_url_arg, model_cls)
-        self.add_related = partial(apply_related, model_cls)
-        self.set_ordering = partial(order_from_url_arg, model_cls)
+        self.to_filter = partial(filter_from_url_arg, self.model_cls)
+        self.add_related = partial(apply_related, self.model_cls)
+        self.set_ordering = partial(order_from_url_arg, self.model_cls)
 
     @staticmethod
     def _create_context(params, args, data):
+        # type: (dict, list, dict) -> ResourceQueryContext
         """
         Creates the resource query context - this an object holding the data alongside the querying of the resource.
         This object is always present as a parameter for each method during the query and users are free to create own
@@ -174,6 +188,7 @@ class ModelResource(TransactionalSupport):
 
     @transactional
     def create(self, params, args, data):
+        # type: (str, dict, dict) -> AppModel
         """
         POST /resource/model_cls/
         data
@@ -186,6 +201,7 @@ class ModelResource(TransactionalSupport):
         return self._return_saved_one(model, ctx)
 
     def read(self, params=None, args=None, data=None):
+        # type: (str, dict, dict) -> Union[List[AppModel], AppModel]
         """
         GET /resource/model_cls/[params:id]?[args:{limit,offset,page,per_page,filter_by,order_by,related,fields}]
 
@@ -222,6 +238,7 @@ class ModelResource(TransactionalSupport):
 
     @transactional
     def update(self, params, args, data):
+        # type: (str, dict, dict) -> Union[List[AppModel], AppModel]
         """
         PUT /resource/model_cls/[params:id]
         data
@@ -239,6 +256,7 @@ class ModelResource(TransactionalSupport):
 
     @transactional
     def delete(self, params, args, data):
+        # type: (str, dict, dict) -> None
         """
         DELETE /resource/model_cls/[params]?[args]
 
@@ -361,7 +379,7 @@ class ModelResource(TransactionalSupport):
         if model is None:
             return None
 
-        for name, value in viewitems(fields.items):
+        for name, value in viewitems(fields):
             setattr(model, name, value)
 
         return model
@@ -383,7 +401,7 @@ class ModelResource(TransactionalSupport):
         models = []
 
         for row in ctx.data:
-            models.append(self._update_one_simple(row.pop('id'), row), ctx)
+            models.append(self._update_one_simple(row.pop('id'), row, ctx))
 
         return models
 

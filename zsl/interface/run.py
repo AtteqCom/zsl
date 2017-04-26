@@ -47,20 +47,16 @@ def web():
 
     app = Zsl(__name__, modules=WebContainer.modules())
 
-    app.run_web(
-        host=app.config.get('FLASK_HOST', '127.0.0.1'),
-        port=app.config.get('FLASK_PORT', 3000),
-        debug=app.config.get('DEBUG', False),
-        use_debugger=app.config.get('USE_DEBUGGER', False),
-        use_reloader=app.config.get('USE_RELOADER', False)
-    )
+    app.run_web()
 
 
-@cli.command(help="open interactive shell (bpython) with the ZSL environment")
-def shell():
+@cli.command(help="open interactive shell (bpython) with the ZSL environment",
+             context_settings=dict(ignore_unknown_options=True))
+@click.argument('args', nargs=-1, type=click.UNPROCESSED)
+def shell(args):
     import bpython
 
-    bpython.embed()
+    bpython.embed(args=list(args))
 
 
 @run.command(help="execute task")
