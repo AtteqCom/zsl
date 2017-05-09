@@ -18,4 +18,4 @@ def args_to_dict(args):
     :return: a simple dict from args
     :rtype: dict
     """
-    return {key: value[0] for key, value in viewitems(args)}
+    return args.to_dict(flat=True)
