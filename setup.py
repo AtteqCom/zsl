@@ -1,9 +1,18 @@
+import re
+import ast
 from setuptools import setup, find_packages
 
 EXCLUDE_FROM_PACKAGES = ['tests', 'tests.*']
 
+_version_re = re.compile(r'__version__\s+=\s+(.*)')
+
+
+with open('zsl/__init__.py', 'rb') as f:
+    version = str(ast.literal_eval(_version_re.search(
+        f.read().decode('utf-8')).group(1)))
+
 setup(name='zsl',
-      version='0.12.0',
+      version=version,
       description='zsl application framework for web based services',
       author='Atteq s.r.o.',
       author_email='open.source@atteq.com',
