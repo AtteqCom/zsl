@@ -9,11 +9,13 @@ Helper module for resource management.
 from __future__ import unicode_literals
 import importlib
 import logging
+from typing import Callable, Union, List, Dict
 from flask import request
 
 from zsl.utils.string_helper import underscore_to_camelcase
 from zsl.utils.task_helper import instantiate
 from zsl.resource.model_resource import ModelResource
+from zsl.interface.resource import ResourceResult
 
 from zsl import inject, Config, Injected, Zsl
 
@@ -54,6 +56,7 @@ def get_method(resource, method):
 
 @inject(config=Config)
 def get_resource_task(resource_path, config=Injected):
+    # type: (str, Config) -> Callable[[str, Dict, Dict], Union[List[AppModel], AppModel, ResourceResult]]
     """Search and return a bounded method for given path.
 
     :param resource_path: resource path
@@ -104,7 +107,7 @@ def get_resource_task(resource_path, config=Injected):
         elif request.method == 'GET':
             return get_method(resource, 'read')
 
-        elif request.method == 'PUT':
+        elif request.method == 'PUT' or request.method == 'PATCH':
             return get_method(resource, 'update')
 
         elif request.method == 'DELETE':

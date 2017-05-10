@@ -20,13 +20,14 @@ def append_crossdomain(response, config=Injected):
 
     if config.get('ALLOW_ORIGIN'):
         response.headers['Access-Control-Allow-Origin'] = config.get('ALLOW_ORIGIN')
+
     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, DELETE'
-    response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type'
+    response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type, location, X-Total-Count, Link'
 
 
 @inject(app=Zsl)
 def append_asl(response, app=Injected):
-    response.headers['ASL-Flask-Layer'] = app.get_version()
+    response.headers['ZSL-Flask-Layer'] = app.get_version()
 
 
 def append_cache(response):
