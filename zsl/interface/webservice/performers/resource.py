@@ -53,7 +53,8 @@ def create_resource_mapping(app):
                 raise ImportError("No resource named {0}.".format(resource))
             logging.debug("Fetched resource named {0} with data\n{1}.".format(resource, request.data))
 
-            data = request.json
+            data = request.get_json() if request.data else None
+
             rv = resource_task(params=params, args=args_to_dict(request.args), data=data)
 
             if not isinstance(rv, ResourceResult):
@@ -67,7 +68,7 @@ def create_resource_mapping(app):
             if rv.location:
                 response.location = rv.location
 
-            if rv.count:
+            if rv.count is not None:
                 response.headers['X-Total-Count'] = rv.count
 
             if rv.links:

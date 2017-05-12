@@ -246,7 +246,6 @@ class JsonServerResource(ModelResource):
         """
         if request.method == 'PUT':
             logging.warning("Called not implemented resource method PUT")
-            return NOT_IMPLEMENTED
 
         resource = super(JsonServerResource, self).update(*args, **kwargs)
 
