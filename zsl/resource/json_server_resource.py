@@ -7,7 +7,6 @@ from __future__ import (absolute_import, division,
 from builtins import *
 
 import logging
-import math
 import re
 
 from sqlalchemy.orm.exc import NoResultFound
@@ -74,7 +73,7 @@ def get_link_pages(page, per_page, count, page_url):
 
     if per_page < count:
         links['first'] = page_url.replace(current_page, page_arg(1))
-        links['last'] = page_url.replace(current_page, page_arg(math.ceil(count / per_page)))
+        links['last'] = page_url.replace(current_page, page_arg((count + per_page - 1) // per_page))
 
     return links
 
