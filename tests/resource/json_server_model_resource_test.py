@@ -230,13 +230,22 @@ class JsonServerModelResourceTestCase(TestCase):
         self.assertHTTPStatus(http.client.NOT_FOUND, rv.status_code, 'http status should be 404')
 
     def testUpdateWithPut(self):
-        """Put - replace resource."""
-        user_data = {'name': 'eleven'}
+        """Put - same as patch."""
+        update = {'name': 'eleven'}
 
-        rv = self.app.put(self._path(res_id=1), data=json.dumps(user_data), content_type='application/json')
+        original = users[0]
 
-        self.assertDictEqual({}, json_loads(rv.data), 'should return empty json')
-        self.assertHTTPStatus(http.client.NOT_IMPLEMENTED, rv.status_code, 'http status should be 404')
+        rv = self.app.put(self._path(res_id=original.id), data=json.dumps(update), content_type='application/json')
+        user = json_loads(rv.data)
+
+        updated = original._asdict()
+        updated['name'] = update['name']
+
+        self.assertHTTPStatus(http.client.OK, rv.status_code, 'http status should be 200')
+        self.assertDictEqual(updated, user, 'updated value should be returned')
+
+        rv = self.app.get(self._path(res_id=original.id))
+        self.assertDictEqual(updated, json_loads(rv.data), 'updated value should be stored')
 
     def testUpdateWithPatch(self):
         """Patch - update partially."""
