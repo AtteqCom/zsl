@@ -22,7 +22,7 @@ from future.utils import viewitems
 import logging
 import json
 from hashlib import sha256
-from typing import Union, List
+from typing import Union, List, Any
 
 from sqlalchemy.orm import class_mapper
 
@@ -70,6 +70,19 @@ def page_to_offset(params):
     params['limit'] = per_page
 
 
+def _is_list(list_):
+    # type: (Any) -> bool
+    """Test if variable is a list.
+
+    Maybe this is not the best way to test for a list, but it is sufficient for
+    current use case.
+    """
+    try:
+        len(list_)
+        return True
+    except TypeError:
+        return False
+
 class ResourceQueryContext(object):
     """
     The context of the resource query.
@@ -92,13 +105,7 @@ class ResourceQueryContext(object):
         self._args_original = args
         self._data = data
 
-        # test if params is a list
-        # TODO: replace this with a better is_list test
-        try:
-            len(params)
-            self._params = params
-        except TypeError:
-            self._params = [params]
+        self._params = params if _is_list(params) else [params]
 
         # Prepare fields and related.
         if 'related' in self._args:

@@ -35,7 +35,7 @@ class ModelResourceTest(TestCase):
         resource = TestRestResource()
         test_user = users[0]
         user = resource.read(test_user.id)
-        
+
         self._testAppModel(test_user, user, "resource value should be equal its model")
 
     def testReadListAll(self):

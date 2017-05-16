@@ -142,13 +142,13 @@ def in_user(user, q):
     return q in str(user.id) or q in user.name or in_user_address(user.id, q)
 
 
-class JsonServerModelResourceResource(JsonServerResource):
+class JsonServerModelResourceTestResource(JsonServerResource):
     """Test resource based on JsonServerResource."""
     __model__ = UserModel
 
 
 class JsonServerModelResourceTestCase(TestCase):
-    PATH = '/resource/json_server_model_resource'
+    PATH = '/resource/json_server_model_resource_test'
 
     def setUp(self):
         zsl = Zsl(__name__, config_object=test_settings, modules=WebContainer.modules())

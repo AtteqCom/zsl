@@ -26,27 +26,19 @@ class AtteqServiceFlask(Flask):
                  static_folder='static', template_folder='templates',
                  instance_path=None, instance_relative_config=False,
                  modules=None, config_object=None):
-
         super(AtteqServiceFlask, self).__init__(import_name, static_path, static_url_path,
                                                 static_folder, template_folder, instance_path,
                                                 instance_relative_config)
-
         self._dependencies_initialized = False
         self._is_initialized = False
-
         self._injector = None
         self._worker = None
-
         self._configure(config_object)
-
         if not modules:
             from zsl.application.containers.core_container import CoreContainer
             modules = CoreContainer.modules()
-
         self._configure_injector(modules)
-
         self._initialize()
-
         self._dependencies_initialized = True
 
     def _configure(self, config_object=None):
@@ -65,7 +57,6 @@ class AtteqServiceFlask(Flask):
     def _initialize(self):
         """Run the initializers."""
         ctx = self.injector.get(InitializationContext)
-
         ctx.initialize()
 
     def _register(self):
@@ -141,7 +132,6 @@ class AtteqServiceFlask(Flask):
             return AtteqServiceFlask.VERSION + ":" + v
 
     def run_web(self, host='127.0.0.1', port=5000, debug=False, **options):
-
         options.setdefault('use_debugger', self.config.get('USE_DEBUGGER', False))
         options.setdefault('use_reloader', self.config.get('USE_RELOADER', False))
 
@@ -160,9 +150,7 @@ class AtteqServiceFlask(Flask):
         The worker instance is given as a DI module.
         """
         from zsl.interface.task_queue import TaskQueueWorker
-
         worker = self.injector.get(TaskQueueWorker)
-
         worker.run(*args, **kwargs)
 
 
