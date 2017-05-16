@@ -55,26 +55,26 @@ def create_resource_mapping(app):
 
             data = request.get_json() if request.data else None
 
-            rv = resource_task(params=params, args=args_to_dict(request.args), data=data)
+            resource_result = resource_task(params=params, args=args_to_dict(request.args), data=data)
 
-            if not isinstance(rv, ResourceResult):
-                rv = ResourceResult(body=rv)
+            if not isinstance(resource_result, ResourceResult):
+                resource_result = ResourceResult(body=resource_result)
 
-            response = Response(json.dumps(rv.body, cls=AppModelJSONEncoder), mimetype="application/json")
+            response = Response(json.dumps(resource_result.body, cls=AppModelJSONEncoder), mimetype="application/json")
 
-            if rv.status:
-                response.status = str(rv.status)
+            if resource_result.status:
+                response.status = str(resource_result.status)
 
-            if rv.location:
-                response.location = rv.location
+            if resource_result.location:
+                response.location = resource_result.location
 
-            if rv.count is not None:
-                response.headers['X-Total-Count'] = rv.count
+            if resource_result.count is not None:
+                response.headers['X-Total-Count'] = resource_result.count
 
-            if rv.links:
+            if resource_result.links:
                 response.headers['Links'] = ', '.join(
                     ['<{url}>; rel="{name}"'.format(url=url, name=name)
-                     for name, url in viewitems(rv.links)]
+                     for name, url in viewitems(resource_result.links)]
                 )
 
         return response
