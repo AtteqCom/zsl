@@ -93,6 +93,7 @@ class ResourceQueryContext(object):
         self._data = data
 
         # test if params is a list
+        # TODO: replace this with a better is_list test
         try:
             len(params)
             self._params = params
