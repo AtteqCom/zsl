@@ -16,13 +16,12 @@ The basic way to use them is as follows:
 from __future__ import unicode_literals
 
 from builtins import object
-from future.utils import viewitems
 from builtins import int
+from future.utils import viewitems
 
 import logging
 import json
 from hashlib import sha256
-from functools import partial
 from typing import Union, List
 
 from sqlalchemy.orm import class_mapper
@@ -143,7 +142,7 @@ class ResourceQueryContext(object):
         return self._args.get('filter_by', None)
 
 
-class ModelResource(TransactionalSupport):
+class ModelResourceBase(TransactionalSupport):
     """
     ModelResource works only for tables with a single-column identifier (key).
 
@@ -160,7 +159,7 @@ class ModelResource(TransactionalSupport):
         Create Model CRUD resource for ``model_cls``
         """
 
-        super(ModelResource, self).__init__()
+        super(ModelResourceBase, self).__init__()
 
         if not model_cls:
             self.model_cls = self.__model__
@@ -170,11 +169,19 @@ class ModelResource(TransactionalSupport):
         mapper = class_mapper(self.model_cls)
         self._model_pk = mapper.primary_key[0]
         self._model_columns = [column.key for column in mapper.column_attrs]
+        self._related_columns = [column.key for column in mapper.relationships]
 
-        self.to_filter = partial(filter_from_url_arg, self.model_cls)
-        self.add_related = partial(apply_related, self.model_cls)
-        self.set_ordering = partial(order_from_url_arg, self.model_cls)
+    def to_filter(self, query, arg):
+        return filter_from_url_arg(self.model_cls, query, arg)
 
+    def add_related(self, query, related):
+        return apply_related(self.model_cls, query, related)
+
+    def set_ordering(self, query, arg):
+        return order_from_url_arg(self.model_cls,  query, arg)
+
+
+class ModelResource(ModelResourceBase):
     @staticmethod
     def _create_context(params, args, data):
         # type: (dict, list, dict) -> ResourceQueryContext
@@ -212,6 +219,7 @@ class ModelResource(TransactionalSupport):
         :param args
         :type args dict
         :param data
+        :type data: dict
         """
         if params is None:
             params = []
@@ -359,10 +367,10 @@ class ModelResource(TransactionalSupport):
 
     @staticmethod
     def _read_collection(q, ctx):
-        offset = ctx.args.get('offset', 0)
+        offset = int(ctx.args.get('offset', 0))
         limit = ctx.args.get('limit', 10)
         if limit is not None and limit != 'unlimited':
-            q = q.limit(limit)
+            q = q.limit(int(limit))
         if offset > 0:
             q = q.offset(offset)
         return q.all()

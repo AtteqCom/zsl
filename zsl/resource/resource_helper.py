@@ -4,14 +4,16 @@
 
 .. moduleauthor:: Peter Morihladko
 """
-from __future__ import unicode_literals
-from future.utils import viewitems
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from builtins import *
+from future.utils import viewitems, viewvalues
 
 from sqlalchemy.orm import class_mapper, joinedload
-from sqlalchemy import desc, asc
+from sqlalchemy import desc, asc, and_
 
 
-def filter_from_url_arg(model_cls, query, arg):
+def filter_from_url_arg(model_cls, query, arg, query_operator=and_):
     """
     Parse filter URL argument ``arg`` and apply to ``query``
 
@@ -22,7 +24,7 @@ def filter_from_url_arg(model_cls, query, arg):
     mapper = class_mapper(model_cls)
 
     exprs = []
-    joins = []
+    joins = set()
     for expr in fields:
         if expr == "":
             continue
@@ -32,10 +34,11 @@ def filter_from_url_arg(model_cls, query, arg):
 
         operator = None
         method = None
-        for op, m in viewitems(operator_to_method):
+        for op in operator_order:
             if op in expr:
                 operator = op
-                method = m
+                method = operator_to_method[op]
+                break
 
         if operator is None:
             raise Exception('No operator in expression "{0}".'.format(expr))
@@ -47,7 +50,7 @@ def filter_from_url_arg(model_cls, query, arg):
 
         for column_name in column_names:
             if column_name in e_mapper.relationships:
-                joins.append(column_name)
+                joins.add(column_name)
                 e_model_cls = e_mapper.attrs[column_name].mapper.class_
                 e_mapper = class_mapper(e_model_cls)
 
@@ -57,7 +60,7 @@ def filter_from_url_arg(model_cls, query, arg):
         else:
             raise Exception('Invalid property {0} in class {1}.'.format(column_name, e_model_cls))
 
-    return query.join(*joins).filter(*exprs)
+    return query.join(*joins).filter(query_operator(*exprs))
 
 
 operator_to_method = {
@@ -69,6 +72,7 @@ operator_to_method = {
     '<': '__lt__',
     '>': '__gt__'
 }
+operator_order = ['::like::', '==', '<=', '>=', '!=', '<', '>']
 
 
 def order_from_url_arg(model_cls, query, arg):
@@ -129,6 +133,46 @@ def create_related_tree(fields):
                 node[k] = None
 
     return tree
+
+
+def model_tree(name, model_cls, visited=None):
+    """Create a simple tree of model's properties and its related models.
+    
+    It traverse trough relations, but ignore any loops.
+    
+    :param name: name of the model 
+    :type name: str
+    :param model_cls: model class
+    :param visited: set of visited models
+    :type visited: list or None
+    :return: a dictionary where values are lists of string or other \
+    dictionaries
+    """
+    if not visited:
+        visited = set()
+
+    visited.add(model_cls)
+
+    mapper = class_mapper(model_cls)
+    columns = [column.key for column in mapper.column_attrs]
+    related = [model_tree(rel.key, rel.mapper.entity, visited)
+               for rel in mapper.relationships if rel.mapper.entity not in visited]
+
+    return {name: columns + related}
+
+
+def flat_model(tree):
+    """Flatten the tree into a list of properties adding parents as prefixes."""
+    names = []
+    for columns in viewvalues(tree):
+        for col in columns:
+            if isinstance(col, dict):
+                col_name = list(col)[0]
+                names += [col_name + '__' + c for c in flat_model(col)]
+            else:
+                names.append(col)
+
+    return names
 
 
 def apply_related(model_cls, query, related_fields):
