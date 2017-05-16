@@ -8,6 +8,7 @@ from builtins import *
 
 import logging
 import re
+from typing import Any
 
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import or_
@@ -21,37 +22,38 @@ import http.client
 from flask import request
 
 
-def status_code(status):
-    """Solve Py2/3 problem."""
+def _status_code(status):
+    # type: (Any) -> int
+    """Py2/3 status code."""
     if hasattr(status, 'value'):
-        return status.value
+        return status.value  # python 3
     else:
-        return status
+        return status  # python 2
 
 NOT_FOUND = ResourceResult(
     body={},
-    status=status_code(http.client.NOT_FOUND)
+    status=_status_code(http.client.NOT_FOUND)
 )
 
 NOT_IMPLEMENTED = ResourceResult(
     body={},
-    status=status_code(http.client.NOT_IMPLEMENTED)
+    status=_status_code(http.client.NOT_IMPLEMENTED)
 )
 
 # any other arguments from these are considered as `property_name(_operator)=some_vaule` filter
-SKIPPED_ARGUMENTS = set(['callback', '_', 'q', '_start', '_end', '_sort', '_order', '_limit', '_embed', '_expand'])
+_SKIPPED_ARGUMENTS = set(['callback', '_', 'q', '_start', '_end', '_sort', '_order', '_limit', '_embed', '_expand'])
 
 # first group is the column name, then it can have a . separator or an operator suffix
-re_column_name = re.compile(r'^([^.]*?)(\..*?)?(_lte|_gte|_ne|_like)?$')
+_re_column_name = re.compile(r'^([^.]*?)(\..*?)?(_lte|_gte|_ne|_like)?$')
 
 
-def page_arg(p):
+def _page_arg(p):
     # type: (int) -> str
     """Create a page argument from int."""
     return 'page=' + str(p)
 
 
-def get_link_pages(page, per_page, count, page_url):
+def _get_link_pages(page, per_page, count, page_url):
     # type: (int, int, int, str) -> Dict[str, str]
     """Create link header for page metadata.
     
@@ -61,19 +63,19 @@ def get_link_pages(page, per_page, count, page_url):
     :param page_url: url for resources
     :return: dictionary with name of the link as key and its url as value
     """
-    current_page = page_arg(page)
+    current_page = _page_arg(page)
     links = {}
     end = page * per_page
 
     if page > 1:
-        links['prev'] = page_url.replace(current_page, page_arg(page-1))
+        links['prev'] = page_url.replace(current_page, _page_arg(page - 1))
 
     if end < count:
-        links['next'] = page_url.replace(current_page, page_arg(page+1))
+        links['next'] = page_url.replace(current_page, _page_arg(page + 1))
 
     if per_page < count:
-        links['first'] = page_url.replace(current_page, page_arg(1))
-        links['last'] = page_url.replace(current_page, page_arg((count + per_page - 1) // per_page))
+        links['first'] = page_url.replace(current_page, _page_arg(1))
+        links['last'] = page_url.replace(current_page, _page_arg((count + per_page - 1) // per_page))
 
     return links
 
@@ -95,7 +97,7 @@ class JsonServerResource(ModelResource):
 
         return ResourceResult(
             body=resource,
-            status=status_code(http.client.CREATED),
+            status=_status_code(http.client.CREATED),
             location="{}/{}".format(request.url, resource.get_id())
         )
 
@@ -104,8 +106,8 @@ class JsonServerResource(ModelResource):
         filter_by = []
 
         for name, values in request.args.copy().lists():  # copy.lists works in py2 and py3
-            if name not in SKIPPED_ARGUMENTS:
-                column = re_column_name.search(name).group(1)
+            if name not in _SKIPPED_ARGUMENTS:
+                column = _re_column_name.search(name).group(1)
 
                 if column not in self._model_columns:
                     continue
@@ -216,7 +218,7 @@ class JsonServerResource(ModelResource):
                 result_count = self._get_collection_count(ctx)
 
             if 'page' in args:
-                result_links = get_link_pages(
+                result_links = _get_link_pages(
                     page=args['page'],
                     per_page=int(args['limit']),
                     count=result_count,
