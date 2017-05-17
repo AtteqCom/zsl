@@ -8,7 +8,7 @@ from zsl.unittest import TestCase
 from sqlalchemy.ext.declarative import declarative_base
 
 from zsl.resource.model_resource import ModelResource, ReadOnlyResourceUpdateOperationException, ReadOnlyResourceMixin
-from tests.resource.resource_test_helper import create_resource_test_data, DummyModel
+from tests.resource.resource_test_helper import create_resource_test_data, UserModel
 
 Base = declarative_base()
 
@@ -25,7 +25,7 @@ class TestReadOnlyModelResource(TestCase):
         create_resource_test_data()
 
     def setUp(self):
-        self.resource = service_application._injector.create_object(ReadOnlyModelResource, {'model_cls': DummyModel})
+        self.resource = service_application._injector.create_object(ReadOnlyModelResource, {'model_cls': UserModel})
 
     def testRead(self):
         m = self.resource.read([9])
