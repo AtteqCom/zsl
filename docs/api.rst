@@ -1,6 +1,6 @@
 
 API
-####
+###
 
 .. toctree::
    :maxdepth: 2
@@ -395,5 +395,9 @@ API
    :undoc-members:
 
 .. automodule:: zsl.task
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.contrib.modules.alembic_module
    :members:
    :undoc-members:

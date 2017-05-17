@@ -22,6 +22,10 @@ setup(name='zsl',
         'flask_injector==0.8.0',
         'future'
       ],
+      extras_require={
+        'alembic': ['alembic'],
+        'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme']
+      },
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Programming Language :: Python :: 2.7',
