@@ -180,7 +180,7 @@ class ModelResource(TransactionalSupport):
         # type: (dict, list, dict) -> ResourceQueryContext
         """
         Creates the resource query context - this an object holding the data alongside the querying of the resource.
-        This object is always present as a parameter for each method during the query and users are free to create own
+        This object is always present as a parameter for each method during the query and users.py are free to create own
         properties so that they can optimize and perform the query (so the subsequent methods have an access to the
         already precomputed data).
         """

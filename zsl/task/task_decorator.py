@@ -22,7 +22,7 @@ from os.path import os
 from zsl.utils.file_helper import makedirs
 from zsl.utils.security_helper import verify_security_data
 
-from zsl import inject, Zsl
+from zsl import inject, Zsl, Injected
 
 
 def log_output(f):
