@@ -6,6 +6,10 @@
 """
 from __future__ import unicode_literals
 from builtins import object
+
+import logging
+
+from zsl.application.modules.web.configuration import MethodConfiguration
 from zsl.interface.webservice.utils.response_headers import append_headers
 from zsl.interface.webservice.utils.error_handler import error_handler
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
@@ -13,6 +17,8 @@ import json
 from flask.wrappers import Response
 
 from zsl import inject, Config, Zsl, Injected
+
+METHOD_CONFIG_NAME = 'METHOD'
 
 
 @append_headers
@@ -29,6 +35,7 @@ def identity_responder(rv):
 def set_default_responder(responder):
     global _default_responder_method
     _default_responder_method = responder
+
 
 _default_responder_method = default_web_responder
 
@@ -55,11 +62,18 @@ class Performer(object):
         return responder(rv)
 
 
-# TODO this is a blind refactor, should be redone utilizing DI from the start
-@inject(app=Zsl)
-def route(path, app=Injected, **options):
+def _get_method_configuration(config):
+    # type: (Config) -> MethodConfiguration
+    return config.get(METHOD_CONFIG_NAME, MethodConfiguration())
+
+
+@inject(app=Zsl, config=Config)
+def route(path, app=Injected, config=Injected, **options):
     def _decorator(f):
-        routed_function = app.route("/method" + path, **options)
+        method_config = _get_method_configuration(config)
+        url = "/{0}{1}".format(method_config.url_prefix, path)
+        logging.getLogger(__name__).info("Mapping url '{0}' as a method.".format(url))
+        routed_function = app.route(url, **options)
         return routed_function(Performer(f))
 
     return _decorator
@@ -67,8 +81,4 @@ def route(path, app=Injected, **options):
 
 @inject(config=Config)
 def get_method_packages(config):
-    method_package = config.get('METHOD_PACKAGE')
-    if method_package is None:
-        return ()
-
-    return method_package if isinstance(method_package, list) else (method_package,)
+    return _get_method_configuration(config).packages
