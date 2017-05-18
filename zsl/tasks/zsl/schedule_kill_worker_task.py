@@ -5,7 +5,7 @@
 from __future__ import unicode_literals
 from builtins import object
 from zsl import Zsl
-from zsl.utils.injection_helper import inject
+from zsl import inject
 from zsl.utils.gearman_helper import schedule_gearman_task
 
 

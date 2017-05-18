@@ -14,7 +14,7 @@ import traceback
 import socket
 
 from zsl import Zsl, Config, Injected
-from zsl.utils.injection_helper import inject
+from zsl import inject
 from zsl.router.task import TaskRouter
 from zsl.task.job_context import JobContext, Job
 

@@ -1,12 +1,12 @@
 import logging
 from injector import provides, singleton
 
-from zsl import Zsl
+from zsl import Zsl, inject
 from zsl.application.initialization_context import InitializationContext
 from zsl.application.initializers.web_initializer import WebInitializer
 from zsl.application.modules.cli_module import ZslCli
 from zsl.application.modules.context_module import DefaultContextModule, default_initializers
-from zsl.utils.injection_helper import inject, simple_bind
+from zsl.utils.injection_helper import simple_bind
 
 #: Initializers used in unit web applications
 web_initializers = default_initializers + (WebInitializer,)

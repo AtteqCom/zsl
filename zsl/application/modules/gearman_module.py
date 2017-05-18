@@ -7,12 +7,12 @@ from __future__ import unicode_literals
 import click
 from injector import Module, ClassProvider, singleton
 
-from zsl import Zsl
+from zsl import Zsl, inject
 from zsl.application.modules.cli_module import ZslCli
 from zsl.interface.gearman.task_filler import exec_task_filler
 from zsl.interface.task_queue import TaskQueueWorker
 from zsl.interface.gearman.worker import GearmanTaskQueueWorker
-from zsl.utils.injection_helper import inject, simple_bind
+from zsl.utils.injection_helper import simple_bind
 
 
 class GearmanCli(object):

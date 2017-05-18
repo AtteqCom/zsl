@@ -108,7 +108,8 @@ except ImportError:
 from injector import Module, singleton, Binder, provides
 
 from zsl.application.modules.cli_module import ZslCli
-from zsl.utils.injection_helper import inject, simple_bind
+from zsl import inject
+from zsl.utils.injection_helper import simple_bind
 
 
 class AlembicCli(object):
