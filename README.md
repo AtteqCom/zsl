@@ -1,16 +1,20 @@
 # ZSL - z' service layer
 
-ZSL is a Python 2.7 micro-framework utilizing 
+ZSL is a Python micro-framework utilizing 
 [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) 
-for creating service applications on top of [Flask](http://flask.pocoo.org/docs/0.11/)
-and [Gearman](http://gearman.org/) job server.
+for creating service applications on top of 
+[Flask](http://flask.pocoo.org/docs/0.11/) web framework and 
+[Gearman](http://gearman.org/) job server or 
+[Celery](http://http://www.celeryproject.org/) task queue.
 
 ## Motivation
 
-We developed ZSL to modernize our workflow with maintaining our clients web
-applications written in various older CMS solutions without the need to rewrite 
-them significantly. With ZSL we can write our new components in python, with one
-coherent shared codebase, accessible trough Gearman or JavaScript.
+We developed ZSL to modernize our workflow with maintaining our clients' 
+mostly web applications written in various older CMS solutions without the 
+need to rewrite them significantly. With ZSL we can write our new components
+in Python, with one coherent shared codebase, accessible trough Gearman or 
+JavaScript. Also the same code can be called through various endpoints - web or
+ task queue nowadays.
     
 ## Disclaimer
 
@@ -33,7 +37,7 @@ $ pip install zsl
 
 For now it is a bit cumbersome to get it running. It has inherited settings
 trough ENV variables from Flask and has a rigid directory structure like django 
-apps. On top of that, it needs a database and redis.
+apps. On top of that, it needs a database and Redis.
 
 The minimum application layout has to contain:
 ```
