@@ -11,8 +11,10 @@ from zsl.application.modules.celery_module import CeleryTaskQueueOutsideWorkerMo
 class CeleryContainer(CoreContainer):
     """Configuration for celery application."""
     worker = CeleryTaskQueueMainWorkerModule
+    celery_cli = CeleryCliModule
 
 
 class CeleryStandAloneContainer(CoreContainer):
     """Configuration for application run with help of celery cli tools."""
     worker = CeleryTaskQueueOutsideWorkerModule
+    celery_cli = CeleryCliModule

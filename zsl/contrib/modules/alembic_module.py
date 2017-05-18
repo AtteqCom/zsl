@@ -101,28 +101,30 @@ from zsl.contrib.modules.alembic_config import AlembicConfiguration
 try:
     from alembic.config import CommandLine
 except ImportError:
-    logging.getLogger(__name__).error(
+    CommandLine = None
+    logging.getLogger(__name__).exception(
         "Can not import alembic. Please install it first `pip install zsl ["
         "alembic]`.")
+    raise
 from injector import Module, singleton, Binder, provides
 
 from zsl.application.modules.cli_module import ZslCli
-from zsl.interface.run import cli
-from zsl.utils.injection_helper import inject
+from zsl.utils.injection_helper import inject, simple_bind
 
 
-class AlembicCli:
+class AlembicCli(object):
     """Alembic Cli interface support."""
 
+    @inject(zsl_cli=ZslCli)
     def __init__(self, zsl_cli):
         # type: (ZslCli) -> AlembicCli
         logging.getLogger(__name__).debug("Creating Alembic CLI.")
 
-        @cli.command(help='Run alembic maintenance tasks.',
-                     context_settings=dict(
-                         ignore_unknown_options=True,
-                         allow_extra_args=True
-                     ))
+        @zsl_cli.cli.command(help='Run alembic maintenance tasks.',
+                             context_settings=dict(
+                                 ignore_unknown_options=True,
+                                 allow_extra_args=True
+                             ))
         @click.pass_context
         @inject(alembic_cfg=AlembicConfiguration)
         def alembic(ctx, alembic_cfg):
@@ -144,7 +146,10 @@ class AlembicCli:
                 os.chdir(cwd)
 
         self._alembic = alembic
-        self._cli = cli
+
+    @property
+    def alembic(self):
+        return self._alembic
 
     def __call__(self, *args, **kwargs):
         self._alembic()
@@ -155,23 +160,12 @@ class AlembicModule(Module):
 
     ALEMBIC_CONFIG_NAME = 'ALEMBIC'
 
-    @provides(AlembicCli, scope=singleton)
-    @inject(zsl_cli=ZslCli)
-    def provide_alembic_cli(self, zsl_cli):
-        # type: (ZslCli) -> AlembicCli
-        return AlembicCli(zsl_cli)
-
     @provides(AlembicConfiguration)
     @inject(config=Config)
-    def provide_alembic_config(self, config):
+    def provide_alembic_configuration(self, config):
         # type: (Config) -> AlembicConfiguration
-        return config[AlembicModule.ALEMBIC_CONFIG_NAME]
+        return config.get(AlembicModule.ALEMBIC_CONFIG_NAME)
 
     def configure(self, binder):
         # type: (Binder) -> None
-
-        @inject(alembic_cli=AlembicCli)
-        def init_alembic_cli(alembic_cli):
-            pass
-
-        init_alembic_cli()
+        simple_bind(binder, AlembicCli, singleton)

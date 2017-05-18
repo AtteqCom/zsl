@@ -5,11 +5,18 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
+
+import logging
+from typing import Type
+
 from future.utils import viewitems
 import injector
+from injector import Binder
 from injector import BindingKey, reraise, CallError
 import inspect
 import functools
+
+from injector import Scope
 
 from zsl._state import get_current_app
 
@@ -31,23 +38,23 @@ def inject(**bindings):
     """
 
     def outer_wrapper(f):
-        def function_wrapper(f):
+        def function_wrapper(ff):
             for key, value in viewitems(bindings):
                 bindings[key] = BindingKey(value)
 
-            @functools.wraps(f)
+            @functools.wraps(ff)
             def _inject(*args, **kwargs):
                 inj = get_current_app().injector
                 dependencies = inj.args_to_inject(
-                    function=f,
+                    function=ff,
                     bindings=bindings,
-                    owner_key=f
+                    owner_key=ff
                 )
                 dependencies.update(kwargs)
                 try:
-                    return f(*args, **dependencies)
+                    return ff(*args, **dependencies)
                 except TypeError as e:
-                    reraise(e, CallError(f, args, dependencies, e))
+                    reraise(e, CallError(ff, args, dependencies, e))
 
             return _inject
 
@@ -77,4 +84,12 @@ def inject(**bindings):
 
 
 def bind(interface, to=None, scope=None):
+    logging.getLogger(__name__).warning("Using this style of binding is deprecated. Use Modules instead.")
     get_current_app().injector.binder.bind(interface, to, scope)
+
+
+def simple_bind(binder, cls, scope):
+    # type: (Binder, Type, Scope) -> None
+    instance = cls()
+    binder.bind(interface=cls, to=instance, scope=scope)
+    return instance
