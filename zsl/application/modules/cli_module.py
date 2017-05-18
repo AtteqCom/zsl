@@ -3,7 +3,6 @@ import logging
 import click
 from injector import Module, singleton, Binder
 
-from zsl import Zsl
 from zsl.interface.cli import cli
 from zsl.utils.injection_helper import inject, simple_bind
 from zsl.utils.testing import load_and_run_tests

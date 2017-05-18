@@ -6,7 +6,6 @@ from __future__ import unicode_literals
 from builtins import object
 
 import importlib
-from imp import reload
 
 from zsl import inject, Zsl, Config
 from zsl.utils.string_helper import underscore_to_camelcase
@@ -24,7 +23,7 @@ class TaskRouter(object):
         # Support for the settings with only one TASK_PACKAGE defined.
         self._task_packages = (self._config['TASK_PACKAGE'],) if 'TASK_PACKAGE' in self._config else self._config[
             'TASK_PACKAGES']
-        self._task_reloading = self._config['RELOAD']
+        self._task_reloading = self._config['USE_RELOADER']
         self._debug = self._config['DEBUG']
 
     def get_task_packages(self):
@@ -60,29 +59,29 @@ class TaskRouter(object):
         class_name = underscore_to_camelcase(path[-1])
 
         # finding the path in task packages
-        module = None
+        module_ = None
         for task_package in self.get_task_packages():
             module_name = "{0}.{1}".format(task_package, ".".join(path))
 
             try:
                 self._app.logger.debug("Trying to load module with name '%s' and class name '%s'.", module_name,
                                        class_name)
-                module = self._load_module(module_name)
+                module_ = self._load_module(module_name)
                 break
             except ImportError as e:
                 if self._debug:
                     self._app.logger.exception("Could not load module with name '%s' and class name '%s', '%s'.",
                                                module_name, class_name, e)
 
-        if module is None:
+        if module_ is None:
             raise ImportError(
                 "No module named {0} found in [{1}].".format(".".join(path), ",".join(self.get_task_packages())))
 
         if self.is_task_reloading():
-            reload(module)
+            importlib.reload(module_)
 
         # Create the task using the injector initialization.
-        cls = getattr(module, class_name)
+        cls = getattr(module_, class_name)
         task = instantiate(cls)
 
         self._app.logger.debug("Task object {0} created [{1}].".format(class_name, task))

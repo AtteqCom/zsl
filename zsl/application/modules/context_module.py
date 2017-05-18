@@ -7,6 +7,8 @@ and is responsible for specific initializations on it.
 """
 from __future__ import unicode_literals
 
+import logging
+
 from zsl.application.initialization_context import InitializationContext
 from injector import singleton, Module
 
@@ -25,6 +27,7 @@ class DefaultContextModule(Module):
     """Adds default application context to current configuration."""
 
     def _create_context(self):
+        logging.getLogger(__name__).debug("Creating default context.")
         return InitializationContext(initializers=default_initializers)
 
     def configure(self, binder):

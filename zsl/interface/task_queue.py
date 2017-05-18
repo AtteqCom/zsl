@@ -26,7 +26,7 @@ class KillWorkerException(Exception):
 
 @inject(app=Zsl, task_router=TaskRouter)
 def execute_job(job, app=Injected, task_router=Injected):
-    # type: (Job, ServiceApplication) -> dict
+    # type: (Job, Zsl, TaskRouter) -> dict
     """Execute a job.
 
     :param job: job to execute
@@ -63,15 +63,14 @@ class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
 
     @inject(app=Zsl, config=Config, task_router=TaskRouter)
     def __init__(self, app, config, task_router):
-        # type: (ServiceApplication, Config) -> None
+        # type: (Zsl, Config) -> None
         self._app = app
         self._config = config
         self._task_router = task_router
 
         self._should_stop = False
 
-        self._task_router.set_task_reloading(
-            self._task_router.is_task_reloading() or self._config['RELOAD_GEARMAN'])
+        self._task_router.set_task_reloading(self._task_router.is_task_reloading() or self._config['RELOAD_GEARMAN'])
 
     @staticmethod
     def _get_client_id():

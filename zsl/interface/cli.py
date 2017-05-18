@@ -28,7 +28,7 @@ def _get_version(ctx, _, value):
     ctx.exit()
 
 
-@click.group(help="ZSL cli toolkit")
+@click.group(help="ZSL CLI toolkit")
 @click.option('--version', help="Show ZSL version", expose_value=False,
               is_flag=True, is_eager=True, callback=_get_version)
 def cli():
