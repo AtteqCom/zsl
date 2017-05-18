@@ -1,4 +1,4 @@
-from injector import Binder
+import logging
 from injector import provides, singleton
 
 from zsl import Zsl
@@ -37,6 +37,7 @@ class WebContextModule(DefaultContextModule):
     """Adds web application context to current configuration."""
 
     def _create_context(self):
+        logging.getLogger(__name__).debug("Creating web context.")
         return InitializationContext(initializers=web_initializers)
 
     @provides(interface=WebCli, scope=singleton)
@@ -44,5 +45,6 @@ class WebContextModule(DefaultContextModule):
         return WebCli()
 
     def configure(self, binder):
+        super(WebContextModule, self).configure(binder)
         # type: (Binder) -> None
         simple_bind(binder, WebCli, singleton)
