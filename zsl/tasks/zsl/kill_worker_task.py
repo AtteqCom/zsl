@@ -9,14 +9,14 @@ Created on 22.12.2012
 from __future__ import unicode_literals
 
 from builtins import object
-from zsl.application.service_application import AtteqServiceFlask
+from zsl import Zsl
 from injector import inject
 from zsl.task.job_context import JobContext, WebJobContext
 from zsl.interface.task_queue import KillWorkerException
 
 
 class KillWorkerTask(object):
-    @inject(app=AtteqServiceFlask)
+    @inject(app=Zsl)
     def __init__(self, app):
         self._app = app
 

@@ -25,8 +25,7 @@ Just use a standard way of calling cli with a container having `AlembicModule`.
 
     
     if __name__ == "__main__":
-        os.environ['APPLICATION_PACKAGE_PATH'] = ...
-        os.environ['ASL_SETTINGS'] = ...
+        os.environ['ZSL_SETTINGS'] = ...
         app = Zsl(__name__, modules=MyApplicationContainer.modules())
         main()
 

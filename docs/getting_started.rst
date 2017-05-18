@@ -38,8 +38,7 @@ The minimum application layout has to contain:
 
 .. code-block:: console
 
-    $ export ASL_SETTINGS=`pwd`/settings/app_settings.cfg
-    $ export APPLICATION_PACKAGE_PATH=`pwd`/app
+    $ export ZSL_SETTINGS=`pwd`/settings/app_settings.cfg
 
 The minimum configuration has to contain these values:
 

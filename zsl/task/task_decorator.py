@@ -13,6 +13,8 @@ import json
 
 from datetime import timedelta
 from flask import request
+from flask.config import Config
+
 from zsl.task.task_data import TaskData
 from zsl.db.model import AppModelJSONEncoder
 from zsl.task.job_context import JobContext, WebJobContext, Responder
@@ -390,8 +392,8 @@ class CrossdomainWebTaskResponder(Responder):
     source: http://flask.pocoo.org/snippets/56/
     """
 
-    @inject(app=Zsl)
-    def __init__(self, origin=None, methods=None, headers=None, max_age=21600, app=Injected):
+    @inject(app=Zsl, config=Config)
+    def __init__(self, origin=None, methods=None, headers=None, max_age=21600, app=Injected, config=Injected):
         self._app = app
 
         if methods is not None:
@@ -401,6 +403,9 @@ class CrossdomainWebTaskResponder(Responder):
         if headers is not None and not isinstance(headers, (str, bytes)):
             headers = ', '.join(x.upper() for x in headers)
         self.headers = headers
+
+        if origin is None:
+            origin = config.get('CORS', {}).get('origin', '')
 
         if not isinstance(origin, (str, bytes)):
             origin = ', '.join(origin)
