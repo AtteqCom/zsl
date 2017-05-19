@@ -118,6 +118,10 @@ API
    :members:
    :undoc-members:
 
+.. automodule:: zsl.interface.cli
+   :members:
+   :undoc-members:
+
 .. automodule:: zsl.interface.run_task
    :members:
    :undoc-members:

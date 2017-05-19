@@ -63,7 +63,7 @@ class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
 
     @inject(app=Zsl, config=Config, task_router=TaskRouter)
     def __init__(self, app, config, task_router):
-        # type: (Zsl, Config) -> None
+        # type: (Zsl, Config, TaskRouter) -> None
         self._app = app
         self._config = config
         self._task_router = task_router

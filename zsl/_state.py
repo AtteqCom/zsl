@@ -11,3 +11,4 @@ def set_current_app(app):
     global _current_app
 
     _current_app = app
+

@@ -1,8 +1,11 @@
 """
-:mod:`zsl.interface.run`
+:mod:`zsl.interface.cli`
 ------------------------
 
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
+
+The module is responsible for creating the CLI interface of ZSL and provides the main `click` group for all the CLI 
+commands and groups. If any command is to be added add it to this group `cli` defined in this module.
 """
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -32,6 +35,7 @@ def _get_version(ctx, _, value):
 @click.option('--version', help="Show ZSL version", expose_value=False,
               is_flag=True, is_eager=True, callback=_get_version)
 def cli():
+    """The command group for ZSL."""
     pass
 
 

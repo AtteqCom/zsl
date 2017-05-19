@@ -1,4 +1,6 @@
 import logging
+
+from injector import Binder
 from injector import provides, singleton
 
 from zsl import Zsl
@@ -45,6 +47,6 @@ class WebContextModule(DefaultContextModule):
         return WebCli()
 
     def configure(self, binder):
-        super(WebContextModule, self).configure(binder)
         # type: (Binder) -> None
+        super(WebContextModule, self).configure(binder)
         simple_bind(binder, WebCli, singleton)
