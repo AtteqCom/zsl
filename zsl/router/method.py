@@ -9,14 +9,18 @@ from builtins import object
 
 import logging
 
+from flask.wrappers import Response
+from flask import request
+
 from zsl.application.modules.web.configuration import MethodConfiguration
+from zsl.interface.webservice.utils.request_data import extract_data
 from zsl.interface.webservice.utils.response_headers import append_headers
 from zsl.interface.webservice.utils.error_handler import error_handler
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
 import json
-from flask.wrappers import Response
 
 from zsl import inject, Config, Zsl, Injected
+from zsl.task.job_context import WebJobContext, JobContext
 
 METHOD_CONFIG_NAME = 'METHOD'
 
@@ -57,9 +61,13 @@ class Performer(object):
 
     @error_handler
     def __call__(self, *a, **kw):
+        jc = WebJobContext(None, extract_data(request), None, None, request)
+        JobContext.set_current_context(jc)
         rv = self._call_inner_function(a, kw)
         responder = self._responder
-        return responder(rv)
+        response = responder(rv)
+        jc.notify_responders(response)
+        return response
 
 
 def _get_method_configuration(config):
