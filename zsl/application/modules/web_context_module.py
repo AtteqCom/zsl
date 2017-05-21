@@ -17,7 +17,7 @@ web_initializers = default_initializers + (WebInitializer,)
 class WebCli(object):
     @inject(zsl_cli=ZslCli)
     def __init__(self, zsl_cli):
-        # type: (ZslCli) -> WebCli
+        # type: (ZslCli) -> None
 
         @zsl_cli.cli.group(help='Web related tasks.')
         def web():
