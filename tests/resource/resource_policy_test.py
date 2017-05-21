@@ -6,9 +6,19 @@ from __future__ import (absolute_import, division,
 from builtins import *
 
 from unittest import TestCase
+from typing import AnyStr
+import sys
 
 from zsl.resource.guard import ResourcePolicy
 
+
+def class_name(str_):
+    # type: (str) -> AnyStr
+    """Get name for `type` constructor with correct str type."""
+    if sys.version_info.major == 2:
+        return bytes(str_, 'utf-8')
+
+    return str_
 
 class TestResourcePolicy(TestCase):
     methods = ['create', 'read', 'update', 'delete']
@@ -56,22 +66,22 @@ class TestResourcePolicy(TestCase):
             # class TestPolicy(ResourcePolicy):
             #   can_'method' = True
             #
-            TestPolicy = type('TestPolicy', (ResourcePolicy,),
+            TestPolicy = type(class_name('TestPolicy'), (ResourcePolicy,),
                               {'can_' + method: True})
 
             policy = TestPolicy()
 
             self.assertTrue(
-                getattr(policy, 'can_%s__before' % method)() and
-                getattr(policy, 'can_%s__after' % method)(),
-                "should return true for %s" % method
+                getattr(policy, 'can_{}__before'.format(method))() and
+                getattr(policy, 'can_{}__after'.format(method))(),
+                "should return true for {}".format(method)
             )
 
             for m in filter(lambda x: x != method, self.methods):
                 self.assertFalse(
-                    getattr(policy, 'can_%s__before' % m)() and
-                    getattr(policy, 'can_%s__after' % m)(),
-                    "should return false for %s" % m
+                    getattr(policy, 'can_{}__before'.format(m))() and
+                    getattr(policy, 'can_{}__after'.format(m))(),
+                    "should return false for {}".format(m)
                 )
 
     def testBeforeAndAfterMethods(self):
@@ -84,16 +94,16 @@ class TestResourcePolicy(TestCase):
                 #       return True
                 #
                 TestPolicy = type(
-                    'TestPolicy',
+                    class_name('TestPolicy'),
                     (ResourcePolicy,),
-                    {'can_%s__%s' % (method, suffix): lambda _: True}
+                    {'can_{}__{}'.format(method, suffix): lambda _: True}
                 )
 
                 policy = TestPolicy()
 
                 self.assertTrue(
-                    getattr(policy, 'can_%s__%s' % (method, suffix))(),
-                    "should return true for %s %s" % (method, suffix)
+                    getattr(policy, 'can_{}__{}'.format(method, suffix))(),
+                    "should return true for {} {}".format(method, suffix)
                 )
 
                 for m in self.methods:
@@ -102,6 +112,6 @@ class TestResourcePolicy(TestCase):
                             continue
 
                         self.assertFalse(
-                            getattr(policy, 'can_%s__%s' % (m, s))() and
-                            "should return false for %s and %s" % (m, s)
+                            getattr(policy, 'can_{}__{}'.format(m, s))() and
+                            "should return false for {} and {}".format(m, s)
                         )
