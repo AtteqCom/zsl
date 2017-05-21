@@ -1,0 +1,13 @@
+future
+zsl_client
+click>=6.6
+Flask>=0.11
+Flask-Injector==0.8
+injector>=0.11.1
+redis>=2.10
+requests>=2.7
+SQLAlchemy>=1
+typing>=3.5
+Werkzeug>=0.12
+bpython
+mock

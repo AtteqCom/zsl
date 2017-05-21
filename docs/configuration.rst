@@ -67,7 +67,7 @@ Optional fields
   Name of tha application logger.
 
 * ``LOG_HANDLERS``
-  List of log handlers. See :doc:`logging` for more info.
+  List of log handlers. 
 
 * ``EXTERNAL_LIBRARIES``
   Add external libraries to path.::

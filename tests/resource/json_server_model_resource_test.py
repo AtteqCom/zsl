@@ -10,10 +10,7 @@ from future.utils import viewitems
 import math
 import re
 from typing import Dict, List, Union, AnyStr
-from unittest import TestCase
 
-
-from injector import Module
 
 import json
 import http.client
@@ -26,36 +23,13 @@ from tests.resource.resource_test_helper import (
     UserModel, UserTuple, create_resource_test_data, users, test_settings,
     get_non_existent_id, addresses
 )
+from tests.test_utils import parent_module, json_loads, HttpTestCase
 
 # py23
 if hasattr(urllib, 'parse'):
     urlencode = urllib.parse.urlencode
 else:
     urlencode = urllib.urlencode
-
-
-def json_loads(str_):
-    # type: (AnyStr) -> Dict[str, str]
-    """Parse json from flask response which could be in bytes in Py3."""
-    if isinstance(str_, bytes):
-        str_ = str_.decode()
-
-    return json.loads(str_)
-
-
-def parent_module(module_name):
-    # type: (AnyStr) -> AnyStr
-    """Return the parent module name for a module.
-    
-    :param module_name: module nam
-    :type module_name: str
-    :return: module's parent name
-    :rtype: str
-    
-    >>> parent_module('zsl.application.module')
-    'zsl.application'
-    """
-    return '.'.join(module_name.split('.')[:-1])
 
 
 def parse_links_header(links_str):
@@ -133,7 +107,8 @@ def is_descending(list_):
 def in_user_address(user_id, q):
     # type: (int, AnyStr) -> bool
     """Test if string is in any address property."""
-    return any(a for a in addresses if a.user_id == user_id and (q in str(a.id) or q in a.email_address))
+    return any(a for a in addresses if a.user_id == user_id and (q in str(
+        a.id) or q in a.email_address))
 
 
 def in_user(user, q):
@@ -147,14 +122,16 @@ class JsonServerModelResourceTestResource(JsonServerResource):
     __model__ = UserModel
 
 
-class JsonServerModelResourceTestCase(TestCase):
+class JsonServerModelResourceTestCase(HttpTestCase):
     PATH = '/resource/json_server_model_resource_test'
 
     def setUp(self):
-        zsl = Zsl(__name__, config_object=test_settings, modules=WebContainer.modules())
+        zsl = Zsl(__name__, config_object=test_settings,
+                  modules=WebContainer.modules())
         zsl.testing = True
 
-        # add this package as resource package for zsl to find the `JsonServerModelResourceResource`
+        # add this package as resource package for zsl to find the
+        # `JsonServerModelResourceResource`
         zsl.config['RESOURCE_PACKAGES'] = (parent_module(__name__),)
 
         # mock http requests
@@ -192,18 +169,6 @@ class JsonServerModelResourceTestCase(TestCase):
                 path=self.PATH,
                 args=args
             )
-
-    def assertHTTPStatus(self, status, test_value, msg):
-        # type: (Union[int, HTTPStatus], int, AnyStr) -> None
-        """Assert http status
-        
-        :param status: http status  
-        :param test_value: flask respond status 
-        :param msg: test message
-        """
-        if hasattr(status, 'value'):  # py2/3
-            status = status.value
-        self.assertEquals(status, test_value, msg)
 
     def testCreate(self):
         user_data = {'name': 'eleven'}

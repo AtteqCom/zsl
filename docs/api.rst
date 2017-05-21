@@ -370,6 +370,10 @@ API
    :members:
    :undoc-members:
 
+.. automodule:: zsl.resource.guard
+   :members:
+   :undoc-members:
+
 .. automodule:: zsl.application
    :members:
    :undoc-members:
