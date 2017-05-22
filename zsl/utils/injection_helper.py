@@ -90,4 +90,3 @@ def bind(interface, to=None, scope=None):
 def simple_bind(binder, cls, scope):
     # type: (Binder, Type, Scope) -> None
     binder.bind(interface=cls, to=ClassProvider(cls), scope=scope)
-    return instance
