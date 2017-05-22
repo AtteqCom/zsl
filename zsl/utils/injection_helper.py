@@ -11,8 +11,7 @@ from typing import Type
 
 from future.utils import viewitems
 import injector
-from injector import Binder
-from injector import BindingKey, reraise, CallError
+from injector import Binder, ClassProvider, BindingKey, reraise, CallError
 import inspect
 import functools
 
@@ -90,6 +89,5 @@ def bind(interface, to=None, scope=None):
 
 def simple_bind(binder, cls, scope):
     # type: (Binder, Type, Scope) -> None
-    instance = cls()
-    binder.bind(interface=cls, to=instance, scope=scope)
+    binder.bind(interface=cls, to=ClassProvider(cls), scope=scope)
     return instance
