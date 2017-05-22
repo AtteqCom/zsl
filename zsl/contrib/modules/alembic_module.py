@@ -25,8 +25,7 @@ Just use a standard way of calling cli with a container having `AlembicModule`.
 
     
     if __name__ == "__main__":
-        os.environ['APPLICATION_PACKAGE_PATH'] = ...
-        os.environ['ASL_SETTINGS'] = ...
+        os.environ['ZSL_SETTINGS'] = ...
         app = Zsl(__name__, modules=MyApplicationContainer.modules())
         main()
 
@@ -112,7 +111,8 @@ except ImportError:
 from injector import Module, singleton, Binder, provides
 
 from zsl.application.modules.cli_module import ZslCli
-from zsl.utils.injection_helper import inject, simple_bind
+from zsl import inject
+from zsl.utils.injection_helper import simple_bind
 
 
 class AlembicCli(object):

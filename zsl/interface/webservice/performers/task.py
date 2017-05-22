@@ -8,6 +8,7 @@ from flask import request
 from flask.helpers import make_response
 
 from zsl import inject, Zsl, Injected
+from zsl.interface.webservice.utils.request_data import extract_data
 from zsl.task.job_context import JobContext, WebJobContext
 from zsl.interface.webservice.utils.error_handler import error_handler
 from zsl.interface.webservice.utils.response_headers import append_headers
@@ -26,11 +27,7 @@ def create_web_task(app):
             response = app.make_default_options_response()
         else:
             (task, task_callable) = task_router.route(path)
-
-            data = request.form.to_dict(flat=True)
-            if request.json:
-                data = request.json
-
+            data = extract_data(request)
             app.logger.debug("Data found '%s'.", str(data))
             jc = WebJobContext(path, data, task, task_callable, request)
             JobContext.set_current_context(jc)

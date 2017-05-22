@@ -8,11 +8,8 @@ app = None
 
 # Application preparation.
 def get_app(environ):
-    if 'ASL_SETTINGS' not in os.environ:
-        os.environ['ASL_SETTINGS'] = environ['ASL_SETTINGS']
-
-    if 'APPLICATION_PACKAGE_PATH' not in os.environ:
-        os.environ['APPLICATION_PACKAGE_PATH'] = environ['APPLICATION_PACKAGE_PATH']
+    if 'SETTINGS' not in os.environ:
+        os.environ['SETTINGS'] = environ['SETTINGS']
 
     # For Apache mod_wsgi convenience.
     if 'ASL_IMPORT_SCRIPT' in environ and 'ASL_IMPORT_SCRIPT' not in os.environ:

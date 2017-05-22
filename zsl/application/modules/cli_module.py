@@ -8,7 +8,8 @@ import click
 from injector import Module, singleton, Binder
 
 from zsl.interface.cli import cli
-from zsl.utils.injection_helper import inject, simple_bind
+from zsl import inject
+from zsl.utils.injection_helper import simple_bind
 from zsl.utils.testing import load_and_run_tests
 
 

@@ -55,8 +55,7 @@ The minimum application layout has to contain:
 ```
 
 ```bash
-$ export ASL_SETTINGS=`pwd`/settings/app_settings.cfg
-$ export APPLICATION_PACKAGE_PATH=`pwd`/app
+$ export ZSL_SETTINGS=`pwd`/settings/app_settings.cfg
 ```
 
 ```python

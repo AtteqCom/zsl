@@ -10,7 +10,7 @@ from injector import Binder
 from injector import Module, inject
 
 from zsl import Config, Zsl
-from zsl.utils.injection_helper import inject
+from zsl import inject
 
 
 class LoggerModule(Module):

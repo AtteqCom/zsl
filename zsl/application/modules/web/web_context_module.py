@@ -1,17 +1,18 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
+
 import logging
+import click
 
-from injector import Binder
-from injector import provides, singleton
+from injector import Binder, provides, singleton
 
-from zsl import Zsl
+from zsl import Zsl, inject
 from zsl.application.initialization_context import InitializationContext
 from zsl.application.initializers.web_initializer import WebInitializer
 from zsl.application.modules.cli_module import ZslCli
 from zsl.application.modules.context_module import DefaultContextModule, default_initializers
-from zsl.utils.injection_helper import inject, simple_bind
+from zsl.utils.injection_helper import simple_bind
 
 #: Initializers used in unit web applications
 web_initializers = default_initializers + (WebInitializer,)
@@ -27,9 +28,11 @@ class WebCli(object):
             pass
 
         @web.command(help="Run web server and serve the application")
+        @click.option('--host', '-h', help="host to bind to", default='127.0.0.1')
+        @click.option('--port', '-p', help="port to bind to", default=5000)
         @inject(app=Zsl)
-        def start(app):
-            app.run_web()
+        def start(app, host, port):
+            app.run_web(host=host, port=port)
 
         self._web = web
 

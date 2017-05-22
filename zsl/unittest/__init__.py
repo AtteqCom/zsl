@@ -11,7 +11,7 @@ import json
 
 
 from zsl.task.task_data import TaskData
-from zsl.utils.injection_helper import inject
+from zsl import inject
 from sqlalchemy.engine.base import Engine
 from zsl.db.model.sql_alchemy import metadata
 

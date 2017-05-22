@@ -31,7 +31,7 @@ from zsl.resource.resource_helper import filter_from_url_arg, apply_related, cre
 from zsl.db.helpers import app_models
 from zsl.db.helpers.nested import nested_models, nested_model
 from zsl.service.service import transactional, TransactionalSupport
-from zsl.utils.injection_helper import inject
+from zsl import inject
 from zsl.cache.cache_module import CacheModule
 from zsl.cache.id_helper import IdHelper, create_key_class_prefix
 from zsl.utils.cache_helper import app_model_encoder_fn, app_model_decoder_fn

@@ -3,15 +3,12 @@ Configuration
 
 A global configuration is required to exists as a package
 ``settings.default_settings``. Per-installation configuration file set in ENV
-variable ``APP_SETTINGS`` is also needed.
+variable ``ZSL_SETTINGS`` is also needed.
 
 Environment variables
 ---------------------
 
-* ``APPLICATION_PACKAGE_PATH``
-  Location of the application sources.
-
-* ``ASL_SETTINGS``
+* ``ZSL_SETTINGS``
   Location of the per-installation configuration file (with \*.cfg suffix).
 
 Required fields

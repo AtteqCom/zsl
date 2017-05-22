@@ -4,7 +4,6 @@
 
 .. moduleauthor:: peter
 """
-# TODO move to asl.db.helpers
 from __future__ import unicode_literals
 
 

@@ -13,7 +13,6 @@ from zsl.utils.task_helper import instantiate, get_callable
 
 
 class TaskRouter(object):
-
     @inject(app=Zsl, config=Config)
     def __init__(self, app, config):
         # type: (Zsl, Config) -> None
@@ -21,10 +20,9 @@ class TaskRouter(object):
         self._config = config
         self._mappings = {}
         # Support for the settings with only one TASK_PACKAGE defined.
-        self._task_packages = (self._config['TASK_PACKAGE'],) if 'TASK_PACKAGE' in self._config else self._config[
-            'TASK_PACKAGES']
-        self._task_reloading = self._config['USE_RELOADER']
+        self._task_packages = self._config.get('TASK_PACKAGES', (self._config.get('TASK_PACKAGE', 'zsl.tasks'),))
         self._debug = self._config['DEBUG']
+        self._task_reloading = self._debug
 
     def get_task_packages(self):
         return self._task_packages
@@ -60,6 +58,7 @@ class TaskRouter(object):
 
         # finding the path in task packages
         module_ = None
+        exceptions = []
         for task_package in self.get_task_packages():
             module_name = "{0}.{1}".format(task_package, ".".join(path))
 
@@ -69,13 +68,18 @@ class TaskRouter(object):
                 module_ = self._load_module(module_name)
                 break
             except ImportError as e:
+                exceptions.append(e)
                 if self._debug:
-                    self._app.logger.exception("Could not load module with name '%s' and class name '%s', '%s'.",
-                                               module_name, class_name, e)
+                    self._app.logger.warn(
+                        "Could not load module with name '%s' and class name '%s', '%s'; proceeding to next module.",
+                        module_name, class_name, e)
 
         if module_ is None:
-            raise ImportError(
-                "No module named {0} found in [{1}].".format(".".join(path), ",".join(self.get_task_packages())))
+            msg = "Can not load task named {0} from {1}.".format(".".join(path), ",".join(self.get_task_packages()))
+            self._app.logger.warn(msg)
+            for e in exceptions:
+                self._app.logger.error("Reason", exc_info=e)
+            raise ImportError(msg)
 
         if self.is_task_reloading():
             importlib.reload(module_)
