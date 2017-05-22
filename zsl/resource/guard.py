@@ -232,15 +232,16 @@ class guard(object):
 
         @wraps(method)
         def wrapped(*args, **kwargs):
-            # type: (GuardedMixin) -> Dict
+
+            res = args[0]
+            args = args[1:]
 
             try:
                 self._check_before_policies(name, *args, **kwargs)
-                rv = method(*args, **kwargs)
+                rv = _secure_method(res, name)(*args, **kwargs)
                 self._check_after_policies(name, rv)
 
             except PolicyViolationError as e:
-                res = args[0]
                 rv = self._handle_exception(e, res)
 
             return rv
