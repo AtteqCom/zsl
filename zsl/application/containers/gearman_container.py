@@ -9,5 +9,5 @@ from zsl.application.modules.gearman_module import GearmanModule
 
 
 class GearmanContainer(CoreContainer):
-    """Configuration for gearman application."""
+    """Configuration for Gearman application."""
     worker = GearmanModule

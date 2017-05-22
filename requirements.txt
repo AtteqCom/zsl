@@ -10,3 +10,4 @@ SQLAlchemy>=1
 typing>=3.5
 Werkzeug>=0.12
 bpython
+alembic

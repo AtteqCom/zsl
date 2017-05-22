@@ -31,7 +31,5 @@ class IoCContainer(object):
         :rtype: list[Union[Module, Callable]]
         """
         members = inspect.getmembers(cls, lambda a: not (inspect.isroutine(a) and a.__name__ == 'modules'))
-
         modules = [module for name, module in members if not name.startswith('_')]
-
         return modules
