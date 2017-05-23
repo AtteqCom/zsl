@@ -9,7 +9,7 @@ from unittest import TestCase
 from typing import AnyStr
 import sys
 
-from zsl.resource.guard import ResourcePolicy
+from zsl.resource.guard import ResourcePolicy, Access
 
 
 def class_name(str_):
@@ -20,6 +20,7 @@ def class_name(str_):
 
     return str_
 
+
 class TestResourcePolicy(TestCase):
     methods = ['create', 'read', 'update', 'delete']
 
@@ -29,59 +30,79 @@ class TestResourcePolicy(TestCase):
 
         policy = TestPolicy()
 
-        self.assertFalse(
-            policy.can_create__before() and
-            policy.can_create__after() and
-            policy.can_read__before() and
-            policy.can_read__after() and
-            policy.can_update__before() and
-            policy.can_update__after() and
-            policy.can_delete__before() and
-            policy.can_delete__after(),
-            "should always return false"
-        )
+        self.assertEqual(Access.CONTINUE, policy.can_create__before(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.CONTINUE, policy.can_create__after(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.CONTINUE, policy.can_read__before(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.CONTINUE, policy.can_read__after(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.CONTINUE, policy.can_update__before(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.CONTINUE, policy.can_update__after(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.CONTINUE, policy.can_delete__before(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.CONTINUE, policy.can_delete__after(),
+                         "should always return Access.CONTINUE")
 
     def testDefaultSetter(self):
         class TestPolicy(ResourcePolicy):
-            default = True
+            default = Access.ALLOW
 
         policy = TestPolicy()
 
-        self.assertTrue(
-            policy.can_create__before() and
-            policy.can_create__after() and
-            policy.can_read__before() and
-            policy.can_read__after() and
-            policy.can_update__before() and
-            policy.can_update__after() and
-            policy.can_delete__before() and
-            policy.can_delete__after(),
-            "should always return true"
-        )
+        self.assertEqual(Access.ALLOW, policy.can_create__before(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.ALLOW, policy.can_create__after(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.ALLOW, policy.can_read__before(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.ALLOW, policy.can_read__after(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.ALLOW, policy.can_update__before(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.ALLOW, policy.can_update__after(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.ALLOW, policy.can_delete__before(),
+                         "should always return Access.CONTINUE")
+        self.assertEqual(Access.ALLOW, policy.can_delete__after(),
+                         "should always return Access.CONTINUE")
 
     def testCanProperty(self):
         for method in self.methods:
             # dynamically creates
             #
             # class TestPolicy(ResourcePolicy):
-            #   can_'method' = True
+            #   can_'method' = Access.ALLOW
             #
             TestPolicy = type(class_name('TestPolicy'), (ResourcePolicy,),
-                              {'can_' + method: True})
+                              {'can_' + method: Access.ALLOW})
 
             policy = TestPolicy()
 
-            self.assertTrue(
-                getattr(policy, 'can_{}__before'.format(method))() and
+            self.assertEqual(
+                Access.ALLOW,
+                getattr(policy, 'can_{}__before'.format(method))(),
+                "should return Access.ALLOW for before {}".format(method)
+            )
+            self.assertEqual(
+                Access.ALLOW,
                 getattr(policy, 'can_{}__after'.format(method))(),
-                "should return true for {}".format(method)
+                "should return Access.ALLOW for after {}".format(method)
             )
 
             for m in filter(lambda x: x != method, self.methods):
-                self.assertFalse(
-                    getattr(policy, 'can_{}__before'.format(m))() and
+                self.assertEqual(
+                    Access.CONTINUE,
+                    getattr(policy, 'can_{}__before'.format(m))(),
+                    "should return Access.CONTINUE for before {}".format(method)
+                )
+                self.assertEqual(
+                    Access.CONTINUE,
                     getattr(policy, 'can_{}__after'.format(m))(),
-                    "should return false for {}".format(m)
+                    "should return Access.CONTINUE for after {}".format(method)
                 )
 
     def testBeforeAndAfterMethods(self):
@@ -91,17 +112,21 @@ class TestResourcePolicy(TestCase):
                 #
                 # class TestPolicy(ResourcePolicy):
                 #   def can_'method'__'suffix'(self, *args, **kwargs):
-                #       return True
+                #       return Access.ALLOW
                 #
                 TestPolicy = type(
                     class_name('TestPolicy'),
                     (ResourcePolicy,),
-                    {'can_{}__{}'.format(method, suffix): lambda _: True}
+                    {
+                        'can_{}__{}'.format(method, suffix):
+                            lambda _: Access.ALLOW
+                    }
                 )
 
                 policy = TestPolicy()
 
-                self.assertTrue(
+                self.assertEqual(
+                    Access.ALLOW,
                     getattr(policy, 'can_{}__{}'.format(method, suffix))(),
                     "should return true for {} {}".format(method, suffix)
                 )
@@ -111,7 +136,9 @@ class TestResourcePolicy(TestCase):
                         if m == method and s == suffix:
                             continue
 
-                        self.assertFalse(
-                            getattr(policy, 'can_{}__{}'.format(m, s))() and
-                            "should return false for {} and {}".format(m, s)
+                        self.assertEqual(
+                            Access.CONTINUE,
+                            getattr(policy, 'can_{}__{}'.format(m, s))(),
+                            "should return Access.CONTINUE for {} and {}"
+                            .format(m, s)
                         )

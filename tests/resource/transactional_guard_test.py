@@ -19,7 +19,7 @@ from zsl import Zsl
 from zsl.application.containers.web_container import WebContainer
 from zsl.resource.model_resource import ModelResource
 from zsl.resource.guard import transactional_guard, GuardedMixin, \
-    ResourcePolicy
+    ResourcePolicy, Access
 
 from tests.resource.resource_test_helper import test_settings, UserModel, \
     create_resource_test_data, users
@@ -41,7 +41,7 @@ class TransactionalGuardTest(TestCase):
         test_case = self
 
         class AllowPolicy(ResourcePolicy):
-            default = True
+            default = Access.ALLOW
 
         @transactional_guard([AllowPolicy()])
         class GuardedUserModel(UserResource, GuardedMixin):
@@ -58,7 +58,7 @@ class TransactionalGuardTest(TestCase):
     @staticmethod
     def testRollbackBefore():
         class DenyPolicy(ResourcePolicy):
-            default = False
+            default = Access.DENY
 
         @transactional_guard([DenyPolicy()])
         class GuardedUserModel(UserResource, GuardedMixin):
@@ -77,10 +77,10 @@ class TransactionalGuardTest(TestCase):
     @staticmethod
     def testRollbackAfter():
         class DenyAfterPolicy(ResourcePolicy):
-            default = True
+            default = Access.ALLOW
 
             def can_read__after(self, *args, **kwargs):
-                return False
+                return Access.DENY
 
         @transactional_guard([DenyAfterPolicy()])
         class GuardedUserModel(UserResource, GuardedMixin):

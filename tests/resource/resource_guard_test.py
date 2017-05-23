@@ -14,7 +14,7 @@ except ImportError:
     import mock
 
 from zsl.resource.guard import guard, GuardedMixin, ResourcePolicy, \
-    PolicyViolationError
+    PolicyViolationError, Access
 
 _methods = ['create', 'read', 'update', 'delete']
 
@@ -60,9 +60,15 @@ class TestResourceGuard(TestCase):
             before = 'can_%s__before' % m
             after = 'can_%s__after' % m
             setattr(policy, before, mock.Mock(
-                return_value=True, side_effect=before_side_effect, name=before))
+                return_value=Access.ALLOW,
+                side_effect=before_side_effect,
+                name=before
+            ))
             setattr(policy, after, mock.Mock(
-                return_value=True, side_effect=after_side_effect, name=after))
+                return_value=Access.ALLOW,
+                side_effect=after_side_effect,
+                name=after
+            ))
 
         return policy
 
@@ -96,7 +102,7 @@ class TestResourceGuard(TestCase):
 
     def testShouldAllowAccess(self):
         class PermissivePolicy(ResourcePolicy):
-            default = True
+            default = Access.ALLOW
 
         policy = PermissivePolicy()
         test_resource_cls = guard([policy])(self.ToBeSecuredResource)
@@ -125,7 +131,7 @@ class TestResourceGuard(TestCase):
         self.assertListEqual(all_policies, test_resource_cls._guard_policies,
                              'should join guard policies')
 
-    def testBlockAllAccess(self):
+    def testDenyWithException(self):
         class ForbiddenPolicy(ResourcePolicy):
             @property
             def default(self):
@@ -149,7 +155,7 @@ class TestResourceGuard(TestCase):
 
     def testErrorHandler(self):
         class ForbiddenPolicy(ResourcePolicy):
-            default = False
+            default = Access.DENY
 
         error_result = 'handled'
 
@@ -219,7 +225,7 @@ class TestResourceGuard(TestCase):
             return wrapped
 
         class PermissivePolicy(ResourcePolicy):
-            default = True
+            default = Access.ALLOW
 
         policy = PermissivePolicy()
         test_resource_cls = guard(
@@ -240,15 +246,13 @@ class TestResourceGuard(TestCase):
 
     def testPolicyChaining(self):
         class AllowReadPolicy(ResourcePolicy):
-            can_read = True
+            can_read = Access.ALLOW
 
         class AllowUpdatePolicy(ResourcePolicy):
-            can_update = True
+            can_update = Access.ALLOW
 
         class DenyDeletePolicy(ResourcePolicy):
-            @property
-            def can_delete(self):
-                raise AccessError()
+            can_delete = Access.DENY
 
         error_result = 'handled'
 
@@ -264,13 +268,12 @@ class TestResourceGuard(TestCase):
         resource = test_resource_cls()
 
         self.assertEqual(TEST_VALUE_READ, resource.read(),
-                         'should allow to read, because of AllowReadPolicy')
+                         "should allow to read, because of AllowReadPolicy")
         self.assertEqual(TEST_VALUE_UPDATED, resource.update(),
-                         'should allow to update, because of AllowUpdatePolicy')
+                         "should allow to update, because of AllowUpdatePolicy")
         self.assertEqual(error_result, resource.create(),
-                         'should deny to create, because there\'s no policy '
-                         'to allow it')
-
-        with self.assertRaises(AccessError):
-            resource.delete()
+                         "should deny to create, because there\'s no policy "
+                         "to allow it")
+        self.assertEqual(error_result, resource.delete(),
+                         "should deny to delete, because of DenyDeletePolicy")
 

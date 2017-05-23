@@ -17,6 +17,14 @@ from functools import wraps
 from zsl.interface.resource import ResourceResult
 from zsl.service.service import TransactionalSupport, transactional
 
+from enum import Enum
+
+
+class Access(Enum):
+    ALLOW = 1
+    DENY = 2
+    CONTINUE = 3
+
 
 class ResourcePolicy(object):
     """Declarative policy class.
@@ -25,14 +33,14 @@ class ResourcePolicy(object):
     *can_method__after* where *method* can be one of (*create*, *read*, 
     *update*, *delete*). *__before* method will get the CRUD method 
     parameters and *__after* will get the CRUD method result as parameter. On 
-    returning ``True`` access is granted. It should return ``False`` when 
-    the policy is not met, but is not broken, i. e. it is not its 
-    responsibility to decide. On raising  `PolicyException`` policy is broken 
-    and access is immediately restricted.
+    returning ``Access.ALLOW`` access is granted. It should return 
+    ``Access.CONTINUE`` when the policy is not met, but is not broken, i. e. it 
+    is not its responsibility to decide. On returning ``Access.DENY`` or raising
+    a ``PolicyException`` policy is broken  and access is immediately denied.
       
     The default implementation of these method lookup for corresponding 
-    attribute *can_method*, so ``can_read = True`` will allow access for 
-    reading without the declaration of ``can_read__before`` or 
+    attribute *can_method*, so ``can_read = Access.ALLOW`` will allow access 
+    for reading without the declaration of ``can_read__before`` or 
     ``can_read__after``. *default* attribute is used if *can_method* 
     attribute is not declared. For more complex logic it can be declared as a 
     property, see examples:
@@ -43,9 +51,9 @@ class ResourcePolicy(object):
         class SimplePolicy(ResourcePolicy):
             '''Allow read and create'''
             
-            default = True    
-            can_delete = False
-            can_update = False 
+            default = Access.ALLOW    
+            can_delete = Access.CONTINUE
+            can_update = Access.CONTINUE
             
             
         class AdminPolicy(ResourcePolicy):
@@ -57,9 +65,10 @@ class ResourcePolicy(object):
     
             @property
             def default(self):
-                return self._user_service.current_user.is_admin
+                if self._user_service.current_user.is_admin:
+                    return Access.ALLOW
     """
-    default = False
+    default = Access.CONTINUE
 
     # can_create
 
@@ -102,6 +111,7 @@ class ResourcePolicy(object):
         return self._check_default('can_delete')
 
     def _check_default(self, prop):
+        # type: (str) -> Access
         return getattr(self, prop, self.default)
 
 
@@ -168,10 +178,11 @@ class guard(object):
     It takes a list of policies, which will be always checked before and 
     after executing the CRUD method. 
     
-    Policy is met, when it returns ``True``, on ``False`` it will continue to 
-    check others and on raising a ``PolicyViolationError`` it will be
-    restricted. If there is no policy which grants the access a 
-    ``PolicyViolationError`` is raised and access is restricted too. 
+    Policy is met, when it returns ``Access.ALLOW``, on ``Access.CONTINUE`` it 
+    will continue to check others and on ``Access.DENY`` or raising a 
+    ``PolicyViolationError`` access will be restricted. If there is no policy 
+    which grants the access a ``PolicyViolationError`` is raised and access 
+    will be restricted. 
     
     Guard can have a custom exception handlers or method wrappers to _wrap the 
     CRUD method around. 
@@ -180,8 +191,8 @@ class guard(object):
     
     
         class Policy(ResourcePolicy):
-            default = False
-            can_read = True  # allow only read
+            default = Access.DENY
+            can_read = Access.ALLOW  # allow only read
     
     
         @guard([Policy()])
@@ -218,14 +229,46 @@ class guard(object):
             self._exception_handlers = list(self.exception_handlers)
 
     def _check_before_policies(self, name, *args, **kwargs):
-        if not any(_before(p, name)(*args, **kwargs) for p in self.policies):
-            raise PolicyViolationError('Policy violation for {} {}'.format(
+        for policy in self.policies:
+            access = _call_before(policy, name)(*args, **kwargs)
+
+            if access == Access.ALLOW:
+                return
+
+            elif access == Access.DENY:
+                raise PolicyViolationError('Access denied for {} {}'.format(
+                    name, 'before'), code=403)
+
+            elif access == Access.CONTINUE:
+                continue
+
+            else:
+                raise TypeError('Access has no value {}'.format(access))
+
+        raise PolicyViolationError(
+            "Access haven't been granted for {} {}".format(
                 name, 'before'), code=403)
 
     def _check_after_policies(self, name, result):
-        if not any(_after(p, name)(result) for p in self.policies):
-            raise PolicyViolationError('Policy violation for {} {}'.format(
-                name, 'after'), code=403)
+        for policy in self.policies:
+            access = _call_after(policy, name)(result)
+
+            if access == Access.ALLOW:
+                return
+
+            elif access == Access.DENY:
+                raise PolicyViolationError('Policy violation for {} {}'.format(
+                    name, 'before'), code=403)
+
+            elif access == Access.CONTINUE:
+                continue
+
+            else:
+                raise TypeError('Access have no value {}'.format(access))
+
+        raise PolicyViolationError(
+            "Access haven't been granted for {} {}".format(
+                name, 'before'), code=403)
 
     def _wrap(self, method):
         # type: (Callable) -> Callable
@@ -338,23 +381,23 @@ def _after_name(method_name):
     return 'can_' + method_name + '__after'
 
 
-def _before(policy, method_name):
+def _call_before(policy, method_name):
     # type: (ResourcePolicy, str) -> Callable
     """Return the before check method.
     
     >>> p = ResourcePolicy()
-    >>> _before(p, 'read')
+    >>> _call_before(p, 'read')
     p.can_read__before
     """
     return getattr(policy, _before_name(method_name))
 
 
-def _after(policy, method_name):
+def _call_after(policy, method_name):
     # type: (ResourcePolicy, str) -> Callable
     """Return the after check method.
 
     >>> p = ResourcePolicy()
-    >>> _after(p, 'read')
+    >>> _call_after(p, 'read')
     p.can_after__before
     """
     return getattr(policy, _after_name(method_name))

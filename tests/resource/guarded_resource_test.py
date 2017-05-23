@@ -17,7 +17,7 @@ import http.client
 from zsl import Zsl
 from zsl.application.containers.web_container import WebContainer
 from zsl.interface.resource import ResourceResult
-from zsl.resource.guard import (guard, GuardedMixin,
+from zsl.resource.guard import (guard, GuardedMixin, Access,
                                 PolicyViolationError, ResourcePolicy)
 
 from tests.resource.resource_test_helper import test_settings
@@ -57,7 +57,7 @@ class GuardedResourceTest(HttpTestCase):
 
     def testAllowPolicy(self):
         class AllowPolicy(ResourcePolicy):
-            default = True
+            default = Access.ALLOW
 
         @guard([AllowPolicy()])
         class Resource(GuardedMixin):
@@ -75,7 +75,7 @@ class GuardedResourceTest(HttpTestCase):
 
     def testDefaultDenyPolicy(self):
         class DenyPolicy(ResourcePolicy):
-            default = False
+            default = Access.DENY
 
         @guard([DenyPolicy()])
         class Resource(GuardedMixin):
@@ -118,7 +118,7 @@ class GuardedResourceTest(HttpTestCase):
             return ResourceResult(body={}, status=301)
 
         class DenyPolicy(ResourcePolicy):
-            default = False
+            default = Access.DENY
 
         @guard(
             policies=[DenyPolicy()],
