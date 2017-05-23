@@ -34,7 +34,7 @@ class UserAppModel(AppModel):
 
 class UserModel(Base, ModelBase):
     __tablename__ = 'users'
-    _app_model_class = UserAppModel
+    __app_model__ = UserAppModel
 
     id = Column('id', Integer, primary_key=True, nullable=False)
     name = Column('name', String, nullable=False)
@@ -74,7 +74,7 @@ class AddressAppModel(AppModel):
 
 class AddressModel(Base, ModelBase):
     __tablename__ = 'addresses'
-    _app_model_class = AddressAppModel
+    __app_model__ = AddressAppModel
 
     id = Column(Integer, primary_key=True)
     email_address = Column(String, nullable=False)
