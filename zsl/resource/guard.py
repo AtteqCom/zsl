@@ -69,9 +69,6 @@ class ResourcePolicy(object):
 
     # can_delete
 
-    def _check_default(self, prop):
-        return getattr(self, prop, self.default)
-
     def can_create__before(self, *args, **kwargs):
         """Check create method before executing."""
         return self._check_default('can_create')
@@ -104,12 +101,16 @@ class ResourcePolicy(object):
         """Check delete method after executing."""
         return self._check_default('can_delete')
 
+    def _check_default(self, prop):
+        return getattr(self, prop, self.default)
+
 
 class PolicyViolationError(Exception):
     """Error raised when policy is violated.
     
     It can bear a HTTP status code, 403 is by default.
     """
+
     def __init__(self, message, code=403):
         self.code = code
         super(PolicyViolationError, self).__init__(message)
@@ -118,11 +119,12 @@ class PolicyViolationError(Exception):
 class GuardedMixin(object):
     """Add secure CRUD methods to resource.
     
-    The ``guard`` replaces the CRUD method with a wrapper with 
+    The ``guard`` replaces the CRUD secure methods with a wrapper with 
     security checks around these methods. It adds this mixin into the 
-    resource automatically, but it can be declared on the resource manually for 
-    IDEs.
+    resource automatically, but it can be declared on the resource manually 
+    for IDEs to accept calls to the secure methods.
     """
+
     def secure_create(self, params, args, data):
         # type: (str, Dict[str, str], Dict[str, Any]) -> Dict[str, Any]
         pass
@@ -160,7 +162,7 @@ class guard(object):
     after CRUD method execution, so that the response can be stopped or 
     manipulated. The original CRUD methods are renamed to *secure_method*, 
     where *method* can be [*create*, *read*, *update*, *delete*], so by using a 
-    guarder resource as a base, you can still redeclare the *secure_methods* 
+    `GuardedResource` as a base, you can still redeclare the *secure_methods* 
     and won't loose the security checks.
     
     It takes a list of policies, which will be always checked before and 
@@ -217,13 +219,13 @@ class guard(object):
 
     def _check_before_policies(self, name, *args, **kwargs):
         if not any(_before(p, name)(*args, **kwargs) for p in self.policies):
-                raise PolicyViolationError('Policy violation for {} {}'.format(
-                    name, 'before'), code=403)
+            raise PolicyViolationError('Policy violation for {} {}'.format(
+                name, 'before'), code=403)
 
     def _check_after_policies(self, name, result):
         if not any(_after(p, name)(result) for p in self.policies):
-                raise PolicyViolationError('Policy violation for {} {}'.format(
-                    name, 'after'), code=403)
+            raise PolicyViolationError('Policy violation for {} {}'.format(
+                name, 'after'), code=403)
 
     def _wrap(self, method):
         # type: (Callable) -> Callable
@@ -300,20 +302,20 @@ class transactional_guard(guard):
         transactional_error_handler]
 
 
-def _secure_name(method_name):
-    # type: (str) -> str
-    """Return name for secure CRUD method.
-    
-    >>> _secure_name('read')
-    'secure_read'
-    """
-    return 'secure_' + method_name
-
-
 def _secure_method(res, method_name):
     # type: (object, str) -> Callable
     """Return the secure method from CRUD name"""
     return getattr(res, _secure_name(method_name))
+
+
+def _secure_name(method_name):
+    # type: (str) -> str
+    """Return name for secure CRUD method.
+
+    >>> _secure_name('read')
+    'secure_read'
+    """
+    return 'secure_' + method_name
 
 
 def _before_name(method_name):
