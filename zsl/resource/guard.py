@@ -128,27 +128,27 @@ class PolicyViolationError(Exception):
 
 
 class GuardedMixin(object):
-    """Add secure CRUD methods to resource.
+    """Add guarded CRUD methods to resource.
     
-    The ``guard`` replaces the CRUD secure methods with a wrapper with 
+    The ``guard`` replaces the CRUD guarded methods with a wrapper with 
     security checks around these methods. It adds this mixin into the 
     resource automatically, but it can be declared on the resource manually 
-    for IDEs to accept calls to the secure methods.
+    for IDEs to accept calls to the guarded methods.
     """
 
-    def secure_create(self, params, args, data):
+    def guarded_create(self, params, args, data):
         # type: (str, Dict[str, str], Dict[str, Any]) -> Dict[str, Any]
         pass
 
-    def secure_read(self, params, args, data):
+    def guarded_read(self, params, args, data):
         # type: (str, Dict[str, str], Dict[str, Any]) -> Dict[str, Any]
         pass
 
-    def secure_update(self, params, args, data):
+    def guarded_update(self, params, args, data):
         # type: (str, Dict[str, str], Dict[str, Any]) -> Dict[str, Any]
         pass
 
-    def secure_delete(self, params, args, data):
+    def guarded_delete(self, params, args, data):
         # type: (str, Dict[str, str], Dict[str, Any]) -> Dict[str, Any]
         pass
 
@@ -171,9 +171,9 @@ class guard(object):
     
     This decorator wraps the CRUD methods with security checks before and 
     after CRUD method execution, so that the response can be stopped or 
-    manipulated. The original CRUD methods are renamed to *secure_method*, 
+    manipulated. The original CRUD methods are renamed to *guarded_method*, 
     where *method* can be [*create*, *read*, *update*, *delete*], so by using a 
-    `GuardedResource` as a base, you can still redeclare the *secure_methods* 
+    `GuardedResource` as a base, you can still redeclare the *guarded_methods* 
     and won't loose the security checks.
     
     It takes a list of policies, which will be always checked before and 
@@ -204,7 +204,7 @@ class guard(object):
                 
         class SpecificResource(GuardedResource):
             # override GuardedResource.read, but with its security checks
-            def secure_read(self, param, args, data):
+            def guarded_read(self, param, args, data):
                 return specific_resources[param]
         
     """
@@ -283,7 +283,7 @@ class guard(object):
 
             try:
                 self._check_before_policies(name, *args, **kwargs)
-                rv = _secure_method(res, name)(*args, **kwargs)
+                rv = _guarded_method(res, name)(*args, **kwargs)
                 self._check_after_policies(name, rv)
 
             except PolicyViolationError as e:
@@ -313,13 +313,13 @@ class guard(object):
         setattr(cls, '_guard_policies', list(self.policies))
 
         for method_name in self.resource_methods:
-            secure_name = _secure_name(method_name)
+            guarded_name = _guarded_name(method_name)
 
             if hasattr(cls, method_name):
                 method = getattr(cls, method_name)
 
                 setattr(cls, method_name, self._wrap(method))
-                setattr(cls, secure_name, method)
+                setattr(cls, guarded_name, method)
 
         if issubclass(cls, GuardedMixin):
             return cls
@@ -374,20 +374,20 @@ class _TransactionalPolicyViolationError(PolicyViolationError):
         )
 
 
-def _secure_method(res, method_name):
+def _guarded_method(res, method_name):
     # type: (object, str) -> Callable
-    """Return the secure method from CRUD name"""
-    return getattr(res, _secure_name(method_name))
+    """Return the guarded method from CRUD name"""
+    return getattr(res, _guarded_name(method_name))
 
 
-def _secure_name(method_name):
+def _guarded_name(method_name):
     # type: (str) -> str
-    """Return name for secure CRUD method.
+    """Return name for guarded CRUD method.
 
-    >>> _secure_name('read')
-    'secure_read'
+    >>> _guarded_name('read')
+    'guarded_read'
     """
-    return 'secure_' + method_name
+    return 'guarded_' + method_name
 
 
 def _before_name(method_name):

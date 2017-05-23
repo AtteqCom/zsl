@@ -83,12 +83,12 @@ class TestResourceGuard(TestCase):
         self.assertNotEqual(self.PlainResource, test_resource_cls,
                             'should create a new class')
 
-    def testForSecureMethods(self):
+    def testForGuardedMethods(self):
         test_resource_cls = guard([])(self.PlainResource)
         test_resource = test_resource_cls()
 
         for method in ['create', 'read', 'update', 'delete']:
-            m_name = 'secure_%s' % method
+            m_name = 'guarded_%s' % method
             self.assertTrue(hasattr(test_resource, m_name) and
                             inspect.ismethod(getattr(test_resource, m_name)),
                             'should have %s method' % m_name)
