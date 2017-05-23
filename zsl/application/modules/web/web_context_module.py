@@ -31,7 +31,7 @@ class WebCli(object):
         @click.option('--host', '-h', help="host to bind to", default='127.0.0.1')
         @click.option('--port', '-p', help="port to bind to", default=5000)
         @inject(app=Zsl)
-        def start(app, host, port):
+        def run(app, host, port):
             app.run_web(host=host, port=port)
 
         self._web = web
