@@ -5,7 +5,7 @@
 from __future__ import unicode_literals
 
 from zsl.application.containers.core_container import CoreContainer
-from zsl.application.modules.context_module import WebContextModule
+from zsl.application.modules.web.web_context_module import WebContextModule
 
 
 class WebContainer(CoreContainer):

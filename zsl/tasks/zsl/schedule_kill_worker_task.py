@@ -4,14 +4,14 @@
 """
 from __future__ import unicode_literals
 from builtins import object
-from zsl.application.service_application import AtteqServiceFlask
-from zsl.utils.injection_helper import inject
+from zsl import Zsl
+from zsl import inject
 from zsl.utils.gearman_helper import schedule_gearman_task
 
 
 class ScheduleKillWorkerTask(object):
 
-    @inject(app=AtteqServiceFlask)
+    @inject(app=Zsl)
     def __init__(self, app):
         self._app = app
 

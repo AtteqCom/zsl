@@ -11,7 +11,7 @@ from __future__ import unicode_literals
 from builtins import object
 from injector import inject
 import sqlalchemy.engine
-from zsl.application.service_application import AtteqServiceFlask
+from zsl import Zsl
 from flask import Response
 
 
@@ -28,7 +28,7 @@ class DbTestTask(object):
     @author: Martin Babka
     """
 
-    @inject(db=sqlalchemy.engine.Engine, app=AtteqServiceFlask)
+    @inject(db=sqlalchemy.engine.Engine, app=Zsl)
     def __init__(self, db, app):
         self._db = db
         self._app = app

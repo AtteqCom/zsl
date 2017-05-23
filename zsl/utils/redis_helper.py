@@ -10,7 +10,7 @@ from __future__ import unicode_literals
 from future.utils import viewitems
 from builtins import object
 from functools import partial
-from zsl.utils.injection_helper import inject
+from zsl import inject
 from flask.config import Config
 
 

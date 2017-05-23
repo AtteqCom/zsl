@@ -5,6 +5,7 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
+from future.utils import with_metaclass
 from builtins import object
 import abc
 from zsl.db.model.app_model_json_decoder import get_json_decoder
@@ -99,7 +100,7 @@ def model_key_hint_extractor(key):
     return hints
 
 
-class IdHelper(object):
+class IdHelper(with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def gather_page(self, page_key, decoder=decoder_identity):

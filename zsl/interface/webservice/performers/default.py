@@ -20,6 +20,6 @@ def create_not_found_mapping(app):
         Default web request handler. Only returns 404 status code.
         """
 
-        response_str = "Default handler, not found! Path not found '{0}'.".format(path)
-        logging.warn(response_str)
+        response_str = "404 Not Found: path '{0}' was not mapped.".format(path)
+        logging.warning(response_str)
         return response_str, 404

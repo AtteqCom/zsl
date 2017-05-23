@@ -17,7 +17,7 @@ from zsl.utils.warnings import deprecated
 from zsl.application.initialization_context import InitializationContext
 
 
-class AtteqServiceFlask(Flask):
+class ServiceApplication(Flask):
     """Atteq Service Flask application."""
 
     VERSION = __version__
@@ -25,21 +25,26 @@ class AtteqServiceFlask(Flask):
     def __init__(self, import_name, static_path=None, static_url_path=None,
                  static_folder='static', template_folder='templates',
                  instance_path=None, instance_relative_config=False,
-                 modules=None, config_object=None):
-        super(AtteqServiceFlask, self).__init__(import_name, static_path, static_url_path,
-                                                static_folder, template_folder, instance_path,
-                                                instance_relative_config)
+                 modules=None, config_object=None, version=None):
+        super(ServiceApplication, self).__init__(import_name, static_path, static_url_path,
+                                                 static_folder, template_folder, instance_path,
+                                                 instance_relative_config)
         self._dependencies_initialized = False
         self._is_initialized = False
         self._injector = None
         self._worker = None
         self._configure(config_object)
+        self._app_version = version
         if not modules:
             from zsl.application.containers.core_container import CoreContainer
             modules = CoreContainer.modules()
         self._configure_injector(modules)
         self._initialize()
         self._dependencies_initialized = True
+
+    def __str__(self):
+        return "ZSL(application={0}, zsl_version={1}, app_version={2})".format(self.name, self.VERSION,
+                                                                               self._app_version)
 
     def _configure(self, config_object=None):
         # type: (dict) -> None
@@ -50,9 +55,9 @@ class AtteqServiceFlask(Flask):
         else:
             self.config.from_object('settings.default_settings')
 
-        asl_settings = os.environ.get('ASL_SETTINGS')
-        if asl_settings is not None:
-            self.config.from_envvar('ASL_SETTINGS')
+        zsl_settings = os.environ.get('ZSL_SETTINGS')
+        if zsl_settings is not None:
+            self.config.from_envvar('ZSL_SETTINGS')
 
     def _initialize(self):
         """Run the initializers."""
@@ -70,9 +75,10 @@ class AtteqServiceFlask(Flask):
         :return: configuration callback
         :rtype: Callable
         """
+
         def configure(binder):
             # type: (Binder) -> Callable
-            binder.bind(AtteqServiceFlask, to=self, scope=singleton)
+            binder.bind(ServiceApplication, to=self, scope=singleton)
             binder.bind(Config, to=self.config, scope=singleton)
 
         return configure
@@ -127,18 +133,16 @@ class AtteqServiceFlask(Flask):
     def get_version(self):
         v = self.config.get('VERSION')
         if v is None:
-            return AtteqServiceFlask.VERSION
+            return ServiceApplication.VERSION
         else:
-            return AtteqServiceFlask.VERSION + ":" + v
+            return ServiceApplication.VERSION + ":" + v
 
-    def run_web(self, host='127.0.0.1', port=5000, debug=False, **options):
-        options.setdefault('use_debugger', self.config.get('USE_DEBUGGER', False))
-        options.setdefault('use_reloader', self.config.get('USE_RELOADER', False))
-
+    @deprecated
+    def run_web(self, host='127.0.0.1', port=5000, **options):
         return self.run(
             host=self.config.get('FLASK_HOST', host),
             port=self.config.get('FLASK_PORT', port),
-            debug=self.config.get('DEBUG', debug),
+            debug=self.config.get('DEBUG', False),
             **options
         )
 
@@ -152,6 +156,3 @@ class AtteqServiceFlask(Flask):
         from zsl.interface.task_queue import TaskQueueWorker
         worker = self.injector.get(TaskQueueWorker)
         worker.run(*args, **kwargs)
-
-
-ServiceApplication = AtteqServiceFlask

@@ -10,12 +10,12 @@ from __future__ import unicode_literals
 
 from builtins import object
 from zsl.task.task_decorator import json_input, json_output
-from zsl.application.service_application import AtteqServiceFlask
+from zsl import Zsl
 from injector import inject
 
 
 class SumTask(object):
-    @inject(app=AtteqServiceFlask)
+    @inject(app=Zsl)
     def __init__(self, app):
         self._app = app
 

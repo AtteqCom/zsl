@@ -12,7 +12,11 @@ from zsl.interface.webservice.performers.task import create_web_task
 from zsl.interface.webservice.performers.method import call_exposers_in_method_packages
 
 
-def load_peformers():
+def load():
+    _load_performers()
+
+
+def _load_performers():
     """
     Import in this form is necessary so that we avoid the unwanted behavior and immediate initialization of the
     application objects. This makes the initialization procedure run in the time when it is necessary and has every
@@ -22,7 +26,3 @@ def load_peformers():
     create_resource_mapping()
     create_web_task()
     call_exposers_in_method_packages()
-
-
-def load():
-    load_peformers()

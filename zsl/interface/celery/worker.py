@@ -13,7 +13,7 @@ import sys
 from celery import Celery, shared_task
 from injector import Module, singleton, provides
 
-from zsl.utils.injection_helper import inject
+from zsl import inject
 from zsl.interface.task_queue import TaskQueueWorker
 from zsl.task.job_context import Job
 
