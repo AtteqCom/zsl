@@ -11,15 +11,16 @@ import logging
 from functools import wraps
 
 from sqlalchemy.engine.base import Engine
+from sqlalchemy.orm import Session
 from zsl.application.modules.alchemy_module import SessionHolder
 
-from zsl import inject, Zsl, Injected
+from zsl import inject, Zsl
 
 
 class TransactionalSupport(object):
     @inject(session_holder=SessionHolder)
     def __init__(self, session_holder):
-        self._orm = None
+        self._orm = None  # type: Session
         self._session_holder = session_holder
         self._in_transaction = False
         self._transaction_callback = []

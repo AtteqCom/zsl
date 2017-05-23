@@ -9,6 +9,7 @@ policy class a complex security resource behaviour can be achieved.
 
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+from future.utils import raise_from
 from builtins import *
 
 from typing import List, Optional, Dict, Any, Callable
@@ -268,7 +269,7 @@ class guard(object):
 
         raise PolicyViolationError(
             "Access haven't been granted for {} {}".format(
-                name, 'before'), code=403)
+                name, 'after'), code=403)
 
     def _wrap(self, method):
         # type: (Callable) -> Callable
@@ -277,7 +278,6 @@ class guard(object):
 
         @wraps(method)
         def wrapped(*args, **kwargs):
-
             res = args[0]
             args = args[1:]
 
@@ -291,7 +291,7 @@ class guard(object):
 
             return rv
 
-        for mw in self._method_wrappers:
+        for mw in reversed(self._method_wrappers):
             wrapped = mw(wrapped)
 
         return wrapped
@@ -327,11 +327,29 @@ class guard(object):
             return type(cls.__name__, (cls, GuardedMixin), {})
 
 
-def transactional_error_handler(_, rv, res):
+def transactional_error_handler(e, rv, _):
     # type: (Any, Any, TransactionalSupport) -> Any
-    """Call rollback in ``ModelResource``,"""
-    res._orm.rollback()
-    return rv
+    """Re-raise a violation error to be handled in the 
+    ``_nested_transactional``.
+    """
+    raise_from(_TransactionalPolicyViolationError(rv), e)
+
+
+def _nested_transactional(fn):
+    # type: (Callable) -> Callable
+    """In a transactional method create a nested transaction."""
+    @wraps(fn)
+    def wrapped(self, *args, **kwargs):
+        # type: (TransactionalSupport) -> Any
+
+        try:
+            rv = fn(self, *args, **kwargs)
+        except _TransactionalPolicyViolationError as e:
+            self._orm.rollback()
+            rv = e.result
+
+        return rv
+    return wrapped
 
 
 class transactional_guard(guard):
@@ -340,9 +358,20 @@ class transactional_guard(guard):
     This add a transactional method wrapper and error handler which calls the 
     rollback on ``PolicyViolationError``.
     """
-    method_wrappers = [transactional]
+    method_wrappers = [transactional, _nested_transactional]
     exception_handlers = guard.exception_handlers + [
         transactional_error_handler]
+
+
+class _TransactionalPolicyViolationError(PolicyViolationError):
+    """Exception raised during """
+    def __init__(self, result):
+        # type: (ResourceResult) -> None
+        self.result = result
+        super(_TransactionalPolicyViolationError, self).__init__(
+            result.body,
+            result.status
+        )
 
 
 def _secure_method(res, method_name):

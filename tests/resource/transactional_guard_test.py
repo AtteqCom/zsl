@@ -45,9 +45,11 @@ class TransactionalGuardTest(TestCase):
 
         @transactional_guard([AllowPolicy()])
         class GuardedUserModel(UserResource, GuardedMixin):
-            def update(self):
+            def secure_read(self, *args, **kwargs):
                 test_case.assertIsNotNone(self._orm)
                 test_case.assertTrue(self._in_transaction)
+
+                return super(GuardedUserModel, self).read(*args, **kwargs)
 
         resource = GuardedUserModel()
         user = resource.read('1', {}, {})
