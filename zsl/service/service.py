@@ -52,14 +52,14 @@ def transactional(f):
         service_instance = args[0]
 
         try:
-            logging.debug("Entering transactional method.")
+            logging.getLogger(__name__).debug("Entering transactional method.")
             if service_instance._orm is None:
                 service_instance._orm = service_instance._session_holder()
 
             if not service_instance._in_transaction:
                 trans_close = True
                 service_instance._in_transaction = True
-                logging.debug("Transaction opened.")
+                logging.getLogger(__name__).debug("Transaction opened.")
 
             rv = f(*args, **kwargs)
 
@@ -70,12 +70,12 @@ def transactional(f):
                     for c in callbacks:
                         c()
 
-                logging.debug("Commit.")
+                logging.getLogger(__name__).debug("Commit.")
                 service_instance._orm.commit()
 
             return rv
         except:
-            logging.debug("Rollback.")
+            logging.getLogger(__name__).debug("Rollback.")
             if trans_close and service_instance._orm is not None:
                 service_instance._orm.rollback()
             raise

@@ -19,11 +19,15 @@ def append_crossdomain(response, config=Injected):
         return
 
     if config.get('ALLOW_ORIGIN'):
-        response.headers['Access-Control-Allow-Origin'] = config.get('ALLOW_ORIGIN')
+        response.headers['Access-Control-Allow-Origin'] = \
+            config.get('ALLOW_ORIGIN')
 
-    response.headers['Access-Control-Expose-Headers'] = 'location, x-total-count, link'
-    response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, PATCH, DELETE'
-    response.headers['Access-Control-Allow-Headers'] = 'accept, origin, content-type'
+    response.headers['Access-Control-Expose-Headers'] = \
+        'location, x-total-count, link'
+    response.headers['Access-Control-Allow-Methods'] = \
+        'POST, GET, OPTIONS, PUT, PATCH, DELETE'
+    response.headers['Access-Control-Allow-Headers'] = \
+        'accept, origin, content-type, authorization'
 
 
 @inject(app=Zsl)
