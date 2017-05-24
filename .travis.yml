@@ -1,9 +1,15 @@
 language: python
+
 python:
-- '2.7'
-- '3.6'
-install: pip install -r requirements-test.txt
+  - '2.7'
+  - '3.6'
+
+install:
+  - pip install -r requirements-test.txt
+  - pip install coveralls
+
 script: python -m unittest discover tests '*_test.py'
+
 deploy:
   provider: pypi
   user: atteq
@@ -13,3 +19,5 @@ deploy:
     tags: true
     distributions: sdist bdist_wheel
     repo: AtteqCom/zsl
+
+after_success: coveralls
