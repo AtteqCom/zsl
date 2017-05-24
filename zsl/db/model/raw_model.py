@@ -19,5 +19,5 @@ class ModelBase(object):
 
         update_model(self, app_model, forbidden_keys, inverse)
 
-    def get_app_model(self):
-        return self.__app_model__(self.__dict__)
+    def get_app_model(self, id_name='id', hints=None):
+        return self.__app_model__(self.__dict__, id_name, hints)

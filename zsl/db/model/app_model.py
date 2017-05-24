@@ -80,7 +80,7 @@ class AppModel(object):
                 if isinstance(v, (list, tuple)):
                     setattr(self, k, [related_cls(x, 'id', related_hints) for x in v])
                 else:
-                    setattr(self, k, related_cls(v, 'id', related_hints))
+                    setattr(self, k, related_cls(v.__dict__, 'id', related_hints))
 
     def get_id(self):
         return self.__dict__[self._id_name]
