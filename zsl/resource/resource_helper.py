@@ -13,7 +13,8 @@ from sqlalchemy.orm import class_mapper, joinedload
 from sqlalchemy import desc, asc, and_
 
 
-def filter_from_url_arg(model_cls, query, arg, query_operator=and_):
+def filter_from_url_arg(model_cls, query, arg, query_operator=and_,
+                        arg_types=None):
     """
     Parse filter URL argument ``arg`` and apply to ``query``
 
@@ -22,6 +23,9 @@ def filter_from_url_arg(model_cls, query, arg, query_operator=and_):
 
     fields = arg.split(',')
     mapper = class_mapper(model_cls)
+
+    if not arg_types:
+        arg_types = {}
 
     exprs = []
     joins = set()
@@ -49,6 +53,11 @@ def filter_from_url_arg(model_cls, query, arg, query_operator=and_):
         value = value.strip()
 
         for column_name in column_names:
+            if column_name in arg_types:
+                typed_value = arg_types[column_name](value)
+            else:
+                typed_value = value
+
             if column_name in e_mapper.relationships:
                 joins.add(column_name)
                 e_model_cls = e_mapper.attrs[column_name].mapper.class_
@@ -56,7 +65,7 @@ def filter_from_url_arg(model_cls, query, arg, query_operator=and_):
 
         if hasattr(e_model_cls, column_name):
             column = getattr(e_model_cls, column_name)
-            exprs.append(getattr(column, method)(value))
+            exprs.append(getattr(column, method)(typed_value))
         else:
             raise Exception('Invalid property {0} in class {1}.'.format(column_name, e_model_cls))
 
