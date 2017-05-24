@@ -305,7 +305,7 @@ class guard(object):
 
     def __call__(self, cls):
         if hasattr(cls, '_guard_policies'):
-            self.policies += getattr(cls, '_guard_policies')
+            self.policies = getattr(cls, '_guard_policies') + self.policies
             setattr(cls, '_guard_policies', list(self.policies))
 
             return cls
