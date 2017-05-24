@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/AtteqCom/zsl.svg?branch=master)](https://travis-ci.org/AtteqCom/zsl)
-[![Coverage Status](https://coveralls.io/repos/AtteqCom/zsl/badge.svg?branch=master&service=github)](https://coveralls.io/github/AtteqCom/zsl?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/AtteqCom/zsl/badge.svg?branch=master)](https://coveralls.io/github/AtteqCom/zsl?branch=master)
 
 # ZSL - z' service layer
 
