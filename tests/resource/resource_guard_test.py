@@ -120,7 +120,7 @@ class TestResourceGuard(TestCase):
     def testApplyTwice(self):
         policy_1 = [1, 2, 3]
         policy_2 = [4, 5, 6]
-        all_policies = policy_1 + policy_2
+        all_policies = policy_2 + policy_1
 
         test_resource_cls = guard(policy_1)(
             guard(policy_2)(
