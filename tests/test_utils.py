@@ -44,4 +44,4 @@ class HttpTestCase(TestCase):
         """
         if hasattr(status, 'value'):  # py2/3
             status = status.value
-        self.assertEquals(status, test_value, msg)
+        self.assertEqual(status, test_value, msg)
