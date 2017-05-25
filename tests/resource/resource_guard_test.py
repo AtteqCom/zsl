@@ -122,8 +122,8 @@ class TestResourceGuard(TestCase):
         policy_2 = [4, 5, 6]
         all_policies = policy_2 + policy_1
 
-        test_resource_cls = guard(policy_1)(
-            guard(policy_2)(
+        test_resource_cls = guard(policy_2)(
+            guard(policy_1)(
                 self.ToBeSecuredResource
             )
         )
