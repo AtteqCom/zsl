@@ -229,8 +229,9 @@ class guard(object):
         else:
             self._exception_handlers = list(self.exception_handlers)
 
-    def _check_before_policies(self, name, *args, **kwargs):
-        for policy in self.policies:
+    @staticmethod
+    def _check_before_policies(res, name, *args, **kwargs):
+        for policy in res._guard_policies:
             access = _call_before(policy, name)(*args, **kwargs)
 
             if access == Access.ALLOW:
@@ -250,8 +251,9 @@ class guard(object):
             "Access haven't been granted for {} {}".format(
                 name, 'before'), code=403)
 
-    def _check_after_policies(self, name, result):
-        for policy in self.policies:
+    @staticmethod
+    def _check_after_policies(res, name, result):
+        for policy in res._guard_policies:
             access = _call_after(policy, name)(result)
 
             if access == Access.ALLOW:
@@ -282,9 +284,9 @@ class guard(object):
             args = args[1:]
 
             try:
-                self._check_before_policies(name, *args, **kwargs)
+                self._check_before_policies(res, name, *args, **kwargs)
                 rv = _guarded_method(res, name)(*args, **kwargs)
-                self._check_after_policies(name, rv)
+                self._check_after_policies(res, name, rv)
 
             except PolicyViolationError as e:
                 rv = self._handle_exception(e, res)
@@ -305,7 +307,7 @@ class guard(object):
 
     def __call__(self, cls):
         if hasattr(cls, '_guard_policies'):
-            self.policies = getattr(cls, '_guard_policies') + self.policies
+            self.policies += getattr(cls, '_guard_policies')
             setattr(cls, '_guard_policies', list(self.policies))
 
             return cls
