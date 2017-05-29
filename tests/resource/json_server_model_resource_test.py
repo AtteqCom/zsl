@@ -4,26 +4,27 @@
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
-from builtins import *
-from future.utils import viewitems
 
+import http.client
+import json
 import math
 import re
-from typing import Dict, List, Union, AnyStr
-
-
-import json
-import http.client
 import urllib
+from builtins import *
+from typing import Dict, List, Union, AnyStr
+from unittest.case import TestCase
 
-from zsl import Zsl
-from zsl.resource.json_server_resource import JsonServerResource
-from zsl.application.containers.web_container import WebContainer
+from future.utils import viewitems
+
 from tests.resource.resource_test_helper import (
     UserModel, UserTuple, create_resource_test_data, users, test_settings,
     get_non_existent_id, addresses
 )
-from tests.test_utils import parent_module, json_loads, HttpTestCase
+from zsl import Zsl
+from zsl.application.containers.web_container import WebContainer
+from zsl.resource.json_server_resource import JsonServerResource
+from zsl.unittest.test_utils import parent_module
+from zsl.unittest.http import json_loads, HttpTestCase
 
 # py23
 if hasattr(urllib, 'parse'):
@@ -122,7 +123,7 @@ class JsonServerModelResourceTestResource(JsonServerResource):
     __model__ = UserModel
 
 
-class JsonServerModelResourceTestCase(HttpTestCase):
+class JsonServerModelResourceTestCase(TestCase, HttpTestCase):
     PATH = '/resource/json_server_model_resource_test'
 
     def setUp(self):

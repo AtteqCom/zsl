@@ -1,26 +1,9 @@
-"""
-Test utilities.
-"""
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import *
+from __future__ import absolute_import
+from __future__ import unicode_literals
 
 import json
-from unittest import TestCase
 
-def parent_module(module_name):
-    # type: (AnyStr) -> AnyStr
-    """Return the parent module name for a module.
-
-    :param module_name: module nam
-    :type module_name: str
-    :return: module's parent name
-    :rtype: str
-
-    >>> parent_module('zsl.application.module')
-    'zsl.application'
-    """
-    return '.'.join(module_name.split('.')[:-1])
+from zsl import inject, Zsl
 
 
 def json_loads(str_):
@@ -32,8 +15,9 @@ def json_loads(str_):
     return json.loads(str_)
 
 
-class HttpTestCase(TestCase):
+class HttpTestCase:
     """Extends TestCase with methods for easier testing of HTTP requests."""
+
     def assertHTTPStatus(self, status, test_value, msg):
         # type: (Union[int, HTTPStatus], int, AnyStr) -> None
         """Assert http status
@@ -45,3 +29,8 @@ class HttpTestCase(TestCase):
         if hasattr(status, 'value'):  # py2/3
             status = status.value
         self.assertEqual(status, test_value, msg)
+
+    @inject(app=Zsl)
+    def getHTTPClient(self, app):
+        # type: (Zsl) -> FlaskClient
+        return app.test_client()

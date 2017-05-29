@@ -1,6 +1,8 @@
+from unittest.case import TestCase
+
 from flask.config import Config
 
-from zsl.unittest import TestCase
+from zsl.unittest.db import DbTestCase
 from zsl.utils.injection_helper import bind
 from zsl.utils.redis_helper import Keymaker
 from zsl.utils.testing import set_test_responder
@@ -21,7 +23,7 @@ def create_config(dictionary):
     return config
 
 
-class TestKeymaker(TestCase):
+class TestKeymaker(TestCase, DbTestCase):
 
     def setUp(self):
         bind(Config, create_config({}))
