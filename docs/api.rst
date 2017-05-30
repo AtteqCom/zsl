@@ -504,3 +504,19 @@ API
 .. automodule:: zsl.utils.xml_to_json
    :members:
    :undoc-members:
+
+.. automodule:: zsl.unittest.db
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.unittest.http
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.unittest.test_utils
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.unittest.zsl
+   :members:
+   :undoc-members:

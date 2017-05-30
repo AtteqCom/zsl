@@ -24,7 +24,7 @@ from zsl.resource.guard import (guard, GuardedMixin, Access,
 
 from tests.resource.resource_test_helper import test_settings
 from zsl.unittest.test_utils import parent_module
-from zsl.unittest.http import json_loads, HttpTestCase
+from zsl.unittest.http import json_loads, HTTPTestCase
 
 TEST_VALUE_CREATED = 'created'
 TEST_VALUE_READ = 'read'
@@ -42,7 +42,7 @@ class GuardedResourceTestResource(object):
     pass
 
 
-class GuardedResourceTest(TestCase, HttpTestCase):
+class GuardedResourceTest(TestCase, HTTPTestCase):
     PATH = '/resource/guarded_resource_test'
     RESOURCE_CLASS = __name__ + '.GuardedResourceTestResource'
 

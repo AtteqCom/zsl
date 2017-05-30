@@ -7,7 +7,7 @@ from zsl import inject
 from zsl.db.model.sql_alchemy import metadata
 
 
-class DbTestCase:
+class DbTestCase(object):
     @inject(engine=Engine)
     def createSchema(self, engine):
         metadata.bind = engine

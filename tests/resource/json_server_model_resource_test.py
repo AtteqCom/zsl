@@ -24,7 +24,7 @@ from zsl import Zsl
 from zsl.application.containers.web_container import WebContainer
 from zsl.resource.json_server_resource import JsonServerResource
 from zsl.unittest.test_utils import parent_module
-from zsl.unittest.http import json_loads, HttpTestCase
+from zsl.unittest.http import json_loads, HTTPTestCase
 
 # py23
 if hasattr(urllib, 'parse'):
@@ -123,7 +123,7 @@ class JsonServerModelResourceTestResource(JsonServerResource):
     __model__ = UserModel
 
 
-class JsonServerModelResourceTestCase(TestCase, HttpTestCase):
+class JsonServerModelResourceTestCase(TestCase, HTTPTestCase):
     PATH = '/resource/json_server_model_resource_test'
 
     def setUp(self):

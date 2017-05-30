@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import json
 from http import HTTPStatus
 from typing import Any
+from typing import Dict
 from typing import Union
 
 from flask.testing import FlaskClient
@@ -24,7 +25,7 @@ def json_loads(str_):
     return json.loads(str_)
 
 
-class HttpTestCase(object):
+class HTTPTestCase(object):
     """Extends TestCase with methods for easier testing of HTTP requests."""
 
     def requestTask(self, client, task, data, headers=None):
@@ -48,8 +49,12 @@ class HttpTestCase(object):
 
     def assertJSONData(self, rv, data, msg):
         # type: (Response, Any, AnyStr) -> None
-        data1 = json.loads(rv.data.decode())
+        data1 = self.extractResponseJSON(rv)
         self.assertEqual(data1, data, msg)
+
+    def extractResponseJSON(self, rv):
+        # type: (Response) -> Dict
+        return json.loads(rv.data.decode())
 
     @inject(app=Zsl)
     def getHTTPClient(self, app):
