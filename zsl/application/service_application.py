@@ -16,6 +16,19 @@ from zsl._state import set_current_app
 from zsl.utils.warnings import deprecated
 from zsl.application.initialization_context import InitializationContext
 
+SETTINGS_ENV_VAR_NAME = 'ZSL_SETTINGS'
+
+
+def get_settings_from_profile(profile, profile_dir=None):
+    if profile_dir is None:
+        import settings
+        profile_dir = os.path.dirname(settings.__file__)
+    return os.path.join(profile_dir, '{0}.cfg'.format(profile))
+
+
+def set_profile(profile):
+    os.environ[SETTINGS_ENV_VAR_NAME] = get_settings_from_profile(profile)
+
 
 class ServiceApplication(Flask):
     """Atteq Service Flask application."""
@@ -55,9 +68,9 @@ class ServiceApplication(Flask):
         else:
             self.config.from_object('settings.default_settings')
 
-        zsl_settings = os.environ.get('ZSL_SETTINGS')
+        zsl_settings = os.environ.get(SETTINGS_ENV_VAR_NAME)
         if zsl_settings is not None:
-            self.config.from_envvar('ZSL_SETTINGS')
+            self.config.from_envvar(SETTINGS_ENV_VAR_NAME)
 
     def _initialize(self):
         """Run the initializers."""

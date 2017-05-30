@@ -15,6 +15,7 @@ from datetime import timedelta
 from flask import request
 from flask.config import Config
 
+from zsl.constants import MimeType
 from zsl.task.task_data import TaskData
 from zsl.db.model import AppModelJSONEncoder
 from zsl.task.job_context import JobContext, WebJobContext, Responder
@@ -110,7 +111,7 @@ def json_output(f):
         if not skip_encode:
             rv = json.dumps(rv, cls=AppModelJSONEncoder)
             if isinstance(JobContext.get_current_context(), WebJobContext):
-                JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/json'))
+                JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder(MimeType.APPLICATION_JSON))
 
         return rv
 

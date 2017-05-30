@@ -2,8 +2,17 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import json
+from http import HTTPStatus
+from typing import Any
+from typing import Union
+
+from flask.testing import FlaskClient
+from typing import AnyStr
+
+from flask.wrappers import Response
 
 from zsl import inject, Zsl
+from zsl.constants import HttpHeaders, MimeType
 
 
 def json_loads(str_):
@@ -15,8 +24,15 @@ def json_loads(str_):
     return json.loads(str_)
 
 
-class HttpTestCase:
+class HttpTestCase(object):
     """Extends TestCase with methods for easier testing of HTTP requests."""
+
+    def requestTask(self, client, task, data, headers=None):
+        if headers is None:
+            headers = {}
+
+        headers.update({HttpHeaders.CONTENT_TYPE: MimeType.APPLICATION_JSON})
+        return client.post(task, data=json.dumps(data), headers=headers)
 
     def assertHTTPStatus(self, status, test_value, msg):
         # type: (Union[int, HTTPStatus], int, AnyStr) -> None
@@ -29,6 +45,11 @@ class HttpTestCase:
         if hasattr(status, 'value'):  # py2/3
             status = status.value
         self.assertEqual(status, test_value, msg)
+
+    def assertJSONData(self, rv, data, msg):
+        # type: (Response, Any, AnyStr) -> None
+        data1 = json.loads(rv.data.decode())
+        self.assertEqual(data1, data, msg)
 
     @inject(app=Zsl)
     def getHTTPClient(self, app):

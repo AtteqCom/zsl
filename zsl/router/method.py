@@ -13,6 +13,7 @@ from flask.wrappers import Response
 from flask import request
 
 from zsl.application.modules.web.configuration import MethodConfiguration
+from zsl.constants import MimeType
 from zsl.interface.webservice.utils.request_data import extract_data
 from zsl.interface.webservice.utils.response_headers import append_headers
 from zsl.interface.webservice.utils.error_handler import error_handler
@@ -29,7 +30,7 @@ METHOD_CONFIG_NAME = 'METHOD'
 def default_web_responder(rv):
     if isinstance(rv, Response):
         return rv
-    return Response(json.dumps(rv, cls=AppModelJSONEncoder), mimetype="application/json")
+    return Response(json.dumps(rv, cls=AppModelJSONEncoder), mimetype=MimeType.APPLICATION_JSON)
 
 
 def identity_responder(rv):

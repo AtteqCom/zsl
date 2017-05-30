@@ -13,6 +13,7 @@ import logging
 from flask import request, Response
 
 from zsl import Zsl, inject
+from zsl.constants import MimeType
 from zsl.db.model import AppModelJSONEncoder
 from zsl.interface.webservice.utils.error_handler import error_handler
 from zsl.interface.webservice.utils.response_headers import append_headers
@@ -24,7 +25,7 @@ from zsl.interface.resource import ResourceResult
 def create_response_from_pure_result(result):
     # type: (Any) -> Response
 
-    return Response(json.dumps(result, cls=AppModelJSONEncoder), mimetype="application/json")
+    return Response(json.dumps(result, cls=AppModelJSONEncoder), mimetype=MimeType.APPLICATION_JSON)
 
 
 def create_response_from_resource_result(result):
@@ -60,7 +61,8 @@ def create_resource_mapping(app):
             if not isinstance(resource_result, ResourceResult):
                 resource_result = ResourceResult(body=resource_result)
 
-            response = Response(json.dumps(resource_result.body, cls=AppModelJSONEncoder), mimetype="application/json")
+            response = Response(json.dumps(resource_result.body, cls=AppModelJSONEncoder),
+                                mimetype=MimeType.APPLICATION_JSON)
 
             if resource_result.status:
                 response.status = str(resource_result.status)
