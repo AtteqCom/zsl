@@ -81,9 +81,6 @@ API
    :members:
    :undoc-members:
 
-<<<<<<< HEAD
-.. automodule:: zsl.interface.tools.importer
-=======
 .. automodule:: zsl.application.modules.cli_module
    :members:
    :undoc-members:
@@ -93,7 +90,6 @@ API
    :undoc-members:
 
 .. automodule:: zsl.application.modules.gearman_module
->>>>>>> origin/fix-doc-warnings
    :members:
    :undoc-members:
 
@@ -502,6 +498,10 @@ API
    :undoc-members:
 
 .. automodule:: zsl.utils.xml_to_json
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.unittest
    :members:
    :undoc-members:
 
