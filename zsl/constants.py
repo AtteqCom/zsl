@@ -1,6 +1,8 @@
 class MimeType(object):
-    APPLICATION_JSON: str = 'application/json'
+    APPLICATION_JSON = 'application/json'
+    # type: str
 
 
 class HttpHeaders(object):
-    CONTENT_TYPE: str = 'Content-Type'
+    CONTENT_TYPE = 'Content-Type'
+    # type: str
