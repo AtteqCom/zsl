@@ -33,7 +33,11 @@ to make it better.
 
    getting_started
    configuration
+   modules_and_containers
+   unit_testing
+   extending
    api
+   developing
 
 Indices and tables
 ==================

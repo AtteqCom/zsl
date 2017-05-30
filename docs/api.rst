@@ -1,4 +1,3 @@
-
 API
 ###
 
@@ -38,10 +37,6 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.interface.tools
-   :members:
-   :undoc-members:
-
 .. automodule:: zsl.interface.gearman
    :members:
    :undoc-members:
@@ -75,14 +70,6 @@ API
    :undoc-members:
 
 .. automodule:: zsl.interface.webservice.performers.task
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.interface.webservice.run_webapp
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.interface.tools.generate_apiari_doc
    :members:
    :undoc-members:
 

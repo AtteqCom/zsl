@@ -1,9 +1,9 @@
 Configuration
-=============
+#############
 
 A global configuration is required to exists as a package
-``settings.default_settings``. Per-installation configuration file set in ENV
-variable ``ZSL_SETTINGS`` is also needed.
+``settings.default_settings``. Per-installation/environment configuration is possible.
+A file with suffix `cfg` and name set in environment variable ``ZSL_SETTINGS`` is needed.
 
 Environment variables
 ---------------------
@@ -44,30 +44,58 @@ Optional fields
 ---------------
 
 * ``RELOAD``
-  Reload tasks on every call.
+  Reload tasks on every call. Especially usable when debugging.
 
 * ``DEBUG``
-  Set debug mode.
+  Set the debug mode.
 
-* ``LOG``
-  Setting for specific logger.::
+* ``LOGGING``
+  Logging settings are specified in `LOGGING` variable as a python dictionary.
+  ZSL uses python logging as the logging infrastructure and the configuration
+  is done accordingly.
 
-      LOG = {
-          'sqlalchemy.engine': {
-              # settings for sqlaclhemy logger
-              'handlers': ['out-handler', 'err-handler'],
-              'level': 'WARNING'
-          }
-      }
+  The concrete options are specified in Python Logging library in the part
+  called dictionary configuration, just check the `logging.config
+  <https://docs.python.org/3/library/logging.config.html#module-logging.config>`_
+  module documentation for more. An example is here.::
 
-* ``LOGGER_NAME``
-  Name of tha application logger.
+    LOGGING = {
+        'version': 1,
+        'formatters': {
+            'default': {
+                'format': '%(levelname)s %(name)s %(asctime)-15s %(message)s'
+            }
+        },
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'default'
+            },
+        },
+        'loggers': {
+            'storage': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': True,
+            }
+        },
+        'root': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
+    }
 
-* ``LOG_HANDLERS``
-  List of log handlers. 
+  Because of using Flask one has to provide `import_name` parameter to the
+  :class:`zsl.application.service_application.ServiceApplication` object
+  constructor. This `import_name` is also the name of the root logger used
+  in the application. Thus it is convenient to choose as the root package
+  name of the project.
+
 
 * ``EXTERNAL_LIBRARIES``
-  Add external libraries to path.::
+  Add external libraries to path. This option will be deprecated
+  use a correct virtualenv environment instead.::
 
       EXTERNAL_LIBRARIES = {
           'vendor_path': './vendor'
