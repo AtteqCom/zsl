@@ -13,7 +13,7 @@ the following.
 
     $ pip install sphinx recommonmark sphinx_rtd_theme
     $ cd docs
-    $ make
+    $ make html
 
 Running ZSL unit tests
 ======================

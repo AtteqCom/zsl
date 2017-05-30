@@ -75,4 +75,3 @@ The minimum configuration has to contain these values:
 
     $ curl http://localhost:5000/task/hello/hello_world_task
     Hello world!
-
