@@ -83,6 +83,7 @@ def _is_list(list_):
     except TypeError:
         return False
 
+
 class ResourceQueryContext(object):
     """
     The context of the resource query.
@@ -91,12 +92,6 @@ class ResourceQueryContext(object):
      - holds the given filter and splits it to the given field array (parsed from the arguments)
 
     .. automethod:: __init__
-    .. automethod:: get_params 
-    .. automethod:: get_args 
-    .. automethod:: get_data 
-    .. automethod:: get_row_id 
-    .. automethod:: get_related 
-    .. automethod:: get_filter_by 
     """
 
     def __init__(self, params, args, data):
@@ -150,15 +145,10 @@ class ResourceQueryContext(object):
 
 
 class ModelResourceBase(TransactionalSupport):
-    """
-    ModelResource works only for tables with a single-column identifier (key).
+    """ModelResource works only for tables with a single-column identifier
+    (key).
 
     .. automethod:: __init__
-    .. automethod:: _create_context
-    .. automethod:: _create_one
-    .. automethod:: _save_one
-    .. automethod:: _delete_one
-    .. automethod:: _create_delete_one_query
     """
 
     def __init__(self, model_cls=None):
@@ -189,14 +179,24 @@ class ModelResourceBase(TransactionalSupport):
 
 
 class ModelResource(ModelResourceBase):
+    """
+
+    .. automethod:: _create_context
+    .. automethod:: _create_one
+    .. automethod:: _save_one
+    .. automethod:: _delete_one
+    .. automethod:: _create_delete_one_query
+    """
     @staticmethod
     def _create_context(params, args, data):
         # type: (dict, list, dict) -> ResourceQueryContext
         """
-        Creates the resource query context - this an object holding the data alongside the querying of the resource.
-        This object is always present as a parameter for each method during the query and users.py are free to create own
-        properties so that they can optimize and perform the query (so the subsequent methods have an access to the
-        already precomputed data).
+        Creates the resource query context - this an object holding the data
+        alongside the querying of the resource. This object is always present as
+        a parameter for each method during the query and users.py are free to
+        create own properties so that they can optimize and perform the query
+        (so the subsequent methods have an access to the already precomputed
+        data).
         """
         return ResourceQueryContext(params, args, data)
 
@@ -322,7 +322,8 @@ class ModelResource(ModelResourceBase):
         related = ctx.get_related()
         if related is not None:
             q = self.add_related(q, related)
-            return nested_model(self._read_one(q, ctx), create_related_tree(related))
+            return nested_model(self._read_one(q, ctx),
+                                create_related_tree(related))
         else:
             return self._read_one(q, ctx).get_app_model()
 
@@ -368,7 +369,8 @@ class ModelResource(ModelResourceBase):
 
         if related is not None:
             q = self.add_related(q, related)
-            return nested_models(self._read_collection(q, ctx), create_related_tree(related))
+            return nested_models(self._read_collection(q, ctx),
+                                 create_related_tree(related))
         else:
             return app_models(self._read_collection(q, ctx))
 
@@ -423,8 +425,8 @@ class ModelResource(ModelResourceBase):
     # Delete methods
     def _delete_one(self, row_id, ctx):
         """
-        Deletes row by the given id -- `row_id`. The method first created the query using the method
-        :meth:`_create_delete_one_query` and then executes it.
+        Deletes row by the given id -- `row_id`. The method first created the
+        query using the method :meth:`_create_delete_one_query` and then executes it.
 
         :param int row_id: Identifier of the deleted row.
         :param ResourceQueryContext ctx: The context of this delete query.
