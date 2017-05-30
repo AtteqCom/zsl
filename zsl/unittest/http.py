@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import json
-from http import HTTPStatus
 from typing import Any
 from typing import Dict
 from typing import Union
