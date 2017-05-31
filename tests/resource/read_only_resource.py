@@ -5,7 +5,7 @@ Created on May 14, 2014
 """
 from unittest.case import TestCase
 
-from zsl.unittest.db import DbTestCase
+from zsl.testing.db import DbTestCase
 
 from sqlalchemy.ext.declarative import declarative_base
 

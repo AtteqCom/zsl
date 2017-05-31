@@ -21,8 +21,8 @@ from tests.resource.resource_test_helper import (
 from zsl import Zsl
 from zsl.application.containers.web_container import WebContainer
 from zsl.resource.json_server_resource import JsonServerResource
-from zsl.unittest.test_utils import parent_module
-from zsl.unittest.http import json_loads, HTTPTestCase
+from zsl.testing.test_utils import parent_module
+from zsl.testing.http import json_loads, HTTPTestCase
 
 # py23
 if hasattr(urllib, 'parse'):

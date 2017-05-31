@@ -27,7 +27,7 @@ def set_test_responder():
 
 @inject(config=Config)
 def load_and_run_tests(config):
-    """Load application test package and run it using unittest util.
+    """Load application test package and run it using testing util.
 
     :param config: application configuration, injected
     :type config: Config
