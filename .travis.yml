@@ -7,7 +7,7 @@ python:
 install:
   - pip install -r requirements-test.txt
 
-script: coverage run -m testing discover tests '*_test.py'
+script: coverage run -m unittest discover tests '*_test.py'
 
 deploy:
   provider: pypi
