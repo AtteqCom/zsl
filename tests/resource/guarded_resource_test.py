@@ -5,7 +5,9 @@ met and an proper http code when policy is broken.
 
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+
 from builtins import *
+from unittest.case import TestCase
 
 try:
     import unittest.mock as mock
@@ -21,7 +23,8 @@ from zsl.resource.guard import (guard, GuardedMixin, Access,
                                 PolicyViolationError, ResourcePolicy)
 
 from tests.resource.resource_test_helper import test_settings
-from tests.test_utils import parent_module, json_loads, HttpTestCase
+from zsl.testing.test_utils import parent_module
+from zsl.testing.http import json_loads, HTTPTestCase
 
 TEST_VALUE_CREATED = 'created'
 TEST_VALUE_READ = 'read'
@@ -39,7 +42,7 @@ class GuardedResourceTestResource(object):
     pass
 
 
-class GuardedResourceTest(HttpTestCase):
+class GuardedResourceTest(TestCase, HTTPTestCase):
     PATH = '/resource/guarded_resource_test'
     RESOURCE_CLASS = __name__ + '.GuardedResourceTestResource'
 

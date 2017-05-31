@@ -3,7 +3,9 @@ Created on May 14, 2014
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from zsl.unittest import TestCase
+from unittest.case import TestCase
+
+from zsl.testing.db import DbTestCase
 
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -18,7 +20,7 @@ class ReadOnlyModelResource(ReadOnlyResourceMixin, ModelResource):
     pass
 
 
-class TestReadOnlyModelResource(TestCase):
+class TestReadOnlyModelResource(TestCase, DbTestCase):
 
     @classmethod
     def setUpClass(cls):

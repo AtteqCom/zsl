@@ -13,6 +13,7 @@ import logging
 from flask import request, Response
 
 from zsl import Zsl, inject
+from zsl.constants import MimeType
 from zsl.db.model import AppModelJSONEncoder
 from zsl.interface.webservice.utils.error_handler import error_handler
 from zsl.interface.webservice.utils.response_headers import append_headers
@@ -24,7 +25,8 @@ from zsl.interface.resource import ResourceResult
 def create_response_from_pure_result(result):
     # type: (Any) -> Response
 
-    return Response(json.dumps(result, cls=AppModelJSONEncoder), mimetype="application/json")
+    return Response(json.dumps(result, cls=AppModelJSONEncoder),
+                    mimetype=MimeType.APPLICATION_JSON.value)
 
 
 def create_response_from_resource_result(result):
@@ -38,7 +40,8 @@ def create_response_from_resource_result(result):
 
 @inject(app=Zsl)
 def create_resource_mapping(app):
-    @app.route("/resource/<path:path>", methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'])
+    @app.route("/resource/<path:path>",
+               methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'])
     @append_headers
     @error_handler
     def perform_resource(path):
@@ -51,16 +54,21 @@ def create_resource_mapping(app):
             resource_task = get_resource_task(resource)
             if resource_task is None:
                 raise ImportError("No resource named {0}.".format(resource))
-            logging.debug("Fetched resource named {0} with data\n{1}.".format(resource, request.data))
+            msg_format = "Fetched resource named {0} with data\n{1}."
+            logging.debug(msg_format.format(resource, request.data))
 
             data = request.get_json() if request.data else None
 
-            resource_result = resource_task(params=params, args=args_to_dict(request.args), data=data)
+            resource_result = resource_task(params=params,
+                                            args=args_to_dict(request.args),
+                                            data=data)
 
             if not isinstance(resource_result, ResourceResult):
                 resource_result = ResourceResult(body=resource_result)
 
-            response = Response(json.dumps(resource_result.body, cls=AppModelJSONEncoder), mimetype="application/json")
+            response = Response(
+                json.dumps(resource_result.body, cls=AppModelJSONEncoder),
+                mimetype=MimeType.APPLICATION_JSON.value)
 
             if resource_result.status:
                 response.status = str(resource_result.status)

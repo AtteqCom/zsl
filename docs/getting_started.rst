@@ -75,20 +75,3 @@ The minimum configuration has to contain these values:
 
     $ curl http://localhost:5000/task/hello/hello_world_task
     Hello world!
-
-
-Developing ZSL
---------------
-
-Documentation
-~~~~~~~~~~~~~
-
-Creating the documentation is easy. Install sphinx and the dependencies if
-required and perform the following. The requirements for generating
-documentation are in `documentation` extra of `zsl`.
-
-.. code-block:: console
-
-    $ pip install sphinx recommonmark sphinx_rtd_theme
-    $ cd docs
-    $ make html

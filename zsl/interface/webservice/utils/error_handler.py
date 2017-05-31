@@ -15,7 +15,6 @@ from abc import abstractmethod
 
 from flask import request
 
-
 _error_handlers = []
 
 
@@ -30,6 +29,7 @@ class ErrorHandler(object):
 
 
 def register(e):
+    # type: (ErrorHandler)->None
     _error_handlers.append(e)
 
 

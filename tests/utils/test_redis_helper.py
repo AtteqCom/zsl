@@ -1,6 +1,8 @@
+from unittest.case import TestCase
+
 from flask.config import Config
 
-from zsl.unittest import TestCase
+from zsl.testing.db import DbTestCase
 from zsl.utils.injection_helper import bind
 from zsl.utils.redis_helper import Keymaker
 from zsl.utils.testing import set_test_responder
@@ -21,7 +23,7 @@ def create_config(dictionary):
     return config
 
 
-class TestKeymaker(TestCase):
+class TestKeymaker(TestCase, DbTestCase):
 
     def setUp(self):
         bind(Config, create_config({}))
@@ -47,17 +49,17 @@ class TestKeymaker(TestCase):
                          "Method with a None and falsy arguments")
 
     def test_with_prefix(self):
-        keymaker = Keymaker({'a': 'AAA', 'b': 'XX'}, prefix="unittest")
+        keymaker = Keymaker({'a': 'AAA', 'b': 'XX'}, prefix="testing")
 
-        self.assertEqual(keymaker.a(), 'unittest:AAA', "Pure method with prefix")
-        self.assertEqual(keymaker.b('x', 'y'), 'unittest:XX:x:y', "Method with arguments and prefix")
+        self.assertEqual(keymaker.a(), 'testing:AAA', "Pure method with prefix")
+        self.assertEqual(keymaker.b('x', 'y'), 'testing:XX:x:y', "Method with arguments and prefix")
 
     def test_with_global_prefix(self):
         bind(Config, create_config({'REDIS': {'prefix': 'global_prefix'}}))
 
-        keymaker = Keymaker({'a': 'AAA', 'b': 'XX'}, prefix="unittest")
+        keymaker = Keymaker({'a': 'AAA', 'b': 'XX'}, prefix="testing")
 
-        self.assertEqual(keymaker.a(), 'global_prefix:unittest:AAA', "Pure method with global and local prefix")
+        self.assertEqual(keymaker.a(), 'global_prefix:testing:AAA', "Pure method with global and local prefix")
         self.assertEqual(keymaker.b('x', 'y'),
-                         'global_prefix:unittest:XX:x:y',
+                         'global_prefix:testing:XX:x:y',
                          "Method with arguments and global and local prefix")

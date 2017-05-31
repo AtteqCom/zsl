@@ -13,6 +13,7 @@ from flask.wrappers import Response
 from flask import request
 
 from zsl.application.modules.web.configuration import MethodConfiguration
+from zsl.constants import MimeType
 from zsl.interface.webservice.utils.request_data import extract_data
 from zsl.interface.webservice.utils.response_headers import append_headers
 from zsl.interface.webservice.utils.error_handler import error_handler
@@ -29,7 +30,8 @@ METHOD_CONFIG_NAME = 'METHOD'
 def default_web_responder(rv):
     if isinstance(rv, Response):
         return rv
-    return Response(json.dumps(rv, cls=AppModelJSONEncoder), mimetype="application/json")
+    return Response(json.dumps(rv, cls=AppModelJSONEncoder),
+                    mimetype=MimeType.APPLICATION_JSON.value)
 
 
 def identity_responder(rv):
@@ -80,7 +82,8 @@ def route(path, app=Injected, config=Injected, **options):
     def _decorator(f):
         method_config = _get_method_configuration(config)
         url = "/{0}{1}".format(method_config.url_prefix, path)
-        logging.getLogger(__name__).info("Mapping url '{0}' as a method.".format(url))
+        logging.getLogger(__name__).info(
+            "Mapping url '{0}' as a method.".format(url))
         routed_function = app.route(url, **options)
         return routed_function(Performer(f))
 
