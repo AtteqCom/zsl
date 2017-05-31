@@ -2,7 +2,9 @@
 :mod:`zsl.task.task_decorator`
 ------------------------------
 
-.. moduleauthor:: Martin Babka <babka@atteq.com>, Peter Morihladko <morihladko@atteq.com>, Jan Janco <janco@atteq.com>,
+.. moduleauthor:: Martin Babka <babka@atteq.com>, 
+                  Peter Morihladko <morihladko@atteq.com>, 
+                  Jan Janco <janco@atteq.com>,
                   Lubos Pis <pis@atteq.com>
 """
 from __future__ import unicode_literals
@@ -48,7 +50,6 @@ def save_to_file(destination_filename, append=False):
     """
 
     def decorator_fn(f):
-
         @wraps(f)
         def wrapper_fn(*args, **kwargs):
             res = f(*args, **kwargs)
@@ -72,7 +73,8 @@ def json_input(f):
 
     @wraps(f)
     def json_input_decorator(*args, **kwargs):
-        # If the data is already transformed, we do not transform it any further.
+        # If the data is already transformed, we do not transform it any
+        # further.
         task_data = _get_data_from_args(args)
 
         if task_data is None:
@@ -80,11 +82,16 @@ def json_input(f):
 
         if task_data.get_data():
             try:
+                is_transformed = request.json
+                should_transform = not task_data.is_skipping_json() if \
+                    task_data is not None else False
+
                 # We transform the data only in the case of plain POST requests.
-                if not request.json and task_data is not None and not task_data.is_skipping_json():
+                if not is_transformed and should_transform:
                     task_data.transform_data(json.loads)
             except (ValueError, RuntimeError):
-                logging.error("Exception while processing JSON input decorator.")
+                logging.error(
+                    "Exception while processing JSON input decorator.")
                 task_data.transform_data(json.loads)
         else:
             task_data.transform_data(lambda _: {})
@@ -96,7 +103,8 @@ def json_input(f):
 
 def json_output(f):
     """
-    Format response to json and in case of web-request set response content-type to 'application/json'.
+    Format response to json and in case of web-request set response content type
+    to 'application/json'.
     """
 
     @wraps(f)
@@ -111,7 +119,8 @@ def json_output(f):
         if not skip_encode:
             rv = json.dumps(rv, cls=AppModelJSONEncoder)
             if isinstance(JobContext.get_current_context(), WebJobContext):
-                JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder(MimeType.APPLICATION_JSON))
+                JobContext.get_current_context().add_responder(
+                    MimeSetterWebTaskResponder(MimeType.APPLICATION_JSON.value))
 
         return rv
 
@@ -131,12 +140,15 @@ def jsonp_wrap(callback_key='callback'):
             data = task_data.get_data()
 
             if callback_key not in data:
-                raise KeyError('Missing required parameter "{0}" for task.'.format(callback_key))
+                raise KeyError(
+                    'Missing required parameter "{0}" for task.'.format(
+                        callback_key))
 
             callback = data[callback_key]
             jsonp = f(*args, **kwargs)
             if isinstance(JobContext.get_current_context(), WebJobContext):
-                JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('application/javascript'))
+                JobContext.get_current_context().add_responder(
+                    MimeSetterWebTaskResponder('application/javascript'))
             jsonp = "{callback}({data})".format(callback=callback, data=jsonp)
 
             return jsonp
@@ -148,13 +160,15 @@ def jsonp_wrap(callback_key='callback'):
 
 def jsend_output(fail_exception_classes=None):
     """
-    Format task result to json output in jsend specification format. See: http://labs.omniti.com/labs/jsend.
-    Task return value must be dict or None.
+    Format task result to json output in jsend specification format. See: 
+    http://labs.omniti.com/labs/jsend. Task return value must be dict or None.
 
-    @param fail_exception_classes: exceptions which will produce 'fail' response status
+    @param fail_exception_classes: exceptions which will produce 'fail' response
+    status.
     """
 
-    fail_exception_classes = fail_exception_classes if fail_exception_classes else ()
+    fail_exception_classes = fail_exception_classes if fail_exception_classes \
+        else ()
 
     def decorator_fn(f):
 
@@ -170,8 +184,9 @@ def jsend_output(fail_exception_classes=None):
                 return {'status': 'error', 'message': 'Server error.'}
 
             if not isinstance(rv, dict) and rv is not None:
-                msg = 'jsend_output decorator error: task must return dict or None.'
-                logging.error(msg + '\ntask return value: {0}'.format(rv))
+                msg = 'jsend_output decorator error: task must return dict ' \
+                      'or None.\nTask return value: {0}.'
+                logging.error(msg.format(rv))
                 return {'status': 'error', 'message': 'Server error.'}
 
             return {'status': 'success', 'data': rv}
@@ -184,8 +199,8 @@ def jsend_output(fail_exception_classes=None):
 def web_error_and_result(f):
     """
     Same as error_and_result decorator, except:
-    If no exception was raised during task execution, ONLY IN CASE OF WEB REQUEST formats
-    task result into json dictionary {'data': task return value}
+    If no exception was raised during task execution, ONLY IN CASE OF WEB 
+    REQUEST formats task result into json dictionary {'data': task return value}
     """
 
     @wraps(f)
@@ -197,8 +212,9 @@ def web_error_and_result(f):
 
 def error_and_result(f):
     """
-    Format task result into json dictionary `{'data': task return value}` if no exception was raised during the task
-    execution. If there was raised an exception during task execution, formats task result into dictionary
+    Format task result into json dictionary `{'data': task return value}` if no 
+    exception was raised during the task execution. If there was raised an 
+    exception during task execution, formats task result into dictionary
     `{'error': exception message with traceback}`.
     """
 
@@ -212,7 +228,8 @@ def error_and_result(f):
 def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
     try:
         ret_val = f(*args, **kwargs)
-        if web_only and not isinstance(JobContext.get_current_context(), WebJobContext):
+        if web_only and not isinstance(JobContext.get_current_context(),
+                                       WebJobContext):
             rv = ret_val
         else:
             rv = {'data': ret_val}
@@ -226,7 +243,8 @@ def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
 
 def required_data(*data):
     """
-    Task decorator which checks if the given variables (indices) are stored inside the task data.
+    Task decorator which checks if the given variables (indices) are stored 
+    inside the task data.
     """
 
     def decorator_fn(f):
@@ -236,7 +254,8 @@ def required_data(*data):
             task_data = _get_data_from_args(args).get_data()
             for i in data:
                 if i not in task_data:
-                    raise KeyError('Missing required parameter "{0}" for task.'.format(i))
+                    raise KeyError(
+                        'Missing required parameter "{0}" for task.'.format(i))
 
             return f(*args, **kwargs)
 
@@ -249,7 +268,8 @@ def append_get_parameters(accept_only_web=True):
     """
     Task decorator which appends the GET data to the task data.
 
-    :param boolean accept_only_web: Parameter which limits using this task only with web requests.
+    :param boolean accept_only_web: Parameter which limits using this task only 
+    with web requests.
     """
 
     def wrapper(f):
@@ -266,7 +286,8 @@ def append_get_parameters(accept_only_web=True):
                 data.update(web_request.args.to_dict(flat=True))
             elif accept_only_web:
                 # Raise exception on non web usage if necessary
-                raise Exception("append_get_parameters decorator may be used with GET requests only.")
+                raise Exception("append_get_parameters decorator may be used "
+                                "with GET requests only.")
 
             return f(*args, **kwargs)
 
@@ -285,7 +306,8 @@ def web_task(f):
     def web_task_decorator(*args, **kwargs):
         jc = JobContext.get_current_context()
         if not isinstance(jc, WebJobContext):
-            raise Exception("The WebTask is not called through the web interface.")
+            raise Exception(
+                "The WebTask is not called through the web interface.")
         data = f(*args, **kwargs)
         jc.add_responder(WebTaskResponder(data))
         return data['data'] if 'data' in data else ""
@@ -303,7 +325,8 @@ def secured_task(f):
         task_data = _get_data_from_args(args)
         assert isinstance(task_data, TaskData)
         if not verify_security_data(task_data.get_data()['security']):
-            raise SecurityException(task_data.get_data()['security']['hashed_token'])
+            raise SecurityException(
+                task_data.get_data()['security']['hashed_token'])
 
         task_data.transform_data(lambda x: x['data'])
         return f(*args, **kwargs)
@@ -321,7 +344,8 @@ def xml_output(f):
         ret_val = f(*args, **kwargs)
 
         if isinstance(JobContext.get_current_context(), WebJobContext):
-            JobContext.get_current_context().add_responder(MimeSetterWebTaskResponder('text/xml'))
+            JobContext.get_current_context().add_responder(
+                MimeSetterWebTaskResponder('text/xml'))
         return ret_val
 
     return xml_output_inner_fn
@@ -329,12 +353,14 @@ def xml_output(f):
 
 def file_upload(f):
     """
-    Return list of `werkzeug.datastructures.FileStorage` objects - files to be uploaded
+    Return list of `werkzeug.datastructures.FileStorage` objects - files to be
+    uploaded
     """
 
     @wraps(f)
     def file_upload_decorator(*args, **kwargs):
-        # If the data is already transformed, we do not transform it any further.
+        # If the data is already transformed, we do not transform it any
+        # further.
         task_data = _get_data_from_args(args)
 
         if task_data is None:
@@ -356,9 +382,9 @@ def _get_data_from_args(args):
 
 
 class SecurityException(Exception):
-
     def __init__(self, hashed_token):
-        Exception.__init__(self, "Invalid hashed token '{0}'.".format(hashed_token))
+        Exception.__init__(self,
+                           "Invalid hashed token '{0}'.".format(hashed_token))
         self._hashed_token = hashed_token
 
     def get_hashed_token(self):
@@ -366,7 +392,6 @@ class SecurityException(Exception):
 
 
 class WebTaskResponder(Responder):
-
     def __init__(self, data):
         self.data = data
 
@@ -380,7 +405,6 @@ class WebTaskResponder(Responder):
 
 
 class MimeSetterWebTaskResponder(Responder):
-
     def __init__(self, mime):
         self._mime = mime
 
@@ -394,7 +418,8 @@ class CrossdomainWebTaskResponder(Responder):
     """
 
     @inject(app=Zsl, config=Config)
-    def __init__(self, origin=None, methods=None, headers=None, max_age=21600, app=Injected, config=Injected):
+    def __init__(self, origin=None, methods=None, headers=None, max_age=21600,
+                 app=Injected, config=Injected):
         self._app = app
 
         if methods is not None:
@@ -435,9 +460,9 @@ class CrossdomainWebTaskResponder(Responder):
 
 
 def crossdomain(origin=None, methods=None, headers=None, max_age=21600):
-
     def decorator(f):
-        responder = CrossdomainWebTaskResponder(origin, methods, headers, max_age)
+        responder = CrossdomainWebTaskResponder(origin, methods, headers,
+                                                max_age)
 
         @wraps(f)
         def crossdomain_inner_fn(*args, **kwargs):

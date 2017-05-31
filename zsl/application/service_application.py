@@ -1,6 +1,23 @@
 """
 :mod:`zsl.application.service_application`
 ------------------------------------------
+
+The module contains the main Zsl class - :class:`.ServiceApplication`. It is 
+responsible for gluing everything together. 
+
+There is a simple profile support. Profile is usually tied to a configuration 
+file for an environment. Usually environments slightly differ in settings - 
+especially connection strings. These twists can be managed via additional 
+configuration files with the `cfg` extension usually placed in the `settings` 
+package. The name of the environment configuration file is controlled via 
+`ZSL_SETTINGS` environment variable.
+
+
+.. data:: SETTINGS_ENV_VAR_NAME
+
+    Name of the environment variable to be read for the profile configuration 
+    file.
+
 """
 from __future__ import unicode_literals
 
@@ -10,23 +27,42 @@ from typing import Callable
 from flask import Flask, Config
 from flask_injector import FlaskInjector
 from injector import Injector, Binder, singleton
+from typing import Any
 
 from zsl import __version__
 from zsl._state import set_current_app
 from zsl.utils.warnings import deprecated
 from zsl.application.initialization_context import InitializationContext
 
+#: Name of the environment variable to be read for the profile configuration.
 SETTINGS_ENV_VAR_NAME = 'ZSL_SETTINGS'
 
 
 def get_settings_from_profile(profile, profile_dir=None):
+    # type: (str, Any)->str
+    """"Returns the  configuration file path for the given profile.
+    :param profile:
+        Profile name to be used.
+    :param profile_dir:
+        The directory where the profile configuration file should reside. It 
+        may be also a module, and then the directory of the module is used.  
+    :return Configuration file path.
+    """
     if profile_dir is None:
         import settings
-        profile_dir = os.path.dirname(settings.__file__)
+        profile_dir = settings
+
+    if hasattr(profile_dir, '__file__'):
+        profile_dir = os.path.dirname(profile_dir.__file__)
+
     return os.path.join(profile_dir, '{0}.cfg'.format(profile))
 
 
 def set_profile(profile):
+    # type (str)->None
+    """Sets the current profile.
+    
+    :param profile: The profile to be used."""
     os.environ[SETTINGS_ENV_VAR_NAME] = get_settings_from_profile(profile)
 
 
@@ -38,11 +74,15 @@ class ServiceApplication(Flask):
     def __init__(self, import_name, static_path=None, static_url_path=None,
                  static_folder='static', template_folder='templates',
                  instance_path=None, instance_relative_config=False,
-                 modules=None, config_object=None, version=None):
-        super(ServiceApplication, self).__init__(import_name, static_path, static_url_path,
-                                                 static_folder, template_folder, instance_path,
+                 modules=None, config_object=None, version=None,
+                 default_settings_module='settings.default_settings'):
+        super(ServiceApplication, self).__init__(import_name, static_path,
+                                                 static_url_path,
+                                                 static_folder, template_folder,
+                                                 instance_path,
                                                  instance_relative_config)
         self._dependencies_initialized = False
+        self._default_settings_module = default_settings_module
         self._is_initialized = False
         self._injector = None
         self._worker = None
@@ -56,17 +96,26 @@ class ServiceApplication(Flask):
         self._dependencies_initialized = True
 
     def __str__(self):
-        return "ZSL(application={0}, zsl_version={1}, app_version={2})".format(self.name, self.VERSION,
-                                                                               self._app_version)
+        return "ZSL(application={0}, zsl_version={1}, app_version={2})".format(
+            self.name, self.VERSION,
+            self._app_version)
 
     def _configure(self, config_object=None):
-        # type: (dict) -> None
-        """Read the configuration from config files."""
+        # type: (Any) -> None
+        """Read the configuration from config files.
+        Loads the default settings and the profile settings if available. 
+        Check :func:`.set_profile`. 
+        
+        :param config_object:
+            This parameter is the configuration decscription may be a dict or
+            string describing the module from which the configuration is used.
+            Default is settings.default_settings.
+        """
 
         if config_object:
             self.config.from_mapping(config_object)
         else:
-            self.config.from_object('settings.default_settings')
+            self.config.from_object(self._default_settings_module)
 
         zsl_settings = os.environ.get(SETTINGS_ENV_VAR_NAME)
         if zsl_settings is not None:
@@ -152,14 +201,13 @@ class ServiceApplication(Flask):
 
     @deprecated
     def run_web(self, host='127.0.0.1', port=5000, **options):
+        """Alias for Flask.run"""
         return self.run(
             host=self.config.get('FLASK_HOST', host),
             port=self.config.get('FLASK_PORT', port),
             debug=self.config.get('DEBUG', False),
             **options
         )
-
-    """Alias for Flask.run"""
 
     def run_worker(self, *args, **kwargs):
         """Run the app as a task queue worker.

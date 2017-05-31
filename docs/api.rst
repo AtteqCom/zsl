@@ -373,6 +373,26 @@ API
    :members:
    :undoc-members:
 
+.. automodule:: zsl.unittest
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.unittest.db
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.unittest.http
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.unittest.test_utils
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.unittest.zsl
+   :members:
+   :undoc-members:
+
 .. automodule:: zsl.utils
    :members:
    :undoc-members:
@@ -498,25 +518,5 @@ API
    :undoc-members:
 
 .. automodule:: zsl.utils.xml_to_json
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.unittest
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.unittest.db
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.unittest.http
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.unittest.test_utils
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.unittest.zsl
    :members:
    :undoc-members:

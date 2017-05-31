@@ -3,6 +3,7 @@ Test utilities.
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+from builtins import *
 
 import json
 
@@ -27,3 +28,4 @@ def parent_module(module_name):
 class TestTaskData(TaskData):
     def __init__(self, data):
         super(TestTaskData, self).__init__(json.dumps(data))
+
