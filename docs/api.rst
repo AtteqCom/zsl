@@ -1,4 +1,3 @@
-
 API
 ###
 
@@ -6,9 +5,6 @@ API
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: zsl
-   :members:
-   :undoc-members:
 
 .. automodule:: zsl.application
    :members:
@@ -18,11 +14,11 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.application.containers.container
+.. automodule:: zsl.application.containers.celery_container
    :members:
    :undoc-members:
 
-.. automodule:: zsl.application.containers.celery_container
+.. automodule:: zsl.application.containers.container
    :members:
    :undoc-members:
 
@@ -30,11 +26,11 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.application.containers.gearman_container
+.. automodule:: zsl.application.containers.web_container
    :members:
    :undoc-members:
 
-.. automodule:: zsl.application.containers.web_container
+.. automodule:: zsl.application.initialization_context
    :members:
    :undoc-members:
 
@@ -58,11 +54,7 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.application.modules.web.configuration
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.application.modules.web.web_context_module
+.. automodule:: zsl.application.modules
    :members:
    :undoc-members:
 
@@ -86,15 +78,27 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.application.modules.gearman_module
-   :members:
-   :undoc-members:
-
 .. automodule:: zsl.application.modules.logger_module
    :members:
    :undoc-members:
 
 .. automodule:: zsl.application.modules.task_router
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.application.modules.web
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.application.modules.web.configuration
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.application.modules.web.web_context_module
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.application.service_application
    :members:
    :undoc-members:
 
@@ -138,6 +142,10 @@ API
    :members:
    :undoc-members:
 
+.. automodule:: zsl.db
+   :members:
+   :undoc-members:
+
 .. automodule:: zsl.db.helpers
    :members:
    :undoc-members:
@@ -159,6 +167,10 @@ API
    :undoc-members:
 
 .. automodule:: zsl.db.helpers.sorter
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.db.model
    :members:
    :undoc-members:
 
@@ -194,19 +206,23 @@ API
    :members:
    :undoc-members:
 
+.. automodule:: zsl.interface.cli
+   :members:
+   :undoc-members:
+
 .. automodule:: zsl.interface.gearman
    :members:
    :undoc-members:
 
-.. automodule:: zsl.interface.gearman.json_data_encoder
+.. automodule:: zsl.interface.resource
    :members:
    :undoc-members:
 
-.. automodule:: zsl.interface.gearman.task_filler
+.. automodule:: zsl.interface.task
    :members:
    :undoc-members:
 
-.. automodule:: zsl.interface.gearman.worker
+.. automodule:: zsl.interface.task_queue
    :members:
    :undoc-members:
 
@@ -255,22 +271,6 @@ API
    :undoc-members:
 
 .. automodule:: zsl.interface.webservice.web_application_loader
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.interface.cli
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.interface.resource
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.interface.task
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.interface.task_queue
    :members:
    :undoc-members:
 
@@ -350,14 +350,6 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.tasks.zsl.schedule_gearman_task
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.tasks.zsl.schedule_kill_worker_task
-   :members:
-   :undoc-members:
-
 .. automodule:: zsl.tasks.zsl.sum_task
    :members:
    :undoc-members:
@@ -370,7 +362,23 @@ API
    :members:
    :undoc-members:
 
+.. automodule:: zsl.unittest
+   :members:
+   :undoc-members:
+
 .. automodule:: zsl.utils
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.cache_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.command_dispatcher
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.date_helper
    :members:
    :undoc-members:
 
@@ -390,31 +398,11 @@ API
    :members:
    :undoc-members:
 
-.. automodule:: zsl.utils.background_task
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.cache_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.command_dispatcher
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.date_helper
-   :members:
-   :undoc-members:
-
 .. automodule:: zsl.utils.email_helper
    :members:
    :undoc-members:
 
 .. automodule:: zsl.utils.file_helper
-   :members:
-   :undoc-members:
-
-.. automodule:: zsl.utils.gearman_helper
    :members:
    :undoc-members:
 
@@ -447,6 +435,10 @@ API
    :undoc-members:
 
 .. automodule:: zsl.utils.reflection_helper
+   :members:
+   :undoc-members:
+
+.. automodule:: zsl.utils.request_helper
    :members:
    :undoc-members:
 

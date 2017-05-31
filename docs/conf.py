@@ -17,9 +17,11 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import pkgutil
 import sys
 
-sys.path.insert(0, os.path.abspath('..'))
+src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, src_path)
 
 from recommonmark.parser import CommonMarkParser
 
@@ -158,3 +160,78 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
+
+UNDOC = []
+
+UNDOC_PYTHON_3 = ["zsl.application.containers.gearman_container",
+                  "zsl.application.modules.gearman_module",
+                  "zsl.interface.gearman.json_data_encoder",
+                  "zsl.interface.gearman.task_filler",
+                  "zsl.interface.gearman.worker",
+                  "zsl.tasks.zsl.cors_test_task",
+                  "zsl.tasks.zsl.schedule_gearman_task",
+                  "zsl.tasks.zsl.schedule_kill_worker_task",
+                  "zsl.utils.background_task",
+                  "zsl.utils.gearman_helper"]
+UNDOC_PYTHON_2 = []
+
+
+def api_doc_generate():
+    def create_forbidden_modules():
+        forbidden_modules = UNDOC
+        forbidden_modules += UNDOC_PYTHON_3 if sys.version_info >= (3, 0) else \
+            UNDOC_PYTHON_2
+        return set(forbidden_modules)
+
+    forbidden_modules = create_forbidden_modules()
+
+    def write_header(f):
+        f.writelines(["API\n",
+                      "###\n",
+                      "\n",
+                      ".. toctree::\n",
+                      "   :maxdepth: 2\n",
+                      "   :caption: Contents:\n",
+                      "\n"])
+
+    def is_module_hidden(modname):
+        return modname.split('.')[-1].startswith('_')
+
+    def is_module_from_zsl(modname):
+        return modname.startswith('zsl.')
+
+    def is_module_forbidden(modname):
+        return modname in forbidden_modules
+
+    def gather_modules():
+
+        ignore_error = lambda x: None
+        for _, modname, _ in pkgutil.walk_packages(onerror=ignore_error):
+            if not is_module_from_zsl(modname):
+                continue
+
+            if is_module_hidden(modname):
+                continue
+
+            if is_module_forbidden(modname):
+                continue
+
+            yield modname
+
+    def write_module(f, modname):
+        f.writelines(["\n",
+                      ".. automodule:: {0}\n".format(modname),
+                      "   :members:\n",
+                      "   :undoc-members:\n"])
+
+    def write_modules(f, modnames):
+        for modname in modnames:
+            write_module(f, modname)
+
+    with open(os.path.join(os.path.dirname(__file__), 'api.rst'), 'w') as f:
+        write_header(f)
+        modules = list(gather_modules())
+        write_modules(f, modules)
+
+
+api_doc_generate()

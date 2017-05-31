@@ -6,7 +6,6 @@ from __future__ import unicode_literals
 from builtins import zip
 from builtins import object
 from sqlalchemy import desc, asc
-from string import split
 
 DEFAULT_SORT_ORDER = 'ASC'  # If changed, look at the condition in apply_sorter if self.get_order() == "DESC":.
 
@@ -48,10 +47,10 @@ class Sorter(object):
             mappings = []
 
         if 'sortby' in sorter:
-            self._fields = split(sorter['sortby'], ',')
+            self._fields = sorter['sortby'].split(',')
 
             if 'sort' in sorter:
-                self._orders = split(sorter['sort'], ',')
+                self._orders = sorter['sort'].split(',')
                 if len(self._orders) == 1:
                     self._orders *= len(self._fields)
                 elif len(self._orders) != len(self._fields):
