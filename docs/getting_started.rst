@@ -91,4 +91,4 @@ documentation are in `documentation` extra of `zsl`.
 
     $ pip install sphinx recommonmark sphinx_rtd_theme
     $ cd docs
-    $ make
+    $ make html

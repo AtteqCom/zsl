@@ -34,7 +34,8 @@ setup(name='zsl',
           'celery': ['zsl_client'],
           'gearman': ['zsl_client', 'gearman'],
           'alembic': ['alembic'],
-          'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme']
+          'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme',
+                            'alembic']
       },
       classifiers=[
           'Development Status :: 3 - Alpha',
