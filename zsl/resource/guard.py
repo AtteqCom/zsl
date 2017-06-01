@@ -16,7 +16,8 @@ from typing import List, Optional, Dict, Any, Callable
 from functools import wraps
 
 from zsl.interface.resource import ResourceResult
-from zsl.service.service import TransactionalSupport, transactional
+from zsl.service.service import TransactionalSupport, transactional, \
+    _TX_HOLDER_ATTRIBUTE
 
 from enum import Enum
 
@@ -347,7 +348,7 @@ def _nested_transactional(fn):
         try:
             rv = fn(self, *args, **kwargs)
         except _TransactionalPolicyViolationError as e:
-            self._orm.rollback()
+            getattr(self, _TX_HOLDER_ATTRIBUTE).rollback()
             rv = e.result
 
         return rv

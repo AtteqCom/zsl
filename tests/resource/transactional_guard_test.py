@@ -5,6 +5,10 @@ before checking the policies and calling rollback if policy is broken.
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
+from injector import singleton
+
+from zsl.service.service import TransactionHolder, TransactionalSupport
+from zsl.utils.injection_helper import bind
 
 try:
     import unittest.mock as mock
@@ -66,15 +70,17 @@ class TransactionalGuardTest(TestCase):
         class GuardedUserModel(UserResource, GuardedMixin):
             pass
 
-        def get_orm_mock():
-            return mock.MagicMock(spec=Session)
+        class TestTHolder(TransactionHolder):
+            rollback = mock.MagicMock()
+            _orm = mock.MagicMock()
 
-        resource = GuardedUserModel()
-        resource._session_holder = get_orm_mock
-        resource.read('', {}, {})
+        with mock.patch('zsl.service.service.TransactionHolder',
+                        side_effect=TestTHolder):
+            resource = GuardedUserModel()
+            resource.read('', {}, {})
 
-        resource._orm.rollback.assert_called()
-        resource._orm.query.assert_not_called()
+        TestTHolder.rollback.assert_called()
+        TestTHolder._orm.assert_not_called()
 
     @staticmethod
     def testRollbackAfter():
@@ -84,17 +90,20 @@ class TransactionalGuardTest(TestCase):
             def can_read__after(self, *args, **kwargs):
                 return Access.DENY
 
+        mock_sess = mock.MagicMock()
+
+        class TestTS(TransactionalSupport):
+            def create_session(self):
+                return mock_sess
+
+        bind(TransactionalSupport, to=TestTS)
+
         @transactional_guard([DenyAfterPolicy()])
         class GuardedUserModel(UserResource, GuardedMixin):
             pass
 
-        def get_orm_mock():
-            return mock.MagicMock(spec=Session)
-
         resource = GuardedUserModel()
-        resource._session_holder = get_orm_mock
         resource.read('', {}, {})
 
-        resource._orm.query.assert_called()
-        resource._orm.rollback.assert_called()
-
+        mock_sess.query.assert_called()
+        mock_sess.rollback.assert_called()
