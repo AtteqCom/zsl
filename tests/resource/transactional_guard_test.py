@@ -6,8 +6,8 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
 
-from zsl.service.service import TransactionHolder, SessionFactory
-from zsl.utils.injection_helper import bind
+from tests.mocks import mock_db_session
+from zsl.service.service import TransactionHolder
 
 try:
     import unittest.mock as mock
@@ -87,13 +87,7 @@ class TransactionalGuardTest(TestCase):
             def can_read__after(self, *args, **kwargs):
                 return Access.DENY
 
-        mock_sess = mock.MagicMock()
-
-        class TestSessionFactory(SessionFactory):
-            def create_session(self):
-                return mock_sess
-
-        bind(SessionFactory, to=TestSessionFactory)
+        mock_sess = mock_db_session()
 
         @transactional_guard([DenyAfterPolicy()])
         class GuardedUserModel(UserResource, GuardedMixin):

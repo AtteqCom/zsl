@@ -13,6 +13,7 @@ from builtins import *
 from collections import namedtuple
 
 import logging
+from functools import partial
 
 from zsl import Zsl
 from zsl.application.service_application import set_profile
@@ -20,7 +21,11 @@ from zsl.configuration import InvalidConfigurationException
 
 ZslTestConfiguration = namedtuple('ZslTestConfiguration',
                                   ['app_name', 'version', 'container',
-                                   'profile'])
+                                   'profile', 'config_object'])
+ZslTestConfiguration.__new__ = partial(ZslTestConfiguration.__new__,
+                                       config_object=None,
+                                       version=None,
+                                       profile=None)
 
 
 class ZslTestCase(object):
@@ -36,8 +41,10 @@ class ZslTestCase(object):
         config: ZslTestConfiguration = cls.ZSL_TEST_CONFIGURATION
         if config.profile:
             set_profile(config.profile)
-        app = Zsl(config.app_name + "-test", version=config.version,
-                  modules=config.container.modules())
+        app = Zsl(config.app_name + "-test",
+                  version=config.version,
+                  modules=config.container.modules(),
+                  config_object=config.config_object)
         logging.getLogger(config.app_name).debug(
             "ZSL test app created {0}.".format(app))
 
