@@ -41,12 +41,11 @@ SETTINGS_ENV_VAR_NAME = 'ZSL_SETTINGS'
 def get_settings_from_profile(profile, profile_dir=None):
     # type: (str, Any)->str
     """"Returns the  configuration file path for the given profile.
-    :param profile:
-        Profile name to be used.
-    :param profile_dir:
-        The directory where the profile configuration file should reside. It 
-        may be also a module, and then the directory of the module is used.  
-    :return Configuration file path.
+
+    :param profile: Profile name to be used.
+    :param profile_dir: The directory where the profile configuration file should reside. It 
+                        may be also a module, and then the directory of the module is used.  
+    :return: Configuration file path.
     """
     if profile_dir is None:
         import settings

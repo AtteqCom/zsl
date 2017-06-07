@@ -1,3 +1,8 @@
+"""
+:mod:`zsl.testing.http`
+-----------------------
+This module allows for querying the API via HTTP.
+"""
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import *
@@ -41,8 +46,8 @@ class HTTPTestCase(object):
         :param task: Url which will be requested using POST method.
         :param data: Data which will be posted and first converted to JSON.
         :param headers: Dictionary of headers that'll be appended the 
-        Content-Type: application/json header.
-        :return Flask response.
+                        Content-Type: application/json header.
+        :return: Flask response.
         """
 
         if headers is None:

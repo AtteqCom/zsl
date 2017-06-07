@@ -1,4 +1,6 @@
 """
+:mod:`zsl.testing.test_utils`
+-----------------------------
 Test utilities.
 """
 from __future__ import (absolute_import, division,
@@ -6,12 +8,13 @@ from __future__ import (absolute_import, division,
 from builtins import *
 
 import json
+from typing import Any
 
 from zsl.task.task_data import TaskData
 
 
 def parent_module(module_name):
-    # type: (AnyStr) -> AnyStr
+    # type: (str) -> str
     """Return the parent module name for a module.
 
     :param module_name: module nam
@@ -26,6 +29,8 @@ def parent_module(module_name):
 
 
 class TestTaskData(TaskData):
-    def __init__(self, data):
-        super(TestTaskData, self).__init__(json.dumps(data))
+    """Data suitable when directly calling a task."""
 
+    def __init__(self, data):
+        # type: (Any)->None
+        super(TestTaskData, self).__init__(json.dumps(data))

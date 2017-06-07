@@ -1,3 +1,11 @@
+"""
+:mod:`zsl.testing.zsl`
+----------------------
+This module allows for unit testing with a Zsl instance. Use 
+:class:`.ZslTestCase` as a mixin to create a predefined Zsl instance to be used
+while testing. Refer to unit testing section :ref:`unit-testing-zsl-instance`
+for an example.
+"""
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import *

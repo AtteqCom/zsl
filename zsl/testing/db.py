@@ -1,3 +1,26 @@
+"""
+:mod:`zsl.testing.db`
+---------------------
+This module allows for database unit testing. For how to use the database 
+testing in practice, a sample, refer to :ref:`unit-testing-db`.
+ 
+The module works in the following way (methods setUp, tearDown):
+1. Each test runs in a single transaction.
+2. This transaction is always called a rollback.
+
+All the tests are run in a single parent transaction (setUpClass, 
+tearDownClass):
+1. In general initialization phase the session/transaction is created
+and it is kept during all the testing. Also the database schema is created.
+2. After this the transaction is called rollback.
+
+This means that the tests may be conducted in the in the memory database 
+or a persistent one which is kept clean.
+
+The module provides class :class:`.TestSessionFactory` - it always returns
+the same session. Also one should add :class:`.DbTestModule` to the test 
+container when creating Zsl instance, see :ref:`unit-testing-zsl-instance`.
+"""
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
@@ -12,6 +35,7 @@ from zsl.service.service import SessionFactory
 
 
 class TestSessionFactory(SessionFactory):
+    """Factory always returning the single test transaction."""
     _test_session = None
 
     def __init__(self):
@@ -30,6 +54,9 @@ class TestSessionFactory(SessionFactory):
 
 
 class DbTestModule(Module):
+    """Module fixing the :class:`zsl.service.service.SessionFactory`
+    to our :class:`.TestSessionFactory`."""
+
     @provides(SessionFactory, scope=singleton)
     def get_session_factory(self):
         # type: ()->SessionFactory
@@ -43,6 +70,8 @@ class DbTestModule(Module):
 
 
 class DbTestCase(object):
+    """:class:`.DbTestCase` is a mixin to be used when testing with a database."""
+
     @classmethod
     @inject(session_factory=TestSessionFactory, engine=Engine)
     def setUpClass(cls, engine, session_factory):
