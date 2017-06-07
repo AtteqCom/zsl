@@ -99,3 +99,4 @@ class DbTestCase(object):
         session = session_factory.create_session()
         session.rollback()
         session.close()
+

@@ -1,3 +1,8 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
+from builtins import *
+
 try:
     import unittest.mock as mock
 except ImportError:
@@ -18,3 +23,4 @@ def mock_db_session():
     bind(SessionFactory, to=TestSessionFactory)
     bind(DbTestTestSessionFactory, to=TestSessionFactory)
     return mock_sess
+

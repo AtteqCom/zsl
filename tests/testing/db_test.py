@@ -1,3 +1,8 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
+from builtins import *
+
 from unittest.case import TestCase
 
 from sqlalchemy.orm.session import Session
@@ -107,3 +112,4 @@ class DbTestModuleTest(ZslTestCase, TestCase):
         self.assertEquals(get_test_session_factory(), get_session_factory(),
                           "Test session factory and session factory must "
                           "be the same")
+
