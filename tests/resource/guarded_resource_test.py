@@ -9,10 +9,7 @@ from __future__ import (absolute_import, division,
 from builtins import *
 from unittest.case import TestCase
 
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
+from tests.mocks import mock
 
 import http.client
 

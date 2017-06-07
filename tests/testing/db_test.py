@@ -1,9 +1,8 @@
-from unittest import mock
 from unittest.case import TestCase
 
 from sqlalchemy.orm.session import Session
 
-from tests.mocks import mock_db_session
+from tests.mocks import mock_db_session, mock
 from tests.resource.resource_test_helper import test_settings
 from zsl.application.containers.container import IoCContainer
 from zsl.application.modules.alchemy_module import AlchemyModule
