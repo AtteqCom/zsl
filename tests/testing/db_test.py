@@ -35,7 +35,8 @@ class DbTestCaseTest(ZslTestCase, TestCase):
     )
 
     class DbTest(DbTestCase, TestCase):
-        pass
+        def runTest(self):
+            pass
 
     def test_db_test_case(self):
         test = DbTestCaseTest.DbTest()
