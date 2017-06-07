@@ -77,4 +77,6 @@ class HTTPTestCase(object):
         # type: (Zsl) -> FlaskClient
         return app.test_client()
 
-
+    @inject(app=Zsl)
+    def getRequestContext(self, app):
+        return app.test_request_context()

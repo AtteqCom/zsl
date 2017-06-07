@@ -2,56 +2,71 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
 
+from injector import Module, provides, singleton
 from sqlalchemy.engine import Engine
-from sqlalchemy.orm import scoping
+from sqlalchemy.orm.session import Session
 
 from zsl import inject
-from zsl.application.modules.alchemy_module import SessionHolder
 from zsl.db.model.sql_alchemy import metadata
-from zsl.service.service import TransactionalSupport
-from zsl.utils.injection_helper import bind
+from zsl.service.service import SessionFactory
 
 
-class TestTransactionalSupport(object):
-
+class TestSessionFactory(SessionFactory):
     _test_session = None
 
-    @inject(session_holder=SessionHolder)
-    def __init__(self, session_holder):
-        self._orm = None  # type: Session
-        self._session_holder = session_holder
+    def __init__(self):
+        super(TestSessionFactory, self).__init__()
 
     def create_session(self):
-        # type: ()->Session
-        return self._session_holder()
+        # type: () -> Session
+        if TestSessionFactory._test_session is None:
+            TestSessionFactory._test_session = self._session_holder()
+
+        assert TestSessionFactory._test_session is not None
+        return TestSessionFactory._test_session
 
     def close_session(self):
         pass
 
 
+class DbTestModule(Module):
+    @provides(SessionFactory, scope=singleton)
+    def get_session_factory(self):
+        # type: ()->SessionFactory
+        return TestSessionFactory()
+
+    @provides(TestSessionFactory, scope=singleton)
+    @inject(session_factory=SessionFactory)
+    def get_test_session_factory(self, session_factory):
+        # type: (SessionFactory)->SessionFactory
+        return session_factory
+
+
 class DbTestCase(object):
     @classmethod
-    @inject(engine=Engine)
-    def setUpClass(cls, engine):
-        tx_support = TransactionalSupport()
-        sess = tx_support.create_session()
-
+    @inject(session_factory=TestSessionFactory, engine=Engine)
+    def setUpClass(cls, engine, session_factory):
+        # type: (Engine, SessionFactory)->None
+        super(DbTestCase, cls).setUpClass()
+        session_factory.create_session()
         metadata.bind = engine
         metadata.create_all(engine)
 
-        sess.close()
+    @inject(session_factory=TestSessionFactory)
+    def setUp(self, session_factory):
+        # type: (SessionFactory)->None
+        session_factory.create_session()
 
-    @inject(transactional_support=TransactionalSupport)
-    def setUp(self, transactional_support):
-        self._old_transactional_support = transactional_support
-        # TODO: Child
-        self._tx_support = TestTransactionalSupport()
-        bind(TransactionalSupport, to=self._tx_support, scope=singleton)
-        self._tx_support.create_session()
-
-    def tearDown(self):
-        bind(TransactionalSupport, to=self._old_transactional_support,
-             scope=singleton)
-        sess = self._tx_support.create_session()
+    @inject(session_factory=TestSessionFactory)
+    def tearDown(self, session_factory):
+        # type: (SessionFactory)->None
+        sess = session_factory.create_session()
         sess.rollback()
         sess.close()
+
+    @classmethod
+    @inject(session_factory=TestSessionFactory)
+    def tearDownClass(cls, session_factory):
+        session = session_factory.create_session()
+        session.rollback()
+        session.close()

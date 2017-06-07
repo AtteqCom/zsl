@@ -20,8 +20,6 @@ class ZslTestCase(object):
 
     @classmethod
     def setUpClass(cls):
-        super(ZslTestCase, cls).setUpClass()
-
         if cls.ZSL_TEST_CONFIGURATION is None:
             raise InvalidConfigurationException("Please give a test container "
                                                 "specification via 'container' "
@@ -34,3 +32,5 @@ class ZslTestCase(object):
                   modules=config.container.modules())
         logging.getLogger(config.app_name).debug(
             "ZSL test app created {0}.".format(app))
+
+        super(ZslTestCase, cls).setUpClass()

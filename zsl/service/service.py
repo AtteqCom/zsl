@@ -19,10 +19,11 @@ from zsl.application.modules.alchemy_module import SessionHolder
 from zsl import inject, Zsl
 
 
-class TransactionalSupport(object):
+class SessionFactory(object):
+    """Creates a db session with an open transaction."""
+
     @inject(session_holder=SessionHolder)
     def __init__(self, session_holder):
-        self._orm = None  # type: Session
         self._session_holder = session_holder
 
     def create_session(self):
@@ -79,14 +80,24 @@ class TransactionHolder(object):
             c()
 
 
-_EMPTY_TX_HOLDER = object()
-_EMPTY_TX_HOLDER.session = None
+class EmptyTransactionalHolder(object):
+    def __init__(self):
+        self._session = None
+
+    @property
+    def session(self):
+        return self._session
+
+
+_EMPTY_TX_HOLDER = EmptyTransactionalHolder()
 
 
 class TransactionalSupportMixin(object):
-    """Bla bla al"""
+    """This mixin allows the objects to access transactional holder."""
+
     @property
     def _orm(self):
+        # type: ()->Session
         return getattr(self, _TX_HOLDER_ATTRIBUTE, _EMPTY_TX_HOLDER).session
 
 
@@ -97,9 +108,7 @@ class Service(TransactionalSupportMixin):
 
     @inject(app=Zsl, engine=Engine)
     def __init__(self, app, engine):
-        """
-        Constructor - initializes and injects the needed libraries.
-        """
+        """Constructor - initializes and injects the needed libraries."""
         super(Service, self).__init__()
         self._app = app
         self._engine = engine
@@ -109,14 +118,14 @@ _TX_HOLDER_ATTRIBUTE = '_tx_holder'
 
 
 def transactional(f):
-    @inject(transactional_support=TransactionalSupport)
-    def _get_tx_support(transactional_support):
-        # type: (TransactionalSupport) -> TransactionalSupport
-        return transactional_support
+    @inject(session_factory=SessionFactory)
+    def _get_session_factory(session_factory):
+        # type: (SessionFactory) -> SessionFactory
+        return session_factory
 
     @wraps(f)
     def transactional_f(service, *args, **kwargs):
-        transactional_support = _get_tx_support()
+        session_factory = _get_session_factory()
         trans_close = False
 
         if hasattr(service, _TX_HOLDER_ATTRIBUTE):
@@ -131,7 +140,7 @@ def transactional(f):
             logging.getLogger(__name__).debug("Entering transactional "
                                               "method.")
             if not tx_holder.has_session():
-                session = transactional_support.create_session()
+                session = session_factory.create_session()
                 tx_holder.inject_session(session)
 
             rv = f(service, *args, **kwargs)

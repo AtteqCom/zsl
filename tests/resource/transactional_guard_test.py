@@ -5,9 +5,8 @@ before checking the policies and calling rollback if policy is broken.
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
-from injector import singleton
 
-from zsl.service.service import TransactionHolder, TransactionalSupport
+from zsl.service.service import TransactionHolder, SessionFactory
 from zsl.utils.injection_helper import bind
 
 try:
@@ -16,8 +15,6 @@ except ImportError:
     import mock
 
 from unittest import TestCase
-
-from sqlalchemy.orm import Session
 
 from zsl import Zsl
 from zsl.application.containers.web_container import WebContainer
@@ -92,11 +89,11 @@ class TransactionalGuardTest(TestCase):
 
         mock_sess = mock.MagicMock()
 
-        class TestTS(TransactionalSupport):
+        class TestSessionFactory(SessionFactory):
             def create_session(self):
                 return mock_sess
 
-        bind(TransactionalSupport, to=TestTS)
+        bind(SessionFactory, to=TestSessionFactory)
 
         @transactional_guard([DenyAfterPolicy()])
         class GuardedUserModel(UserResource, GuardedMixin):
