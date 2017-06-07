@@ -38,7 +38,7 @@ class ZslTestCase(object):
                                                 "specification via 'container' "
                                                 "class variable.")
 
-        config: ZslTestConfiguration = cls.ZSL_TEST_CONFIGURATION
+        config = cls.ZSL_TEST_CONFIGURATION  # type: ZslTestConfiguration
         if config.profile:
             set_profile(config.profile)
         app = Zsl(config.app_name + "-test",
