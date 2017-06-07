@@ -29,7 +29,7 @@ ZslTestConfiguration.__new__ = partial(ZslTestConfiguration.__new__,
 
 
 class ZslTestCase(object):
-    ZSL_TEST_CONFIGURATION: ZslTestConfiguration = None
+    ZSL_TEST_CONFIGURATION = None  # type: ZslTestConfiguration
 
     @classmethod
     def setUpClass(cls):
