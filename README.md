@@ -69,12 +69,12 @@ RESOURCE_PACKAGE = ()
 DATABASE_URI = 'postgresql://postgres:postgres@localhost/postgres'
 DATABASE_ENGINE_PROPS = {}
 SERVICE_INJECTION = ()
-REDIS={
+REDIS = {
     'host': 'localhost',
     'port': 6379,
     'db': 0
 }
-RELOAD=True
+RELOAD = True
 
 ```
 
