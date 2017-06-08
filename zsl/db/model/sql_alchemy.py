@@ -10,5 +10,7 @@ from __future__ import unicode_literals
 
 from sqlalchemy.ext.declarative import declarative_base
 
-DeclarativeBase = declarative_base()
+from zsl.db.model.raw_model import ModelBase
+
+DeclarativeBase = declarative_base(cls=ModelBase)
 metadata = DeclarativeBase.metadata

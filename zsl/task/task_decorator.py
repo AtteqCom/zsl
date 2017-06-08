@@ -8,12 +8,16 @@
                   Lubos Pis <pis@atteq.com>
 """
 from __future__ import unicode_literals
+
+from builtins import bool
 from builtins import str
 
 import logging
 import json
 
 from datetime import timedelta
+from typing import Callable
+
 from flask import request
 from flask.config import Config
 
@@ -265,11 +269,12 @@ def required_data(*data):
 
 
 def append_get_parameters(accept_only_web=True):
+    # type: (bool) -> Callable
     """
     Task decorator which appends the GET data to the task data.
 
-    :param boolean accept_only_web: Parameter which limits using this task only 
-    with web requests.
+    :param accept_only_web: Parameter which limits using this task only 
+                            with web requests.
     """
 
     def wrapper(f):

@@ -16,7 +16,8 @@ from typing import List, Optional, Dict, Any, Callable
 from functools import wraps
 
 from zsl.interface.resource import ResourceResult
-from zsl.service.service import TransactionalSupport, transactional
+from zsl.service.service import SessionFactory, transactional, \
+    _TX_HOLDER_ATTRIBUTE
 
 from enum import Enum
 
@@ -330,7 +331,7 @@ class guard(object):
 
 
 def transactional_error_handler(e, rv, _):
-    # type: (Any, Any, TransactionalSupport) -> Any
+    # type: (Any, Any, SessionFactory) -> Any
     """Re-raise a violation error to be handled in the 
     ``_nested_transactional``.
     """
@@ -342,12 +343,12 @@ def _nested_transactional(fn):
     """In a transactional method create a nested transaction."""
     @wraps(fn)
     def wrapped(self, *args, **kwargs):
-        # type: (TransactionalSupport) -> Any
+        # type: (SessionFactory) -> Any
 
         try:
             rv = fn(self, *args, **kwargs)
         except _TransactionalPolicyViolationError as e:
-            self._orm.rollback()
+            getattr(self, _TX_HOLDER_ATTRIBUTE).rollback()
             rv = e.result
 
         return rv
