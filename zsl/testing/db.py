@@ -103,3 +103,4 @@ class DbTestCase(object):
         session = DbTestCase._session
         session.rollback()
         session.close()
+
