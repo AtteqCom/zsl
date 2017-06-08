@@ -52,8 +52,13 @@ means `ZslTestCase` must be before `unittest.TestCase`.
 Define the Zsl instance which should be created using `ZSL_TEST_CONFIGURATION`
 member of the test case which is of type
 :class:`zsl.testing.zsl.ZslTestConfiguration`.
-This allows to set up the application name, container and modules to be used,
- version and the test profile/settings.
+This allows to set up the:
+
+ 1. application name;
+ 2. container with modules to be used;
+ 3. version, may be `None` or omitted;
+ 4. profile/settings file name or, may be `None` or omitted;
+ 5. config_object, may be `None` or omitted.
 
 Testing with HTTP requests to tasks
 -----------------------------------

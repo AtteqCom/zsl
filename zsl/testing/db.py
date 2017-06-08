@@ -72,30 +72,34 @@ class DbTestModule(Module):
 class DbTestCase(object):
     """:class:`.DbTestCase` is a mixin to be used when testing with a database."""
 
+    _session = None
+
     @classmethod
     @inject(session_factory=TestSessionFactory, engine=Engine)
     def setUpClass(cls, engine, session_factory):
         # type: (Engine, SessionFactory)->None
         super(DbTestCase, cls).setUpClass()
-        session_factory.create_session()
+        DbTestCase._session = session_factory.create_session()
         metadata.bind = engine
         metadata.create_all(engine)
 
     @inject(session_factory=TestSessionFactory)
     def setUp(self, session_factory):
         # type: (SessionFactory)->None
-        session_factory.create_session()
+        session = session_factory.create_session()
+        session.begin(subtransactions=True)
 
     @inject(session_factory=TestSessionFactory)
     def tearDown(self, session_factory):
         # type: (SessionFactory)->None
+        # This will return the same transaction/session
+        # as the one used in setUp.
         sess = session_factory.create_session()
         sess.rollback()
         sess.close()
 
     @classmethod
-    @inject(session_factory=TestSessionFactory)
-    def tearDownClass(cls, session_factory):
-        session = session_factory.create_session()
+    def tearDownClass(cls):
+        session = DbTestCase._session
         session.rollback()
         session.close()
