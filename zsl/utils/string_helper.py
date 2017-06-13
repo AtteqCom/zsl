@@ -16,20 +16,26 @@ _html_tag_re_un = re.compile(
     r'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE | re.UNICODE)
 
 
-def underscore_to_camelcase(value):
+def underscore_to_camelcase(value, first_upper=True):
     """Transform string from underscore_string to camelCase.
 
     :param value: string with underscores
+    :param first_upper: the result will have its first character in upper case
     :type value: str
-    :return: string in camelCase
+    :return: string in CamelCase or camelCase according to the first_upper
     :rtype: str
 
     :Example:
         >>> underscore_to_camelcase('camel_case')
+        'CamelCase'
+        >>> underscore_to_camelcase('camel_case', False)
         'camelCase'
     """
     value = str(value)
-    return "".join(x.title() if x else '_' for x in value.split("_"))
+    camelized = "".join(x.title() if x else '_' for x in value.split("_"))
+    if not first_upper:
+        camelized = camelized[0].lower() + camelized[1:]
+    return camelized
 
 
 def camelcase_to_underscore(name):
