@@ -16,6 +16,7 @@ _is_py3 = sys.version_info > (3, 0)
 requirements = [
     'future',
     'Flask-Injector>=0.8' if _is_py3 else 'Flask-Injector==0.8.0',
+    'injector==0.12.1',
     'requests>=2.7',
     'SQLAlchemy>=1',
     'typing>=3.5',
