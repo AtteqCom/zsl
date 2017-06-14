@@ -15,9 +15,9 @@ import urllib
 from typing import Dict, List, Union, AnyStr
 from unittest.case import TestCase
 from tests.resource.resource_test_helper import (
-    UserModel, UserTuple, create_resource_test_data, users, test_settings,
-    get_non_existent_id, addresses
+    UserModel, UserTuple, create_resource_test_data, users, get_non_existent_id, addresses
 )
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 from zsl import Zsl
 from zsl.application.containers.web_container import WebContainer
 from zsl.resource.json_server_resource import JsonServerResource
@@ -125,7 +125,7 @@ class JsonServerModelResourceTestCase(TestCase, HTTPTestCase):
     PATH = '/resource/json_server_model_resource_test'
 
     def setUp(self):
-        zsl = Zsl(__name__, config_object=test_settings,
+        zsl = Zsl(__name__, config_object=IN_MEMORY_DB_SETTINGS,
                   modules=WebContainer.modules())
         zsl.testing = True
 

@@ -12,8 +12,8 @@ from unittest import TestCase
 from zsl import Zsl
 from zsl.resource.model_resource import ModelResource
 from tests.resource.resource_test_helper import UserModel,\
-    create_resource_test_data, users, UserTuple, UserAppModel,\
-    test_settings
+    create_resource_test_data, users, UserTuple, UserAppModel
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 
 
 class TestRestResource(ModelResource):
@@ -22,7 +22,7 @@ class TestRestResource(ModelResource):
 
 class ModelResourceTest(TestCase):
     def setUp(self):
-        Zsl(__name__, config_object=test_settings)
+        Zsl(__name__, config_object=IN_MEMORY_DB_SETTINGS)
         create_resource_test_data()
 
     def _testAppModel(self, user, model, msg=None):

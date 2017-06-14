@@ -19,7 +19,7 @@ from zsl.interface.resource import ResourceResult
 from zsl.resource.guard import (guard, GuardedMixin, Access,
                                 PolicyViolationError, ResourcePolicy)
 
-from tests.resource.resource_test_helper import test_settings
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 from zsl.testing.test_utils import parent_module
 from zsl.testing.http import json_loads, HTTPTestCase
 
@@ -44,7 +44,7 @@ class GuardedResourceTest(TestCase, HTTPTestCase):
     RESOURCE_CLASS = __name__ + '.GuardedResourceTestResource'
 
     def setUp(self):
-        zsl = Zsl(__name__, config_object=test_settings,
+        zsl = Zsl(__name__, config_object=IN_MEMORY_DB_SETTINGS,
                   modules=WebContainer.modules())
         zsl.testing = True
 

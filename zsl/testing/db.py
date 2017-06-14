@@ -104,3 +104,9 @@ class DbTestCase(object):
         session.rollback()
         session.close()
 
+
+IN_MEMORY_DB_SETTINGS = {
+    'DATABASE_URI': 'sqlite:///:memory:',
+    'DATABASE_ENGINE_PROPS': {},
+    'JSON_AS_ASCII': False
+}

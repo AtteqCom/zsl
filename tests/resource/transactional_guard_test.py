@@ -22,8 +22,9 @@ from zsl.resource.model_resource import ModelResource
 from zsl.resource.guard import transactional_guard, GuardedMixin, \
     ResourcePolicy, Access
 
-from tests.resource.resource_test_helper import test_settings, UserModel, \
+from tests.resource.resource_test_helper import UserModel, \
     create_resource_test_data, users
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 
 
 class UserResource(ModelResource):
@@ -32,7 +33,7 @@ class UserResource(ModelResource):
 
 class TransactionalGuardTest(TestCase):
     def setUp(self):
-        zsl = Zsl(__name__, config_object=test_settings,
+        zsl = Zsl(__name__, config_object=IN_MEMORY_DB_SETTINGS,
                   modules=WebContainer.modules())
         zsl.testing = True
 

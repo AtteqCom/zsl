@@ -3,27 +3,21 @@ Fixtures and helper functions to test models and test resources
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
-from builtins import *
 
+from builtins import *
 from collections import namedtuple
 
-from sqlalchemy.ext.declarative.api import declarative_base
+from sqlalchemy import ForeignKey
 from sqlalchemy.engine.base import Engine
+from sqlalchemy.ext.declarative.api import declarative_base
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import Integer, String
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
 
+from zsl.application.modules.alchemy_module import SessionHolder
 from zsl.db.model.app_model import AppModel
 from zsl.db.model.raw_model import ModelBase
 from zsl.utils.injection_helper import inject
-from zsl.application.modules.alchemy_module import SessionHolder
-
-test_settings = {
-    'DATABASE_URI': 'sqlite:///:memory:',
-    'DATABASE_ENGINE_PROPS': {},
-    'JSON_AS_ASCII': False
-}
 
 Base = declarative_base()
 

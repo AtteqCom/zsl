@@ -13,6 +13,18 @@ with open('zsl/__init__.py', 'rb') as f:
 
 _is_py3 = sys.version_info > (3, 0)
 
+requirements = [
+    'future',
+    'Flask-Injector>=0.8' if _is_py3 else 'Flask-Injector==0.8.0',
+    'requests>=2.7',
+    'SQLAlchemy>=1',
+    'typing>=3.5',
+    'Werkzeug>=0.12',
+]
+
+if sys.version_info < (3, 4):
+    requirements.append('enum34')
+
 setup(name='zsl',
       version=version,
       description='zsl application framework for web based services',
@@ -20,14 +32,7 @@ setup(name='zsl',
       author_email='open.source@atteq.com',
       url='https://github.com/AtteqCom/zsl',
       license='MIT',
-      install_requires=[
-          'future',
-          'Flask-Injector>=0.8' if _is_py3 else 'Flask-Injector==0.8.0',
-          'requests>=2.7',
-          'SQLAlchemy>=1',
-          'typing>=3.5',
-          'Werkzeug>=0.12',
-      ],
+      install_requires=requirements,
       extras_require={
           'cli': ['bpython'],
           'redis': ['redis>=2.10'],

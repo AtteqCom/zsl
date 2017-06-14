@@ -8,14 +8,13 @@ from unittest.case import TestCase
 from sqlalchemy.orm.session import Session
 
 from tests.mocks import mock_db_session, mock
-from tests.resource.resource_test_helper import test_settings
 from zsl.application.containers.container import IoCContainer
 from zsl.application.modules.alchemy_module import AlchemyModule
 from zsl.application.modules.context_module import DefaultContextModule
 from zsl.application.modules.logger_module import LoggerModule
 from zsl.application.modules.task_router import TaskRouterModule
 from zsl.service.service import SessionFactory
-from zsl.testing.db import TestSessionFactory, DbTestModule, DbTestCase
+from zsl.testing.db import TestSessionFactory, DbTestModule, DbTestCase, IN_MEMORY_DB_SETTINGS
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 from zsl import inject
 from zsl.utils.injection_helper import bind
@@ -35,7 +34,7 @@ class TestContainerTestSessionFactory(TestContainerNoTestSessionFactory):
 class DbTestCaseTest(ZslTestCase, TestCase):
     ZSL_TEST_CONFIGURATION = ZslTestConfiguration(
         app_name="TestSessionFactoryTest",
-        config_object=test_settings,
+        config_object=IN_MEMORY_DB_SETTINGS,
         container=TestContainerNoTestSessionFactory
     )
 
@@ -72,7 +71,7 @@ class DbTestCaseTest(ZslTestCase, TestCase):
 class TestSessionFactoryTest(ZslTestCase, TestCase):
     ZSL_TEST_CONFIGURATION = ZslTestConfiguration(
         app_name="TestSessionFactoryTest",
-        config_object=test_settings,
+        config_object=IN_MEMORY_DB_SETTINGS,
         container=TestContainerNoTestSessionFactory
     )
 
@@ -90,7 +89,7 @@ class TestSessionFactoryTest(ZslTestCase, TestCase):
 class DbTestModuleTest(ZslTestCase, TestCase):
     ZSL_TEST_CONFIGURATION = ZslTestConfiguration(
         app_name="DbTestModuleTest",
-        config_object=test_settings,
+        config_object=IN_MEMORY_DB_SETTINGS,
         container=TestContainerTestSessionFactory
     )
 
