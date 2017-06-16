@@ -1,0 +1,2 @@
+class ZslError(Exception):
+    pass

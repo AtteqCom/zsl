@@ -17,5 +17,7 @@ class AppModelJSONEncoder(JSONEncoder):
                 if k in d:
                     d.pop(k)
             return d
+        elif isinstance(o, object):
+            return dict(o.__dict__)
         else:
             return JSONEncoder.default(self, o)

@@ -8,29 +8,23 @@ from __future__ import unicode_literals
 from builtins import object
 
 from zsl import inject, Injected, Zsl
+from zsl.utils.warnings import deprecated
 
 
 class TaskData(object):
-
     @inject(app=Zsl)
-    def __init__(self, data, app=Injected):
+    def __init__(self, payload, app=Injected, payload_type=str):
         self._app = app
-        self._data = data
-        self._is_skipping_json = False
+        self._payload = payload
+        self._payload_type = payload_type
 
+    @deprecated
     def get_data(self):
-        return self._data
+        return self._payload
 
-    # TODO should this be here? If some component needs the app instance, it
-    # should ask for it
-    def get_service_application(self):
-        return self._app
+    @property
+    def payload(self):
+        return self._payload
 
-    def transform_data(self, f):
-        self._data = f(self._data) if self._data is not None else {}
-
-    def is_skipping_json(self):
-        return self._is_skipping_json
-
-    def set_skipping_json(self, value):
-        self._is_skipping_json = value
+    def transform_payload(self, f):
+        self._payload = f(self._payload) if self._payload is not None else {}
