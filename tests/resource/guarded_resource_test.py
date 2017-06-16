@@ -44,13 +44,13 @@ class GuardedResourceTest(TestCase, HTTPTestCase):
     RESOURCE_CLASS = __name__ + '.GuardedResourceTestResource'
 
     def setUp(self):
-        zsl = Zsl(__name__, config_object=IN_MEMORY_DB_SETTINGS,
-                  modules=WebContainer.modules())
-        zsl.testing = True
-
+        config_object = IN_MEMORY_DB_SETTINGS.copy()
         # add this package as resource package for zsl to find the
         # `JsonServerModelResourceResource`
-        zsl.config['RESOURCE_PACKAGES'] = (parent_module(__name__),)
+        config_object['RESOURCE_PACKAGES'] = (parent_module(__name__),)
+        zsl = Zsl(__name__, config_object=config_object,
+                  modules=WebContainer.modules())
+        zsl.testing = True
 
         # mock http requests
         self.app = zsl.test_client()

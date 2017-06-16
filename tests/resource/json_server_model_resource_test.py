@@ -4,6 +4,9 @@
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+
+from typing import Optional
+
 from future.utils import viewitems
 from builtins import *
 
@@ -125,13 +128,13 @@ class JsonServerModelResourceTestCase(TestCase, HTTPTestCase):
     PATH = '/resource/json_server_model_resource_test'
 
     def setUp(self):
+        config_object = IN_MEMORY_DB_SETTINGS.copy()
+        # add this package as resource package for zsl to find the
+        # `JsonServerModelResourceResource`
+        config_object['RESOURCE_PACKAGES'] = (parent_module(__name__),)
         zsl = Zsl(__name__, config_object=IN_MEMORY_DB_SETTINGS,
                   modules=WebContainer.modules())
         zsl.testing = True
-
-        # add this package as resource package for zsl to find the
-        # `JsonServerModelResourceResource`
-        zsl.config['RESOURCE_PACKAGES'] = (parent_module(__name__),)
 
         # mock http requests
         self.app = zsl.test_client()
@@ -139,7 +142,7 @@ class JsonServerModelResourceTestCase(TestCase, HTTPTestCase):
         create_resource_test_data()
 
     def _path(self, res_id=None, args=None, raw_args=''):
-        # type: (Optianal[Union[AnyStr, int]], Dict[AnyStr, Union[str, int]], AnyStr) -> AnyStr
+        # type: (Optional[Union[AnyStr, int]], Dict[AnyStr, Union[str, int]], AnyStr) -> str
         """Generate a resource link
         
         :param res_id: resource id

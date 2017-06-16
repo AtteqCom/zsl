@@ -9,7 +9,7 @@ from injector import Module, singleton
 
 from zsl import Zsl, Injected
 from zsl.application.modules.cli_module import ZslCli
-from zsl.interface.task_queue import TaskQueueWorker
+from zsl.interface.task_queue import TaskQueueWorker, run_worker
 from zsl.interface.celery.worker import CeleryTaskQueueWorkerBase, CeleryTaskQueueMainWorker, \
     CeleryTaskQueueOutsideWorker
 from zsl.utils.injection_helper import simple_bind, inject
@@ -49,13 +49,12 @@ class CeleryCli(object):
                         context_settings=dict(ignore_unknown_options=True))
         @click.argument('argv', nargs=-1, type=click.UNPROCESSED)
         @click.pass_context
-        @inject(app=Zsl)
-        def worker(_, worker_args, app=Injected):
+        def worker(_, worker_args):
             """Run Zsl celery worker.
 
             :param : arguments for celery worker
             """
-            app.run_worker(worker_args)
+            run_worker(worker_args)
 
         self._celery = celery
 

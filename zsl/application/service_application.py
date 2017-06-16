@@ -182,37 +182,9 @@ class ServiceApplication(Flask):
     def injector(self, value):
         self._injector = value
 
-    @deprecated
-    def get_injector(self):
-        # type: () -> Injector
-        return self.injector
-
-    @deprecated
-    def set_injector(self, injector):
-        self.injector = injector
-
     def get_version(self):
         v = self.config.get('VERSION')
         if v is None:
             return ServiceApplication.VERSION
         else:
             return ServiceApplication.VERSION + ":" + v
-
-    @deprecated
-    def run_web(self, host='127.0.0.1', port=5000, **options):
-        """Alias for Flask.run"""
-        return self.run(
-            host=self.config.get('FLASK_HOST', host),
-            port=self.config.get('FLASK_PORT', port),
-            debug=self.config.get('DEBUG', False),
-            **options
-        )
-
-    def run_worker(self, *args, **kwargs):
-        """Run the app as a task queue worker.
-
-        The worker instance is given as a DI module.
-        """
-        from zsl.interface.task_queue import TaskQueueWorker
-        worker = self.injector.get(TaskQueueWorker)
-        worker.run(*args, **kwargs)

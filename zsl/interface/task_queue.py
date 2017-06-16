@@ -13,6 +13,8 @@ import abc
 import traceback
 import socket
 
+from typing import Any
+
 from zsl import Zsl, Config, Injected
 from zsl import inject
 from zsl.router.task import TaskRouter
@@ -125,3 +127,14 @@ class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
     def stop_worker(self):
         """Stop the worker."""
         pass
+
+
+@inject(worker=TaskQueueWorker)
+def run_worker(self, worker, *args, **kwargs):
+    # type: (TaskQueueWorker, *Any, **Any)->None
+    """Run the app as a task queue worker.
+
+    The worker instance is given as a DI module.
+    """
+    worker = self.injector.get(TaskQueueWorker)
+    worker.run(*args, **kwargs)
