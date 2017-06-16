@@ -27,3 +27,6 @@ def add_mixin(base_class, mixin_class):
     base_class.__bases__ = (mixin_class,) + base_class.__bases__
     return base_class
 
+
+def is_scalar(v):
+    return isinstance(v, (type(None), str, int, float, bool))

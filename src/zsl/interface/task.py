@@ -6,7 +6,6 @@
 """
 from __future__ import unicode_literals
 
-from collections import namedtuple
 from functools import wraps
 from typing import Callable
 
@@ -16,11 +15,12 @@ from future.builtins import str
 
 import json
 
-from zsl import inject, Injected
+from zsl import inject
 from zsl.errors import ZslError
 from zsl.router.task import TaskRouter
 from zsl.task.job_context import JobContext, Job
 from zsl.task.task_data import TaskData
+from zsl.utils.reflection_helper import is_scalar
 
 
 class ModelConversionError(ZslError):
@@ -31,9 +31,6 @@ def payload_into_model(model_type, argument_name='model', remove_data=True):
     # type: (Callable, str)->Callable
     def wrapper(f):
         def fill_recursively(data, obj):
-            def is_scalar(v):
-                return isinstance(v, (type(None), str, int, float, bool))
-
             for k, v in data.items():
                 if not hasattr(obj, k):
                     raise ModelConversionError()
@@ -58,10 +55,10 @@ def payload_into_model(model_type, argument_name='model', remove_data=True):
     return wrapper
 
 
-def create_simple_model(name, items, defaults=None, parent=object, module=None):
+def create_simple_model(name, items, defaults=None, parent=object, model_module=None):
     if defaults is None:
         defaults = {}
-    default_code = "self.{0} = {0} if {0} is not None else (defaults.get('{0}', lambda: None)())"
+    default_code = "self.{0} = {0} if {0} is not None else (defaults.get('{0}', None))"
     item_definitions = "; ".join(map(lambda i: default_code.format(i), items))
     arglist = '=None, '.join(items) + "=None"
     class_code = """
@@ -75,13 +72,13 @@ class {name}(parent):
     exec(class_code, namespace)
     result = namespace[name]
     result._source = class_code
-    if module is None:
+    if model_module is None:
         try:
-            module = sys._getframe(1).f_globals.get('__name__', '__main__')
+            model_module = sys._getframe(1).f_globals.get('__name__', '__main__')
         except (AttributeError, ValueError):
             pass
-    if module is not None:
-        result.__module__ = module
+    if model_module is not None:
+        result.__module__ = model_module
     return result
 
 
@@ -100,8 +97,6 @@ def exec_task(task_path, data):
     :type task_path: str|Callable
     :param data: task's data
     :type data: Any
-    :param task_router: task router, injected
-    :type task_router: TaskRouter
     :return:
     """
     if not data:
@@ -127,7 +122,7 @@ def exec_task(task_path, data):
 
 @inject(task_router=TaskRouter)
 def create_task(task_path, task_router):
-    if task_path is str:
+    if isinstance(task_path, str):
         (task, task_callable) = task_router.route(task_path)
     elif task_path is Callable or isinstance(task_path, type):
         task = task_path()
@@ -135,4 +130,4 @@ def create_task(task_path, task_router):
     else:
         raise ZslError("Can not create task with path '{0}'.".format(task_path))
 
-    return (task, task_callable)
+    return task, task_callable
