@@ -13,7 +13,7 @@ requirements = [
     'Werkzeug>=0.12',
 ]
 
-if sys.version_info < (3, 4):
+if sys.version_info < (3, 0):
     requirements.append('enum34')
 
 setup(name='zsl',

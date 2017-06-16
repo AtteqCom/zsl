@@ -1,7 +1,14 @@
-[report]
-exclude_lines =
-    def __repr__
-    raise NotImplementedError
+[paths]
+source = src
 
 [run]
-source = zsl
+branch = true
+source =
+    src
+    tests
+parallel = true
+
+[report]
+show_missing = true
+precision = 2
+omit = *migrations*
