@@ -10,7 +10,6 @@ from builtins import str
 
 from flask.config import Config
 
-from zsl import Zsl
 from zsl import inject
 import hashlib
 from zsl.utils.string_helper import generate_random_string
