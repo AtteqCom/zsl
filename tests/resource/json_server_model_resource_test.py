@@ -17,7 +17,7 @@ import re
 import urllib
 from typing import Dict, List, Union, AnyStr
 from unittest.case import TestCase
-from tests.resource.resource_test_helper import (
+from resource.resource_test_helper import (
     UserModel, UserTuple, create_resource_test_data, users, get_non_existent_id, addresses
 )
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
@@ -36,8 +36,8 @@ else:
 
 def parse_links_header(links_str):
     # type: (AnyStr) -> Dict[AnyStr, AnyStr]
-    """Parse the link http header including resource metadata. 
-    
+    """Parse the link http header including resource metadata.
+
     :param links_str: link http header
     :type links_str: str
     :return: dictionary where key is the link name and value is the link
@@ -59,7 +59,7 @@ def parse_links_header(links_str):
 def parse_page_link_headers(links_str):
     # type: (AnyStr) -> Dict[AnyStr, int]
     """Parse the link http header and get the page position from the links
-    
+
     :param links_str: link http header
     :type links_str: str
     :return: dictionary where key is the link name and value is the page number
@@ -131,8 +131,8 @@ class JsonServerModelResourceTestCase(TestCase, HTTPTestCase):
         config_object = IN_MEMORY_DB_SETTINGS.copy()
         # add this package as resource package for zsl to find the
         # `JsonServerModelResourceResource`
-        config_object['RESOURCE_PACKAGES'] = (parent_module(__name__),)
-        zsl = Zsl(__name__, config_object=IN_MEMORY_DB_SETTINGS,
+        config_object['RESOURCE_PACKAGES'] = ('resource',)
+        zsl = Zsl(__name__, config_object=config_object,
                   modules=WebContainer.modules())
         zsl.testing = True
 
@@ -144,9 +144,9 @@ class JsonServerModelResourceTestCase(TestCase, HTTPTestCase):
     def _path(self, res_id=None, args=None, raw_args=''):
         # type: (Optional[Union[AnyStr, int]], Dict[AnyStr, Union[str, int]], AnyStr) -> str
         """Generate a resource link
-        
+
         :param res_id: resource id
-        :param args: optional url arguments as {name: value} 
+        :param args: optional url arguments as {name: value}
         :param raw_args: url arguments in string, appended after args
         :return: url path for resource
         """

@@ -7,7 +7,7 @@ from unittest.case import TestCase
 
 from sqlalchemy.orm.session import Session
 
-from tests.mocks import mock_db_session, mock
+from mocks import mock_db_session, mock
 from zsl.application.containers.container import IoCContainer
 from zsl.application.modules.alchemy_module import AlchemyModule
 from zsl.application.modules.context_module import DefaultContextModule

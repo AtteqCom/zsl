@@ -13,3 +13,4 @@ Werkzeug>=0.12
 bpython
 mock
 coveralls
+pytest

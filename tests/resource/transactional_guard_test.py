@@ -1,12 +1,12 @@
 """
-Test the `transactional_guard` decorator in terms of creating the transaction 
-before checking the policies and calling rollback if policy is broken.  
+Test the `transactional_guard` decorator in terms of creating the transaction
+before checking the policies and calling rollback if policy is broken.
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
 
-from tests.mocks import mock_db_session
+from mocks import mock_db_session
 from zsl.service.service import TransactionHolder
 
 try:
@@ -22,7 +22,7 @@ from zsl.resource.model_resource import ModelResource
 from zsl.resource.guard import transactional_guard, GuardedMixin, \
     ResourcePolicy, Access
 
-from tests.resource.resource_test_helper import UserModel, \
+from resource.resource_test_helper import UserModel, \
     create_resource_test_data, users
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 

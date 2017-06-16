@@ -53,8 +53,8 @@ def create_resource_mapping(app):
             (resource, params) = parse_resource_path(path)
             resource_task = get_resource_task(resource)
             if resource_task is None:
-                raise ImportError("No resource named {0}.".format(resource))
-            msg_format = "Fetched resource named {0} with data\n{1}."
+                raise ImportError("No resource named '{0}'.".format(resource))
+            msg_format = "Fetched resource named '{0}' with data\n{1}."
             logging.debug(msg_format.format(resource, request.data))
 
             data = request.get_json() if request.data else None
