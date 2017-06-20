@@ -2,7 +2,8 @@
 :mod:`zsl.interface.task`
 -------------------------
 
-.. moduleauthor:: Peter Morihladko <morihladko@atteq.com>, Martin Babka <babka@atteq.com>
+.. moduleauthor:: Peter Morihladko <morihladko@atteq.com>,
+                  Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
 
@@ -28,7 +29,7 @@ class ModelConversionError(JSONDecodeError):
     pass
 
 
-def payload_into_model(model_type, argument_name='model', remove_data=True):
+def payload_into_model(model_type, argument_name='request', remove_data=True):
     # type: (Callable, str)->Callable
     def wrapper(f):
         def fill_recursively(data, obj):
@@ -56,10 +57,12 @@ def payload_into_model(model_type, argument_name='model', remove_data=True):
     return wrapper
 
 
-def create_simple_model(name, items, defaults=None, parent=object, model_module=None):
+def create_simple_model(name, items, defaults=None, parent=object,
+                        model_module=None):
     if defaults is None:
         defaults = {}
-    default_code = "self.{0} = {0} if {0} is not None else (defaults.get('{0}', None))"
+    default_code = "self.{0} = {0} if {0} is not None " \
+                   "else (defaults.get('{0}', None))"
     item_definitions = "; ".join(map(lambda i: default_code.format(i), items))
     arglist = '=None, '.join(items) + "=None"
     class_code = """
@@ -75,7 +78,8 @@ class {name}(parent):
     result._source = class_code
     if model_module is None:
         try:
-            model_module = sys._getframe(1).f_globals.get('__name__', '__main__')
+            model_module = sys._getframe(1).f_globals.get('__name__',
+                                                          '__main__')
         except (AttributeError, ValueError):
             pass
     if model_module is not None:
@@ -104,7 +108,8 @@ def exec_task(task_path, data):
         data = {'data': None, 'path': task_path}
 
     elif not isinstance(data, (str, bytes)):
-        data = {'data': json.dumps(data, cls=RequestJSONEncoder), 'path': task_path}
+        data = {'data': json.dumps(data, cls=RequestJSONEncoder),
+                'path': task_path}
 
     # Open the data from file, if necessary.
     elif data is not None and data.startswith("file://"):
@@ -129,6 +134,7 @@ def create_task(task_path, task_router):
         task = task_path()
         task_callable = task.perform
     else:
-        raise ZslError("Can not create task with path '{0}'.".format(task_path))
+        raise ZslError(
+            "Can not create task with path '{0}'.".format(task_path))
 
     return task, task_callable
