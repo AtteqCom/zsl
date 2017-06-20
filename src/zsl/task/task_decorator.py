@@ -112,17 +112,11 @@ def json_output(f):
     @wraps(f)
     def json_output_decorator(*args, **kwargs):
         rv = f(*args, **kwargs)
+        rv = json.dumps(rv, cls=AppModelJSONEncoder)
 
-        skip_encode = False
-        for d in args:
-            if isinstance(d, TaskData):
-                skip_encode = d.is_skipping_json()
-
-        if not skip_encode:
-            rv = json.dumps(rv, cls=AppModelJSONEncoder)
-            if isinstance(JobContext.get_current_context(), WebJobContext):
-                JobContext.get_current_context().add_responder(
-                    MimeSetterWebTaskResponder(MimeType.APPLICATION_JSON.value))
+        if isinstance(JobContext.get_current_context(), WebJobContext):
+            JobContext.get_current_context().add_responder(
+                MimeSetterWebTaskResponder(MimeType.APPLICATION_JSON.value))
 
         return rv
 
