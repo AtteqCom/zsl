@@ -8,11 +8,10 @@
 from __future__ import unicode_literals
 
 from functools import wraps
-from json.decoder import JSONDecodeError
+from json.encoder import JSONEncoder
 from typing import Callable
 
 import sys
-from flask.json import JSONEncoder
 from future.builtins import str
 
 import json
@@ -25,7 +24,7 @@ from zsl.task.task_data import TaskData
 from zsl.utils.reflection_helper import is_scalar
 
 
-class ModelConversionError(JSONDecodeError):
+class ModelConversionError(Exception):
     pass
 
 
