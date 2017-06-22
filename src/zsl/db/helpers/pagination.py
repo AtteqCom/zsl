@@ -15,8 +15,7 @@ class Pagination(object):
     def __init__(self, pagination=None):
         pagination = self._create_pagination_model(pagination)
         assert isinstance(pagination, PaginationModel)
-        self._offset = (pagination.page_no - FIRST_PAGE) * \
-                       pagination.page_record_count
+        self._offset = (pagination.page_no - FIRST_PAGE) * pagination.page_record_count
         self._page_record_count = pagination.page_record_count
         self._record_count = 0
 
@@ -24,11 +23,8 @@ class Pagination(object):
         if pagination is None:
             pagination = PaginationModel()
         elif isinstance(pagination, dict):
-            page_record_count = int(
-                pagination.get('page_record_count', DEFAULT_PAGE_RECORD_COUNT))
-            page_no = FIRST_PAGE + int(
-                pagination.get('offset', 0)) // page_record_count
-            pagination = PaginationModel(page_no, page_record_count)
+            page_record_count = int(pagination.get('page_record_count', DEFAULT_PAGE_RECORD_COUNT))
+            pagination = PaginationModel(FIRST_PAGE + int(pagination.get('offset', 0)) // page_record_count,page_record_count)
         return pagination
 
     def set_record_count(self, record_count):
@@ -66,6 +62,5 @@ class PaginationModel(object):
     def __init__(self, page_no=FIRST_PAGE,
                  page_record_count=DEFAULT_PAGE_RECORD_COUNT):
         self.page_no = int(page_no if page_no else FIRST_PAGE)
-        page_record_count = page_record_count if page_record_count else \
-            DEFAULT_PAGE_RECORD_COUNT
-        self.page_record_count = int(page_record_count)
+        self.page_record_count = int(
+            page_record_count if page_record_count else DEFAULT_PAGE_RECORD_COUNT)
