@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 ZSL - z' service layer
-========================
+======================
 
 ZSL is a Python 2.7 micro-framework utilizing
 `dependency injection <https://en.wikipedia.org/wiki/Dependency_injection>`_

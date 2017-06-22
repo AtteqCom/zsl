@@ -2,8 +2,8 @@
 :mod:`zsl.task.task_decorator`
 ------------------------------
 
-.. moduleauthor:: Martin Babka <babka@atteq.com>, 
-                  Peter Morihladko <morihladko@atteq.com>, 
+.. moduleauthor:: Martin Babka <babka@atteq.com>,
+                  Peter Morihladko <morihladko@atteq.com>,
                   Jan Janco <janco@atteq.com>,
                   Lubos Pis <pis@atteq.com>
 """
@@ -87,18 +87,16 @@ def json_input(f):
         if task_data.get_data():
             try:
                 is_transformed = request.json
-                should_transform = not task_data.is_skipping_json() if \
-                    task_data is not None else False
 
                 # We transform the data only in the case of plain POST requests.
-                if not is_transformed and should_transform:
-                    task_data.transform_data(json.loads)
+                if not is_transformed:
+                    task_data.transform_payload(json.loads)
             except (ValueError, RuntimeError):
                 logging.error(
                     "Exception while processing JSON input decorator.")
-                task_data.transform_data(json.loads)
+                task_data.transform_payload(json.loads)
         else:
-            task_data.transform_data(lambda _: {})
+            task_data.transform_payload(lambda _: {})
 
         return f(*args, **kwargs)
 
@@ -114,17 +112,11 @@ def json_output(f):
     @wraps(f)
     def json_output_decorator(*args, **kwargs):
         rv = f(*args, **kwargs)
+        rv = json.dumps(rv, cls=AppModelJSONEncoder)
 
-        skip_encode = False
-        for d in args:
-            if isinstance(d, TaskData):
-                skip_encode = d.is_skipping_json()
-
-        if not skip_encode:
-            rv = json.dumps(rv, cls=AppModelJSONEncoder)
-            if isinstance(JobContext.get_current_context(), WebJobContext):
-                JobContext.get_current_context().add_responder(
-                    MimeSetterWebTaskResponder(MimeType.APPLICATION_JSON.value))
+        if isinstance(JobContext.get_current_context(), WebJobContext):
+            JobContext.get_current_context().add_responder(
+                MimeSetterWebTaskResponder(MimeType.APPLICATION_JSON.value))
 
         return rv
 
@@ -164,7 +156,7 @@ def jsonp_wrap(callback_key='callback'):
 
 def jsend_output(fail_exception_classes=None):
     """
-    Format task result to json output in jsend specification format. See: 
+    Format task result to json output in jsend specification format. See:
     http://labs.omniti.com/labs/jsend. Task return value must be dict or None.
 
     @param fail_exception_classes: exceptions which will produce 'fail' response
@@ -203,7 +195,7 @@ def jsend_output(fail_exception_classes=None):
 def web_error_and_result(f):
     """
     Same as error_and_result decorator, except:
-    If no exception was raised during task execution, ONLY IN CASE OF WEB 
+    If no exception was raised during task execution, ONLY IN CASE OF WEB
     REQUEST formats task result into json dictionary {'data': task return value}
     """
 
@@ -216,8 +208,8 @@ def web_error_and_result(f):
 
 def error_and_result(f):
     """
-    Format task result into json dictionary `{'data': task return value}` if no 
-    exception was raised during the task execution. If there was raised an 
+    Format task result into json dictionary `{'data': task return value}` if no
+    exception was raised during the task execution. If there was raised an
     exception during task execution, formats task result into dictionary
     `{'error': exception message with traceback}`.
     """
@@ -247,7 +239,7 @@ def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
 
 def required_data(*data):
     """
-    Task decorator which checks if the given variables (indices) are stored 
+    Task decorator which checks if the given variables (indices) are stored
     inside the task data.
     """
 
@@ -273,7 +265,7 @@ def append_get_parameters(accept_only_web=True):
     """
     Task decorator which appends the GET data to the task data.
 
-    :param accept_only_web: Parameter which limits using this task only 
+    :param accept_only_web: Parameter which limits using this task only
                             with web requests.
     """
 
@@ -333,7 +325,7 @@ def secured_task(f):
             raise SecurityException(
                 task_data.get_data()['security']['hashed_token'])
 
-        task_data.transform_data(lambda x: x['data'])
+        task_data.transform_payload(lambda x: x['data'])
         return f(*args, **kwargs)
 
     return secured_task_decorator
@@ -371,7 +363,7 @@ def file_upload(f):
         if task_data is None:
             logging.error("Task data is empty during FilesUploadDecorator.")
 
-        task_data.transform_data(lambda _: request.files.getlist('file'))
+        task_data.transform_payload(lambda _: request.files.getlist('file'))
         return f(*args, **kwargs)
 
     return file_upload_decorator

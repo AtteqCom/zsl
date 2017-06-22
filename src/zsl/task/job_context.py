@@ -56,12 +56,28 @@ class JobContext(object):
         """
         Constructor
         """
-        self.job = job
-        self.task = task
-        self.task_callable = task_callable
-        self.task_data = TaskData(self.job.payload)
+        self._job = job
+        self._task = task
+        self._task_callable = task_callable
+        self._task_data = TaskData(self.job.payload)
 
         JobContext.set_current_context(None)
+
+    @property
+    def job(self):
+        return self._job
+
+    @property
+    def task(self):
+        return self._task
+
+    @property
+    def task_callable(self):
+        return self._task_callable
+
+    @property
+    def task_data(self):
+        return self._task_data
 
     @classmethod
     def get_current_context(cls):
@@ -73,7 +89,6 @@ class JobContext(object):
 
 
 class Responder(object):
-
     @abstractmethod
     def respond(self, r):
         pass
@@ -86,11 +101,7 @@ def web_task_redirect(location):
 class WebJobContext(JobContext):
     def __init__(self, path, data, task, task_callable, request):
         """Constructor"""
-
-        self.job = Job({'data': data, 'path': path})
-        self.task = task
-        self.task_callable = task_callable
-        self.task_data = TaskData(data)
+        super(WebJobContext, self).__init__(Job({'data': data, 'path': path}), task, task_callable)
         self._request = request
         self._responders = []
 

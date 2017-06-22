@@ -31,6 +31,6 @@ def parent_module(module_name):
 class TestTaskData(TaskData):
     """Data suitable when directly calling a task."""
 
-    def __init__(self, data):
+    def __init__(self, payload):
         # type: (Any)->None
-        super(TestTaskData, self).__init__(json.dumps(data))
+        super(TestTaskData, self).__init__(json.dumps(payload))
