@@ -1,7 +1,7 @@
 """
 :mod:`zsl.testing.zsl`
 ----------------------
-This module allows for unit testing with a Zsl instance. Use 
+This module allows for unit testing with a Zsl instance. Use
 :class:`.ZslTestCase` as a mixin to create a predefined Zsl instance to be used
 while testing. Refer to unit testing section :ref:`unit-testing-zsl-instance`
 for an example.
@@ -16,6 +16,7 @@ import logging
 from functools import partial
 
 from zsl import Zsl
+from zsl._state import set_current_app
 from zsl.application.service_application import set_profile
 from zsl.configuration import InvalidConfigurationException
 
@@ -49,3 +50,7 @@ class ZslTestCase(object):
             "ZSL test app created {0}.".format(app))
 
         super(ZslTestCase, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        set_current_app(None)

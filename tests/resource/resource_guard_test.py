@@ -1,5 +1,5 @@
 """
-Test resource guard. 
+Test resource guard.
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
@@ -13,8 +13,7 @@ try:
 except ImportError:
     import mock
 
-from zsl.resource.guard import guard, GuardedMixin, ResourcePolicy, \
-    PolicyViolationError, Access
+from zsl.resource.guard import guard, GuardedMixin, ResourcePolicy, Access
 
 _methods = ['create', 'read', 'update', 'delete']
 
@@ -25,7 +24,7 @@ TEST_VALUE_DELETED = 'deleted'
 
 
 class AccessError(Exception):
-    """Because this is not a subtype of PolicyViolationError it should be not 
+    """Because this is not a subtype of PolicyViolationError it should be not
     caught by the default exception handler, so we can test it with an assert.
     """
     pass

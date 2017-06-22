@@ -1,5 +1,5 @@
 """
-Test http responses of resource guard. It should return a model if policy is 
+Test http responses of resource guard. It should return a model if policy is
 met and an proper http code when policy is broken.
 """
 
@@ -9,7 +9,7 @@ from __future__ import (absolute_import, division,
 from builtins import *
 from unittest.case import TestCase
 
-from tests.mocks import mock
+from mocks import mock
 
 import http.client
 
@@ -20,8 +20,8 @@ from zsl.resource.guard import (guard, GuardedMixin, Access,
                                 PolicyViolationError, ResourcePolicy)
 
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
-from zsl.testing.test_utils import parent_module
 from zsl.testing.http import json_loads, HTTPTestCase
+from zsl.testing.test_utils import parent_module
 
 TEST_VALUE_CREATED = 'created'
 TEST_VALUE_READ = 'read'
@@ -41,16 +41,16 @@ class GuardedResourceTestResource(object):
 
 class GuardedResourceTest(TestCase, HTTPTestCase):
     PATH = '/resource/guarded_resource_test'
-    RESOURCE_CLASS = __name__ + '.GuardedResourceTestResource'
+    RESOURCE_CLASS = 'resource.guarded_resource_test.GuardedResourceTestResource'
 
     def setUp(self):
-        zsl = Zsl(__name__, config_object=IN_MEMORY_DB_SETTINGS,
-                  modules=WebContainer.modules())
-        zsl.testing = True
-
+        config_object = IN_MEMORY_DB_SETTINGS.copy()
         # add this package as resource package for zsl to find the
         # `JsonServerModelResourceResource`
-        zsl.config['RESOURCE_PACKAGES'] = (parent_module(__name__),)
+        config_object['RESOURCE_PACKAGES'] = ('resource',)
+        zsl = Zsl(__name__, config_object=config_object,
+                  modules=WebContainer.modules())
+        zsl.testing = True
 
         # mock http requests
         self.app = zsl.test_client()
@@ -66,12 +66,15 @@ class GuardedResourceTest(TestCase, HTTPTestCase):
 
         with mock.patch(self.RESOURCE_CLASS, Resource):
             rv = self.app.get(self.PATH + '/1')
-            data = json_loads(rv.data)
 
+            self.assertHTTPStatus(
+                http.client.OK,
+                rv.status_code,
+                "should return 200 status, returned data {0}".format(rv.data)
+            )
+            data = json_loads(rv.data)
             self.assertDictEqual(SAMPLE_MODEL, data,
                                  "should return sample model")
-            self.assertHTTPStatus(http.client.OK, rv.status_code,
-                                  "should return 200 status")
 
     def testDefaultDenyPolicy(self):
         class DenyPolicy(ResourcePolicy):

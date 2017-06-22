@@ -9,13 +9,16 @@ from builtins import *
 
 from unittest import TestCase
 
+import pytest
+
 from zsl import Zsl
 from zsl.resource.model_resource import ModelResource
-from tests.resource.resource_test_helper import UserModel,\
+from resource.resource_test_helper import UserModel, \
     create_resource_test_data, users, UserTuple, UserAppModel
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 
 
+@pytest.mark.skip(reason="Just a resource definition, no test.")
 class TestRestResource(ModelResource):
     __model__ = UserModel
 

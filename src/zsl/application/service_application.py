@@ -2,20 +2,20 @@
 :mod:`zsl.application.service_application`
 ------------------------------------------
 
-The module contains the main Zsl class - :class:`.ServiceApplication`. It is 
-responsible for gluing everything together. 
+The module contains the main Zsl class - :class:`.ServiceApplication`. It is
+responsible for gluing everything together.
 
-There is a simple profile support. Profile is usually tied to a configuration 
-file for an environment. Usually environments slightly differ in settings - 
-especially connection strings. These twists can be managed via additional 
-configuration files with the `cfg` extension usually placed in the `settings` 
-package. The name of the environment configuration file is controlled via 
+There is a simple profile support. Profile is usually tied to a configuration
+file for an environment. Usually environments slightly differ in settings -
+especially connection strings. These twists can be managed via additional
+configuration files with the `cfg` extension usually placed in the `settings`
+package. The name of the environment configuration file is controlled via
 `ZSL_SETTINGS` environment variable.
 
 
 .. data:: SETTINGS_ENV_VAR_NAME
 
-    Name of the environment variable to be read for the profile configuration 
+    Name of the environment variable to be read for the profile configuration
     file.
 
 """
@@ -25,7 +25,6 @@ import os
 from typing import Callable
 
 from flask import Flask, Config
-from flask_injector import FlaskInjector
 from injector import Injector, Binder, singleton
 from typing import Any
 
@@ -43,8 +42,8 @@ def get_settings_from_profile(profile, profile_dir=None):
     """"Returns the  configuration file path for the given profile.
 
     :param profile: Profile name to be used.
-    :param profile_dir: The directory where the profile configuration file should reside. It 
-                        may be also a module, and then the directory of the module is used.  
+    :param profile_dir: The directory where the profile configuration file should reside. It
+                        may be also a module, and then the directory of the module is used.
     :return: Configuration file path.
     """
     if profile_dir is None:
@@ -60,7 +59,7 @@ def get_settings_from_profile(profile, profile_dir=None):
 def set_profile(profile):
     # type (str)->None
     """Sets the current profile.
-    
+
     :param profile: The profile to be used."""
     os.environ[SETTINGS_ENV_VAR_NAME] = get_settings_from_profile(profile)
 
@@ -102,9 +101,9 @@ class ServiceApplication(Flask):
     def _configure(self, config_object=None):
         # type: (Any) -> None
         """Read the configuration from config files.
-        Loads the default settings and the profile settings if available. 
-        Check :func:`.set_profile`. 
-        
+        Loads the default settings and the profile settings if available.
+        Check :func:`.set_profile`.
+
         :param config_object:
             This parameter is the configuration decscription may be a dict or
             string describing the module from which the configuration is used.
@@ -155,15 +154,11 @@ class ServiceApplication(Flask):
         :param modules: list of injection modules
         :type modules: list
         """
-        self._flask_injector = FlaskInjector(self, [self._get_app_module()])
-        self.injector = self._flask_injector.injector
-
         self._register()
-
-        for module in modules:
-            self.injector.binder.install(module)
-
-        self.logger.debug("Injector configuration {0}.".format(modules))
+        self._create_injector()
+        self._bind_core()
+        self._bind_modules(modules)
+        self.logger.debug("Injector configuration with modules {0}.".format(modules))
         self._dependencies_initialized = True
 
     @deprecated
@@ -182,15 +177,6 @@ class ServiceApplication(Flask):
     def injector(self, value):
         self._injector = value
 
-    @deprecated
-    def get_injector(self):
-        # type: () -> Injector
-        return self.injector
-
-    @deprecated
-    def set_injector(self, injector):
-        self.injector = injector
-
     def get_version(self):
         v = self.config.get('VERSION')
         if v is None:
@@ -198,21 +184,14 @@ class ServiceApplication(Flask):
         else:
             return ServiceApplication.VERSION + ":" + v
 
-    @deprecated
-    def run_web(self, host='127.0.0.1', port=5000, **options):
-        """Alias for Flask.run"""
-        return self.run(
-            host=self.config.get('FLASK_HOST', host),
-            port=self.config.get('FLASK_PORT', port),
-            debug=self.config.get('DEBUG', False),
-            **options
-        )
+    def _create_injector(self):
+        self.logger.debug('Creating injector')
+        self._injector = Injector()
 
-    def run_worker(self, *args, **kwargs):
-        """Run the app as a task queue worker.
+    def _bind_core(self):
+        self._injector.binder.bind(ServiceApplication, self, singleton)
+        self._injector.binder.bind(Config, self.config, singleton)
 
-        The worker instance is given as a DI module.
-        """
-        from zsl.interface.task_queue import TaskQueueWorker
-        worker = self.injector.get(TaskQueueWorker)
-        worker.run(*args, **kwargs)
+    def _bind_modules(self, modules):
+        for module in modules:
+            self.injector.binder.install(module)

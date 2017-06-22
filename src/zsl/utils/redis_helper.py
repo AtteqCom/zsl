@@ -31,7 +31,7 @@ def redis_key(*args):
 
 
 class Keymaker(object):
-    """Keymaker is a class to generate an object to generate reddis keys.
+    """Keymaker is a class to generate an object to generate Redis keys.
 
     :Example:
         >>> article_keys = Keymaker(prefix='articles', keys={'full_article': 'full', 'short_article': 'short'})

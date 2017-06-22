@@ -1,21 +1,10 @@
-import re
-import ast
 import sys
 from setuptools import setup, find_packages
-
-EXCLUDE_FROM_PACKAGES = ['tests', 'tests.*']
-
-_version_re = re.compile(r'__version__\s+=\s+(.*)')
-
-with open('zsl/__init__.py', 'rb') as f:
-    version = str(ast.literal_eval(_version_re.search(
-        f.read().decode('utf-8')).group(1)))
 
 _is_py3 = sys.version_info > (3, 0)
 
 requirements = [
     'future',
-    'Flask-Injector>=0.8' if _is_py3 else 'Flask-Injector==0.8.0',
     'injector==0.12.1',
     'requests>=2.7',
     'SQLAlchemy>=1',
@@ -23,16 +12,17 @@ requirements = [
     'Werkzeug>=0.12',
 ]
 
-if sys.version_info < (3, 4):
+if sys.version_info < (3, 0):
     requirements.append('enum34')
 
 setup(name='zsl',
-      version=version,
+      version='0.15.9',
       description='zsl application framework for web based services',
       author='Atteq s.r.o.',
       author_email='open.source@atteq.com',
       url='https://github.com/AtteqCom/zsl',
       license='MIT',
+      package_dir={'': 'src'},
       install_requires=requirements,
       extras_require={
           'cli': ['bpython'],
@@ -50,4 +40,4 @@ setup(name='zsl',
           'Operating System :: OS Independent',
           'Topic :: Software Development :: Libraries :: Application Frameworks'
       ],
-      packages=find_packages(exclude=EXCLUDE_FROM_PACKAGES))
+      packages=find_packages('src'))

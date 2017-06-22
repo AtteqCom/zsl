@@ -7,7 +7,9 @@ Helper module with function dealing with security.
 
 from __future__ import unicode_literals
 from builtins import str
-from zsl import Zsl
+
+from flask.config import Config
+
 from zsl import inject
 import hashlib
 from zsl.utils.string_helper import generate_random_string
@@ -39,8 +41,8 @@ def wrap_plain_data_as_secure(data):
     return {'security': generate_security_data(), 'data': data}
 
 
-@inject(app=Zsl)
-def compute_token(random_token, app):
+@inject(config=Config)
+def compute_token(random_token, config):
     """Compute a hash of the given token with a preconfigured secret.
 
     :param random_token: random token
@@ -48,7 +50,7 @@ def compute_token(random_token, app):
     :return: hashed token
     :rtype: str
     """
-    secure_token = app.config[TOKEN_SERVICE_SECURITY_CONFIG]
+    secure_token = config[TOKEN_SERVICE_SECURITY_CONFIG]
     sha1hash = hashlib.sha1()
     sha1hash.update(random_token + secure_token)
     return sha1hash.hexdigest().upper()

@@ -11,9 +11,7 @@ the following.
 
 .. code-block:: console
 
-    $ pip install sphinx recommonmark sphinx_rtd_theme
-    $ cd docs
-    $ make html
+    $ tox -e docs
 
 Running ZSL unit tests
 ======================
@@ -22,8 +20,7 @@ To run all of the ZSL unit tests one should start
 
 .. code-block:: console
 
-    $ cd zsl # So that one is in the directory containing tests, zsl and docs folders.
-    $ python -m unittest discover tests '*_test.py'
+    $ tox
 
 To run only a selected test, e.g. tests in :mod:`tests.resource.guarded_resource_test`:
 

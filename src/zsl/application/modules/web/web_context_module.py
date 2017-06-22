@@ -3,6 +3,8 @@ from __future__ import (absolute_import, division,
 from builtins import *
 
 import logging
+from typing import Any
+
 import click
 
 from injector import Binder, provides, singleton
@@ -30,15 +32,29 @@ class WebCli(object):
         @web.command(help="Run web server and serve the application")
         @click.option('--host', '-h', help="host to bind to", default='127.0.0.1')
         @click.option('--port', '-p', help="port to bind to", default=5000)
-        @inject(app=Zsl)
-        def run(app, host, port):
-            app.run_web(host=host, port=port)
+        @inject(web_handler=WebHandler)
+        def run(web_handler, host, port):
+            # type: (WebHandler, str, int)->None
+            web_handler.run_web(host=host, port=port)
 
         self._web = web
 
     @property
     def web(self):
         return self._web
+
+
+class WebHandler(object):
+    @inject(flask=Zsl)
+    def run_web(self, flask, host='127.0.0.1', port=5000, **options):
+        # type: (Zsl, str, int, **Any)->None
+        """Alias for Flask.run"""
+        return flask.run(
+            host=flask.config.get('FLASK_HOST', host),
+            port=flask.config.get('FLASK_PORT', port),
+            debug=flask.config.get('DEBUG', False),
+            **options
+        )
 
 
 class WebContextModule(DefaultContextModule):
@@ -51,6 +67,10 @@ class WebContextModule(DefaultContextModule):
     @provides(interface=WebCli, scope=singleton)
     def provide_web_cli(self):
         return WebCli()
+
+    @provides(interface=WebHandler, scope=singleton)
+    def provide_web_handler(self):
+        return WebHandler()
 
     def configure(self, binder):
         # type: (Binder) -> None

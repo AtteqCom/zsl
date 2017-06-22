@@ -2,31 +2,26 @@ from unittest.case import TestCase
 
 from flask.config import Config
 
-from zsl.testing.db import DbTestCase
+from zsl.application.containers.container import IoCContainer
+from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
+
+from zsl.testing.db import DbTestCase, IN_MEMORY_DB_SETTINGS
 from zsl.utils.injection_helper import bind
 from zsl.utils.redis_helper import Keymaker
 from zsl.utils.testing import set_test_responder
+from zsl import inject
 
 __author__ = 'peter'
 
 set_test_responder()
 
 
-def create_config(dictionary):
-    config = Config('.')
-
-    o = type('MyO', (object,), {})()
-    o.__dict__ = dictionary
-
-    config.from_object(o)
-
-    return config
-
-
-class TestKeymaker(TestCase, DbTestCase):
-
-    def setUp(self):
-        bind(Config, create_config({}))
+class TestKeymaker(ZslTestCase, TestCase):
+    ZSL_TEST_CONFIGURATION = ZslTestConfiguration(
+        'test_redis_helper',
+        container=IoCContainer,
+        config_object=IN_MEMORY_DB_SETTINGS
+    )
 
     def test_empty(self):
         keymaker = Keymaker({})
@@ -34,7 +29,7 @@ class TestKeymaker(TestCase, DbTestCase):
         with self.assertRaises(AttributeError):
             keymaker.a()
 
-        self.assertEqual(len(keymaker.__dict__), 1, "No method in keymaker")
+        self.assertEqual(len(keymaker.__dict__), 0, "There should be no method in keymaker")
 
     def test_normal(self):
         keymaker = Keymaker({'a': 'AAA', 'b': 'XX'})
@@ -46,7 +41,7 @@ class TestKeymaker(TestCase, DbTestCase):
 
         self.assertEqual(keymaker.b('x', None, 0, False, 'y'),
                          'XX:x:0:False:y',
-                         "Method with a None and falsy arguments")
+                         "Method with a None and falsified arguments")
 
     def test_with_prefix(self):
         keymaker = Keymaker({'a': 'AAA', 'b': 'XX'}, prefix="testing")
@@ -54,8 +49,10 @@ class TestKeymaker(TestCase, DbTestCase):
         self.assertEqual(keymaker.a(), 'testing:AAA', "Pure method with prefix")
         self.assertEqual(keymaker.b('x', 'y'), 'testing:XX:x:y', "Method with arguments and prefix")
 
-    def test_with_global_prefix(self):
-        bind(Config, create_config({'REDIS': {'prefix': 'global_prefix'}}))
+    @inject(config=Config)
+    def test_with_global_prefix(self, config):
+        # type: (Config)->None
+        config.setdefault('REDIS', {'prefix': 'global_prefix'})
 
         keymaker = Keymaker({'a': 'AAA', 'b': 'XX'}, prefix="testing")
 
@@ -63,3 +60,4 @@ class TestKeymaker(TestCase, DbTestCase):
         self.assertEqual(keymaker.b('x', 'y'),
                          'global_prefix:testing:XX:x:y',
                          "Method with arguments and global and local prefix")
+        config['REDIS']['prefix'] = None
