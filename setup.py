@@ -4,6 +4,7 @@ from setuptools import setup, find_packages
 _is_py3 = sys.version_info > (3, 0)
 
 requirements = [
+    'flask',
     'future',
     'injector==0.12.1',
     'requests>=2.7',
