@@ -66,11 +66,11 @@ def create_simple_model(name, items, defaults=None, parent=object,
     default_code = "self.{0} = {0} if {0} is not None " \
                    "else (defaults.get('{0}', None))"
     item_definitions = "; ".join(map(lambda i: default_code.format(i), items))
-    arglist = '=None, '.join(items) + "=None"
+    arglist = '=None, '.join(items) + ("=None, **kwargs" if len(items) else "**kwargs")
     class_code = """
 class {name}(parent):
     def __new__(_cls, {arglist}):
-        self = parent.__new__(_cls)
+        self = parent.__new__(_cls, **kwargs)
         {items}     
         return self
     """.format(name=name, items=item_definitions, arglist=arglist)
