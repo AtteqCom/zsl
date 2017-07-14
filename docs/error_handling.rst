@@ -8,7 +8,7 @@ Custom error handlers may be added using the following code.::
                 return isinstance(e, ForbiddenException)
 
             def handle(self, e):
-                return "Forbidden!", 403
+                return "Forbidden!"
 
 
         class FileNotFoundExceptionErrorHandler(ErrorHandler):
@@ -16,7 +16,7 @@ Custom error handlers may be added using the following code.::
                 return isinstance(e, FileNotFoundException)
 
             def handle(self, e):
-                return "FileResource not found!", 404
+                return "FileResource not found!"
 
 
         class DefaultErrorHandler(ErrorHandler):
@@ -38,4 +38,5 @@ Custom error handlers may be added using the following code.::
                 register(DefaultErrorHandler())
 
 
-The call to register function is best timed when a module is created.
+The call to register function is best timed when a module is created. To set status code for a web response use
+`:class:zsl.task.job_context.StatusCodeResponder`.

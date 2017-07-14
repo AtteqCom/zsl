@@ -22,7 +22,7 @@ import json
 from zsl import inject
 from zsl.errors import ZslError
 from zsl.router.task import TaskRouter
-from zsl.task.job_context import JobContext, Job
+from zsl.task.job_context import JobContext, Job, DelegatingJobContext
 from zsl.task.task_data import TaskData
 from zsl.utils.reflection_helper import is_scalar
 
@@ -121,11 +121,18 @@ def exec_task(task_path, data):
     # Prepare the task.
     job = Job(data)
     (task, task_callable) = create_task(task_path)
-    jc = JobContext(job, task, task_callable)
+
+    # Set the context for task execution.
+    old_jc = JobContext.get_current_context()
+    jc = DelegatingJobContext(job, task, task_callable, old_jc)
     JobContext.set_current_context(jc)
 
     # Run the task.
-    return jc.task_callable(jc.task_data)
+    try:
+        return jc.task_callable(jc.task_data)
+    finally:
+        # Set the current context back.
+        JobContext.set_current_context(old_jc)
 
 
 @inject(task_router=TaskRouter)
