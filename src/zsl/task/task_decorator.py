@@ -107,14 +107,14 @@ def json_output(f):
     to 'application/json'.
     """
 
-    @inject(config=Config)
-    def get_config(config):
-        return config
-
-    config = get_config()
-
     @wraps(f)
     def json_output_decorator(*args, **kwargs):
+        @inject(config=Config)
+        def get_config(config):
+            return config
+
+        config = get_config()
+
         rv = f(*args, **kwargs)
         indent = None
         if config.get('DEBUG', False):
