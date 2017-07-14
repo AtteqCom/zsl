@@ -34,6 +34,7 @@ to make it better.
    getting_started
    configuration
    modules_and_containers
+   error_handling
    unit_testing
    extending
    api

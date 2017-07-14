@@ -5,7 +5,7 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
-from builtins import object
+from builtins import *
 
 import logging
 
@@ -14,14 +14,14 @@ from flask import request
 
 from zsl.application.modules.web.configuration import MethodConfiguration
 from zsl.constants import MimeType
+from zsl.interface.webservice.utils.execution import execute_web_task
 from zsl.interface.webservice.utils.request_data import extract_data
 from zsl.interface.webservice.utils.response_headers import append_headers
-from zsl.interface.webservice.utils.error_handler import error_handler
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
 import json
 
 from zsl import inject, Config, Zsl, Injected
-from zsl.task.job_context import WebJobContext, JobContext
+from zsl.task.job_context import WebJobContext
 
 METHOD_CONFIG_NAME = 'METHOD'
 
@@ -50,7 +50,7 @@ class Performer(object):
     def __init__(self, f):
         global _default_responder_method
         self._f = f
-        self.__name__ = "method-router-performer-of-" + f.__name__
+        self.__name__ = "zsl-method-router-performer-of-" + f.__name__
         self.__doc__ = f.__doc__ if hasattr(f, '__doc__') else None
         self._responder = None
         self.set_responder(_default_responder_method)
@@ -61,15 +61,9 @@ class Performer(object):
     def _call_inner_function(self, a, kw):
         return self._f(*a, **kw)
 
-    @error_handler
     def __call__(self, *a, **kw):
         jc = WebJobContext(None, extract_data(request), None, None, request)
-        JobContext.set_current_context(jc)
-        rv = self._call_inner_function(a, kw)
-        responder = self._responder
-        response = responder(rv)
-        jc.notify_responders(response)
-        return response
+        return execute_web_task(jc, lambda: self._call_inner_function(a, kw))
 
 
 def _get_method_configuration(config):

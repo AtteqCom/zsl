@@ -15,6 +15,8 @@ from abc import abstractmethod
 
 from flask import request
 
+from zsl.utils.documentation import documentation_link
+
 _error_handlers = []
 
 
@@ -54,6 +56,9 @@ def error_handler(f):
 
             logging.error(str(ex) + "\n" + traceback.format_exc())
             logging.error("Request:\n{0}\n{1}\n".format(request.headers, request.data))
+            logging.info("Provide your own error handler so that a better error is produced, check {0}.".format(
+                documentation_link('error_handling')
+            ))
 
             return "An error occurred!", 500
 
