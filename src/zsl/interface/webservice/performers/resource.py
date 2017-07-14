@@ -22,22 +22,6 @@ from zsl.utils.resource_helper import parse_resource_path, get_resource_task
 from zsl.interface.resource import ResourceResult
 
 
-def create_response_from_pure_result(result):
-    # type: (Any) -> Response
-
-    return Response(json.dumps(result, cls=AppModelJSONEncoder),
-                    mimetype=MimeType.APPLICATION_JSON.value)
-
-
-def create_response_from_resource_result(result):
-    # type: (ResourceResult) -> Response
-    response = create_response_from_pure_result(result.body)
-
-    if result.count is not None:
-        response.headers['X-Total-Count'] = result.count
-        response.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
-
-
 @inject(app=Zsl)
 def create_resource_mapping(app):
     @app.route("/resource/<path:path>",
