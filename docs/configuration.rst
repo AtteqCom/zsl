@@ -101,3 +101,8 @@ Optional fields
           'vendor_path': './vendor'
           'libs': ['my_lib_dir1', 'my_lib_dir2']
       }
+
+* ``CORS``
+  The dictionary containing the default CORS/crossdomain settings.
+  The only available options for now are:
+    * ``origin`` - with the allowed origin.
