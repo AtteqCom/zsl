@@ -29,7 +29,6 @@ def create_resource_mapping(app):
     @app.route("/resource/<path:path>",
                methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'])
     @append_headers
-    @notify_responders
     @convert_to_web_response
     @error_handler
     def perform_resource(path):
