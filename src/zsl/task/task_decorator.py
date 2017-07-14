@@ -8,9 +8,7 @@
                   Lubos Pis <pis@atteq.com>
 """
 from __future__ import unicode_literals
-
-from builtins import bool
-from builtins import str
+from builtins import *
 
 import logging
 import json
@@ -415,8 +413,8 @@ class CrossdomainWebTaskResponder(Responder):
     """
 
     @inject(app=Zsl, config=Config)
-    def __init__(self, origin=None, methods=None, headers=None, max_age=21600,
-                 app=Injected, config=Injected):
+    def __init__(self, origin=None, methods=None, headers=None,
+                 max_age=21600, app=Injected, config=Injected):
         self._app = app
 
         if methods is not None:
@@ -445,15 +443,22 @@ class CrossdomainWebTaskResponder(Responder):
         options_resp = self._app.make_default_options_response()
         return options_resp.headers['allow']
 
-    def respond(self, resp):
-        h = resp.headers
+    def respond(self, response):
+        headers = response.headers
 
-        h['Access-Control-Allow-Origin'] = self.origin
-        h['Access-Control-Allow-Methods'] = self.get_methods()
-        h['Access-Control-Max-Age'] = str(self.max_age)
+        headers['Access-Control-Allow-Origin'] = self.origin
+        headers['Access-Control-Allow-Methods'] = self.get_methods()
+        headers['Access-Control-Max-Age'] = str(self.max_age)
         if self.headers is not None:
-            h['Access-Control-Allow-Headers'] = self.headers
-        return resp
+            headers['Access-Control-Allow-Headers'] = self.headers
+        else:
+            response.headers['Access-Control-Allow-Headers'] = \
+                'accept, origin, content-type, authorization'
+
+        response.headers['Access-Control-Expose-Headers'] = \
+            'location, x-total-count, link'
+
+        return response
 
 
 def crossdomain(origin=None, methods=None, headers=None, max_age=21600):

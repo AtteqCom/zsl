@@ -10,6 +10,7 @@ from flask.helpers import make_response
 from functools import wraps
 
 from zsl import inject, Zsl, Config, Injected
+from zsl.task.task_decorator import CrossdomainWebTaskResponder
 
 
 @inject(config=Config)
@@ -17,17 +18,7 @@ def append_crossdomain(response, config=Injected):
     # The CORS has already been setup.
     if 'Access-Control-Allow-Origin' in response.headers:
         return
-
-    if config.get('ALLOW_ORIGIN'):
-        response.headers['Access-Control-Allow-Origin'] = \
-            config.get('ALLOW_ORIGIN')
-
-    response.headers['Access-Control-Expose-Headers'] = \
-        'location, x-total-count, link'
-    response.headers['Access-Control-Allow-Methods'] = \
-        'POST, GET, OPTIONS, PUT, PATCH, DELETE'
-    response.headers['Access-Control-Allow-Headers'] = \
-        'accept, origin, content-type, authorization'
+    CrossdomainWebTaskResponder().respond(response)
 
 
 @inject(app=Zsl)
@@ -46,7 +37,6 @@ def append_all(response):
 
 
 def append_headers(f):
-
     @wraps(f)
     def _response_decorator(*args, **kwargs):
         r = f(*args, **kwargs)
