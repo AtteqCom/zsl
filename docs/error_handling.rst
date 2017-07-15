@@ -39,4 +39,4 @@ Custom error handlers may be added using the following code.::
 
 
 The call to register function is best timed when a module is created. To set status code for a web response use
-`:class:zsl.task.job_context.StatusCodeResponder`.
+:class:`zsl.task.job_context.StatusCodeResponder`.

@@ -18,7 +18,7 @@ def append_crossdomain(response, config):
     # type: (Response, Config)->None
     """
     Adds the default crossdomain headers.
-    Uses the `:class:zsl.task.task_decorator.CrossdomainWebTaskResponder`
+    Uses the :class:`zsl.task.task_decorator.CrossdomainWebTaskResponder`
     to generate the headers.
 
     :param response: Current web response.
