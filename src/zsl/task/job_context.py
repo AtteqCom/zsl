@@ -5,11 +5,15 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
-from builtins import object
+from builtins import *
+
 from typing import Callable
 from abc import abstractmethod
 
+from flask.wrappers import Response
+
 from zsl.task.task_data import TaskData
+from zsl.utils.reflection_helper import proxy_object_to_delegate
 
 
 class Job(object):
@@ -94,6 +98,23 @@ class Responder(object):
         pass
 
 
+class StatusCodeResponder(Responder):
+    def __init__(self, status_code):
+        # type: (int)->None
+        self._status_code = status_code
+
+    def respond(self, r):
+        # type: (Response)->None
+        r.status_code = self._status_code
+
+
+def add_responder(responder):
+    # type:(Responder)->None
+    jc = JobContext.get_current_context()
+    if isinstance(jc, WebJobContext):
+        jc.add_responder(responder)
+
+
 def web_task_redirect(location):
     return {'headers': {'Location': location}, 'status_code': 301}
 
@@ -112,5 +133,17 @@ class WebJobContext(JobContext):
         self._responders.append(r)
 
     def notify_responders(self, response):
-        for r in self._responders:
-            r.respond(response)
+        try:
+            for r in self._responders:
+                r.respond(response)
+        except:
+            raise
+        finally:
+            self._responders = []
+
+
+class DelegatingJobContext(JobContext):
+    def __init__(self, job, task, task_callable, wrapped_job_context):
+        super(DelegatingJobContext, self).__init__(job, task, task_callable)
+        self._wrapped_job_context = wrapped_job_context
+        proxy_object_to_delegate(self, wrapped_job_context)

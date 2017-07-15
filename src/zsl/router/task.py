@@ -8,8 +8,13 @@ from builtins import object
 import importlib
 
 from zsl import inject, Zsl, Config
+from zsl.errors import ZslError
 from zsl.utils.string_helper import underscore_to_camelcase
 from zsl.utils.task_helper import instantiate, get_callable
+
+
+class RoutingError(ZslError):
+    pass
 
 
 class TaskRouter(object):
@@ -79,7 +84,7 @@ class TaskRouter(object):
             self._app.logger.warn(msg)
             for e in exceptions:
                 self._app.logger.error("Reason", exc_info=e)
-            raise ImportError(msg)
+            raise RoutingError(msg)
 
         if self.is_task_reloading():
             importlib.reload(module_)

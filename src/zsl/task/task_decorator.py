@@ -22,7 +22,7 @@ from flask.config import Config
 from zsl.constants import MimeType
 from zsl.task.task_data import TaskData
 from zsl.db.model import AppModelJSONEncoder
-from zsl.task.job_context import JobContext, WebJobContext, Responder
+from zsl.task.job_context import JobContext, WebJobContext, Responder, add_responder
 import traceback
 from functools import wraps
 from os.path import os
@@ -109,16 +109,27 @@ def json_output(f):
 
     @wraps(f)
     def json_output_decorator(*args, **kwargs):
+        @inject(config=Config)
+        def get_config(config):
+            return config
+
+        config = get_config()
+
         rv = f(*args, **kwargs)
-        rv = json.dumps(rv, cls=AppModelJSONEncoder)
-
-        if isinstance(JobContext.get_current_context(), WebJobContext):
-            JobContext.get_current_context().add_responder(
-                MimeSetterWebTaskResponder(MimeType.APPLICATION_JSON.value))
-
+        indent = None
+        if config.get('DEBUG', False):
+            logging.getLogger(__name__).debug("Formatting JSON nicely.")
+            indent = 2
+        rv = json.dumps(rv, cls=AppModelJSONEncoder, indent=indent)
+        _set_json_response_content_type()
         return rv
 
     return json_output_decorator
+
+
+def _set_json_response_content_type():
+    responder = MimeSetterWebTaskResponder(MimeType.APPLICATION_JSON.value)
+    add_responder(responder)
 
 
 def jsonp_wrap(callback_key='callback'):
@@ -469,8 +480,7 @@ def crossdomain(origin=None, methods=None, headers=None, max_age=21600):
         @wraps(f)
         def crossdomain_inner_fn(*args, **kwargs):
             rv = f(*args, **kwargs)
-            if isinstance(JobContext.get_current_context(), WebJobContext):
-                JobContext.get_current_context().add_responder(responder)
+            add_responder(responder)
             return rv
 
         return crossdomain_inner_fn

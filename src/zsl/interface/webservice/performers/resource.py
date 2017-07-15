@@ -13,9 +13,11 @@ import logging
 from flask import request, Response
 
 from zsl import Zsl, inject
+from zsl.application.error_handler import error_handler
 from zsl.constants import MimeType
 from zsl.db.model import AppModelJSONEncoder
-from zsl.interface.webservice.utils.error_handler import error_handler
+from zsl.interface.webservice.utils.execution import notify_responders, \
+    convert_to_web_response
 from zsl.interface.webservice.utils.response_headers import append_headers
 from zsl.utils.request_helper import args_to_dict
 from zsl.utils.resource_helper import parse_resource_path, get_resource_task
@@ -27,6 +29,7 @@ def create_resource_mapping(app):
     @app.route("/resource/<path:path>",
                methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'])
     @append_headers
+    @convert_to_web_response
     @error_handler
     def perform_resource(path):
         logging.debug("Getting resource %s.", path)
