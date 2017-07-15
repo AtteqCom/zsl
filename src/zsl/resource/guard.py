@@ -23,7 +23,9 @@ from zsl.service.service import SessionFactory, transactional, \
 
 from enum import Enum
 
-_HTTP_STATUS_FORBIDDEN = http.client.FORBIDDEN
+from zsl.utils.http import get_http_status_code_value
+
+_HTTP_STATUS_FORBIDDEN = get_http_status_code_value(http.client.FORBIDDEN)
 
 
 class Access(Enum):

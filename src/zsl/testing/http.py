@@ -19,6 +19,7 @@ from flask.wrappers import Response
 
 from zsl import inject, Zsl
 from zsl.constants import HttpHeaders, MimeType
+from zsl.utils.http import get_http_status_code_value
 
 
 def json_loads(str_):
@@ -41,11 +42,11 @@ class HTTPTestCase(object):
         # type: (FlaskClient, str, dict, dict)->Response
         """
         Request a task using POST and convert the given data to JSON.
-        
+
         :param client: The client to ZSL which will be used for the request.
         :param task: Url which will be requested using POST method.
         :param data: Data which will be posted and first converted to JSON.
-        :param headers: Dictionary of headers that'll be appended the 
+        :param headers: Dictionary of headers that'll be appended the
                         Content-Type: application/json header.
         :return: Flask response.
         """
@@ -60,12 +61,11 @@ class HTTPTestCase(object):
         # type: (Union[int, HTTPStatus], int, AnyStr) -> None
         """Assert HTTP status
 
-        :param status: http status  
-        :param test_value: flask respond status 
+        :param status: http status
+        :param test_value: flask respond status
         :param msg: test message
         """
-        if hasattr(status, 'value'):  # py2/3
-            status = status.value
+        status = get_http_status_code_value(status)
         self.assertEqual(status, test_value, msg)
 
     def assertJSONData(self, rv, data, msg):

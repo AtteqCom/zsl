@@ -13,6 +13,7 @@ from typing import Any
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import or_
 
+from zsl.utils.http import get_http_status_code_value
 from .model_resource import ModelResource
 from zsl.interface.resource import ResourceResult
 from zsl.service.service import transactional
@@ -22,22 +23,14 @@ import http.client
 from flask import request
 
 
-def _status_code(status):
-    # type: (Any) -> int
-    """Py2/3 status code."""
-    if hasattr(status, 'value'):
-        return status.value  # python 3
-    else:
-        return status  # python 2
-
 NOT_FOUND = ResourceResult(
     body={},
-    status=_status_code(http.client.NOT_FOUND)
+    status=get_http_status_code_value(http.client.NOT_FOUND)
 )
 
 NOT_IMPLEMENTED = ResourceResult(
     body={},
-    status=_status_code(http.client.NOT_IMPLEMENTED)
+    status=get_http_status_code_value(http.client.NOT_IMPLEMENTED)
 )
 
 # any other arguments from these are considered as `property_name(_operator)=some_vaule` filter
@@ -56,7 +49,7 @@ def _page_arg(p):
 def _get_link_pages(page, per_page, count, page_url):
     # type: (int, int, int, str) -> Dict[str, str]
     """Create link header for page metadata.
-    
+
     :param page: current page
     :param per_page: page limit
     :param count: count of all resources
@@ -81,10 +74,10 @@ def _get_link_pages(page, per_page, count, page_url):
 
 
 class JsonServerResource(ModelResource):
-    """Model resource implementation to correspond with json-server. 
-    
+    """Model resource implementation to correspond with json-server.
+
     This implements the same REST interface which json-server
-    (https://github.com/typicode/json-server) uses. It transforms the given 
+    (https://github.com/typicode/json-server) uses. It transforms the given
     input arguments into ModelResource-like and then adds metadata to result.
     """
     def to_filter(self, query, arg):
@@ -97,7 +90,7 @@ class JsonServerResource(ModelResource):
 
         return ResourceResult(
             body=resource,
-            status=_status_code(http.client.CREATED),
+            status=get_http_status_code_value(http.client.CREATED),
             location="{}/{}".format(request.url, resource.get_id())
         )
 
@@ -153,7 +146,7 @@ class JsonServerResource(ModelResource):
     def _transform_list_args(self, args):
         # type: (dict) -> None
         """Transforms all list arguments from json-server to model-resource ones.
-        
+
         This modifies the given arguments.
         """
 
@@ -241,7 +234,7 @@ class JsonServerResource(ModelResource):
 
     def update(self, *args, **kwargs):
         """Modifies the parameters and adds metadata for update results.
-        
+
         Currently it does not support `PUT` method, which works as replacing
         the resource. This is somehow questionable in relation DB.
         """
