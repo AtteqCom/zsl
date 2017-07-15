@@ -9,8 +9,10 @@ error handlers.
 from __future__ import unicode_literals
 from builtins import *
 
-import traceback
+import http.client
 import logging
+import traceback
+
 from abc import abstractmethod
 from flask import request
 from functools import wraps
@@ -43,14 +45,15 @@ class DefaultErrorHandler(ErrorHandler):
         return True
 
     def handle(self, ex):
-        logging.error(str(ex) + "\n" + traceback.format_exc())
-        logging.error("Request:\n{0}\n{1}\n".format(
-            request.headers, request.data))
-        logging.info("Provide your own error handler so that "
-                     "a better error is produced, check {0}.".format(
+        logger = logging.getLogger(__name__)
+        logger.error(str(ex) + "\n" + traceback.format_exc())
+        logger.error("Request:\n{0}\n{1}\n".format(request.headers,
+                                                   request.data))
+        logger.info("Provide your own error handler so that "
+                    "a better error is produced, check {0}.".format(
             documentation_link('error_handling')))
 
-        add_responder(StatusCodeResponder(500))
+        add_responder(StatusCodeResponder(http.client.INTERNAL_SERVER_ERROR))
         return "An error occurred!"
 
 

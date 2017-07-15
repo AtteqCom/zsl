@@ -2,15 +2,17 @@
 :mod:`zsl.resource.guard`
 -------------------------
 
-Guard module defines tools to inject security checks into a resource. With 
-help of the ``guard`` class decorator and ``ResourcePolicy`` declarative 
-policy class a complex security resource behaviour can be achieved. 
+Guard module defines tools to inject security checks into a resource. With
+help of the ``guard`` class decorator and ``ResourcePolicy`` declarative
+policy class a complex security resource behaviour can be achieved.
 """
 
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from future.utils import raise_from
 from builtins import *
+
+import http.client
 
 from typing import List, Optional, Dict, Any, Callable
 from functools import wraps
@@ -20,6 +22,8 @@ from zsl.service.service import SessionFactory, transactional, \
     _TX_HOLDER_ATTRIBUTE
 
 from enum import Enum
+
+_HTTP_STATUS_FORBIDDEN = http.client.FORBIDDEN
 
 
 class Access(Enum):
@@ -31,20 +35,20 @@ class Access(Enum):
 class ResourcePolicy(object):
     """Declarative policy class.
 
-    Every CRUD method has is corespondent *can_method__before* and 
-    *can_method__after* where *method* can be one of (*create*, *read*, 
-    *update*, *delete*). *__before* method will get the CRUD method 
-    parameters and *__after* will get the CRUD method result as parameter. On 
-    returning ``Access.ALLOW`` access is granted. It should return 
-    ``Access.CONTINUE`` when the policy is not met, but is not broken, i. e. it 
+    Every CRUD method has is corespondent *can_method__before* and
+    *can_method__after* where *method* can be one of (*create*, *read*,
+    *update*, *delete*). *__before* method will get the CRUD method
+    parameters and *__after* will get the CRUD method result as parameter. On
+    returning ``Access.ALLOW`` access is granted. It should return
+    ``Access.CONTINUE`` when the policy is not met, but is not broken, i. e. it
     is not its responsibility to decide. On returning ``Access.DENY`` or raising
     a ``PolicyException`` policy is broken  and access is immediately denied.
-      
-    The default implementation of these method lookup for corresponding 
-    attribute *can_method*, so ``can_read = Access.ALLOW`` will allow access 
-    for reading without the declaration of ``can_read__before`` or 
-    ``can_read__after``. *default* attribute is used if *can_method* 
-    attribute is not declared. For more complex logic it can be declared as a 
+
+    The default implementation of these method lookup for corresponding
+    attribute *can_method*, so ``can_read = Access.ALLOW`` will allow access
+    for reading without the declaration of ``can_read__before`` or
+    ``can_read__after``. *default* attribute is used if *can_method*
+    attribute is not declared. For more complex logic it can be declared as a
     property, see examples:
 
     .. code-block:: python
@@ -52,19 +56,19 @@ class ResourcePolicy(object):
 
         class SimplePolicy(ResourcePolicy):
             '''Allow read and create'''
-            
-            default = Access.ALLOW    
+
+            default = Access.ALLOW
             can_delete = Access.CONTINUE
             can_update = Access.CONTINUE
-            
-            
+
+
         class AdminPolicy(ResourcePolicy):
             '''Only admin has access'''
-            
+
             @inject(user_service=UserService)
             def __init__(self, user_service):
                 self._user_service = user_service
-    
+
             @property
             def default(self):
                 if self._user_service.current_user.is_admin:
@@ -119,21 +123,21 @@ class ResourcePolicy(object):
 
 class PolicyViolationError(Exception):
     """Error raised when policy is violated.
-    
+
     It can bear a HTTP status code, 403 is by default.
     """
 
-    def __init__(self, message, code=403):
+    def __init__(self, message, code=_HTTP_STATUS_FORBIDDEN):
         self.code = code
         super(PolicyViolationError, self).__init__(message)
 
 
 class GuardedMixin(object):
     """Add guarded CRUD methods to resource.
-    
-    The ``guard`` replaces the CRUD guarded methods with a wrapper with 
-    security checks around these methods. It adds this mixin into the 
-    resource automatically, but it can be declared on the resource manually 
+
+    The ``guard`` replaces the CRUD guarded methods with a wrapper with
+    security checks around these methods. It adds this mixin into the
+    resource automatically, but it can be declared on the resource manually
     for IDEs to accept calls to the guarded methods.
     """
 
@@ -158,7 +162,7 @@ def default_error_handler(e, *_):
     # type: (PolicyViolationError, Any) -> ResourceResult
     """Default policy violation error handler.
 
-    It will create an empty resource result with an error HTTP code.  
+    It will create an empty resource result with an error HTTP code.
     """
 
     return ResourceResult(
@@ -169,45 +173,45 @@ def default_error_handler(e, *_):
 
 class guard(object):
     """Guard decorator.
-    
-    This decorator wraps the CRUD methods with security checks before and 
-    after CRUD method execution, so that the response can be stopped or 
-    manipulated. The original CRUD methods are renamed to *guarded_method*, 
-    where *method* can be [*create*, *read*, *update*, *delete*], so by using a 
-    `GuardedResource` as a base, you can still redeclare the *guarded_methods* 
+
+    This decorator wraps the CRUD methods with security checks before and
+    after CRUD method execution, so that the response can be stopped or
+    manipulated. The original CRUD methods are renamed to *guarded_method*,
+    where *method* can be [*create*, *read*, *update*, *delete*], so by using a
+    `GuardedResource` as a base, you can still redeclare the *guarded_methods*
     and won't loose the security checks.
-    
-    It takes a list of policies, which will be always checked before and 
-    after executing the CRUD method. 
-    
-    Policy is met, when it returns ``Access.ALLOW``, on ``Access.CONTINUE`` it 
-    will continue to check others and on ``Access.DENY`` or raising a 
-    ``PolicyViolationError`` access will be restricted. If there is no policy 
-    which grants the access a ``PolicyViolationError`` is raised and access 
-    will be restricted. 
-    
-    Guard can have a custom exception handlers or method wrappers to _wrap the 
-    CRUD method around. 
-    
+
+    It takes a list of policies, which will be always checked before and
+    after executing the CRUD method.
+
+    Policy is met, when it returns ``Access.ALLOW``, on ``Access.CONTINUE`` it
+    will continue to check others and on ``Access.DENY`` or raising a
+    ``PolicyViolationError`` access will be restricted. If there is no policy
+    which grants the access a ``PolicyViolationError`` is raised and access
+    will be restricted.
+
+    Guard can have a custom exception handlers or method wrappers to _wrap the
+    CRUD method around.
+
     .. code-block:: python
-    
-    
+
+
         class Policy(ResourcePolicy):
             default = Access.DENY
             can_read = Access.ALLOW  # allow only read
-    
-    
+
+
         @guard([Policy()])
         class GuardedResource(GuardedMixin):
             def read(self, param, args, data):
                 return resources[param]
-                
-                
+
+
         class SpecificResource(GuardedResource):
             # override GuardedResource.read, but with its security checks
             def guarded_read(self, param, args, data):
                 return specific_resources[param]
-        
+
     """
     method_wrappers = []
     exception_handlers = [default_error_handler]
@@ -240,7 +244,7 @@ class guard(object):
 
             elif access == Access.DENY:
                 raise PolicyViolationError('Access denied for {} {}'.format(
-                    name, 'before'), code=403)
+                    name, 'before'), code=_HTTP_STATUS_FORBIDDEN)
 
             elif access == Access.CONTINUE:
                 continue
@@ -250,7 +254,7 @@ class guard(object):
 
         raise PolicyViolationError(
             "Access haven't been granted for {} {}".format(
-                name, 'before'), code=403)
+                name, 'before'), code=_HTTP_STATUS_FORBIDDEN)
 
     @staticmethod
     def _check_after_policies(res, name, result):
@@ -262,7 +266,7 @@ class guard(object):
 
             elif access == Access.DENY:
                 raise PolicyViolationError('Policy violation for {} {}'.format(
-                    name, 'before'), code=403)
+                    name, 'before'), code=_HTTP_STATUS_FORBIDDEN)
 
             elif access == Access.CONTINUE:
                 continue
@@ -272,7 +276,7 @@ class guard(object):
 
         raise PolicyViolationError(
             "Access haven't been granted for {} {}".format(
-                name, 'after'), code=403)
+                name, 'after'), code=_HTTP_STATUS_FORBIDDEN)
 
     def _wrap(self, method):
         # type: (Callable) -> Callable
@@ -332,7 +336,7 @@ class guard(object):
 
 def transactional_error_handler(e, rv, _):
     # type: (Any, Any, SessionFactory) -> Any
-    """Re-raise a violation error to be handled in the 
+    """Re-raise a violation error to be handled in the
     ``_nested_transactional``.
     """
     raise_from(_TransactionalPolicyViolationError(rv), e)
@@ -357,8 +361,8 @@ def _nested_transactional(fn):
 
 class transactional_guard(guard):
     """Security guard for ``ModelResource``.
-    
-    This add a transactional method wrapper and error handler which calls the 
+
+    This add a transactional method wrapper and error handler which calls the
     rollback on ``PolicyViolationError``.
     """
     method_wrappers = [transactional, _nested_transactional]
@@ -396,7 +400,7 @@ def _guarded_name(method_name):
 def _before_name(method_name):
     # type: (str) -> str
     """Return the name of the before check method.
-    
+
     >>> _before_name('read')
     'can_read__before'
     """
@@ -406,7 +410,7 @@ def _before_name(method_name):
 def _after_name(method_name):
     # type: (str) -> str
     """Return the name of after check method.
-    
+
     >>> _after_name('read')
     'can_read__after'
     """
@@ -416,7 +420,7 @@ def _after_name(method_name):
 def _call_before(policy, method_name):
     # type: (ResourcePolicy, str) -> Callable
     """Return the before check method.
-    
+
     >>> p = ResourcePolicy()
     >>> _call_before(p, 'read')
     p.can_read__before

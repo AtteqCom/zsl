@@ -6,6 +6,7 @@
 """
 from __future__ import unicode_literals
 
+import http.client
 import logging
 
 from zsl import inject, Zsl
@@ -22,4 +23,4 @@ def create_not_found_mapping(app):
 
         response_str = "404 Not Found: path '{0}' was not mapped.".format(path)
         logging.warning(response_str)
-        return response_str, 404
+        return response_str, http.client.NOT_FOUND
