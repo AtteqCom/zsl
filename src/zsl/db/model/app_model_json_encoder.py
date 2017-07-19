@@ -12,11 +12,7 @@ from zsl.db.model import AppModel
 class AppModelJSONEncoder(JSONEncoder):
     def default(self, o):
         if isinstance(o, AppModel):
-            d = dict(o.__dict__)
-            for k in o._not_serialized_attributes:
-                if k in d:
-                    d.pop(k)
-            return d
+            return o.get_attributes()
         elif isinstance(o, object):
             return dict(o.__dict__)
         else:

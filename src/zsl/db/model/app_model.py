@@ -88,13 +88,14 @@ class AppModel(object):
     def _set_id_name(self, id_name):
         self._id_name = id_name
 
-    def get_attributes(self):
-        def convert(v):
-            if isinstance(v, AppModel):
-                return v.get_attributes()
-            else:
-                return v
+    @staticmethod
+    def convert(v):
+        if isinstance(v, AppModel):
+            return v.get_attributes()
+        else:
+            return v
 
+    def get_attributes(self):
         d = dict(self.__dict__)
 
         for k in self.__dict__:
@@ -102,18 +103,18 @@ class AppModel(object):
                 d.pop(k)
 
             elif isinstance(d[k], AppModel):
-                d[k] = d[k].get_attributes()
+                d[k] = self.convert(d[k])
 
             elif isinstance(d[k], list):
-                d[k] = list(map(convert, d[k]))
+                d[k] = list(map(self.convert, d[k]))
 
             elif isinstance(d[k], tuple):
-                d[k] = list(map(convert, d[k]))
+                d[k] = list(map(self.convert, d[k]))
                 d[k] = tuple(d[k])
 
             elif isinstance(d[k], dict):
                 for key, value in viewitems(getattr(self, k)):
-                    d[k][key] = convert(value)
+                    d[k][key] = self.convert(value)
 
         return d
 
