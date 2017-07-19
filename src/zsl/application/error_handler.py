@@ -17,12 +17,20 @@ from abc import abstractmethod
 from flask import request
 from functools import wraps
 
+from zsl.db.model.app_model import AppModel
 from zsl.router.task import RoutingError
 from zsl.task.job_context import add_responder, StatusCodeResponder
 
 from zsl.utils.documentation import documentation_link
 
 _error_handlers = []
+
+
+class ErrorResponse(AppModel):
+    def __init__(self, code, message):
+        super(ErrorResponse, self).__init__({})
+        self.code = code
+        self.message = message
 
 
 class ErrorHandler(object):
@@ -54,7 +62,7 @@ class DefaultErrorHandler(ErrorHandler):
             documentation_link('error_handling')))
 
         add_responder(StatusCodeResponder(http.client.INTERNAL_SERVER_ERROR))
-        return "An error occurred!"
+        return ErrorResponse('UNKNOWN_ERROR', "An error occurred!")
 
 
 class RoutingErrorHandler(ErrorHandler):
