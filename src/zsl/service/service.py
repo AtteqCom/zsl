@@ -7,7 +7,7 @@
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
-from builtins import *
+from builtins import *  # NOQA
 
 import logging
 from functools import wraps

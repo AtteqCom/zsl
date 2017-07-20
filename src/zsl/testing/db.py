@@ -45,6 +45,7 @@ class TestSessionFactory(SessionFactory):
         # type: () -> Session
         if TestSessionFactory._test_session is None:
             TestSessionFactory._test_session = self._session_holder()
+            TestSessionFactory._test_session.autoflush = True
 
         assert TestSessionFactory._test_session is not None
         return TestSessionFactory._test_session
