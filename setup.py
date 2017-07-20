@@ -17,7 +17,7 @@ if sys.version_info < (3, 0):
     requirements.append('enum34')
 
 setup(name='zsl',
-      version='0.16.5',
+      version='0.16.6',
       description='zsl application framework for web based services',
       author='Atteq s.r.o.',
       author_email='open.source@atteq.com',

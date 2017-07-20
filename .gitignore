@@ -1,3 +1,5 @@
+.virtualenv/
+
 # settings
 service/.settings
 
