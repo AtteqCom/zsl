@@ -5,12 +5,25 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
+
+import logging
+from importlib import import_module, reload
+
+import sys
+
 from zsl.router.method import get_method_packages
-import importlib
 
 
 def call_exposers_in_method_packages():
     for package in get_method_packages():
-        module = importlib.import_module(package)
+        if package in sys.modules:
+            module = sys.modules[package]
+            if hasattr(module, '__reloader__'):
+                getattr(module, '__reloader__')()
+        else:
+            module = import_module(package)
+
+        msg = "Calling exposers in method package {}".format(package)
+        logging.getLogger(__name__).debug(msg)
         if hasattr(module, '__exposer__'):
             getattr(module, '__exposer__')()

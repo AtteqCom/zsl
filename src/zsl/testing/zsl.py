@@ -53,4 +53,7 @@ class ZslTestCase(object):
 
     @classmethod
     def tearDownClass(cls):
+        config = cls.ZSL_TEST_CONFIGURATION  # type: ZslTestConfiguration
+        logging.getLogger(config.app_name).debug(
+            "ZSL test app tear down {0}.".format(config.app_name))
         set_current_app(None)
