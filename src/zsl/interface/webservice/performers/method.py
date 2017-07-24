@@ -7,7 +7,7 @@
 from __future__ import unicode_literals
 
 import logging
-from importlib import import_module, reload
+from importlib import import_module
 
 import sys
 
