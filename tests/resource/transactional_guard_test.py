@@ -7,7 +7,7 @@ from __future__ import (absolute_import, division,
 from builtins import *
 
 from mocks import mock_db_session
-from zsl.service.service import TransactionHolder
+from zsl.application.modules.alchemy_module import TransactionHolder
 
 try:
     import unittest.mock as mock
@@ -72,8 +72,10 @@ class TransactionalGuardTest(TestCase):
             rollback = mock.MagicMock()
             _orm = mock.MagicMock()
 
-        with mock.patch('zsl.service.service.TransactionHolder',
-                        side_effect=TestTHolder):
+        with mock.patch(
+            'zsl.application.modules.alchemy_module.TransactionHolder',
+            side_effect=TestTHolder
+        ):
             resource = GuardedUserModel()
             resource.read('', {}, {})
 

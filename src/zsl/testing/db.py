@@ -25,11 +25,14 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
 
+import logging
 from injector import Module, provides, singleton
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm.session import Session
 
 from zsl import inject
+from zsl.application.modules.alchemy_module import TransactionHolderFactory, \
+    TransactionHolder
 from zsl.db.model.sql_alchemy import metadata
 from zsl.service.service import SessionFactory
 
@@ -37,9 +40,6 @@ from zsl.service.service import SessionFactory
 class TestSessionFactory(SessionFactory):
     """Factory always returning the single test transaction."""
     _test_session = None
-
-    def __init__(self):
-        super(TestSessionFactory, self).__init__()
 
     def create_session(self):
         # type: () -> Session
@@ -52,6 +52,18 @@ class TestSessionFactory(SessionFactory):
 
     def close_session(self):
         pass
+
+
+class TestTransactionHolder(TransactionHolder):
+    def close(self):
+        logging.getLogger(__name__).debug("Close.")
+        self._orm = None
+        self._in_transaction = False
+
+
+class TestTransactionHolderFactory(TransactionHolderFactory):
+    def create_transaction_holder(self):
+        return TestTransactionHolder()
 
 
 class DbTestModule(Module):
@@ -69,9 +81,14 @@ class DbTestModule(Module):
         # type: (SessionFactory)->SessionFactory
         return session_factory
 
+    @provides(TransactionHolderFactory, scope=singleton)
+    def provide_transaction_holder_factory(self):
+        return TestTransactionHolderFactory()
+
 
 class DbTestCase(object):
-    """:class:`.DbTestCase` is a mixin to be used when testing with a database."""
+    """:class:`.DbTestCase` is a mixin to be used when testing with
+    a database."""
 
     _session = None
 

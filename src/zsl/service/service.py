@@ -7,6 +7,7 @@
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+
 from builtins import *  # NOQA
 
 import logging
@@ -14,80 +15,9 @@ from functools import wraps
 
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm.session import Session
-from zsl.application.modules.alchemy_module import SessionHolder
+from zsl.application.modules.alchemy_module import TransactionHolderFactory, EmptyTransactionalHolder, SessionFactory
 
 from zsl import inject, Zsl
-
-
-class SessionFactory(object):
-    """Creates a db session with an open transaction."""
-
-    @inject(session_holder=SessionHolder)
-    def __init__(self, session_holder):
-        self._session_holder = session_holder
-
-    def create_session(self):
-        # type: ()->Session
-        return self._session_holder()
-
-
-class TransactionHolder(object):
-    def __init__(self):
-        self._orm = None
-        self._transaction_callback = []
-        self._in_transaction = False
-
-    def has_session(self):
-        # type: () -> bool
-        return self._orm is not None
-
-    @property
-    def session(self):
-        # type: () -> Session
-        return self._orm
-
-    @property
-    def in_transaction(self):
-        return self._in_transaction
-
-    def inject_session(self, session):
-        # type: (Session) -> None
-        """Used to set the session in the @transactional decorator."""
-        self._orm = session
-        self._in_transaction = True
-
-    def commit(self):
-        logging.getLogger(__name__).debug("Commit.")
-        self._orm.commit()
-
-    def rollback(self):
-        logging.getLogger(__name__).debug("Rollback.")
-        self._orm.rollback()
-
-    def close(self):
-        logging.getLogger(__name__).debug("Close.")
-        self._orm.close()
-        self._orm = None
-        self._in_transaction = False
-
-    def append_transaction_callback(self, callback):
-        self._transaction_callback.append(callback)
-
-    def run_transaction_callbacks(self):
-        callbacks = self._transaction_callback
-        self._transaction_callback = []
-        for c in callbacks:
-            c()
-
-
-class EmptyTransactionalHolder(object):
-    def __init__(self):
-        self._session = None
-
-    @property
-    def session(self):
-        return self._session
-
 
 _EMPTY_TX_HOLDER = EmptyTransactionalHolder()
 
@@ -123,6 +53,11 @@ def transactional(f):
         # type: (SessionFactory) -> SessionFactory
         return session_factory
 
+    @inject(tx_holder_factory=TransactionHolderFactory)
+    def _get_tx_holder_factory(tx_holder_factory):
+        # type: (TransactionHolderFactory) -> TransactionHolderFactory
+        return tx_holder_factory
+
     @wraps(f)
     def transactional_f(service, *args, **kwargs):
         session_factory = _get_session_factory()
@@ -132,7 +67,7 @@ def transactional(f):
             tx_holder = getattr(service, _TX_HOLDER_ATTRIBUTE)
             assert tx_holder.has_session()
         else:
-            tx_holder = TransactionHolder()
+            tx_holder = _get_tx_holder_factory().create_transaction_holder()
             setattr(service, _TX_HOLDER_ATTRIBUTE, tx_holder)
             trans_close = True
 
@@ -155,8 +90,11 @@ def transactional(f):
                 tx_holder.rollback()
             raise
         finally:
+            logging.getLogger(__name__).debug("Finishing transactional "
+                                              "method.")
             if trans_close:
                 tx_holder.close()
                 delattr(service, _TX_HOLDER_ATTRIBUTE)
+                logging.getLogger(__name__).debug("Closing TX session.")
 
     return transactional_f
