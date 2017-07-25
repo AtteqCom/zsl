@@ -16,11 +16,14 @@ from zsl.utils.injection_helper import bind
 def mock_db_session():
     mock_sess = mock.MagicMock()
 
-    class TestSessionFactory(SessionFactory):
-        def create_session(self):
-            return mock_sess
+    def session_holder():
+        return mock_sess
+
+    class TestSessionFactory(DbTestTestSessionFactory):
+        def __init__(self):
+            super(TestSessionFactory, self).__init__()
+            self._session_holder = session_holder
 
     bind(SessionFactory, to=TestSessionFactory)
     bind(DbTestTestSessionFactory, to=TestSessionFactory)
     return mock_sess
-

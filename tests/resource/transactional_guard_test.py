@@ -24,7 +24,7 @@ from zsl.resource.guard import transactional_guard, GuardedMixin, \
 
 from resource.resource_test_helper import UserModel, \
     create_resource_test_data, users
-from zsl.testing.db import IN_MEMORY_DB_SETTINGS
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DbTestCase
 
 
 class UserResource(ModelResource):
@@ -38,6 +38,7 @@ class TransactionalGuardTest(TestCase):
         zsl.testing = True
 
         create_resource_test_data()
+        super(TransactionalGuardTest, self).setUp()
 
     def testIsInTransaction(self):
         test_case = self
@@ -96,8 +97,18 @@ class TransactionalGuardTest(TestCase):
         class GuardedUserModel(UserResource, GuardedMixin):
             pass
 
-        resource = GuardedUserModel()
-        resource.read('', {}, {})
+        class MyTestCase(DbTestCase, TestCase):
+            def runTest(self):
+                pass
 
-        mock_sess.query.assert_called()
-        mock_sess.rollback.assert_called()
+            def testIt(self):
+                resource = GuardedUserModel()
+                resource.read('', {}, {})
+
+                mock_sess.query.assert_called()
+                mock_sess.rollback.assert_called()
+
+        test_case = MyTestCase()
+        test_case.setUp()
+        test_case.testIt()
+        test_case.tearDown()

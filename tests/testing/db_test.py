@@ -46,14 +46,10 @@ class DbTestCaseTest(ZslTestCase, TestCase):
         test = DbTestCaseTest.DbTest()
         with mock.patch('zsl.testing.db.metadata') as mock_metadata:
             mock_sess = mock_db_session()
-            DbTestCaseTest.DbTest.setUpClass()
-            mock_metadata.create_all.assert_called_once()
             test.setUp()
             test.tearDown()
-            mock_sess.rollback.assert_called_once()
-            mock_sess.close.assert_called_once()
-            mock_sess.reset_mock()
-            DbTestCaseTest.DbTest.tearDownClass()
+            mock_metadata.create_all.assert_called_once()
+            mock_sess.begin.assert_called_once()
             mock_sess.rollback.assert_called_once()
             mock_sess.close.assert_called_once()
 
@@ -61,11 +57,9 @@ class DbTestCaseTest(ZslTestCase, TestCase):
         test = DbTestCaseTest.DbTest()
         mock_tsf = mock.MagicMock()
         bind(TestSessionFactory, to=mock_tsf)
-        DbTestCaseTest.DbTest.setUpClass()
-        mock_tsf.create_session.assert_called_once()
-        mock_tsf.reset_mock()
         test.setUp()
-        mock_tsf.create_session.assert_called_once()
+        mock_tsf.create_test_session.assert_called_once()
+        mock_tsf.create_session.assert_not_called()
 
 
 class TestSessionFactoryTest(ZslTestCase, TestCase):
@@ -76,12 +70,13 @@ class TestSessionFactoryTest(ZslTestCase, TestCase):
     )
 
     def test_single_session(self):
-        self.assertNotEquals(TestSessionFactory(), TestSessionFactory(),
-                             "Two different instances may not be equal.")
+        self.assertNotEqual(TestSessionFactory(), TestSessionFactory(),
+                            "Two different instances may not be equal.")
 
         f = TestSessionFactory()
-        self.assertEquals(f.create_session(), f.create_session(),
-                          "Two results must be equal.")
+        f.create_test_session()
+        self.assertEqual(f.create_session(), f.create_session(),
+                         "Two results must be equal.")
 
         self.assertIsInstance(f.create_session(), Session, "Session must be correct.")
 
@@ -108,7 +103,6 @@ class DbTestModuleTest(ZslTestCase, TestCase):
         self.assertIsInstance(get_test_session_factory(), TestSessionFactory,
                               "Correct session factory must be returned")
 
-        self.assertEquals(get_test_session_factory(), get_session_factory(),
-                          "Test session factory and session factory must "
-                          "be the same")
-
+        self.assertEqual(get_test_session_factory(), get_session_factory(),
+                         "Test session factory and session factory must "
+                         "be the same")
