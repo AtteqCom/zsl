@@ -82,9 +82,9 @@ def json_input(f):
         if task_data is None:
             logging.error("Task data is empty during JSON decoding.")
 
-        if task_data.get_data():
+        if task_data.payload:
             try:
-                is_transformed = request.json
+                is_transformed = request.get_json()
 
                 # We transform the data only in the case of plain POST requests.
                 if not is_transformed:

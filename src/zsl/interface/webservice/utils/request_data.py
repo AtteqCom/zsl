@@ -5,6 +5,5 @@ from builtins import *
 
 def extract_data(request):
     data = request.form.to_dict(flat=True)
-    if request.json:
-        data = request.json
-    return data
+    json_data = request.get_json()
+    return json_data if json_data else data

@@ -41,29 +41,34 @@ class TestSessionFactory(SessionFactory):
     """Factory always returning the single test transaction."""
     _test_session = None
 
-    def create_session(self):
-        # type: () -> Session
-        if TestSessionFactory._test_session is None:
-            TestSessionFactory._test_session = self._session_holder()
-            TestSessionFactory._test_session.autoflush = True
-
+    @inject(engine=Engine)
+    def create_test_session(self, engine):
+        # type: (Engine) -> Session
+        assert TestSessionFactory._test_session is None
+        metadata.bind = engine
+        metadata.create_all(engine)
+        logging.getLogger(__name__).debug("Create test session")
+        TestSessionFactory._test_session = self._session_holder()
+        TestSessionFactory._test_session.autoflush = True
+        TestSessionFactory._test_session.begin(subtransactions=True)
         assert TestSessionFactory._test_session is not None
         return TestSessionFactory._test_session
 
-    def close_session(self):
-        pass
+    def create_session(self):
+        logging.getLogger(__name__).debug("Create session")
+        assert TestSessionFactory._test_session is not None
+        TestSessionFactory._test_session.begin_nested()
+        return TestSessionFactory._test_session
 
-
-class TestTransactionHolder(TransactionHolder):
-    def close(self):
-        logging.getLogger(__name__).debug("Close.")
-        self._orm = None
-        self._in_transaction = False
+    def close_test_session(self):
+        TestSessionFactory._test_session.rollback()
+        TestSessionFactory._test_session.close()
+        TestSessionFactory._test_session = None
 
 
 class TestTransactionHolderFactory(TransactionHolderFactory):
     def create_transaction_holder(self):
-        return TestTransactionHolder()
+        return TransactionHolder()
 
 
 class DbTestModule(Module):
@@ -92,35 +97,21 @@ class DbTestCase(object):
 
     _session = None
 
-    @classmethod
-    @inject(session_factory=TestSessionFactory, engine=Engine)
-    def setUpClass(cls, engine, session_factory):
-        # type: (Engine, SessionFactory)->None
-        super(DbTestCase, cls).setUpClass()
-        DbTestCase._session = session_factory.create_session()
-        metadata.bind = engine
-        metadata.create_all(engine)
-
     @inject(session_factory=TestSessionFactory)
     def setUp(self, session_factory):
-        # type: (SessionFactory)->None
-        session = session_factory.create_session()
-        session.begin(subtransactions=True)
+        super(DbTestCase, self).setUp()
+        # type: (TestSessionFactory)->None
+        logging.getLogger(__name__).debug("DbTestCase.setUp")
+        session_factory.create_test_session()
 
     @inject(session_factory=TestSessionFactory)
     def tearDown(self, session_factory):
-        # type: (SessionFactory)->None
+        # type: (TestSessionFactory)->None
         # This will return the same transaction/session
         # as the one used in setUp.
-        sess = session_factory.create_session()
-        sess.rollback()
-        sess.close()
-
-    @classmethod
-    def tearDownClass(cls):
-        session = DbTestCase._session
-        session.rollback()
-        session.close()
+        logging.getLogger(__name__).debug("DbTestCase.tearDown")
+        session_factory.close_test_session()
+        super(DbTestCase, self).tearDown()
 
 
 IN_MEMORY_DB_SETTINGS = {

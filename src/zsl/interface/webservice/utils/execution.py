@@ -43,7 +43,7 @@ def convert_to_web_response(f):
 @inject(app=Zsl)
 def execute_web_task(job_context, callable, app):
     # type:(WebJobContext,Callable,Zsl)->Response
-    app.logger.debug("Data found '%s'.", str(job_context.task_data.get_data()))
+    app.logger.debug("Data found '%s'.", str(job_context.task_data.payload))
     JobContext.set_current_context(job_context)
     if request.method == 'OPTIONS':
         return app.make_default_options_response()
