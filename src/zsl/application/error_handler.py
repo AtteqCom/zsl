@@ -20,7 +20,7 @@ from flask import request
 from functools import wraps
 
 from zsl import inject
-from zsl.errors import ErrorConfiguration
+from zsl.errors import ErrorConfiguration, ErrorHandler
 from zsl.utils.http import get_http_status_code_value
 from zsl.task.task_decorator import json_output
 from zsl.db.model.app_model import AppModel
@@ -34,16 +34,6 @@ class ErrorResponse(AppModel):
         super(ErrorResponse, self).__init__({})
         self.code = code
         self.message = message
-
-
-class ErrorHandler(object):
-    @abstractmethod
-    def can_handle(self, e):
-        pass
-
-    @abstractmethod
-    def handle(self, e):
-        pass
 
 
 def register(e):

@@ -1,5 +1,5 @@
+from abc import ABCMeta, abstractmethod
 from typing import List
-from xml.dom.pulldom import ErrorHandler
 
 
 class ZslError(Exception):
@@ -9,9 +9,21 @@ class ZslError(Exception):
 ERROR_CONFIG_NAME = 'ERRORS'
 
 
+class ErrorHandler(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def can_handle(self, e):
+        pass
+
+    @abstractmethod
+    def handle(self, e):
+        pass
+
+
 class ErrorConfiguration(object):
     def __init__(self, handlers=None, use_flask_handler=False):
-        # type:(List[ErrorHandler], bool)->None
+        # type: (List[ErrorHandler], bool)->None
         self._use_flask_handler = use_flask_handler
         self._handlers = handlers if handlers is not None else []
 
@@ -29,5 +41,5 @@ class ErrorConfiguration(object):
 
     @property
     def handlers(self):
-        # type:()->List[ErrorHandler]
+        # type: ()->List[ErrorHandler]
         return self._handlers
