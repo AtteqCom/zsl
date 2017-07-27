@@ -40,7 +40,7 @@ class TaskRouterTestCase(ZslTestCase, TestCase):
             self.assertEqual(http.client.OK,
                              response.status_code,
                              "Status code must be ok.")
-            self.assertEqual('ok', response.data)
+            self.assertEqual('ok', response.data.decode('utf-8'))
 
     @inject(app=Zsl)
     def testNotFound(self, app):
@@ -59,4 +59,4 @@ class TaskRouterTestCase(ZslTestCase, TestCase):
             self.assertEqual(http.client.OK,
                              response.status_code,
                              "Status code must be ok.")
-            self.assertEqual('ok', response.data)
+            self.assertEqual('ok', response.data.decode('utf-8'))

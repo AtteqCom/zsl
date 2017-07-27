@@ -67,8 +67,12 @@ class Performer(object):
     @convert_to_web_response
     @error_handler
     def __call__(self, *a, **kw):
-        jc = WebJobContext(None, extract_data(request), None, None, request)
-        return execute_web_task(jc, lambda: self._call_inner_function(a, kw))
+        def task_callable():
+            return self._call_inner_function(a, kw)
+
+        jc = WebJobContext(None, extract_data(request), task_callable,
+                           task_callable, request)
+        return execute_web_task(jc, task_callable)
 
 
 def _get_method_configuration(config):

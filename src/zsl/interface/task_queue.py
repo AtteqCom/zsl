@@ -62,16 +62,12 @@ class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
     It should be able to run as a stand alone application.
     """
 
-    @inject(app=Zsl, config=Config, task_router=TaskRouter)
-    def __init__(self, app, config, task_router):
+    @inject(app=Zsl, config=Config)
+    def __init__(self, app, config):
         # type: (Zsl, Config, TaskRouter) -> None
         self._app = app
         self._config = config
-        self._task_router = task_router
-
         self._should_stop = False
-
-        self._task_router.set_task_reloading(self._task_router.is_task_reloading() or self._config['RELOAD_GEARMAN'])
 
     @staticmethod
     def _get_client_id():

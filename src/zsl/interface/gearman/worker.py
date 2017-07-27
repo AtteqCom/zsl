@@ -60,7 +60,6 @@ class GearmanTaskQueueWorker(TaskQueueWorker):
         # type: (ReloadingWorker, GearmanJob) -> dict
         job = job_from_gearman_job(job)
         self._current_worker = worker
-
         return self.execute_job(job)
 
     def run(self):
