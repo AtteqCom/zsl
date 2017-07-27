@@ -19,17 +19,14 @@ from abc import abstractmethod
 from flask import request
 from functools import wraps
 
+from zsl import inject
+from zsl.errors import ErrorConfiguration
 from zsl.utils.http import get_http_status_code_value
-
 from zsl.task.task_decorator import json_output
-
 from zsl.db.model.app_model import AppModel
 from zsl.router.task import RoutingError
-from zsl.task.job_context import add_responder, StatusCodeResponder
-
+from zsl.task.job_context import add_responder, StatusCodeResponder, JobContext, WebJobContext
 from zsl.utils.documentation import documentation_link
-
-_error_handlers = []
 
 
 class ErrorResponse(AppModel):
@@ -90,6 +87,7 @@ class RoutingErrorHandler(ErrorHandler):
 
 _DEFAULT_ERROR_HANDLER = DefaultErrorHandler()
 _ROUTING_ERROR_HANDLER = RoutingErrorHandler()
+_error_handlers = [_ROUTING_ERROR_HANDLER]
 
 
 def error_handler(f):
@@ -103,11 +101,22 @@ def error_handler(f):
 
     @wraps(f)
     def error_handling_function(*args, **kwargs):
+        @inject(error_config=ErrorConfiguration)
+        def get_error_configuration(error_config):
+            # type:(ErrorConfiguration)->ErrorConfiguration
+            return error_config
+
+        def should_skip_handling():
+            use_flask_handler = get_error_configuration().use_flask_handler
+            is_web_request = isinstance(JobContext.get_current_context(), WebJobContext)
+            return use_flask_handler and is_web_request
+
         try:
             return f(*args, **kwargs)
-        except RoutingError as ie:
-            return _ROUTING_ERROR_HANDLER.handle(ie)
         except Exception as ex:
+            if should_skip_handling():
+                raise
+
             for eh in _error_handlers:
                 if eh.can_handle(ex):
                     return eh.handle(ex)
