@@ -11,7 +11,7 @@ from future.utils import viewitems
 from builtins import object
 from functools import partial
 from zsl import inject
-from flask.config import Config
+from zsl import Config
 
 
 def redis_key(*args):

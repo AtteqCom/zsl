@@ -46,7 +46,10 @@ The minimum configuration has to contain these values:
 
     # settings/app_settings.cfg
 
-    TASK_PACKAGES = ('app.tasks',)
+    TASKS = TaskConfiguration()\
+        .create_namespace('task')\
+            .add_packages(['app.tasks'])\
+            .get_configuration()
     RESOURCE_PACKAGE = ()
     DATABASE_URI = 'postgresql://postgres:postgres@localhost/postgres'
     DATABASE_ENGINE_PROPS = {}

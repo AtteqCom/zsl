@@ -17,8 +17,8 @@ from datetime import timedelta
 from typing import Callable
 
 from flask import request
-from flask.config import Config
 
+from zsl import Config
 from zsl.constants import MimeType
 from zsl.task.task_data import TaskData
 from zsl.db.model import AppModelJSONEncoder

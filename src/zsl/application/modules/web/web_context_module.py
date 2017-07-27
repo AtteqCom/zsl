@@ -9,12 +9,31 @@ import click
 
 from injector import Binder, provides, singleton
 
-from zsl import Zsl, inject
+from zsl import Zsl, inject, Config
 from zsl.application.initialization_context import InitializationContext
-from zsl.application.initializers.web_initializer import WebInitializer
 from zsl.application.modules.cli_module import ZslCli
 from zsl.application.modules.context_module import DefaultContextModule, default_initializers
+from zsl.interface.web.performers.task import create_task_mapping
+from zsl.router.task import TaskConfiguration, TASK_CONFIGURATION_NAME
 from zsl.utils.injection_helper import simple_bind
+
+
+class WebInitializer(object):
+    """Initialize the web application."""
+
+    @staticmethod
+    def initialize():
+        """
+        Import in this form is necessary so that we avoid the unwanted behavior and immediate initialization of the
+        application objects. This makes the initialization procedure run in the time when it is necessary and has every
+        required resources.
+        """
+        from zsl.interface.web.performers.default import create_not_found_mapping
+        from zsl.interface.web.performers.resource import create_resource_mapping
+
+        create_not_found_mapping()
+        create_resource_mapping()
+
 
 #: Initializers used in unit web applications
 web_initializers = default_initializers + (WebInitializer,)
@@ -72,7 +91,14 @@ class WebContextModule(DefaultContextModule):
     def provide_web_handler(self):
         return WebHandler()
 
+    @provides(interface=TaskConfiguration, scope=singleton)
+    @inject(config=Config)
+    def provide_task_configuration(self, config):
+        default_config = TaskConfiguration().create_namespace('task').add_packages(['zsl.tasks']).get_configuration()
+        return config.get(TASK_CONFIGURATION_NAME, default_config)
+
     def configure(self, binder):
         # type: (Binder) -> None
         super(WebContextModule, self).configure(binder)
         simple_bind(binder, WebCli, singleton)
+        create_task_mapping()

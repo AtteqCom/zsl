@@ -3,33 +3,33 @@
 
 # ZSL - z' service layer
 
-ZSL is a Python micro-framework utilizing 
-[dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) 
-for creating service applications on top of 
-[Flask](http://flask.pocoo.org/docs/0.11/) web framework and 
-[Gearman](http://gearman.org/) job server or 
+ZSL is a Python micro-framework utilizing
+[dependency injection](https://en.wikipedia.org/wiki/Dependency_injection)
+for creating service applications on top of
+[Flask](http://flask.pocoo.org/docs/0.11/) web framework and
+[Gearman](http://gearman.org/) job server or
 [Celery](http://http://www.celeryproject.org/) task queue.
 
 ## Motivation
 
-We developed ZSL to modernize our workflow with maintaining our clients' 
-mostly web applications written in various older CMS solutions without the 
+We developed ZSL to modernize our workflow with maintaining our clients'
+mostly web applications written in various older CMS solutions without the
 need to rewrite them significantly. With ZSL we can write our new components
-in Python, with one coherent shared codebase, accessible trough Gearman or 
+in Python, with one coherent shared codebase, accessible trough Gearman or
 JavaScript. Also the same code can be called through various endpoints - web or
  task queue nowadays.
-    
+
 ## Disclaimer
 
-At current stage this should be taken as proof of concept. We don't recommend to 
-run in any production except ours. It is too rigid, with minimum test coverage 
-and lots of bad code practices. We open sourced it as way of motivation for us 
+At current stage this should be taken as proof of concept. We don't recommend to
+run in any production except ours. It is too rigid, with minimum test coverage
+and lots of bad code practices. We open sourced it as way of motivation for us
 to make it better.
 
 ## Installation
 
-We recommend to install it trough [PyPi](https://pypi.python.org/pypi) and run it in 
-a [virtualenv](https://docs.python.org/3/library/venv.html) or 
+We recommend to install it trough [PyPi](https://pypi.python.org/pypi) and run it in
+a [virtualenv](https://docs.python.org/3/library/venv.html) or
 [docker](https://docker.com) container.
 
 ```bash
@@ -39,22 +39,22 @@ $ pip install zsl
 ## Getting started
 
 For now it is a bit cumbersome to get it running. It has inherited settings
-trough ENV variables from Flask and has a rigid directory structure like django 
+trough ENV variables from Flask and has a rigid directory structure like django
 apps. On top of that, it needs a database and Redis.
 
 The minimum application layout has to contain:
 ```
 .
-├── app                    # application sources 
+├── app                    # application sources
 │   ├── __init__.py
 │   └── tasks              # public tasks
 │       ├── hello.py
 │       └── __init__.py
-├── settings               # settings 
-│   ├── app_settings.cfg 
+├── settings               # settings
+│   ├── app_settings.cfg
 │   ├── default_settings.py
 │   └── __init__.py
-└── tests 
+└── tests
 ```
 
 ```bash
@@ -64,7 +64,10 @@ $ export ZSL_SETTINGS=`pwd`/settings/app_settings.cfg
 ```python
 # settings/app_settings.cfg
 
-TASK_PACKAGES = ('app.tasks',)
+TASKS = TaskConfiguration()\
+        .create_namespace('task')\
+            .add_packages(['app.tasks'])\
+            .get_configuration()
 RESOURCE_PACKAGE = ()
 DATABASE_URI = 'postgresql://postgres:postgres@localhost/postgres'
 DATABASE_ENGINE_PROPS = {}

@@ -7,7 +7,7 @@
 from __future__ import unicode_literals
 import gearman
 import json
-from flask.config import Config
+from zsl import Config
 from zsl import inject
 
 

@@ -45,7 +45,6 @@ def execute_job(job, app=Injected, task_router=Injected):
 
     task, task_callable = task_router.route(job.path)
     jc = JobContext(job, task, task_callable)
-    JobContext.set_current_context(jc)
 
     app.logger.info("Executing task.")
     result = jc.task_callable(jc.task_data)

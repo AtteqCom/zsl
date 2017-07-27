@@ -8,8 +8,7 @@ Helper module with function dealing with security.
 from __future__ import unicode_literals
 from builtins import str
 
-from flask.config import Config
-
+from zsl import Config
 from zsl import inject
 import hashlib
 from zsl.utils.string_helper import generate_random_string

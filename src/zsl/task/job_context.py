@@ -5,7 +5,10 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
+
+import contextlib
 from builtins import *
+from threading import current_thread
 
 from typing import Callable
 from abc import abstractmethod
@@ -53,8 +56,6 @@ class Job(object):
 class JobContext(object):
     """Job Context"""
 
-    _current_context = None
-
     def __init__(self, job, task, task_callable):
         # type: (Job, object, Callable) -> None
         """
@@ -65,7 +66,7 @@ class JobContext(object):
         self._task_callable = task_callable
         self._task_data = TaskData(self.job.payload)
 
-        JobContext.set_current_context(None)
+        JobContext._set_current_context(self)
 
     @property
     def job(self):
@@ -85,11 +86,11 @@ class JobContext(object):
 
     @classmethod
     def get_current_context(cls):
-        return cls._current_context
+        return current_thread()._current_job_context
 
     @classmethod
-    def set_current_context(cls, context):
-        cls._current_context = context
+    def _set_current_context(cls, context):
+        current_thread()._current_job_context = context
 
 
 class Responder(object):
@@ -143,7 +144,18 @@ class WebJobContext(JobContext):
 
 
 class DelegatingJobContext(JobContext):
-    def __init__(self, job, task, task_callable, wrapped_job_context):
+    def __init__(self, job, task, task_callable):
+        wrapped_job_context = JobContext.get_current_context()
         super(DelegatingJobContext, self).__init__(job, task, task_callable)
         self._wrapped_job_context = wrapped_job_context
         proxy_object_to_delegate(self, wrapped_job_context)
+
+    def stop_delegating(self):
+        JobContext._set_current_context(self._wrapped_job_context)
+
+
+@contextlib.contextmanager
+def delegating_job_context(job, task, task_callable):
+    djc = DelegatingJobContext(job, task, task_callable)
+    yield djc
+    djc.stop_delegating()

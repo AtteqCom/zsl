@@ -32,7 +32,7 @@ class ExecTaskTestCase(ZslTestCase, TestCase):
                               "A proper callable must be returned.")
 
     def testCreateTaskValidPath(self):
-        task, task_callable = create_task("zsl/version_task")
+        task, task_callable = create_task("task/zsl/version_task")
         self.assertIsInstance(task, VersionTask,
                               "A proper task must be returned.")
         self.assertIsInstance(task_callable, Callable,

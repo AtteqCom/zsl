@@ -6,7 +6,9 @@ This module does the error handling. It allows users to register
 an error handler for a given exception type. It also provides default
 error handlers.
 """
-from __future__ import unicode_literals
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 from builtins import *
 
 import http.client
@@ -16,6 +18,10 @@ import traceback
 from abc import abstractmethod
 from flask import request
 from functools import wraps
+
+from zsl.utils.http import get_http_status_code_value
+
+from zsl.task.task_decorator import json_output
 
 from zsl.db.model.app_model import AppModel
 from zsl.router.task import RoutingError
@@ -49,9 +55,13 @@ def register(e):
 
 
 class DefaultErrorHandler(ErrorHandler):
+    ERROR_CODE = "UNKNOWN_ERROR"
+    ERROR_MESSAGE = "An error occurred!"
+
     def can_handle(self, e):
         return True
 
+    @json_output
     def handle(self, ex):
         logger = logging.getLogger(__name__)
         logger.error(str(ex) + "\n" + traceback.format_exc())
@@ -62,17 +72,20 @@ class DefaultErrorHandler(ErrorHandler):
             documentation_link('error_handling')))
 
         add_responder(StatusCodeResponder(http.client.INTERNAL_SERVER_ERROR))
-        return ErrorResponse('UNKNOWN_ERROR', "An error occurred!")
+        return ErrorResponse(self.ERROR_CODE, self.ERROR_MESSAGE)
 
 
 class RoutingErrorHandler(ErrorHandler):
+    ERROR_CODE = 'NOT_FOUND'
+
     def can_handle(self, e):
         return isinstance(e, RoutingError)
 
+    @json_output
     def handle(self, ie):
         logging.error(str(ie) + "\n" + traceback.format_exc())
-        add_responder(StatusCodeResponder(404))
-        return str(ie)
+        add_responder(StatusCodeResponder(get_http_status_code_value(http.client.NOT_FOUND)))
+        return ErrorResponse(self.ERROR_CODE, str(ie))
 
 
 _DEFAULT_ERROR_HANDLER = DefaultErrorHandler()

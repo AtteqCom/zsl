@@ -1,14 +1,13 @@
 from unittest.case import TestCase
 
-from flask.config import Config
 
 from zsl.application.containers.container import IoCContainer
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 
-from zsl.testing.db import DbTestCase, IN_MEMORY_DB_SETTINGS
-from zsl.utils.injection_helper import bind
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 from zsl.utils.redis_helper import Keymaker
 from zsl.utils.testing import set_test_responder
+from zsl import Config
 from zsl import inject
 
 __author__ = 'peter'

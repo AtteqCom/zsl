@@ -14,9 +14,24 @@ Environment variables
 Required fields
 ---------------
 
-* ``TASK_PACKAGES``
-  List of packages with tasks. The task router will search any task in these
-  packages with given order.
+* ``TASKS``
+  The task router will search for task according to the task configuration.
+  The object under this variable is an instance of
+  :class:`zsl.router.task.TaskConfiguration`. The users register the packages
+  holding task classes under their urls. See the example app and the following
+  example for more.
+
+  If we have a ``FooApiTask`` in module ``myapp.tasks.api.v1.foo_api_task``, then
+  we register it under url `/api/v1` in so that we use::
+
+    TASKS = TaskConfiguration()\
+      .create_namespace('api/v1')\
+        .add_packages(['myapp.tasks.api.v1'])\
+        .get_configuration()
+
+  Notice that all the tasks in the modules in the package
+  ``myapp.tasks.api.v1.foo_api_task`` will be routed under `/api/v1` url. If one needs
+  a more detailed routing, then ``add_routes`` method is much more convenient.
 
 * ``RESOURCE_PACKAGES``
   List of packages with resources. The resource router will search any resource
@@ -47,7 +62,7 @@ Optional fields
   Reload tasks on every call. Especially usable when debugging.
 
 * ``DEBUG``
-  Set the debug mode.
+  Set the debug mode - ``True`` or ``False``.
 
 * ``LOGGING``
   Logging settings are specified in `LOGGING` variable as a python dictionary.

@@ -20,7 +20,5 @@ class TestTask(object):
     def __init__(self, app):
         self._app = app
 
-    @json_input
-    @json_output
-    def perform(self, data):
+    def perform(self, _data):
         return "ok"

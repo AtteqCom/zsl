@@ -15,14 +15,18 @@ from json.encoder import JSONEncoder
 from typing import Callable
 
 import sys
+from typing import Dict
+
 from future.builtins import str
 
 import json
 
+from typing import Any
+
 from zsl import inject
 from zsl.errors import ZslError
 from zsl.router.task import TaskRouter
-from zsl.task.job_context import JobContext, Job, DelegatingJobContext
+from zsl.task.job_context import JobContext, Job, DelegatingJobContext, delegating_job_context
 from zsl.task.task_data import TaskData
 from zsl.utils.reflection_helper import is_scalar
 
@@ -31,24 +35,26 @@ class ModelConversionError(Exception):
     pass
 
 
+def fill_model_with_payload(data, obj):
+    # type:(Dict[str, Any])->Any
+    for k, v in data.items():
+        if not hasattr(obj, k):
+            raise ModelConversionError()
+
+        if is_scalar(v):
+            setattr(obj, k, v)
+        else:
+            fill_model_with_payload(v, getattr(obj, k))
+
+
 def payload_into_model(model_type, argument_name='request', remove_data=True):
     # type: (Callable, str)->Callable
     def wrapper(f):
-        def fill_recursively(data, obj):
-            for k, v in data.items():
-                if not hasattr(obj, k):
-                    raise ModelConversionError()
-
-                if is_scalar(v):
-                    setattr(obj, k, v)
-                else:
-                    fill_recursively(v, getattr(obj, k))
-
         @wraps(f)
         def executor(*args, **kwargs):
             data = args[1]  # type: TaskData
             model = model_type()
-            fill_recursively(data.payload, model)
+            fill_model_with_payload(data.payload, model)
             kwargs[argument_name] = model
             if remove_data:
                 args = args[:-1]
@@ -122,17 +128,8 @@ def exec_task(task_path, data):
     job = Job(data)
     (task, task_callable) = create_task(task_path)
 
-    # Set the context for task execution.
-    old_jc = JobContext.get_current_context()
-    jc = DelegatingJobContext(job, task, task_callable, old_jc)
-    JobContext.set_current_context(jc)
-
-    # Run the task.
-    try:
+    with delegating_job_context(job, task, task_callable) as jc:
         return jc.task_callable(jc.task_data)
-    finally:
-        # Set the current context back.
-        JobContext.set_current_context(old_jc)
 
 
 @inject(task_router=TaskRouter)

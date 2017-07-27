@@ -12,11 +12,12 @@ import logging
 from flask.wrappers import Response
 from flask import request
 
+from zsl.application.error_handler import error_handler
 from zsl.application.modules.web.configuration import MethodConfiguration
 from zsl.constants import MimeType
-from zsl.interface.webservice.utils.execution import execute_web_task
-from zsl.interface.webservice.utils.request_data import extract_data
-from zsl.interface.webservice.utils.response_headers import append_headers
+from zsl.interface.web.utils.execution import execute_web_task, notify_responders, convert_to_web_response
+from zsl.interface.web.utils.request_data import extract_data
+from zsl.interface.web.utils.response_headers import append_headers
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
 import json
 
@@ -61,6 +62,10 @@ class Performer(object):
     def _call_inner_function(self, a, kw):
         return self._f(*a, **kw)
 
+    @append_headers
+    @notify_responders
+    @convert_to_web_response
+    @error_handler
     def __call__(self, *a, **kw):
         jc = WebJobContext(None, extract_data(request), None, None, request)
         return execute_web_task(jc, lambda: self._call_inner_function(a, kw))
