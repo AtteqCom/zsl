@@ -13,6 +13,7 @@ import sys
 from celery import Celery, shared_task
 from injector import Module, singleton, provides
 
+from zsl import Config
 from zsl import inject
 from zsl.interface.task_queue import TaskQueueWorker
 from zsl.task.job_context import Job
@@ -33,7 +34,6 @@ class CeleryTaskQueueWorkerBase(TaskQueueWorker):
         :rtype: dict
         """
         job = Job(job_data)
-
         return self.execute_job(job)
 
 
@@ -51,14 +51,20 @@ class CeleryTaskQueueOutsideWorker(CeleryTaskQueueWorkerBase):
         self._app.logger.error("Running from celery worker, start from shell!")
 
 
+@inject(config=Config)
+def create_celery_app(config):
+    # type:(Config)->Celery
+    celery_app = Celery()
+    celery_app.config_from_object(config['CELERY'])
+    return celery_app
+
+
 class CeleryTaskQueueMainWorker(CeleryTaskQueueWorkerBase):
     """Worker implementation for Celery task queue."""
 
-    def __init__(self,):
+    def __init__(self, ):
         super(CeleryTaskQueueMainWorker, self).__init__()
-
-        self.celery_app = Celery()
-        self.celery_app.config_from_object(self._config['CELERY'])
+        self.celery_app = create_celery_app()
         self.celery_worker = None
 
     def stop_worker(self):
@@ -82,4 +88,3 @@ def zsl_task(job_data, worker):
     :return: task results
     """
     return worker.execute_celery_task(job_data)
-

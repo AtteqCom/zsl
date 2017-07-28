@@ -6,10 +6,13 @@ Created on 22.12.2012
 
 ..moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
-from builtins import object
-from zsl.task.task_decorator import json_input, json_output
+from builtins import *
+
+import logging
+
 from zsl import Zsl
 from injector import inject
 
@@ -21,4 +24,5 @@ class TestTask(object):
         self._app = app
 
     def perform(self, _data):
+        logging.getLogger(__name__).debug("Running zsl.tasks.zsl.TestTask")
         return "ok"

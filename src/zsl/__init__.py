@@ -27,3 +27,8 @@ Zsl = ServiceApplication
 
 # placeholder for default value used in function declaration for arguments which will be injected
 Injected = None
+
+# just for autocomplete in various IDEs
+inject = inject
+Config = Config
+Module = Module

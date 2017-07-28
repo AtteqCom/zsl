@@ -12,6 +12,7 @@ from threading import current_thread
 
 from typing import Callable
 from abc import abstractmethod
+from typing import Dict
 
 from flask.wrappers import Response
 
@@ -120,10 +121,15 @@ def web_task_redirect(location):
     return {'headers': {'Location': location}, 'status_code': 301}
 
 
+def create_job(path, data):
+    # type: (str, Dict[str, Any])->Job
+    return Job({'data': data, 'path': path})
+
+
 class WebJobContext(JobContext):
     def __init__(self, path, data, task, task_callable, request):
         """Constructor"""
-        super(WebJobContext, self).__init__(Job({'data': data, 'path': path}), task, task_callable)
+        super(WebJobContext, self).__init__(create_job(path, data), task, task_callable)
         self._request = request
         self._responders = []
 

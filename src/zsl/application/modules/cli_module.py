@@ -6,6 +6,7 @@ import logging
 
 import click
 from injector import Module, singleton, Binder
+from zsl.task.job_context import JobContext, Job, create_job
 
 from zsl.interface.cli import cli
 from zsl import inject
@@ -38,6 +39,7 @@ class ZslTaskCli(object):
         @click.argument('data', default=None, required=False)
         def task(task_path, data=None):
             from zsl.interface.task import exec_task
+            JobContext(create_job(task_path, data), None, None)
             result = exec_task(task_path, data)
             click.echo(result)
 

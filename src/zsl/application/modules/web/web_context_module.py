@@ -9,12 +9,11 @@ import click
 
 from injector import Binder, provides, singleton
 
-from zsl import Zsl, inject, Config
+from zsl import Zsl, inject
 from zsl.application.initialization_context import InitializationContext
 from zsl.application.modules.cli_module import ZslCli
 from zsl.application.modules.context_module import DefaultContextModule, default_initializers
 from zsl.interface.web.performers.task import create_task_mapping
-from zsl.router.task import TaskConfiguration, TASK_CONFIGURATION_NAME
 from zsl.utils.injection_helper import simple_bind
 
 
@@ -90,12 +89,6 @@ class WebContextModule(DefaultContextModule):
     @provides(interface=WebHandler, scope=singleton)
     def provide_web_handler(self):
         return WebHandler()
-
-    @provides(interface=TaskConfiguration, scope=singleton)
-    @inject(config=Config)
-    def provide_task_configuration(self, config):
-        default_config = TaskConfiguration().create_namespace('task').add_packages(['zsl.tasks']).get_configuration()
-        return config.get(TASK_CONFIGURATION_NAME, default_config)
 
     def configure(self, binder):
         # type: (Binder) -> None

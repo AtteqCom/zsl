@@ -49,12 +49,12 @@ class CeleryCli(object):
                         context_settings=dict(ignore_unknown_options=True))
         @click.argument('argv', nargs=-1, type=click.UNPROCESSED)
         @click.pass_context
-        def worker(_, worker_args):
+        def worker(_, argv):
             """Run Zsl celery worker.
 
             :param : arguments for celery worker
             """
-            run_worker(worker_args)
+            run_worker(argv)
 
         self._celery = celery
 

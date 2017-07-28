@@ -131,5 +131,4 @@ def run_worker(self, worker, *args, **kwargs):
 
     The worker instance is given as a DI module.
     """
-    worker = self.injector.get(TaskQueueWorker)
-    worker.run(*args, **kwargs)
+    worker.run((), *args, **kwargs)

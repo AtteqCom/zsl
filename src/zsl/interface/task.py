@@ -119,10 +119,13 @@ def exec_task(task_path, data):
         data = {'data': json.dumps(data, cls=RequestJSONEncoder),
                 'path': task_path}
 
-    # Open the data from file, if necessary.
-    elif data is not None and data.startswith("file://"):
-        with open(data[len("file://"):]) as f:
-            data = f.read()
+    else:
+        # Open the data from file, if necessary.
+        if data is not None and data.startswith("file://"):
+            with open(data[len("file://"):]) as f:
+                data = f.read()
+
+        data = {'data': data, 'path': task_path}
 
     # Prepare the task.
     job = Job(data)
