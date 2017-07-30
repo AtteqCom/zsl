@@ -13,16 +13,8 @@ from builtins import *
 
 import logging
 
-from zsl import Zsl
-from injector import inject
-
 
 class TestTask(object):
-
-    @inject(app=Zsl)
-    def __init__(self, app):
-        self._app = app
-
     def perform(self, _data):
         logging.getLogger(__name__).debug("Running zsl.tasks.zsl.TestTask")
         return "ok"

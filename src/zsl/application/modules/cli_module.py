@@ -1,5 +1,7 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+
+import traceback
 from builtins import *
 
 import logging
@@ -40,8 +42,15 @@ class ZslTaskCli(object):
         def task(task_path, data=None):
             from zsl.interface.task import exec_task
             JobContext(create_job(task_path, data), None, None)
-            result = exec_task(task_path, data)
-            click.echo(result)
+            try:
+                result = exec_task(task_path, data)
+                click.echo(result)
+            except:
+                msg = "Error when calling task '{0}'\n\n{1}.".format(
+                    task_path, traceback.format_exc())
+                logging.getLogger(__name__).error(msg)
+                click.echo(msg)
+                exit(1)
 
 
 class ZslTestCli(object):
@@ -55,7 +64,6 @@ class ZslTestCli(object):
         @test.command(help="run test")
         def run():
             load_and_run_tests()
-            pass
 
 
 class ZslGenerateCli(object):

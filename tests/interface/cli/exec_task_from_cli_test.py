@@ -36,7 +36,7 @@ class ExecTaskFromCliTestCase(ZslTestCase, TestCase):
     )
 
     @inject(zsl_cli=ZslCli)
-    def test(self, zsl_cli):
+    def testRunningTestTask(self, zsl_cli):
         # type:(ZslCli)->None
         runner = CliRunner()
         result = runner.invoke(zsl_cli.cli, ['task', 'task/zsl/test_task'])

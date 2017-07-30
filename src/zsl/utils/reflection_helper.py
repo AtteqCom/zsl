@@ -9,6 +9,7 @@ Helper module for OOP operations.
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
+oldstr = str
 from builtins import *  # NOQA
 
 
@@ -38,7 +39,7 @@ def proxy_object_to_delegate(proxy_object, delegate_object):
     proxy_class_name = 'Proxy{0}To{1}'.format(
         proxy_object.__class__.__name__,
         delegate_object.__class__.__name__)
-    proxy_object.__class__ = type(proxy_class_name,
+    proxy_object.__class__ = type(oldstr(proxy_class_name),
                                   proxy_object.__class__.__bases__,
                                   dict(proxy_object.__class__.__dict__))
     proxy_object.__class__.__bases__ = (delegate_object.__class__,)

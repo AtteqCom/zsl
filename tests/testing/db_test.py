@@ -14,7 +14,8 @@ from zsl.application.modules.context_module import DefaultContextModule
 from zsl.application.modules.logger_module import LoggerModule
 from zsl.application.modules.task_router import TaskRouterModule
 from zsl.service.service import SessionFactory
-from zsl.testing.db import TestSessionFactory, DbTestModule, DbTestCase, IN_MEMORY_DB_SETTINGS
+from zsl.testing.db import TestSessionFactory as SessionFactoryForTesting, \
+    DbTestModule, DbTestCase, IN_MEMORY_DB_SETTINGS
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 from zsl import inject
 from zsl.utils.injection_helper import bind
@@ -56,7 +57,7 @@ class DbTestCaseTest(ZslTestCase, TestCase):
     def test_db_test_case_session(self):
         test = DbTestCaseTest.DbTest()
         mock_tsf = mock.MagicMock()
-        bind(TestSessionFactory, to=mock_tsf)
+        bind(SessionFactoryForTesting, to=mock_tsf)
         test.setUp()
         mock_tsf.create_test_session.assert_called_once()
         mock_tsf.create_session.assert_not_called()
@@ -70,10 +71,10 @@ class TestSessionFactoryTest(ZslTestCase, TestCase):
     )
 
     def test_single_session(self):
-        self.assertNotEqual(TestSessionFactory(), TestSessionFactory(),
+        self.assertNotEqual(SessionFactoryForTesting(), SessionFactoryForTesting(),
                             "Two different instances may not be equal.")
 
-        f = TestSessionFactory()
+        f = SessionFactoryForTesting()
         f.create_test_session()
         self.assertEqual(f.create_session(), f.create_session(),
                          "Two results must be equal.")
@@ -93,14 +94,15 @@ class DbTestModuleTest(ZslTestCase, TestCase):
         def get_session_factory(session_factory):
             return session_factory
 
-        @inject(test_session_factory=TestSessionFactory)
+        @inject(test_session_factory=SessionFactoryForTesting)
         def get_test_session_factory(test_session_factory):
             return test_session_factory
 
-        self.assertIsInstance(get_session_factory(), TestSessionFactory,
+        self.assertIsInstance(get_session_factory(), SessionFactoryForTesting,
                               "Correct session factory must be returned")
 
-        self.assertIsInstance(get_test_session_factory(), TestSessionFactory,
+        self.assertIsInstance(get_test_session_factory(),
+                              SessionFactoryForTesting,
                               "Correct session factory must be returned")
 
         self.assertEqual(get_test_session_factory(), get_session_factory(),
