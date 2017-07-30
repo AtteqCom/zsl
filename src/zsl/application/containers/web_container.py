@@ -10,4 +10,4 @@ from zsl.application.modules.web.web_context_module import WebContextModule
 
 class WebContainer(CoreContainer):
     """Configuration for web application."""
-    context = WebContextModule
+    web_context = WebContextModule
