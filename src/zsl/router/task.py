@@ -92,7 +92,14 @@ class TaskConfiguration(object):
 
 
 class RoutingError(ZslError):
-    pass
+    def __init__(self, path):
+        msg = "Can not find task at path '{0}'.".format(path)
+        super(RoutingError, self).__init__(msg)
+        self._path = path
+
+    @property
+    def path(self):
+        return self._path
 
 
 class RouterStrategy(object):
@@ -167,11 +174,11 @@ class PackageTaskRouterStrategy(RouterStrategy):
                 break
 
         if module_ is None:
-            msg = "Can not find task at path {0}.".format(path)
-            logger.warning(msg)
+            exception = RoutingError(path)
+            logger.warning(str(exception))
             for e in exceptions:
                 logger.error("Reason", exc_info=e)
-            raise RoutingError(msg)
+            raise exception
 
         if self.is_task_reloading():
             importlib.reload(module_)
@@ -232,7 +239,7 @@ class TaskRouter(object):
                 break
 
         if cls is None:
-            raise RoutingError("Can not route path {0}, returned class is None.".format(path))
+            raise RoutingError(path)
 
         return self._create_result(cls)
 

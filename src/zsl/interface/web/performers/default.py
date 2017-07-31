@@ -6,21 +6,28 @@
 """
 from __future__ import unicode_literals
 
-import http.client
-import logging
+from flask.globals import request
+
+from zsl.application.error_handler import error_handler
+from zsl.interface.web.utils.execution import notify_responders, convert_to_web_response
+from zsl.interface.web.utils.response_headers import append_headers
+from zsl.router.task import RoutingError
 
 from zsl import inject, Zsl
+from zsl.task.job_context import WebJobContext
 
 
 @inject(app=Zsl)
 def create_not_found_mapping(app):
     @app.route("/", defaults={'path': ''})
     @app.route("/<path:path>")
+    @append_headers
+    @notify_responders
+    @convert_to_web_response
+    @error_handler
     def not_found_mapping(path):
         """
         Default web request handler. Only returns 404 status code.
         """
-
-        response_str = "404 Not Found: path '{0}' was not mapped.".format(path)
-        logging.warning(response_str)
-        return response_str, http.client.NOT_FOUND
+        WebJobContext(path, None, None, None, request)
+        raise RoutingError(path)
