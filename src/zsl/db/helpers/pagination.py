@@ -83,7 +83,7 @@ class Pagination(object):
         :param q: Query to be paged.
         :return: Paged query.
         """
-        self.set_record_count(q.count())
+        self.record_count = q.count()
         return self.apply_pagination(q).all()
 
 
