@@ -96,8 +96,8 @@ class PaginationRequest(AppModel):
 
 
 class PaginationResponse(AppModel):
-    def __init__(self, record_count: int, page_size: int,
-                 pagination: PaginationRequest) -> None:
+    def __init__(self, record_count, page_size, pagination):
+        # type: (int, int, PaginationRequest)->None
         super(PaginationResponse, self).__init__({})
         self.record_count = record_count
         max_page_size = pagination.page_size
