@@ -12,7 +12,7 @@ Main service module.
 """
 from __future__ import unicode_literals
 
-__version__ = '0.17.4'
+__version__ = '0.17.5'
 
 from flask import Config
 
