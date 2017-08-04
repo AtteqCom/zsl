@@ -4,8 +4,11 @@
 """
 from __future__ import unicode_literals
 from builtins import object
+from typing import Union
 
 from sqlalchemy.orm.query import Query
+from typing import Dict
+
 from zsl.db.model.app_model import AppModel
 
 FIRST_PAGE = 1
@@ -23,13 +26,15 @@ class Pagination(object):
     """
 
     def __init__(self, pagination=None):
-        pagination = self._create_pagination_model(pagination)
+        # type: (Union[PaginationRequest, Dict[str, Union[str, int]], None])->None
+        pagination = self._create_pagination_request(pagination)
         assert isinstance(pagination, PaginationRequest)
         self._offset = (pagination.page_no - FIRST_PAGE) * pagination.page_size
         self._page_size = pagination.page_size
         self._record_count = -1
 
-    def _create_pagination_model(self, pagination):
+    def _create_pagination_request(self, pagination):
+        # type: (Union[PaginationRequest, Dict[str, Union[str, int]], None])->PaginationRequest
         if pagination is None:
             pagination = PaginationRequest()
         elif isinstance(pagination, dict):
@@ -51,6 +56,11 @@ class Pagination(object):
     def page_size(self):
         return self._page_size
 
+    @page_size.setter
+    def page_size(self, page_size):
+        # type: (int)->None
+        self._page_size = page_size
+
     @property
     def offset(self):
         count = self._record_count
@@ -64,6 +74,11 @@ class Pagination(object):
             self._offset = 0
 
         return self._offset
+
+    @offset.setter
+    def offset(self, offset):
+        # type:(int)->None
+        self._offset = offset
 
     def apply_pagination(self, q):
         """
