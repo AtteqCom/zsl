@@ -50,7 +50,7 @@ class DbTestCaseTest(ZslTestCase, TestCase):
             test.setUp()
             test.tearDown()
             mock_metadata.create_all.assert_called_once()
-            mock_sess.begin.assert_called_once()
+            mock_sess.begin_nested.assert_called_once()
             mock_sess.rollback.assert_called_once()
             mock_sess.close.assert_called_once()
 

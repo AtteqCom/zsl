@@ -78,6 +78,8 @@ def transactional(f):
                 session = session_factory.create_session()
                 tx_holder.inject_session(session)
 
+            tx_holder.begin()
+
             rv = f(service, *args, **kwargs)
 
             if trans_close:

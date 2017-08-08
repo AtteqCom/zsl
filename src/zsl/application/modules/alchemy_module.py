@@ -65,6 +65,9 @@ class TransactionHolder(object):
         self._orm = session
         self._in_transaction = True
 
+    def begin(self):
+        pass
+
     def commit(self):
         logging.getLogger(__name__).debug("Commit.")
         self._orm.commit()

@@ -47,28 +47,38 @@ class TestSessionFactory(SessionFactory):
         assert TestSessionFactory._test_session is None
         metadata.bind = engine
         metadata.create_all(engine)
-        logging.getLogger(__name__).debug("Create test session")
+        logging.getLogger(__name__).debug("Create test session - begin test session/setUp")
         TestSessionFactory._test_session = self._session_holder()
         TestSessionFactory._test_session.autoflush = True
-        TestSessionFactory._test_session.begin(subtransactions=True)
+        TestSessionFactory._test_session.begin_nested()
         assert TestSessionFactory._test_session is not None
         return TestSessionFactory._test_session
 
     def create_session(self):
-        logging.getLogger(__name__).debug("Create session")
+        logging.getLogger(__name__).debug("Create test session")
         assert TestSessionFactory._test_session is not None
-        TestSessionFactory._test_session.begin_nested()
         return TestSessionFactory._test_session
 
     def close_test_session(self):
         TestSessionFactory._test_session.rollback()
         TestSessionFactory._test_session.close()
         TestSessionFactory._test_session = None
+        logging.getLogger(__name__).debug("Close test session - close test test session/tearDown")
+
+
+class TestTransactionHolder(TransactionHolder):
+    def begin(self):
+        self.session.begin_nested()
+
+    def close(self):
+        logging.getLogger(__name__).debug("Close.")
+        self._orm = None
+        self._in_transaction = False
 
 
 class TestTransactionHolderFactory(TransactionHolderFactory):
     def create_transaction_holder(self):
-        return TransactionHolder()
+        return TestTransactionHolder()
 
 
 class DbTestModule(Module):
