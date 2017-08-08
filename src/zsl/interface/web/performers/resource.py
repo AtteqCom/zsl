@@ -11,6 +11,7 @@ import json
 import logging
 
 from flask import request, Response
+from zsl.task.job_context import WebJobContext
 
 from zsl import Zsl, inject
 from zsl.application.error_handler import error_handler
@@ -33,6 +34,7 @@ def create_resource_mapping(app):
     @error_handler
     def perform_resource(path):
         logging.debug("Getting resource %s.", path)
+        WebJobContext(path, None, None, None, request)
 
         if request.method == 'OPTIONS':
             response = app.make_default_options_response()
