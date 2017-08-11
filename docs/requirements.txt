@@ -5,3 +5,5 @@ sphinx-rtd-theme
 redis
 gearman
 celery
+alembic
+zsl_client
