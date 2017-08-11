@@ -15,10 +15,12 @@ import json
 
 from datetime import timedelta
 from typing import Callable
+from typing import List
 
 from flask import request
 
 from zsl import Config
+from zsl.application.modules.web.cors import CORSConfiguration
 from zsl.constants import MimeType
 from zsl.task.task_data import TaskData
 from zsl.db.model import AppModelJSONEncoder
@@ -30,6 +32,7 @@ from zsl.utils.file_helper import makedirs
 from zsl.utils.security_helper import verify_security_data
 
 from zsl import inject, Zsl, Injected
+from zsl.utils.string_helper import join_list
 
 
 def log_output(f):
@@ -423,25 +426,29 @@ class CrossdomainWebTaskResponder(Responder):
     source: http://flask.pocoo.org/snippets/56/
     """
 
-    @inject(app=Zsl, config=Config)
-    def __init__(self, origin=None, methods=None, headers=None,
-                 max_age=21600, app=Injected, config=Injected):
+    @inject(app=Zsl, cors_config=CORSConfiguration)
+    def __init__(self, origin=None, methods=None, allow_headers=None,
+                 expose_headers=None, max_age=21600, app=Injected,
+                 cors_config=Injected):
+        # type: (str, List[str], str, str, int, Zsl, CORSConfiguration)->None
         self._app = app
 
-        if methods is not None:
-            methods = ', '.join(sorted(x.upper() for x in methods))
+        methods = join_list(methods, transform=lambda x: x.upper())
         self.methods = methods
 
-        if headers is not None and not isinstance(headers, (str, bytes)):
-            headers = ', '.join(x.upper() for x in headers)
-        self.headers = headers
+        if allow_headers is None:
+            allow_headers = cors_config.allow_headers
+        allow_headers = join_list(allow_headers)
+        self.allow_headers = allow_headers
+
+        if expose_headers is None:
+            expose_headers = cors_config.expose_headers
+        expose_headers = join_list(expose_headers)
+        self.expose_headers = expose_headers
 
         if origin is None:
-            origin = config.get('CORS', {}).get('origin', '')
-
-        if not isinstance(origin, (str, bytes)):
-            origin = ', '.join(origin)
-        self.origin = origin
+            origin = cors_config.origin
+        self.origin = join_list(origin)
 
         if isinstance(max_age, timedelta):
             max_age = max_age.total_seconds()
@@ -456,26 +463,20 @@ class CrossdomainWebTaskResponder(Responder):
 
     def respond(self, response):
         headers = response.headers
-
         headers['Access-Control-Allow-Origin'] = self.origin
         headers['Access-Control-Allow-Methods'] = self.get_methods()
         headers['Access-Control-Max-Age'] = str(self.max_age)
-        if self.headers is not None:
-            headers['Access-Control-Allow-Headers'] = self.headers
-        else:
-            response.headers['Access-Control-Allow-Headers'] = \
-                'accept, origin, content-type, authorization'
-
-        response.headers['Access-Control-Expose-Headers'] = \
-            'location, x-total-count, link'
-
+        headers['Access-Control-Allow-Headers'] = self.allow_headers
+        headers['Access-Control-Expose-Headers'] = self.expose_headers
         return response
 
 
-def crossdomain(origin=None, methods=None, headers=None, max_age=21600):
+def crossdomain(origin=None, methods=None, allow_headers=None,
+                expose_headers=None, max_age=21600):
     def decorator(f):
-        responder = CrossdomainWebTaskResponder(origin, methods, headers,
-                                                max_age)
+        responder = CrossdomainWebTaskResponder(
+            origin, methods, allow_headers, expose_headers, max_age
+        )
 
         @wraps(f)
         def crossdomain_inner_fn(*args, **kwargs):

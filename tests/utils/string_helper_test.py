@@ -1,6 +1,6 @@
 from unittest.case import TestCase
 
-from zsl.utils.string_helper import camelcase_to_underscore, underscore_to_camelcase
+from zsl.utils.string_helper import camelcase_to_underscore, underscore_to_camelcase, join_list
 
 
 class InflectionTestCase(TestCase):
@@ -32,3 +32,14 @@ class InflectionTestCase(TestCase):
             underscore_to_camelcase("camel_case_to_underscore", True),
             "CC to usc conversion"
         )
+
+
+class JoinListTest(TestCase):
+    def testJoin(self):
+        self.assertEqual('A, B', join_list(['a', 'b'], transform=lambda x: x.upper()))
+
+    def testIdentity(self):
+        self.assertEqual('a, b', join_list('a, b'))
+
+    def testNone(self):
+        self.assertEqual(None, join_list(None))
