@@ -18,6 +18,7 @@ from typing import Callable
 from typing import List
 
 from flask import request
+from typing import Union
 
 from zsl import Config
 from zsl.application.modules.web.cors import CORSConfiguration
@@ -428,9 +429,9 @@ class CrossdomainWebTaskResponder(Responder):
 
     @inject(app=Zsl, cors_config=CORSConfiguration)
     def __init__(self, origin=None, methods=None, allow_headers=None,
-                 expose_headers=None, max_age=21600, app=Injected,
+                 expose_headers=None, max_age=None, app=Injected,
                  cors_config=Injected):
-        # type: (str, List[str], str, str, int, Zsl, CORSConfiguration)->None
+        # type: (str, List[str], str, str, Union[int, timedelta], Zsl, CORSConfiguration)->None
         self._app = app
 
         methods = join_list(methods, transform=lambda x: x.upper())
@@ -450,6 +451,8 @@ class CrossdomainWebTaskResponder(Responder):
             origin = cors_config.origin
         self.origin = join_list(origin)
 
+        if max_age is None:
+            max_age = cors_config.max_age
         if isinstance(max_age, timedelta):
             max_age = max_age.total_seconds()
         self.max_age = max_age
@@ -472,14 +475,14 @@ class CrossdomainWebTaskResponder(Responder):
 
 
 def crossdomain(origin=None, methods=None, allow_headers=None,
-                expose_headers=None, max_age=21600):
+                expose_headers=None, max_age=None):
     def decorator(f):
-        responder = CrossdomainWebTaskResponder(
-            origin, methods, allow_headers, expose_headers, max_age
-        )
-
         @wraps(f)
         def crossdomain_inner_fn(*args, **kwargs):
+            responder = CrossdomainWebTaskResponder(
+                origin, methods, allow_headers, expose_headers, max_age
+            )
+
             rv = f(*args, **kwargs)
             add_responder(responder)
             return rv

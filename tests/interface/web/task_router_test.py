@@ -6,6 +6,7 @@ from builtins import *
 import http.client
 from unittest.case import TestCase
 
+from zsl.application.modules.web.cors import CORSConfiguration
 from zsl.interface.web.performers.task import perform_web_task
 from zsl.router.task import TaskConfiguration
 
@@ -23,7 +24,7 @@ class TestTask(object):
 class TaskRouterTestCase(ZslTestCase, TestCase):
     CONFIG = IN_MEMORY_DB_SETTINGS.copy()
     CONFIG.update(
-        CORS={'origin': 'origin'},
+        CORS=CORSConfiguration('origin'),
         TASKS=TaskConfiguration().create_namespace('n').add_routes(
             {'r': TestTask}).get_configuration().create_namespace('z').add_packages(
             ['zsl.tasks.zsl']).get_configuration()

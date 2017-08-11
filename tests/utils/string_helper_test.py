@@ -34,7 +34,7 @@ class InflectionTestCase(TestCase):
         )
 
 
-class JoinListTest(TestCase):
+class JoinListTestCase(TestCase):
     def testJoin(self):
         self.assertEqual('A, B', join_list(['a', 'b'], transform=lambda x: x.upper()))
 

@@ -9,6 +9,7 @@ from unittest.case import TestCase
 from flask import json
 
 from zsl.application.error_handler import ErrorResponse, DefaultErrorHandler
+from zsl.application.modules.web.cors import CORSConfiguration
 
 from zsl.interface.task import fill_model_with_payload
 from zsl.interface.web.performers.task import perform_web_task
@@ -30,7 +31,7 @@ class ErrorTask(object):
 class ErrorHandlingTestCase(ZslTestCase, TestCase):
     CONFIG = IN_MEMORY_DB_SETTINGS.copy()
     CONFIG.update(
-        CORS={'origin': 'origin'},
+        CORS=CORSConfiguration(origin='origin'),
         TASKS=TaskConfiguration()
             .create_namespace('n')
                 .add_routes({'r': ErrorTask})
