@@ -2,3 +2,6 @@ sphinx>=1.3
 recommonmark
 sphinx-rtd-theme
 -e .
+redis
+gearman
+celery
