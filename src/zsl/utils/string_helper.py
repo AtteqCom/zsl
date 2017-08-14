@@ -10,6 +10,9 @@ from builtins import range
 import re
 import random
 import string
+from typing import Union
+
+from typing import List
 
 _html_tag_re = re.compile(r'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE)
 _html_tag_re_un = re.compile(
@@ -157,3 +160,24 @@ def strip_html_tags_unicode(s):
     :rtype: str
     """
     return _html_tag_re_un.sub('', s)
+
+
+def _identity(x):
+    return x
+
+
+def join_list(values, delimiter=', ', transform=None):
+    """
+    Concatenates the upper-cased values using the given delimiter if
+    the given values variable is a list. Otherwise it is just returned.
+    :param values: List of strings or string .
+    :param delimiter: The delimiter used to join the values.
+    :return: The concatenation or identity.
+    """
+    # type: (Union[List[str], str], str)->str
+    if transform is None:
+        transform = _identity
+
+    if values is not None and not isinstance(values, (str, bytes)):
+        values = delimiter.join(transform(x) for x in values)
+    return values

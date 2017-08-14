@@ -1,4 +1,4 @@
 Extending
 #########
 
-First consult modules and containers section.
+Consult modules and containers section. Just create your own module.

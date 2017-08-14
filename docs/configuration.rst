@@ -118,6 +118,11 @@ Optional fields
       }
 
 * ``CORS``
-  The dictionary containing the default CORS/crossdomain settings.
-  The only available options for now are:
-    * ``origin`` - with the allowed origin.
+  The configuration containing the default CORS/crossdomain settings. Check
+  :class:`zsl.application.modules.web.cors.CORSConfiguration`. The available
+  are:
+     * `origin`,
+     * `allow-headers`,
+     * `expose-headers`,
+     *  `max-age`.
+  Check CORS explanation on `Wikipedia <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_.
