@@ -11,9 +11,7 @@ from functools import wraps
 from flask import Response
 from flask.helpers import make_response
 
-from zsl import Config
-from zsl import Zsl
-from zsl import inject
+from zsl import Config, Zsl, inject
 from zsl.task.task_decorator import CrossdomainWebTaskResponder
 
 

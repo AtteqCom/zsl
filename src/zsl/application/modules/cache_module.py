@@ -6,9 +6,7 @@ from __future__ import unicode_literals
 
 import logging
 
-from injector import Binder
-from injector import Module
-from injector import singleton
+from injector import Binder, Module, singleton
 
 from zsl.cache.cache_module import CacheModule
 from zsl.cache.id_helper import IdHelper

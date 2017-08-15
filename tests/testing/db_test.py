@@ -1,13 +1,9 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from builtins import *
 from unittest.case import TestCase
 
-from mocks import mock
-from mocks import mock_db_session
+from mocks import mock, mock_db_session
 from sqlalchemy.orm.session import Session
 
 from zsl import inject
@@ -18,11 +14,8 @@ from zsl.application.modules.logger_module import LoggerModule
 from zsl.application.modules.task_router import TaskRouterModule
 from zsl.service.service import SessionFactory
 from zsl.testing.db import TestSessionFactory as SessionFactoryForTesting
-from zsl.testing.db import IN_MEMORY_DB_SETTINGS
-from zsl.testing.db import DbTestCase
-from zsl.testing.db import DbTestModule
-from zsl.testing.zsl import ZslTestCase
-from zsl.testing.zsl import ZslTestConfiguration
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DbTestCase, DbTestModule
+from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 from zsl.utils.injection_helper import bind
 
 

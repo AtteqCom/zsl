@@ -22,14 +22,10 @@ package. The name of the environment configuration file is controlled via
 from __future__ import unicode_literals
 
 import os
-from typing import Any
-from typing import Callable
+from typing import Any, Callable
 
-from flask import Config
-from flask import Flask
-from injector import Binder
-from injector import Injector
-from injector import singleton
+from flask import Config, Flask
+from injector import Binder, Injector, singleton
 
 from zsl._state import set_current_app
 from zsl.application.initialization_context import InitializationContext

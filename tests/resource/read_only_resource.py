@@ -3,18 +3,14 @@ Created on May 14, 2014
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from resource.resource_test_helper import UserModel
-from resource.resource_test_helper import create_resource_test_data
+from resource.resource_test_helper import UserModel, create_resource_test_data
 from unittest.case import TestCase
 
 from injector import inject
 from sqlalchemy.ext.declarative import declarative_base
 
-from zsl import Zsl
-from zsl import inject
-from zsl.resource.model_resource import ModelResource
-from zsl.resource.model_resource import ReadOnlyResourceMixin
-from zsl.resource.model_resource import ReadOnlyResourceUpdateOperationException
+from zsl import Zsl, inject
+from zsl.resource.model_resource import ModelResource, ReadOnlyResourceMixin, ReadOnlyResourceUpdateOperationException
 from zsl.testing.db import DbTestCase
 
 Base = declarative_base()

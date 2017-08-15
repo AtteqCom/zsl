@@ -1,22 +1,17 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+from builtins import *  # NOQA
 
 import http.client
-from builtins import *
 from unittest.case import TestCase
 
-from zsl import Zsl
-from zsl import inject
+from zsl import Zsl, inject
 from zsl.application.containers.web_container import WebContainer
 from zsl.application.modules.web.cors import CORSConfiguration
 from zsl.interface.web.performers.task import perform_web_task
 from zsl.router.task import TaskConfiguration
 from zsl.task.task_decorator import crossdomain
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
-from zsl.testing.zsl import ZslTestCase
-from zsl.testing.zsl import ZslTestConfiguration
+from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 
 
 class TestTask(object):

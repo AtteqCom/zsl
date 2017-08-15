@@ -5,19 +5,14 @@
 from __future__ import unicode_literals
 
 import click
-from injector import Module
-from injector import singleton
+from injector import Module, singleton
 
-from zsl import Injected
-from zsl import Zsl
+from zsl import Injected, Zsl
 from zsl.application.modules.cli_module import ZslCli
-from zsl.interface.celery.worker import CeleryTaskQueueMainWorker
-from zsl.interface.celery.worker import CeleryTaskQueueOutsideWorker
-from zsl.interface.celery.worker import CeleryTaskQueueWorkerBase
-from zsl.interface.task_queue import TaskQueueWorker
-from zsl.interface.task_queue import run_worker
-from zsl.utils.injection_helper import inject
-from zsl.utils.injection_helper import simple_bind
+from zsl.interface.celery.worker import (CeleryTaskQueueMainWorker, CeleryTaskQueueOutsideWorker,
+                                         CeleryTaskQueueWorkerBase)
+from zsl.interface.task_queue import TaskQueueWorker, run_worker
+from zsl.utils.injection_helper import inject, simple_bind
 
 
 class CeleryTaskQueueMainWorkerModule(Module):

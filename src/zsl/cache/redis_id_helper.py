@@ -8,12 +8,8 @@ from __future__ import unicode_literals
 
 import logging
 
-from zsl import Config
-from zsl import inject
-from zsl.cache.id_helper import IdHelper
-from zsl.cache.id_helper import decoder_identity
-from zsl.cache.id_helper import encoder_identity
-from zsl.cache.id_helper import model_key_generator
+from zsl import Config, inject
+from zsl.cache.id_helper import IdHelper, decoder_identity, encoder_identity, model_key_generator
 from zsl.cache.redis_cache_module import RedisCacheModule
 
 

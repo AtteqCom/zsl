@@ -2,15 +2,10 @@
 Test the `transactional_guard` decorator in terms of creating the transaction
 before checking the policies and calling rollback if policy is broken.
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from builtins import *
-from resource.resource_test_helper import UserModel
-from resource.resource_test_helper import create_resource_test_data
-from resource.resource_test_helper import users
+from resource.resource_test_helper import UserModel, create_resource_test_data, users
 from unittest import TestCase
 
 from mocks import mock_db_session
@@ -18,13 +13,9 @@ from mocks import mock_db_session
 from zsl import Zsl
 from zsl.application.containers.web_container import WebContainer
 from zsl.application.modules.alchemy_module import TransactionHolder
-from zsl.resource.guard import Access
-from zsl.resource.guard import GuardedMixin
-from zsl.resource.guard import ResourcePolicy
-from zsl.resource.guard import transactional_guard
+from zsl.resource.guard import Access, GuardedMixin, ResourcePolicy, transactional_guard
 from zsl.resource.model_resource import ModelResource
-from zsl.testing.db import IN_MEMORY_DB_SETTINGS
-from zsl.testing.db import DbTestCase
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DbTestCase
 
 try:
     import unittest.mock as mock

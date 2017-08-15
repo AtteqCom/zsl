@@ -12,10 +12,7 @@ from builtins import object
 
 from future.utils import with_metaclass
 
-from zsl.db.model.app_model import RELATED_FIELDS
-from zsl.db.model.app_model import RELATED_FIELDS_CLASS
-from zsl.db.model.app_model import RELATED_FIELDS_HINTS
-from zsl.db.model.app_model import AppModel
+from zsl.db.model.app_model import RELATED_FIELDS, RELATED_FIELDS_CLASS, RELATED_FIELDS_HINTS, AppModel
 from zsl.db.model.app_model_json_decoder import get_json_decoder
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
 from zsl.utils.import_helper import fetch_class

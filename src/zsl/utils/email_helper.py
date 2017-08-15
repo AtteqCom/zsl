@@ -9,9 +9,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from zsl import Config
-from zsl import Injected
-from zsl import inject
+from zsl import Config, Injected, inject
 
 
 @inject(config=Config)

@@ -13,8 +13,7 @@ from functools import partial
 
 from future.utils import viewitems
 
-from zsl import Config
-from zsl import inject
+from zsl import Config, inject
 
 
 def redis_key(*args):

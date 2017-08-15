@@ -2,28 +2,18 @@
 :mod:`zsl.router.task`
 ------------------------
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+from builtins import *
 
 import importlib
 import logging
 from abc import ABCMeta
-from builtins import *
-from builtins import object
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
-from zsl import Config
-from zsl import inject
+from zsl import Config, inject
 from zsl.errors import ZslError
 from zsl.utils.string_helper import underscore_to_camelcase
-from zsl.utils.task_helper import get_callable
-from zsl.utils.task_helper import instantiate
+from zsl.utils.task_helper import get_callable, instantiate
 
 TASK_CONFIGURATION_NAME = 'TASKS'
 

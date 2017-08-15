@@ -7,9 +7,7 @@ in the documentary comments. Then outputs it to a file.
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 import importlib
 import inspect

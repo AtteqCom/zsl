@@ -5,29 +5,21 @@
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>,
                   Martin Babka <babka@atteq.com>
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+from builtins import *  # NOQA
 
 import json
 import sys
-from builtins import *
 from functools import wraps
 from json.encoder import JSONEncoder
-from typing import Any
-from typing import Callable
-from typing import Dict
+from typing import Any, Callable, Dict
 
 from future.builtins import str
 
 from zsl import inject
 from zsl.errors import ZslError
 from zsl.router.task import TaskRouter
-from zsl.task.job_context import DelegatingJobContext
-from zsl.task.job_context import Job
-from zsl.task.job_context import JobContext
-from zsl.task.job_context import delegating_job_context
+from zsl.task.job_context import DelegatingJobContext, Job, JobContext, delegating_job_context
 from zsl.task.task_data import TaskData
 from zsl.utils.reflection_helper import is_scalar
 

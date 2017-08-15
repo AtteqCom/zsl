@@ -8,9 +8,7 @@ from __future__ import unicode_literals
 
 import redis
 
-from zsl import Config
-from zsl import Zsl
-from zsl import inject
+from zsl import Config, Zsl, inject
 from zsl.cache.cache_module import CacheModule
 
 

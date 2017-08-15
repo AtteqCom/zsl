@@ -7,27 +7,18 @@ help of the ``guard`` class decorator and ``ResourcePolicy`` declarative
 policy class a complex security resource behaviour can be achieved.
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import http.client
 from builtins import *
 from enum import Enum
 from functools import wraps
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from future.utils import raise_from
 
 from zsl.interface.resource import ResourceResult
-from zsl.service.service import _TX_HOLDER_ATTRIBUTE
-from zsl.service.service import SessionFactory
-from zsl.service.service import transactional
+from zsl.service.service import _TX_HOLDER_ATTRIBUTE, SessionFactory, transactional
 from zsl.utils.http import get_http_status_code_value
 
 _HTTP_STATUS_FORBIDDEN = get_http_status_code_value(http.client.FORBIDDEN)

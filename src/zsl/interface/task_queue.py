@@ -14,13 +14,9 @@ from typing import Any
 
 from future.utils import with_metaclass
 
-from zsl import Config
-from zsl import Injected
-from zsl import Zsl
-from zsl import inject
+from zsl import Config, Injected, Zsl, inject
 from zsl.router.task import TaskRouter
-from zsl.task.job_context import Job
-from zsl.task.job_context import JobContext
+from zsl.task.job_context import Job, JobContext
 
 
 class KillWorkerException(Exception):

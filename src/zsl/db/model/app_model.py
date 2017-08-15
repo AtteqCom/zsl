@@ -7,17 +7,12 @@
 from __future__ import unicode_literals
 
 # noinspection PyCompatibility
-from builtins import int
-from builtins import map
-from builtins import object
-from builtins import str
-from datetime import date
-from datetime import datetime
+from builtins import int, map, object, str
+from datetime import date, datetime
 
 from future.utils import viewitems
 
-from zsl.utils.date_helper import format_date_portable
-from zsl.utils.date_helper import format_datetime_portable
+from zsl.utils.date_helper import format_date_portable, format_datetime_portable
 
 DATE_DATA = 'date_data'
 DATETIME_DATA = 'datetime_data'

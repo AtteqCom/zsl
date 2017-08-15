@@ -10,16 +10,14 @@ import hashlib
 import importlib
 import json
 import sys
-from builtins import object
-from builtins import range
+from builtins import object, range
 from typing import Union
 
 import sqlalchemy.exc
 from sqlalchemy.orm import class_mapper
 
 from zsl.utils.deploy.integrator import integrate_to_file
-from zsl.utils.string_helper import camelcase_to_underscore
-from zsl.utils.string_helper import underscore_to_camelcase
+from zsl.utils.string_helper import camelcase_to_underscore, underscore_to_camelcase
 
 
 model_tpl = """    {model_prefix}{model_name} = {model_fn}.extend({{

@@ -1,9 +1,6 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+from builtins import *  # NOQA
 
-from builtins import *
 from unittest.case import TestCase
 
 from click.testing import CliRunner
@@ -13,8 +10,7 @@ from zsl.application.containers.core_container import CoreContainer
 from zsl.application.modules.cli_module import ZslCli
 from zsl.router.task import TaskConfiguration
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
-from zsl.testing.zsl import ZslTestCase
-from zsl.testing.zsl import ZslTestConfiguration
+from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 
 
 class TestCliContainer(CoreContainer):

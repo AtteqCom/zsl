@@ -12,8 +12,7 @@ from builtins import object
 
 import sqlalchemy
 
-from zsl import Zsl
-from zsl import inject
+from zsl import Zsl, inject
 from zsl.task.task_decorator import json_output
 
 

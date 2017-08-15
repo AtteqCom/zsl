@@ -2,23 +2,14 @@
 :mod:`zsl.application.modules.task_router_module`
 -------------------------------------------------
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from builtins import *
 
-from injector import ClassProvider
-from injector import Module
-from injector import provides
-from injector import singleton
+from injector import ClassProvider, Module, provides, singleton
 
-from zsl import Config
-from zsl import inject
-from zsl.router.task import TASK_CONFIGURATION_NAME
-from zsl.router.task import TaskConfiguration
-from zsl.router.task import TaskRouter
+from zsl import Config, inject
+from zsl.router.task import TASK_CONFIGURATION_NAME, TaskConfiguration, TaskRouter
 
 
 class TaskRouterModule(Module):

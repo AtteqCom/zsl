@@ -5,8 +5,7 @@
 """
 from __future__ import unicode_literals
 
-from datetime import date
-from datetime import timedelta
+from datetime import date, timedelta
 
 
 def format_datetime_portable(ts):

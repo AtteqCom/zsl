@@ -1,12 +1,9 @@
 """
 Fixtures and helper functions to test models and test resources
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+from builtins import *  # NOQA
 
-from builtins import *
 from collections import namedtuple
 
 from sqlalchemy import ForeignKey
@@ -14,8 +11,7 @@ from sqlalchemy.engine.base import Engine
 from sqlalchemy.ext.declarative.api import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column
-from sqlalchemy.sql.sqltypes import Integer
-from sqlalchemy.sql.sqltypes import String
+from sqlalchemy.sql.sqltypes import Integer, String
 
 from zsl.application.modules.alchemy_module import SessionHolder
 from zsl.db.model.app_model import AppModel

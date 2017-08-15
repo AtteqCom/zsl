@@ -1,11 +1,9 @@
 from unittest.case import TestCase
 
-from zsl import Config
-from zsl import inject
+from zsl import Config, inject
 from zsl.application.containers.container import IoCContainer
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
-from zsl.testing.zsl import ZslTestCase
-from zsl.testing.zsl import ZslTestConfiguration
+from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 from zsl.utils.redis_helper import Keymaker
 from zsl.utils.testing import set_test_responder
 

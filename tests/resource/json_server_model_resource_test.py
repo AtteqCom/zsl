@@ -2,10 +2,7 @@
 :mod:`tests.resource.json_server_model_resource`
 ------------------------------------------------
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import http.client
 import json
@@ -13,17 +10,9 @@ import math
 import re
 import urllib
 from builtins import *
-from resource.resource_test_helper import UserModel
-from resource.resource_test_helper import UserTuple
-from resource.resource_test_helper import addresses
-from resource.resource_test_helper import create_resource_test_data
-from resource.resource_test_helper import get_non_existent_id
-from resource.resource_test_helper import users
-from typing import AnyStr
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from resource.resource_test_helper import (UserModel, UserTuple, addresses, create_resource_test_data,
+                                           get_non_existent_id, users)
+from typing import AnyStr, Dict, List, Optional, Union
 from unittest.case import TestCase
 
 from future.utils import viewitems
@@ -32,8 +21,7 @@ from zsl import Zsl
 from zsl.application.containers.web_container import WebContainer
 from zsl.resource.json_server_resource import JsonServerResource
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
-from zsl.testing.http import HTTPTestCase
-from zsl.testing.http import json_loads
+from zsl.testing.http import HTTPTestCase, json_loads
 from zsl.testing.test_utils import parent_module
 
 # py23

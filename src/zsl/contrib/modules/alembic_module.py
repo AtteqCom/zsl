@@ -87,24 +87,17 @@ use a correct `Engine`.
 
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+from builtins import *  # NOQA
 
 import logging
 import os
-from builtins import *
 
 import click
 from click.core import Context
-from injector import Binder
-from injector import Module
-from injector import provides
-from injector import singleton
+from injector import Binder, Module, provides, singleton
 
-from zsl import Config
-from zsl import inject
+from zsl import Config, inject
 from zsl.application.modules.cli_module import ZslCli
 from zsl.contrib.modules.alembic_config import AlembicConfiguration
 from zsl.utils.injection_helper import simple_bind

@@ -6,12 +6,9 @@ from __future__ import unicode_literals
 
 import logging.config
 
-from injector import Binder
-from injector import Module
+from injector import Binder, Module
 
-from zsl import Config
-from zsl import Zsl
-from zsl import inject
+from zsl import Config, Zsl, inject
 
 
 class LoggerModule(Module):

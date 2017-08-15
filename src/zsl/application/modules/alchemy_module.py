@@ -5,20 +5,15 @@
 from __future__ import unicode_literals
 
 import logging
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 from builtins import object
 
-from injector import Module
-from injector import provides
-from injector import singleton
+from injector import Module, provides, singleton
 from sqlalchemy import create_engine
 from sqlalchemy.engine.base import Engine
-from sqlalchemy.orm.session import Session
-from sqlalchemy.orm.session import sessionmaker
+from sqlalchemy.orm.session import Session, sessionmaker
 
-from zsl import Config
-from zsl import inject
+from zsl import Config, inject
 
 
 class SessionHolder(object):

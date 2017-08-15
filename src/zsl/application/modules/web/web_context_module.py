@@ -1,26 +1,17 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
 from builtins import *
 from typing import Any
 
 import click
-from injector import Binder
-from injector import provides
-from injector import singleton
+from injector import Binder, provides, singleton
 
-from zsl import Config
-from zsl import Zsl
-from zsl import inject
+from zsl import Config, Zsl, inject
 from zsl.application.initialization_context import InitializationContext
 from zsl.application.modules.cli_module import ZslCli
-from zsl.application.modules.context_module import DefaultContextModule
-from zsl.application.modules.context_module import default_initializers
-from zsl.application.modules.web.cors import CORS_CONFIGURATION_NAME
-from zsl.application.modules.web.cors import CORSConfiguration
+from zsl.application.modules.context_module import DefaultContextModule, default_initializers
+from zsl.application.modules.web.cors import CORS_CONFIGURATION_NAME, CORSConfiguration
 from zsl.interface.web.performers.task import create_task_mapping
 from zsl.utils.injection_helper import simple_bind
 

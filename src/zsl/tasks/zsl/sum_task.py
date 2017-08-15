@@ -13,8 +13,7 @@ from builtins import object
 from injector import inject
 
 from zsl import Zsl
-from zsl.task.task_decorator import json_input
-from zsl.task.task_decorator import json_output
+from zsl.task.task_decorator import json_input, json_output
 
 
 class SumTask(object):

@@ -10,17 +10,11 @@ from __future__ import unicode_literals
 
 import importlib
 import logging
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Union
+from typing import Callable, Dict, List, Union
 
 from flask import request
 
-from zsl import Config
-from zsl import Injected
-from zsl import Zsl
-from zsl import inject
+from zsl import Config, Injected, Zsl, inject
 from zsl.interface.resource import ResourceResult
 from zsl.resource.model_resource import ModelResource
 from zsl.utils.string_helper import underscore_to_camelcase

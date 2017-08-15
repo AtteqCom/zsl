@@ -12,11 +12,8 @@ import logging
 from builtins import object
 
 from zsl import inject
-from zsl.cache.id_helper import IdHelper
-from zsl.cache.id_helper import app_model_decoder_fn
-from zsl.cache.id_helper import app_model_encoder_fn
-from zsl.cache.id_helper import create_key_object_prefix
-from zsl.cache.id_helper import model_key_generator
+from zsl.cache.id_helper import (IdHelper, app_model_decoder_fn, app_model_encoder_fn, create_key_object_prefix,
+                                 model_key_generator)
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
 from zsl.task.job_context import JobContext
 

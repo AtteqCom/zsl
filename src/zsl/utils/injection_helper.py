@@ -4,10 +4,7 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import functools
 import inspect
@@ -17,12 +14,7 @@ from typing import Type
 
 import injector
 from future.utils import viewitems
-from injector import Binder
-from injector import BindingKey
-from injector import CallError
-from injector import ClassProvider
-from injector import Scope
-from injector import reraise
+from injector import Binder, BindingKey, CallError, ClassProvider, Scope, reraise
 
 from zsl._state import get_current_app
 

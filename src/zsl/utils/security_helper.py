@@ -10,8 +10,7 @@ from __future__ import unicode_literals
 import hashlib
 from builtins import str
 
-from zsl import Config
-from zsl import inject
+from zsl import Config, inject
 from zsl.utils.string_helper import generate_random_string
 
 TOKEN_RANDOM = 'random_token'

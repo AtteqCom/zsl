@@ -10,8 +10,7 @@ import json
 
 import gearman
 
-from zsl import Config
-from zsl import inject
+from zsl import Config, inject
 
 
 @inject(config=Config)

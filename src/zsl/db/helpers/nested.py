@@ -5,10 +5,9 @@
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>
 """
 from __future__ import unicode_literals
+from builtins import *  # NOQA
 
-from builtins import *
-from typing import Any
-from typing import Optional
+from typing import Any, Optional
 
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 

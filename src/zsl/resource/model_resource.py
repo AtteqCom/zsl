@@ -17,33 +17,23 @@ from __future__ import unicode_literals
 
 import json
 import logging
-from builtins import int
-from builtins import object
+from builtins import int, object
 from hashlib import sha256
-from typing import Any
-from typing import List
-from typing import Union
+from typing import Any, List, Union
 
 from future.utils import viewitems
 from sqlalchemy.orm import class_mapper
 
 from zsl import inject
 from zsl.cache.cache_module import CacheModule
-from zsl.cache.id_helper import IdHelper
-from zsl.cache.id_helper import create_key_class_prefix
+from zsl.cache.id_helper import IdHelper, create_key_class_prefix
 from zsl.db.helpers import app_models
-from zsl.db.helpers.nested import nested_model
-from zsl.db.helpers.nested import nested_models
+from zsl.db.helpers.nested import nested_model, nested_models
 from zsl.db.model.app_model import AppModel
-from zsl.resource.resource_helper import apply_related
-from zsl.resource.resource_helper import create_related_tree
-from zsl.resource.resource_helper import filter_from_url_arg
-from zsl.resource.resource_helper import order_from_url_arg
-from zsl.resource.resource_helper import related_from_fields
-from zsl.service.service import TransactionalSupportMixin
-from zsl.service.service import transactional
-from zsl.utils.cache_helper import app_model_decoder_fn
-from zsl.utils.cache_helper import app_model_encoder_fn
+from zsl.resource.resource_helper import (apply_related, create_related_tree, filter_from_url_arg, order_from_url_arg,
+                                          related_from_fields)
+from zsl.service.service import TransactionalSupportMixin, transactional
+from zsl.utils.cache_helper import app_model_decoder_fn, app_model_encoder_fn
 
 
 def dict_pick(dictionary, allowed_keys):

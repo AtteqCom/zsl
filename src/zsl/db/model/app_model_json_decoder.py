@@ -6,8 +6,7 @@
 """
 from __future__ import unicode_literals
 
-from json.decoder import WHITESPACE
-from json.decoder import JSONDecoder
+from json.decoder import WHITESPACE, JSONDecoder
 
 from zsl.utils.import_helper import fetch_class
 

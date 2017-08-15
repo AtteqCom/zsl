@@ -9,8 +9,7 @@ import os
 import sys
 from builtins import object
 
-from zsl import Config
-from zsl import inject
+from zsl import Config, inject
 
 
 def append_paths(path, vendor_modules):

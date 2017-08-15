@@ -1,22 +1,15 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
 import traceback
 from builtins import *
 
 import click
-from injector import Binder
-from injector import Module
-from injector import singleton
+from injector import Binder, Module, singleton
 
 from zsl import inject
 from zsl.interface.cli import cli
-from zsl.task.job_context import Job
-from zsl.task.job_context import JobContext
-from zsl.task.job_context import create_job
+from zsl.task.job_context import Job, JobContext, create_job
 from zsl.utils.injection_helper import simple_bind
 from zsl.utils.testing import load_and_run_tests
 

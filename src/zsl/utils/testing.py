@@ -4,16 +4,13 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import importlib
 import unittest
 
-from zsl import Config
-from zsl import inject
-from zsl.router.method import identity_responder
-from zsl.router.method import set_default_responder
+from zsl import Config, inject
+from zsl.router.method import identity_responder, set_default_responder
 
 _test_responder_set = False
 

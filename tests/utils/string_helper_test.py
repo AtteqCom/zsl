@@ -1,8 +1,6 @@
 from unittest.case import TestCase
 
-from zsl.utils.string_helper import camelcase_to_underscore
-from zsl.utils.string_helper import join_list
-from zsl.utils.string_helper import underscore_to_camelcase
+from zsl.utils.string_helper import camelcase_to_underscore, join_list, underscore_to_camelcase
 
 
 class InflectionTestCase(TestCase):

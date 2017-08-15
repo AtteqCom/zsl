@@ -9,10 +9,8 @@ from __future__ import unicode_literals
 import random
 import re
 import string
-from builtins import range
-from builtins import str
-from typing import List
-from typing import Union
+from builtins import range, str
+from typing import List, Union
 
 _html_tag_re = re.compile(r'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE)
 _html_tag_re_un = re.compile(

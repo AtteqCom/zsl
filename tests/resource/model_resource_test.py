@@ -3,17 +3,10 @@ Created on May 14, 2014
 
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from builtins import *
-from resource.resource_test_helper import UserAppModel
-from resource.resource_test_helper import UserModel
-from resource.resource_test_helper import UserTuple
-from resource.resource_test_helper import create_resource_test_data
-from resource.resource_test_helper import users
+from resource.resource_test_helper import UserAppModel, UserModel, UserTuple, create_resource_test_data, users
 from unittest import TestCase
 
 import pytest

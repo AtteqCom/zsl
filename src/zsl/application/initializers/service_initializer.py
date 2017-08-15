@@ -8,12 +8,9 @@ import importlib
 import logging
 from builtins import object
 
-from injector import Binder
-from injector import singleton
+from injector import Binder, singleton
 
-from zsl import Config
-from zsl import Injected
-from zsl import inject
+from zsl import Config, Injected, inject
 from zsl.utils.string_helper import camelcase_to_underscore
 
 

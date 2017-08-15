@@ -6,8 +6,7 @@ This module allows for unit testing with a Zsl instance. Use
 while testing. Refer to unit testing section :ref:`unit-testing-zsl-instance`
 for an example.
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import logging
 from builtins import *

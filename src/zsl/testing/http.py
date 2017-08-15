@@ -3,23 +3,17 @@
 -----------------------
 This module allows for querying the API via HTTP.
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import json
 from builtins import *
-from typing import Any
-from typing import AnyStr
-from typing import Dict
-from typing import Union
+from typing import Any, AnyStr, Dict, Union
 
 from flask.testing import FlaskClient
 from flask.wrappers import Response
 
-from zsl import Zsl
-from zsl import inject
-from zsl.constants import HttpHeaders
-from zsl.constants import MimeType
+from zsl import Zsl, inject
+from zsl.constants import HttpHeaders, MimeType
 from zsl.utils.http import get_http_status_code_value
 
 

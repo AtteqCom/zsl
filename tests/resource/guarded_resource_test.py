@@ -3,10 +3,7 @@ Test http responses of resource guard. It should return a model if policy is
 met and an proper http code when policy is broken.
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import http.client
 from builtins import *
@@ -17,14 +14,9 @@ from mocks import mock
 from zsl import Zsl
 from zsl.application.containers.web_container import WebContainer
 from zsl.interface.resource import ResourceResult
-from zsl.resource.guard import Access
-from zsl.resource.guard import GuardedMixin
-from zsl.resource.guard import PolicyViolationError
-from zsl.resource.guard import ResourcePolicy
-from zsl.resource.guard import guard
+from zsl.resource.guard import Access, GuardedMixin, PolicyViolationError, ResourcePolicy, guard
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
-from zsl.testing.http import HTTPTestCase
-from zsl.testing.http import json_loads
+from zsl.testing.http import HTTPTestCase, json_loads
 from zsl.testing.test_utils import parent_module
 
 TEST_VALUE_CREATED = 'created'

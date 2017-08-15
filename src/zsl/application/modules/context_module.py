@@ -9,8 +9,7 @@ from __future__ import unicode_literals
 
 import logging
 
-from injector import Module
-from injector import singleton
+from injector import Module, singleton
 
 from zsl.application.initialization_context import InitializationContext
 from zsl.application.initializers.library_initializer import LibraryInitializer

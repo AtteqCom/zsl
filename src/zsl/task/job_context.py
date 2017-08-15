@@ -4,17 +4,13 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import contextlib
 from abc import abstractmethod
 from builtins import *
 from threading import current_thread
-from typing import Callable
-from typing import Dict
+from typing import Callable, Dict
 
 from flask.wrappers import Response
 

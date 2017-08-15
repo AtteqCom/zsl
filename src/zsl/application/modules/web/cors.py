@@ -1,5 +1,4 @@
-from typing import List
-from typing import Union
+from typing import List, Union
 
 CORS_CONFIGURATION_NAME = 'CORS'
 

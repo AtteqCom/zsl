@@ -14,8 +14,7 @@ from injector import inject
 
 from zsl import Zsl
 from zsl.interface.task_queue import KillWorkerException
-from zsl.task.job_context import JobContext
-from zsl.task.job_context import WebJobContext
+from zsl.task.job_context import JobContext, WebJobContext
 
 
 class KillWorkerTask(object):

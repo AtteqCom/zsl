@@ -10,14 +10,10 @@ from __future__ import unicode_literals
 
 import sys
 
-from celery import Celery
-from celery import shared_task
-from injector import Module
-from injector import provides
-from injector import singleton
+from celery import Celery, shared_task
+from injector import Module, provides, singleton
 
-from zsl import Config
-from zsl import inject
+from zsl import Config, inject
 from zsl.interface.task_queue import TaskQueueWorker
 from zsl.task.job_context import Job
 

@@ -5,17 +5,13 @@
 from __future__ import unicode_literals
 
 import click
-from injector import ClassProvider
-from injector import Module
-from injector import singleton
+from injector import ClassProvider, Module, singleton
 
-from zsl import Zsl
-from zsl import inject
+from zsl import Zsl, inject
 from zsl.application.modules.cli_module import ZslCli
 from zsl.interface.gearman.task_filler import exec_task_filler
 from zsl.interface.gearman.worker import GearmanTaskQueueWorker
-from zsl.interface.task_queue import TaskQueueWorker
-from zsl.interface.task_queue import run_worker
+from zsl.interface.task_queue import TaskQueueWorker, run_worker
 from zsl.utils.injection_helper import simple_bind
 
 
