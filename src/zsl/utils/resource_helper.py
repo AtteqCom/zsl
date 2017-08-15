@@ -7,17 +7,24 @@ Helper module for resource management.
 # TODO describe what model resource is and use cases
 
 from __future__ import unicode_literals
+
 import importlib
 import logging
-from typing import Callable, Union, List, Dict
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Union
+
 from flask import request
 
+from zsl import Config
+from zsl import Injected
+from zsl import Zsl
+from zsl import inject
+from zsl.interface.resource import ResourceResult
+from zsl.resource.model_resource import ModelResource
 from zsl.utils.string_helper import underscore_to_camelcase
 from zsl.utils.task_helper import instantiate
-from zsl.resource.model_resource import ModelResource
-from zsl.interface.resource import ResourceResult
-
-from zsl import inject, Config, Injected, Zsl
 
 
 class MethodNotImplementedException(Exception):

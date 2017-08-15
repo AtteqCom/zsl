@@ -5,10 +5,13 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
-from zsl.cache.cache_module import CacheModule
+
 import redis
 
-from zsl import inject, Zsl, Config
+from zsl import Config
+from zsl import Zsl
+from zsl import inject
+from zsl.cache.cache_module import CacheModule
 
 
 class RedisCacheModule(CacheModule):

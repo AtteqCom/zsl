@@ -4,19 +4,26 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-
-from builtins import *  # NOQA
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import functools
-import injector
 import inspect
 import logging
-
-from future.utils import viewitems
-from injector import Binder, ClassProvider, BindingKey, CallError, Scope, reraise
+from builtins import *  # NOQA
 from typing import Type
+
+import injector
+from future.utils import viewitems
+from injector import Binder
+from injector import BindingKey
+from injector import CallError
+from injector import ClassProvider
+from injector import Scope
+from injector import reraise
+
 from zsl._state import get_current_app
 
 

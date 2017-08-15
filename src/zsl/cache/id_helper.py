@@ -5,14 +5,19 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
-from future.utils import with_metaclass
-from builtins import object
+
 import abc
+import json
+from builtins import object
+
+from future.utils import with_metaclass
+
+from zsl.db.model.app_model import RELATED_FIELDS
+from zsl.db.model.app_model import RELATED_FIELDS_CLASS
+from zsl.db.model.app_model import RELATED_FIELDS_HINTS
+from zsl.db.model.app_model import AppModel
 from zsl.db.model.app_model_json_decoder import get_json_decoder
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
-import json
-from zsl.db.model.app_model import AppModel, RELATED_FIELDS_HINTS,\
-    RELATED_FIELDS_CLASS, RELATED_FIELDS
 from zsl.utils.import_helper import fetch_class
 
 

@@ -7,11 +7,13 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-
-import gearman
 import json
 
-from zsl import Config, inject, Injected
+import gearman
+
+from zsl import Config
+from zsl import Injected
+from zsl import inject
 
 
 @inject(config=Config)

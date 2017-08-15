@@ -5,6 +5,7 @@
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>
 """
 from __future__ import unicode_literals
+
 from builtins import *
 from typing import Any
 from typing import Optional

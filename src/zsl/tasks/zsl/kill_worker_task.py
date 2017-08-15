@@ -9,10 +9,13 @@ Created on 22.12.2012
 from __future__ import unicode_literals
 
 from builtins import object
-from zsl import Zsl
+
 from injector import inject
-from zsl.task.job_context import JobContext, WebJobContext
+
+from zsl import Zsl
 from zsl.interface.task_queue import KillWorkerException
+from zsl.task.job_context import JobContext
+from zsl.task.job_context import WebJobContext
 
 
 class KillWorkerTask(object):

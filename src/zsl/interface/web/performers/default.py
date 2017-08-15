@@ -8,12 +8,13 @@ from __future__ import unicode_literals
 
 from flask.globals import request
 
+from zsl import Zsl
+from zsl import inject
 from zsl.application.error_handler import error_handler
-from zsl.interface.web.utils.execution import notify_responders, convert_to_web_response
+from zsl.interface.web.utils.execution import convert_to_web_response
+from zsl.interface.web.utils.execution import notify_responders
 from zsl.interface.web.utils.response_headers import append_headers
 from zsl.router.task import RoutingError
-
-from zsl import inject, Zsl
 from zsl.task.job_context import WebJobContext
 
 

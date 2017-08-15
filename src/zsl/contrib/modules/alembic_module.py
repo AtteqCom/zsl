@@ -87,18 +87,27 @@ use a correct `Engine`.
 
 
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import *
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import logging
 import os
+from builtins import *
 
 import click
 from click.core import Context
+from injector import Binder
+from injector import Module
+from injector import provides
+from injector import singleton
 
 from zsl import Config
+from zsl import inject
+from zsl.application.modules.cli_module import ZslCli
 from zsl.contrib.modules.alembic_config import AlembicConfiguration
+from zsl.utils.injection_helper import simple_bind
 
 try:
     from alembic.config import CommandLine
@@ -108,11 +117,6 @@ except ImportError:
         "Can not import alembic. Please install it first `pip install zsl ["
         "alembic]`.")
     raise
-from injector import Module, singleton, Binder, provides
-
-from zsl.application.modules.cli_module import ZslCli
-from zsl import inject
-from zsl.utils.injection_helper import simple_bind
 
 
 class AlembicCli(object):

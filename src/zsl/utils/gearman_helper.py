@@ -5,8 +5,11 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
-import gearman
+
 import json
+
+import gearman
+
 from zsl import Config
 from zsl import inject
 

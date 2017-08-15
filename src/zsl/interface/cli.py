@@ -7,12 +7,15 @@
 The module is responsible for creating the CLI interface of ZSL and provides the main `click` group for all the CLI
 commands and groups. If any command is to be added add it to this group `cli` defined in this module.
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import sys
 from builtins import *
 
 import click
-import sys
 
 from zsl import __version__
 

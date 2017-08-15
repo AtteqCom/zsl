@@ -4,11 +4,14 @@
 """
 
 from __future__ import unicode_literals
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
-from zsl import inject, Config, Injected
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+from zsl import Config
+from zsl import Injected
+from zsl import inject
 
 
 @inject(config=Config)

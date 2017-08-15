@@ -3,14 +3,17 @@
 -------------------------------------------------------
 """
 from __future__ import unicode_literals
-from builtins import object
 
 import importlib
 import logging
+from builtins import object
 
-from injector import singleton, Binder
+from injector import Binder
+from injector import singleton
 
-from zsl import inject, Config, Injected
+from zsl import Config
+from zsl import Injected
+from zsl import inject
 from zsl.utils.string_helper import camelcase_to_underscore
 
 

@@ -9,10 +9,12 @@ Created on 24.12.2012
 from __future__ import unicode_literals
 
 from builtins import object
-from injector import inject
+
 import sqlalchemy.engine
-from zsl import Zsl
 from flask import Response
+from injector import inject
+
+from zsl import Zsl
 
 
 class DbTestTask(object):

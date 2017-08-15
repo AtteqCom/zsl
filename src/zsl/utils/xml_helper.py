@@ -5,11 +5,12 @@
 Helper functions for working with XML and ElementTree.
 """
 from __future__ import unicode_literals
-from future.utils import viewitems
 
 import xml.etree.cElementTree as ET
-import requests
 from functools import reduce
+
+import requests
+from future.utils import viewitems
 
 
 class NotValidXmlException(Exception):

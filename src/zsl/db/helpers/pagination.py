@@ -3,11 +3,12 @@
 --------------------------------
 """
 from __future__ import unicode_literals
+
 from builtins import object
+from typing import Dict
 from typing import Union
 
 from sqlalchemy.orm.query import Query
-from typing import Dict
 
 from zsl.db.model.app_model import AppModel
 

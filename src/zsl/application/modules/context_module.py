@@ -9,12 +9,14 @@ from __future__ import unicode_literals
 
 import logging
 
-from zsl.application.initialization_context import InitializationContext
-from injector import singleton, Module
+from injector import Module
+from injector import singleton
 
+from zsl.application.initialization_context import InitializationContext
 from zsl.application.initializers.library_initializer import LibraryInitializer
 from zsl.application.initializers.service_initializer import ServiceInitializer
 from zsl.application.initializers.unittest_initializer import UnitTestInitializer
+
 
 #: Initializers used in all applications
 default_initializers = (LibraryInitializer, ServiceInitializer)

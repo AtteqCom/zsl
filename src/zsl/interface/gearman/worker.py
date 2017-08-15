@@ -5,12 +5,13 @@
 .. moduleauthor:: Martin
 """
 from __future__ import unicode_literals
+
 import gearman
 from gearman.job import GearmanJob
 
+from zsl.interface.gearman.json_data_encoder import JSONDataEncoder
 from zsl.interface.task_queue import TaskQueueWorker
 from zsl.task.job_context import Job
-from zsl.interface.gearman.json_data_encoder import JSONDataEncoder
 
 
 class ReloadingWorker(gearman.GearmanWorker):

@@ -12,16 +12,15 @@ Main service module.
 """
 from __future__ import unicode_literals
 
-__version__ = '0.18.1'
-
 from flask import Config
-
 from injector import Module
 
 from zsl.application.initialization_context import InitializationContext as ApplicationContext
-
-from zsl.utils.injection_helper import inject
 from zsl.application.service_application import ServiceApplication
+from zsl.utils.injection_helper import inject
+
+__version__ = '0.18.1'
+
 
 Zsl = ServiceApplication
 

@@ -2,26 +2,29 @@
 :mod:`zsl.resource.json_server_resource`
 ----------------------------------------
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import *
-
-import logging
-import re
-from typing import Any
-
-from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import or_
-
-from zsl.utils.http import get_http_status_code_value
-from .model_resource import ModelResource
-from zsl.interface.resource import ResourceResult
-from zsl.service.service import transactional
-from zsl.resource.resource_helper import filter_from_url_arg, flat_model, model_tree
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import http.client
-from flask import request
+import logging
+import re
+from builtins import *
+from typing import Any
 
+from flask import request
+from sqlalchemy import or_
+from sqlalchemy.orm.exc import NoResultFound
+
+from zsl.interface.resource import ResourceResult
+from zsl.resource.resource_helper import filter_from_url_arg
+from zsl.resource.resource_helper import flat_model
+from zsl.resource.resource_helper import model_tree
+from zsl.service.service import transactional
+from zsl.utils.http import get_http_status_code_value
+
+from .model_resource import ModelResource
 
 NOT_FOUND = ResourceResult(
     body={},

@@ -6,8 +6,8 @@
 """
 from __future__ import unicode_literals
 
-from builtins import object
 import inspect
+from builtins import object
 
 
 class CommandDispatcher(object):

@@ -1,19 +1,25 @@
 """
 Test resource guard.
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import *
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from unittest import TestCase
 import inspect
+from builtins import *
+from unittest import TestCase
+
+from zsl.resource.guard import Access
+from zsl.resource.guard import GuardedMixin
+from zsl.resource.guard import ResourcePolicy
+from zsl.resource.guard import guard
 
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
 
-from zsl.resource.guard import guard, GuardedMixin, ResourcePolicy, Access
 
 _methods = ['create', 'read', 'update', 'delete']
 
@@ -275,4 +281,3 @@ class TestResourceGuard(TestCase):
                          "to allow it")
         self.assertEqual(error_result, resource.delete(),
                          "should deny to delete, because of DenyDeletePolicy")
-

@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
-import warnings
 import functools
+import warnings
 
 
 def deprecated(func):

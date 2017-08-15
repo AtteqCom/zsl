@@ -1,5 +1,7 @@
 import sys
-from setuptools import setup, find_packages
+
+from setuptools import find_packages
+from setuptools import setup
 
 _is_py3 = sys.version_info > (3, 0)
 

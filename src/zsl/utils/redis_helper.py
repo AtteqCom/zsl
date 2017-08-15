@@ -7,11 +7,14 @@ Helper module for working with redis.
 .. moduleauthor::  Peter Morihladko
 """
 from __future__ import unicode_literals
-from future.utils import viewitems
+
 from builtins import object
 from functools import partial
-from zsl import inject
+
+from future.utils import viewitems
+
 from zsl import Config
+from zsl import inject
 
 
 def redis_key(*args):

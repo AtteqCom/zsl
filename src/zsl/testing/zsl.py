@@ -8,11 +8,10 @@ for an example.
 """
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from builtins import *
-
-from collections import namedtuple
 
 import logging
+from builtins import *
+from collections import namedtuple
 from functools import partial
 
 from zsl import Zsl

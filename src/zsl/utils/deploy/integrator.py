@@ -4,8 +4,9 @@
 """
 
 from __future__ import unicode_literals
-import tempfile
+
 import os
+import tempfile
 
 
 def integrate_to_file(what, filename, start_line, end_line):

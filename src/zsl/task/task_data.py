@@ -4,11 +4,16 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from builtins import *
 
-from zsl import inject, Injected, Zsl
+from zsl import Injected
+from zsl import Zsl
+from zsl import inject
 from zsl.utils.warnings import deprecated
 
 

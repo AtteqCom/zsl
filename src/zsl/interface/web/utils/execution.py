@@ -1,17 +1,21 @@
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from builtins import *  # NOQA
-
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
+from typing import Callable
 
 from flask import request
 from flask.helpers import make_response
 from flask.wrappers import Response
 
-from zsl import Zsl, inject
-from zsl.task.job_context import JobContext, WebJobContext
+from zsl import Zsl
+from zsl import inject
+from zsl.task.job_context import JobContext
+from zsl.task.job_context import WebJobContext
 
 
 def notify_responders(f):

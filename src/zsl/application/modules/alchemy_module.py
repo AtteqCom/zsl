@@ -4,18 +4,21 @@
 """
 from __future__ import unicode_literals
 
-from abc import ABCMeta, abstractmethod
+import logging
+from abc import ABCMeta
+from abc import abstractmethod
 from builtins import object
 
-import logging
-
+from injector import Module
+from injector import provides
+from injector import singleton
 from sqlalchemy import create_engine
-from sqlalchemy.orm.session import sessionmaker, Session
 from sqlalchemy.engine.base import Engine
+from sqlalchemy.orm.session import Session
+from sqlalchemy.orm.session import sessionmaker
 
-from injector import Module, provides, singleton
-
-from zsl import Config, inject
+from zsl import Config
+from zsl import inject
 
 
 class SessionHolder(object):

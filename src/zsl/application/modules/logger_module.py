@@ -9,7 +9,8 @@ import logging.config
 from injector import Binder
 from injector import Module
 
-from zsl import Config, Zsl
+from zsl import Config
+from zsl import Zsl
 from zsl import inject
 
 

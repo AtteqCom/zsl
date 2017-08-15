@@ -3,9 +3,12 @@
 ----------------------------
 """
 from __future__ import unicode_literals
-from builtins import zip
+
 from builtins import object
-from sqlalchemy import desc, asc
+from builtins import zip
+
+from sqlalchemy import asc
+from sqlalchemy import desc
 
 DEFAULT_SORT_ORDER = 'ASC'  # If changed, look at the condition in apply_sorter if self.get_order() == "DESC":.
 

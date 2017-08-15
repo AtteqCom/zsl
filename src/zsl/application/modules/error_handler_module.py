@@ -1,10 +1,13 @@
 from injector import Binder
-from injector import Module, provides, singleton
+from injector import Module
+from injector import provides
+from injector import singleton
 
 from zsl import Config
 from zsl import inject
 from zsl.application.error_handler import register
-from zsl.errors import ErrorConfiguration, ERROR_CONFIG_NAME
+from zsl.errors import ERROR_CONFIG_NAME
+from zsl.errors import ErrorConfiguration
 
 
 class ErrorHandlerModule(Module):

@@ -7,10 +7,11 @@ Helpers for parameter handling
 .. moduleauthor:: Peter Morihladko
 """
 from __future__ import unicode_literals
-from future.utils import viewitems
 
 import inspect
 from functools import reduce
+
+from future.utils import viewitems
 
 
 class RequestException(Exception):

@@ -5,15 +5,19 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
+
 # noinspection PyCompatibility
-from builtins import str
 from builtins import int
 from builtins import map
 from builtins import object
+from builtins import str
+from datetime import date
+from datetime import datetime
+
 from future.utils import viewitems
 
-from datetime import datetime, date
-from zsl.utils.date_helper import format_date_portable, format_datetime_portable
+from zsl.utils.date_helper import format_date_portable
+from zsl.utils.date_helper import format_datetime_portable
 
 DATE_DATA = 'date_data'
 DATETIME_DATA = 'datetime_data'

@@ -7,18 +7,17 @@ in the documentary comments. Then outputs it to a file.
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import print_function
 from __future__ import unicode_literals
 
-import sys
-import os
-
-import pydoc
-import inspect
-import pkgutil
 import importlib
+import inspect
 import logging
+import os
+import pkgutil
+import pydoc
+import sys
 
 from zsl import inject
 from zsl.router.method import get_method_packages

@@ -3,9 +3,12 @@
 --------------------------------------------------------
 """
 from __future__ import unicode_literals
+
 from builtins import object
 
-from zsl import ApplicationContext, Config, inject
+from zsl import ApplicationContext
+from zsl import Config
+from zsl import inject
 
 
 class UnitTestInitializer(object):

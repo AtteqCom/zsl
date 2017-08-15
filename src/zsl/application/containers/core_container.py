@@ -5,12 +5,12 @@
 from __future__ import unicode_literals
 
 from zsl.application.containers.container import IoCContainer
-from zsl.application.modules.cli_module import CliModule
-from zsl.application.modules.error_handler_module import ErrorHandlerModule
-from zsl.application.modules.logger_module import LoggerModule
 from zsl.application.modules.alchemy_module import AlchemyModule
 from zsl.application.modules.cache_module import RedisCacheInjectionModule
+from zsl.application.modules.cli_module import CliModule
 from zsl.application.modules.context_module import DefaultContextModule
+from zsl.application.modules.error_handler_module import ErrorHandlerModule
+from zsl.application.modules.logger_module import LoggerModule
 from zsl.application.modules.task_router import TaskRouterModule
 
 

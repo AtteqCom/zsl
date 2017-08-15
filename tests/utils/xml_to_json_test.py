@@ -1,7 +1,7 @@
-from zsl.utils.xml_to_json import xml_to_json
 import unittest
-
 import xml.etree.cElementTree
+
+from zsl.utils.xml_to_json import xml_to_json
 
 
 class TestXmlToJson(unittest.TestCase):

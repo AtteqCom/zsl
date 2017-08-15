@@ -4,13 +4,20 @@
 
 .. moduleauthor:: Peter Morihladko
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import *
-from future.utils import viewitems, viewvalues
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from sqlalchemy.orm import class_mapper, joinedload
-from sqlalchemy import desc, asc, and_
+from builtins import *
+
+from future.utils import viewitems
+from future.utils import viewvalues
+from sqlalchemy import and_
+from sqlalchemy import asc
+from sqlalchemy import desc
+from sqlalchemy.orm import class_mapper
+from sqlalchemy.orm import joinedload
 
 
 def filter_from_url_arg(model_cls, query, arg, query_operator=and_,

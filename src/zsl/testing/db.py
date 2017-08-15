@@ -21,18 +21,23 @@ The module provides class :class:`.TestSessionFactory` - it always returns
 the same session. Also one should add :class:`.DbTestModule` to the test
 container when creating Zsl instance, see :ref:`unit-testing-zsl-instance`.
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import *
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import logging
-from injector import Module, provides, singleton
+from builtins import *
+
+from injector import Module
+from injector import provides
+from injector import singleton
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm.session import Session
 
 from zsl import inject
-from zsl.application.modules.alchemy_module import TransactionHolderFactory, \
-    TransactionHolder
+from zsl.application.modules.alchemy_module import TransactionHolder
+from zsl.application.modules.alchemy_module import TransactionHolderFactory
 from zsl.db.model.sql_alchemy import metadata
 from zsl.service.service import SessionFactory
 

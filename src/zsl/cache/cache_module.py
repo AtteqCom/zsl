@@ -5,10 +5,11 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
-from future.utils import with_metaclass
 
-from builtins import object
 import abc
+from builtins import object
+
+from future.utils import with_metaclass
 
 
 class CacheModule(with_metaclass(abc.ABCMeta, object)):

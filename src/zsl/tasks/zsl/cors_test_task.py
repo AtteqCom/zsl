@@ -9,9 +9,13 @@ Created on 22.12.2012
 from __future__ import unicode_literals
 
 from builtins import object
-from zsl.task.task_decorator import json_input, json_output, crossdomain
-from zsl import Zsl
+
 from injector import inject
+
+from zsl import Zsl
+from zsl.task.task_decorator import crossdomain
+from zsl.task.task_decorator import json_input
+from zsl.task.task_decorator import json_output
 
 
 class CorsTestTask(object):

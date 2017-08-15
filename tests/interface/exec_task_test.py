@@ -1,18 +1,19 @@
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from builtins import *
-
 from typing import Callable
 from unittest.case import TestCase
 
 from zsl.application.containers.web_container import WebContainer
-from zsl.tasks.zsl.version_task import VersionTask
-from zsl.testing.db import IN_MEMORY_DB_SETTINGS
-from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
-
 from zsl.errors import ZslError
 from zsl.interface.task import create_task
+from zsl.tasks.zsl.version_task import VersionTask
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS
+from zsl.testing.zsl import ZslTestCase
+from zsl.testing.zsl import ZslTestConfiguration
 
 
 class ExecTaskTestCase(ZslTestCase, TestCase):

@@ -7,18 +7,20 @@ task queue handles asynchronous and distributed code executions.
 
 .. moduleauthor:: Peter Morihladko
 """
-from future.utils import with_metaclass
-
 import abc
-import traceback
 import socket
-
+import traceback
 from typing import Any
 
-from zsl import Zsl, Config, Injected
+from future.utils import with_metaclass
+
+from zsl import Config
+from zsl import Injected
+from zsl import Zsl
 from zsl import inject
 from zsl.router.task import TaskRouter
-from zsl.task.job_context import JobContext, Job
+from zsl.task.job_context import Job
+from zsl.task.job_context import JobContext
 
 
 class KillWorkerException(Exception):

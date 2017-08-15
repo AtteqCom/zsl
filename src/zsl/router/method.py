@@ -5,23 +5,27 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
+
+import json
+import logging
 from builtins import *
 
-import logging
-
-from flask.wrappers import Response
 from flask import request
+from flask.wrappers import Response
 
+from zsl import Config
+from zsl import Injected
+from zsl import Zsl
+from zsl import inject
 from zsl.application.error_handler import error_handler
 from zsl.application.modules.web.configuration import MethodConfiguration
 from zsl.constants import MimeType
-from zsl.interface.web.utils.execution import execute_web_task, notify_responders, convert_to_web_response
+from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
+from zsl.interface.web.utils.execution import convert_to_web_response
+from zsl.interface.web.utils.execution import execute_web_task
+from zsl.interface.web.utils.execution import notify_responders
 from zsl.interface.web.utils.request_data import extract_data
 from zsl.interface.web.utils.response_headers import append_headers
-from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
-import json
-
-from zsl import inject, Config, Zsl, Injected
 from zsl.task.job_context import WebJobContext
 
 METHOD_CONFIG_NAME = 'METHOD'

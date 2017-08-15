@@ -5,12 +5,15 @@
 from __future__ import unicode_literals
 
 import logging
-from injector import singleton, Module, Binder
 
-from zsl.cache.redis_cache_module import RedisCacheModule
+from injector import Binder
+from injector import Module
+from injector import singleton
+
 from zsl.cache.cache_module import CacheModule
-from zsl.cache.redis_id_helper import RedisIdHelper
 from zsl.cache.id_helper import IdHelper
+from zsl.cache.redis_cache_module import RedisCacheModule
+from zsl.cache.redis_id_helper import RedisIdHelper
 
 
 class RedisCacheInjectionModule(Module):

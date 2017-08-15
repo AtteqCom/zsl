@@ -3,11 +3,12 @@
 ------------------------------------------
 """
 from __future__ import unicode_literals
+
 from builtins import object
 
+from zsl.interface.celery.worker import create_celery_app
+from zsl.interface.celery.worker import zsl_task
 from zsl.task.task_decorator import json_input
-
-from zsl.interface.celery.worker import zsl_task, create_celery_app
 
 
 def schedule_celery_task(path, data):

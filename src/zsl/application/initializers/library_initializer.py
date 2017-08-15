@@ -3,13 +3,14 @@
 -------------------------------------------------------
 """
 from __future__ import unicode_literals
-from builtins import object
 
 import logging
-import sys
 import os
+import sys
+from builtins import object
 
-from zsl import Config, inject
+from zsl import Config
+from zsl import inject
 
 
 def append_paths(path, vendor_modules):

@@ -6,27 +6,32 @@ This module does the error handling. It allows users to register
 an error handler for a given exception type. It also provides default
 error handlers.
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-
-from builtins import *
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import http.client
 import logging
 import traceback
-
 from abc import abstractmethod
-from flask import request
+from builtins import *
 from functools import wraps
 
+from flask import request
+
 from zsl import inject
-from zsl.errors import ErrorConfiguration, ErrorHandler
-from zsl.utils.http import get_http_status_code_value
-from zsl.task.task_decorator import json_output
 from zsl.db.model.app_model import AppModel
+from zsl.errors import ErrorConfiguration
+from zsl.errors import ErrorHandler
 from zsl.router.task import RoutingError
-from zsl.task.job_context import add_responder, StatusCodeResponder, JobContext, WebJobContext
+from zsl.task.job_context import JobContext
+from zsl.task.job_context import StatusCodeResponder
+from zsl.task.job_context import WebJobContext
+from zsl.task.job_context import add_responder
+from zsl.task.task_decorator import json_output
 from zsl.utils.documentation import documentation_link
+from zsl.utils.http import get_http_status_code_value
 
 
 class ErrorResponse(AppModel):

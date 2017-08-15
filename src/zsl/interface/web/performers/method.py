@@ -7,9 +7,8 @@
 from __future__ import unicode_literals
 
 import logging
-from importlib import import_module
-
 import sys
+from importlib import import_module
 
 from zsl.router.method import get_method_packages
 

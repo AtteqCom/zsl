@@ -2,24 +2,30 @@
 :mod:`zsl.interface.webservice.performers.task`
 -----------------------------------------------
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-
-from builtins import *  # NOQA
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import logging
+from builtins import *  # NOQA
 from functools import partial
 
 from flask import request
 
-from zsl import inject, Zsl, Injected
+from zsl import Injected
+from zsl import Zsl
+from zsl import inject
 from zsl.application.error_handler import error_handler
-from zsl.interface.web.utils.execution import execute_web_task, convert_to_web_response, notify_responders
+from zsl.interface.web.utils.execution import convert_to_web_response
+from zsl.interface.web.utils.execution import execute_web_task
+from zsl.interface.web.utils.execution import notify_responders
 from zsl.interface.web.utils.request_data import extract_data
 from zsl.interface.web.utils.response_headers import append_headers
 from zsl.router.task import TaskConfiguration
-from zsl.task.job_context import WebJobContext, JobContext
 from zsl.router.task import TaskRouter
+from zsl.task.job_context import JobContext
+from zsl.task.job_context import WebJobContext
 
 
 @inject(task_router=TaskRouter)

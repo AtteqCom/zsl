@@ -5,8 +5,9 @@
 from __future__ import unicode_literals
 
 from zsl.application.containers.core_container import CoreContainer
-from zsl.application.modules.celery_module import CeleryTaskQueueOutsideWorkerModule, CeleryTaskQueueMainWorkerModule, \
-    CeleryCliModule
+from zsl.application.modules.celery_module import CeleryCliModule
+from zsl.application.modules.celery_module import CeleryTaskQueueMainWorkerModule
+from zsl.application.modules.celery_module import CeleryTaskQueueOutsideWorkerModule
 
 
 class CeleryContainer(CoreContainer):

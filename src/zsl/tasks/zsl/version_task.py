@@ -9,9 +9,11 @@ Created on 24.12.2012
 from __future__ import unicode_literals
 
 from builtins import object
+
 import sqlalchemy
 
-from zsl import inject, Zsl
+from zsl import Zsl
+from zsl import inject
 from zsl.task.task_decorator import json_output
 
 

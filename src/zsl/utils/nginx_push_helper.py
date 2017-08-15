@@ -7,9 +7,10 @@ https://github.com/wandenberg/nginx-push-stream-module
 """
 from __future__ import unicode_literals
 
-from builtins import object
-import requests
 import json
+from builtins import object
+
+import requests
 
 from zsl.utils.url_helper import urlencode
 

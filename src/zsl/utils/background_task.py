@@ -4,13 +4,16 @@
 """
 from __future__ import unicode_literals
 
+from functools import wraps
 from typing import Callable
 
-from zsl import inject, Config
-from zsl_client import GearmanService, RawTask, JsonTask
-from functools import wraps
-from zsl.utils.params_helper import required_params
+from zsl_client import GearmanService
+from zsl_client import JsonTask
+from zsl_client import RawTask
 
+from zsl import Config
+from zsl import inject
+from zsl.utils.params_helper import required_params
 
 __author__ = 'Peter Morihladko'
 

@@ -1,26 +1,28 @@
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-
-from builtins import *
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import http.client
+from builtins import *
 from unittest.case import TestCase
 
 from flask import json
 
-from zsl.application.error_handler import ErrorResponse, DefaultErrorHandler
+from zsl import Zsl
+from zsl import inject
+from zsl.application.containers.web_container import WebContainer
+from zsl.application.error_handler import DefaultErrorHandler
+from zsl.application.error_handler import ErrorResponse
 from zsl.application.modules.web.cors import CORSConfiguration
-
 from zsl.interface.task import fill_model_with_payload
 from zsl.interface.web.performers.task import perform_web_task
+from zsl.interface.web.utils.execution import execute_web_task
 from zsl.router.task import TaskConfiguration
 from zsl.task.job_context import WebJobContext
-
-from zsl.application.containers.web_container import WebContainer
-from zsl.interface.web.utils.execution import execute_web_task
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
-from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
-from zsl import inject, Zsl
+from zsl.testing.zsl import ZslTestCase
+from zsl.testing.zsl import ZslTestConfiguration
 
 
 class ErrorTask(object):

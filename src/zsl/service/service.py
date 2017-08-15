@@ -5,19 +5,23 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>,
                   Peter Morihladko <morihladko@atteq.com>
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-
-from builtins import *  # NOQA
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import logging
+from builtins import *  # NOQA
 from functools import wraps
 
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm.session import Session
-from zsl.application.modules.alchemy_module import TransactionHolderFactory, EmptyTransactionalHolder, SessionFactory
 
-from zsl import inject, Zsl
+from zsl import Zsl
+from zsl import inject
+from zsl.application.modules.alchemy_module import EmptyTransactionalHolder
+from zsl.application.modules.alchemy_module import SessionFactory
+from zsl.application.modules.alchemy_module import TransactionHolderFactory
 
 _EMPTY_TX_HOLDER = EmptyTransactionalHolder()
 

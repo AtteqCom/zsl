@@ -6,6 +6,7 @@ Helper module for working with request.
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
+
 from future.utils import viewitems
 
 

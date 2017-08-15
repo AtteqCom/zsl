@@ -7,9 +7,10 @@ Helper function for handling rss.
 .. moduleauthor:: Peter Morihladko
 """
 from __future__ import unicode_literals
-from future.utils import viewitems
 
 import xml.etree.cElementTree as ET
+
+from future.utils import viewitems
 
 
 def complex_el_from_dict(parent, data, key):

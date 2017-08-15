@@ -6,20 +6,21 @@
 """
 from __future__ import unicode_literals
 
-from builtins import range
-from builtins import object
-
-import sys
-import json
-import importlib
 import hashlib
+import importlib
+import json
+import sys
+from builtins import object
+from builtins import range
 from typing import Union
 
-from sqlalchemy.orm import class_mapper
 import sqlalchemy.exc
+from sqlalchemy.orm import class_mapper
 
-from zsl.utils.string_helper import camelcase_to_underscore, underscore_to_camelcase
 from zsl.utils.deploy.integrator import integrate_to_file
+from zsl.utils.string_helper import camelcase_to_underscore
+from zsl.utils.string_helper import underscore_to_camelcase
+
 
 model_tpl = """    {model_prefix}{model_name} = {model_fn}.extend({{
         urlRoot: App.service_url + 'resource/{resource_name}',

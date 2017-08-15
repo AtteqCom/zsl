@@ -2,27 +2,32 @@
 :mod:`zsl.interface.webservice.performers.resource`
 ---------------------------------------------------
 """
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import *
-from future.utils import viewitems
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import json
 import logging
+from builtins import *
 
-from flask import request, Response
-from zsl.task.job_context import WebJobContext
+from flask import Response
+from flask import request
+from future.utils import viewitems
 
-from zsl import Zsl, inject
+from zsl import Zsl
+from zsl import inject
 from zsl.application.error_handler import error_handler
 from zsl.constants import MimeType
 from zsl.db.model import AppModelJSONEncoder
-from zsl.interface.web.utils.execution import notify_responders, \
-    convert_to_web_response
-from zsl.interface.web.utils.response_headers import append_headers
-from zsl.utils.request_helper import args_to_dict
-from zsl.utils.resource_helper import parse_resource_path, get_resource_task
 from zsl.interface.resource import ResourceResult
+from zsl.interface.web.utils.execution import convert_to_web_response
+from zsl.interface.web.utils.execution import notify_responders
+from zsl.interface.web.utils.response_headers import append_headers
+from zsl.task.job_context import WebJobContext
+from zsl.utils.request_helper import args_to_dict
+from zsl.utils.resource_helper import get_resource_task
+from zsl.utils.resource_helper import parse_resource_path
 
 
 @inject(app=Zsl)

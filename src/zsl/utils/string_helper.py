@@ -5,14 +5,14 @@
 .. moduleauthor:: Martin Babka
 """
 from __future__ import unicode_literals
-from builtins import str
-from builtins import range
-import re
-import random
-import string
-from typing import Union
 
+import random
+import re
+import string
+from builtins import range
+from builtins import str
 from typing import List
+from typing import Union
 
 _html_tag_re = re.compile(r'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE)
 _html_tag_re_un = re.compile(

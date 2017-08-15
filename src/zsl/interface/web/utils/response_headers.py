@@ -5,11 +5,15 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
 from __future__ import unicode_literals
-from flask import Response
-from flask.helpers import make_response
+
 from functools import wraps
 
-from zsl import inject, Zsl, Config
+from flask import Response
+from flask.helpers import make_response
+
+from zsl import Config
+from zsl import Zsl
+from zsl import inject
 from zsl.task.task_decorator import CrossdomainWebTaskResponder
 
 

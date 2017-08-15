@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
-from flask import Flask
+
 from wsgiref.handlers import CGIHandler
+
+from flask import Flask
 
 app = Flask(__name__)

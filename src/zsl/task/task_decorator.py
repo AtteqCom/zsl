@@ -8,31 +8,34 @@
                   Lubos Pis <pis@atteq.com>
 """
 from __future__ import unicode_literals
-from builtins import *
 
-import logging
 import json
-
-from datetime import timedelta
-from typing import Callable
-from typing import List
-
-from flask import request
-from typing import Union
-
-from zsl import Config
-from zsl.application.modules.web.cors import CORSConfiguration
-from zsl.constants import MimeType
-from zsl.task.task_data import TaskData
-from zsl.db.model import AppModelJSONEncoder
-from zsl.task.job_context import JobContext, WebJobContext, Responder, add_responder
+import logging
 import traceback
+from builtins import *
+from datetime import timedelta
 from functools import wraps
 from os.path import os
+from typing import Callable
+from typing import List
+from typing import Union
+
+from flask import request
+
+from zsl import Config
+from zsl import Injected
+from zsl import Zsl
+from zsl import inject
+from zsl.application.modules.web.cors import CORSConfiguration
+from zsl.constants import MimeType
+from zsl.db.model import AppModelJSONEncoder
+from zsl.task.job_context import JobContext
+from zsl.task.job_context import Responder
+from zsl.task.job_context import WebJobContext
+from zsl.task.job_context import add_responder
+from zsl.task.task_data import TaskData
 from zsl.utils.file_helper import makedirs
 from zsl.utils.security_helper import verify_security_data
-
-from zsl import inject, Zsl, Injected
 from zsl.utils.string_helper import join_list
 
 

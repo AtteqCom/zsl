@@ -22,16 +22,19 @@ package. The name of the environment configuration file is controlled via
 from __future__ import unicode_literals
 
 import os
+from typing import Any
 from typing import Callable
 
-from flask import Flask, Config
-from injector import Injector, Binder, singleton
-from typing import Any
+from flask import Config
+from flask import Flask
+from injector import Binder
+from injector import Injector
+from injector import singleton
 
 from zsl import __version__
 from zsl._state import set_current_app
-from zsl.utils.warnings import deprecated
 from zsl.application.initialization_context import InitializationContext
+from zsl.utils.warnings import deprecated
 
 #: Name of the environment variable to be read for the profile configuration.
 SETTINGS_ENV_VAR_NAME = 'ZSL_SETTINGS'
