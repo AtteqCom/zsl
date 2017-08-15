@@ -51,14 +51,15 @@ class TaskNamespace(object):
         return list(self._task_packages)
 
     def add_routes(self, routes):
-        # type: (Dict[str, Callable])->TaskNamespace
-        """
-        Adds the detailed mapping of urls to tasks.
+        """Adds the detailed mapping of urls to tasks.
+
         :param routes: Mapping which defines how urls of the namespace are
                        mapped to tasks. Each url (string) is mapped to a
                        callable which creates the task instance.
+
         :return: self
         """
+        # type: (Dict[str, Callable])->TaskNamespace
         self._routes.update(routes)
         return self
 

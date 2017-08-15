@@ -37,6 +37,9 @@ to make it better.
    error_handling
    unit_testing
    extending
+   message_queues
+   caching
+   database
    api
    developing
 

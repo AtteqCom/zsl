@@ -3,7 +3,6 @@ recommonmark
 sphinx-rtd-theme
 -e .
 redis
-gearman
 celery
 alembic
 zsl_client

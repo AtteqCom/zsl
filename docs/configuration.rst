@@ -120,9 +120,11 @@ Optional fields
 * ``CORS``
   The configuration containing the default CORS/crossdomain settings. Check
   :class:`zsl.application.modules.web.cors.CORSConfiguration`. The available
-  are:
-     * `origin`,
-     * `allow-headers`,
-     * `expose-headers`,
-     *  `max-age`.
+  options are:
+
+    * `origin`,
+    * `allow_headers`,
+    * `expose_headers`,
+    * `max_age`.
+
   Check CORS explanation on `Wikipedia <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_.

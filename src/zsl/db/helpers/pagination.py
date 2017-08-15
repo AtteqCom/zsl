@@ -18,11 +18,10 @@ DEFAULT_PAGE_SIZE = 25
 class Pagination(object):
     """
     Pagination support. Allows to paginate a query. There are two choices.
-
-        1. :meth:`.paginate` - paginates a query and obtains the count
-            automatically.
-        1. :meth:`.apply_pagination` - paginates a query and assumes that
-            record count is set in advance.
+      #. :meth:`.paginate` - paginates a query and obtains the count
+         automatically.
+      #. :meth:`.apply_pagination` - paginates a query and assumes that
+         record count is set in advance.
     """
 
     def __init__(self, pagination=None):
