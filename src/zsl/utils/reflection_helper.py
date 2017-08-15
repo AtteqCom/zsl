@@ -8,9 +8,8 @@ Helper module for OOP operations.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *  # NOQA
-
 oldstr = str
+from builtins import *  # NOQA
 
 
 def extend(instance, new_class):
