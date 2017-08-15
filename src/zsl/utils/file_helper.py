@@ -4,14 +4,17 @@
 
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>, Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from builtins import *
+
 import os
 import errno
 
 
 def makedirs(path):
     """Behaves like `mkdir -p <path>`. Without failure if the path exists."""
-    
+
     try:
         os.makedirs(path)
     except OSError as exc:  # Python >2.5

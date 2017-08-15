@@ -231,8 +231,8 @@ class guard(object):
             self._method_wrappers = list(self.method_wrappers)
 
         if exception_handlers:
-            self._exception_handlers = self.exception_handlers + \
-                                       exception_handlers
+            self._exception_handlers = \
+                self.exception_handlers + exception_handlers
         else:
             self._exception_handlers = list(self.exception_handlers)
 

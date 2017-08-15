@@ -28,4 +28,3 @@ class UnitTestInitializer(object):
     @inject(ctx=ApplicationContext)
     def is_unit_testing(ctx):
         return ctx.unit_testing
-

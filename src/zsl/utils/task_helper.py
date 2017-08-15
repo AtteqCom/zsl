@@ -6,8 +6,13 @@ Helper module for task management.
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
+
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from builtins import *
+
 from zsl.task.task_data import TaskData
+from zsl.utils.injection_helper import instantiate
 
 TASK_PERFORM_METHOD = "perform"
 
@@ -48,6 +53,3 @@ def get_callable(task):
     :return: bound perform method
     """
     return getattr(task, TASK_PERFORM_METHOD)
-
-
-from zsl.utils.injection_helper import instantiate

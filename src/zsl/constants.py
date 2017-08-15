@@ -12,5 +12,3 @@ class MimeType(Enum):
 class HttpHeaders(Enum):
     CONTENT_TYPE = 'Content-Type'
     # type: str
-
-

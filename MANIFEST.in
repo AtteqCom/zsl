@@ -1,8 +1,15 @@
 graft docs
+prune docs/_build
+prune docs/_static
+exclude docs/api.rst
+
 graft examples
 graft src
 graft ci
 graft tests
+
+prune docker
+prune test_data
 
 include .bumpversion.cfg
 include .coveragerc

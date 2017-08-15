@@ -30,4 +30,3 @@ def exec_task_filler(task_path, json_data, config=Injected):
     print("Returned value '{0}'.".format(ret_val))
     output = json.loads(ret_val.result)['data']
     print("Returned data '{0}' of type '{1}'.".format(output, type(output)))
-

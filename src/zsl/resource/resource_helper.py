@@ -146,10 +146,10 @@ def create_related_tree(fields):
 
 def model_tree(name, model_cls, visited=None):
     """Create a simple tree of model's properties and its related models.
-    
+
     It traverse trough relations, but ignore any loops.
-    
-    :param name: name of the model 
+
+    :param name: name of the model
     :type name: str
     :param model_cls: model class
     :param visited: set of visited models

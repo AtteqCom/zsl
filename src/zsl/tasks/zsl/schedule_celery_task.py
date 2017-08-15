@@ -11,7 +11,6 @@ from zsl.interface.celery.worker import zsl_task, create_celery_app
 
 
 def schedule_celery_task(path, data):
-    app = create_celery_app()
     zsl_task.delay({'path': path, 'data': data})
 
 

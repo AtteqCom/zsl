@@ -163,6 +163,7 @@ def cache_page(key_params, timeout='default'):
 
     return decorator_fn
 
+
 # alias
 cache_list = cache_page
 

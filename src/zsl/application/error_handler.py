@@ -54,9 +54,9 @@ class DefaultErrorHandler(ErrorHandler):
         logger.error(str(ex) + "\n" + traceback.format_exc())
         logger.error("Request:\n{0}\n{1}\n".format(request.headers,
                                                    request.data))
+        link = documentation_link('error_handling')
         logger.info("Provide your own error handler so that "
-                    "a better error is produced, check {0}.".format(
-            documentation_link('error_handling')))
+                    "a better error is produced, check {0}.".format(link))
 
         add_responder(StatusCodeResponder(http.client.INTERNAL_SERVER_ERROR))
         return ErrorResponse(self.ERROR_CODE, self.ERROR_MESSAGE)

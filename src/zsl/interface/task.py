@@ -77,7 +77,7 @@ def create_simple_model(name, items, defaults=None, parent=object,
 class {name}(parent):
     def __new__(_cls, {arglist}):
         self = parent.__new__(_cls, **kwargs)
-        {items}     
+        {items}
         return self
     """.format(name=name, items=item_definitions, arglist=arglist)
     namespace = {'parent': parent, 'defaults': defaults}

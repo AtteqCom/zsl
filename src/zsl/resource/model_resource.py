@@ -175,7 +175,7 @@ class ModelResourceBase(TransactionalSupportMixin):
         return apply_related(self.model_cls, query, related)
 
     def set_ordering(self, query, arg):
-        return order_from_url_arg(self.model_cls,  query, arg)
+        return order_from_url_arg(self.model_cls, query, arg)
 
 
 class ModelResource(ModelResourceBase):
@@ -567,7 +567,7 @@ class ReadOnlyResourceMixin(object):
 
     .. automethod:: create
     .. automethod:: update
-    .. automethod:: delete 
+    .. automethod:: delete
     """
 
     OPERATION_CREATE = 'create'
@@ -577,32 +577,32 @@ class ReadOnlyResourceMixin(object):
     @staticmethod
     def create(params, args, data):
         """Raises exception.
-        
+
         Just raises ReadOnlyResourceUpdateOperationException to indicate
         that this method is not available.
 
-        :raises ReadOnlyResourceUpdateOperationException: when accessed  
+        :raises ReadOnlyResourceUpdateOperationException: when accessed
         """
         raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_CREATE)
 
     @staticmethod
     def update(params, args, data):
         """Raises exception.
-        
+
         Just raises ReadOnlyResourceUpdateOperationException to indicate
         that this method is not available.
 
-        :raises ReadOnlyResourceUpdateOperationException: when accessed  
+        :raises ReadOnlyResourceUpdateOperationException: when accessed
         """
         raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_UPDATE)
 
     @staticmethod
     def delete(params, args, data):
         """Raises exception.
-        
+
         Just raises ReadOnlyResourceUpdateOperationException to indicate
         that this method is not available.
 
-        :raises ReadOnlyResourceUpdateOperationException: when accessed  
+        :raises ReadOnlyResourceUpdateOperationException: when accessed
         """
         raise ReadOnlyResourceUpdateOperationException(ReadOnlyResourceMixin.OPERATION_DELETE)

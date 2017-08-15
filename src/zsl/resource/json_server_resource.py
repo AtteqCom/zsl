@@ -263,4 +263,3 @@ class JsonServerResource(ModelResource):
                 return NOT_FOUND
         else:
             return NOT_FOUND
-

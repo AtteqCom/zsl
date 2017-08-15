@@ -23,11 +23,13 @@ def get_nested_field_name(field):
 
 
 def nested_model(model, nested_fields):
-    # type: (ModelBase, Any)->Optional[AppModel]
-    """Return :class:`zsl.db.model.app_model import AppModel` with the nested 
-    models attached. ``nested_fields`` can be a simple list as model fields, 
-    or it can be a tree definition in dict with leafs as keys with None value
     """
+        Return :class:`zsl.db.model.app_model import AppModel` with the nested
+        models attached. ``nested_fields`` can be a simple list as model
+        fields, or it can be a tree definition in dict with leafs as keys with
+        ``None`` value
+    """
+    # type: (ModelBase, Any)->Optional[AppModel]
     if model is None:
         return None
 
@@ -50,7 +52,7 @@ def nested_model(model, nested_fields):
 
 
 def nested_models(models, nested_fields):
-    """For a list of ``models`` apply ``get_nested_model`` with given 
+    """For a list of ``models`` apply ``get_nested_model`` with given
     ``nested_fields``.
     """
     return [nested_model(model, nested_fields) for model in models]

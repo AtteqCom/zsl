@@ -9,17 +9,14 @@ from __future__ import (absolute_import, division,
 
 from builtins import *  # NOQA
 
+import functools
+import injector
+import inspect
 import logging
-from typing import Type
 
 from future.utils import viewitems
-import injector
-from injector import Binder, ClassProvider, BindingKey, reraise, CallError
-import inspect
-import functools
-
-from injector import Scope
-
+from injector import Binder, ClassProvider, BindingKey, CallError, Scope, reraise
+from typing import Type
 from zsl._state import get_current_app
 
 
