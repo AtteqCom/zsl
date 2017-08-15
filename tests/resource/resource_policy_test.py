@@ -3,8 +3,8 @@ Test resource policies.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import sys
 from builtins import *
+import sys
 from typing import AnyStr
 from unittest import TestCase
 

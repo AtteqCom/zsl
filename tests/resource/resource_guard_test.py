@@ -3,8 +3,8 @@ Test resource guard.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import inspect
 from builtins import *
+import inspect
 from unittest import TestCase
 
 from zsl.resource.guard import Access, GuardedMixin, ResourcePolicy, guard

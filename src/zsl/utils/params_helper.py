@@ -8,8 +8,8 @@ Helpers for parameter handling
 """
 from __future__ import unicode_literals
 
-import inspect
 from functools import reduce
+import inspect
 
 from future.utils import viewitems
 

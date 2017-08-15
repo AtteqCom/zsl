@@ -4,9 +4,9 @@
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from builtins import *
 import json
 import logging
-from builtins import *
 
 from flask import Response, request
 from future.utils import viewitems

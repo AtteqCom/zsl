@@ -6,11 +6,11 @@
 """
 from __future__ import unicode_literals
 
+from builtins import object, range
 import hashlib
 import importlib
 import json
 import sys
-from builtins import object, range
 from typing import Union
 
 import sqlalchemy.exc

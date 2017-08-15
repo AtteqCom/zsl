@@ -6,10 +6,10 @@
 """
 from __future__ import unicode_literals
 
+from builtins import range, str
 import random
 import re
 import string
-from builtins import range, str
 from typing import List, Union
 
 _html_tag_re = re.compile(r'''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''', flags=re.IGNORECASE)

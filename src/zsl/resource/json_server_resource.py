@@ -4,10 +4,10 @@
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from builtins import *
 import http.client
 import logging
 import re
-from builtins import *
 from typing import Any
 
 from flask import request

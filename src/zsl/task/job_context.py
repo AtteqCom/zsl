@@ -6,9 +6,9 @@
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import contextlib
 from abc import abstractmethod
 from builtins import *
+import contextlib
 from threading import current_thread
 from typing import Callable, Dict
 

@@ -9,10 +9,10 @@ policy class a complex security resource behaviour can be achieved.
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import http.client
 from builtins import *
 from enum import Enum
 from functools import wraps
+import http.client
 from typing import Any, Callable, Dict, List, Optional
 
 from future.utils import raise_from

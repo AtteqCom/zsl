@@ -7,9 +7,9 @@
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import logging
 from builtins import *  # NOQA
 from functools import wraps
+import logging
 
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm.session import Session

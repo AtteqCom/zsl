@@ -6,14 +6,14 @@
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from builtins import *  # NOQA
 import functools
 import inspect
 import logging
-from builtins import *  # NOQA
 from typing import Type
 
-import injector
 from future.utils import viewitems
+import injector
 from injector import Binder, BindingKey, CallError, ClassProvider, Scope, reraise
 
 from zsl._state import get_current_app

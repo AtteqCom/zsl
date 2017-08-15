@@ -88,8 +88,8 @@ use a correct `Engine`.
 
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
-from builtins import *  # NOQA
 
+from builtins import *  # NOQA
 import logging
 import os
 

@@ -8,8 +8,8 @@ Created on 22.12.2012
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import logging
 from builtins import *
+import logging
 
 
 class TestTask(object):

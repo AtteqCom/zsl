@@ -23,8 +23,8 @@ container when creating Zsl instance, see :ref:`unit-testing-zsl-instance`.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import logging
 from builtins import *
+import logging
 
 from injector import Module, provides, singleton
 from sqlalchemy.engine import Engine

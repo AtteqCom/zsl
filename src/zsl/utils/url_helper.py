@@ -7,10 +7,10 @@ Helper module for URL handling.
 """
 from __future__ import unicode_literals
 
+from builtins import str
 import re
 import unicodedata
 import urllib
-from builtins import str
 
 
 def slugify(value, allow_unicode=False):

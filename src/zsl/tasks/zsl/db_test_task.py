@@ -10,9 +10,9 @@ from __future__ import unicode_literals
 
 from builtins import object
 
-import sqlalchemy.engine
 from flask import Response
 from injector import inject
+import sqlalchemy.engine
 
 from zsl import Zsl
 

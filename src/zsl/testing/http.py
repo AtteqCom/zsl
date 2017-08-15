@@ -5,8 +5,8 @@ This module allows for querying the API via HTTP.
 """
 from __future__ import absolute_import, unicode_literals
 
-import json
 from builtins import *
+import json
 from typing import Any, AnyStr, Dict, Union
 
 from flask.testing import FlaskClient

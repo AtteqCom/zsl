@@ -3,11 +3,11 @@
 ------------------------
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
-from builtins import *
 
+from abc import ABCMeta
+from builtins import *
 import importlib
 import logging
-from abc import ABCMeta
 from typing import Any, Callable, Dict, List, Tuple
 
 from zsl import Config, inject

@@ -4,10 +4,10 @@
 """
 from __future__ import unicode_literals
 
+from builtins import object
 import logging
 import os
 import sys
-from builtins import object
 
 from zsl import Config, inject
 

@@ -6,12 +6,12 @@
                   Martin Babka <babka@atteq.com>
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
-from builtins import *  # NOQA
 
-import json
-import sys
+from builtins import *  # NOQA
 from functools import wraps
+import json
 from json.encoder import JSONEncoder
+import sys
 from typing import Any, Callable, Dict
 
 from future.builtins import str

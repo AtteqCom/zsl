@@ -7,8 +7,8 @@ Helper module with function dealing with security.
 
 from __future__ import unicode_literals
 
-import hashlib
 from builtins import str
+import hashlib
 
 from zsl import Config, inject
 from zsl.utils.string_helper import generate_random_string

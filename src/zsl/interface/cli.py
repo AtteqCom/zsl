@@ -9,8 +9,8 @@ commands and groups. If any command is to be added add it to this group `cli` de
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import sys
 from builtins import *
+import sys
 
 import click
 

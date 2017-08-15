@@ -8,12 +8,12 @@ error handlers.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import http.client
-import logging
-import traceback
 from abc import abstractmethod
 from builtins import *
 from functools import wraps
+import http.client
+import logging
+import traceback
 
 from flask import request
 

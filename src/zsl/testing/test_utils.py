@@ -5,8 +5,8 @@ Test utilities.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import json
 from builtins import *
+import json
 from typing import Any
 
 from zsl.task.task_data import TaskData

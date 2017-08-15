@@ -4,9 +4,9 @@
 """
 from __future__ import unicode_literals
 
-import logging
 from abc import ABCMeta, abstractmethod
 from builtins import object
+import logging
 
 from injector import Module, provides, singleton
 from sqlalchemy import create_engine

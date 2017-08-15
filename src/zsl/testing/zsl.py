@@ -8,10 +8,10 @@ for an example.
 """
 from __future__ import absolute_import, unicode_literals
 
-import logging
 from builtins import *
 from collections import namedtuple
 from functools import partial
+import logging
 
 from zsl import Zsl
 from zsl._state import set_current_app

@@ -5,9 +5,9 @@
 
 from __future__ import unicode_literals
 
-import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import smtplib
 
 from zsl import Config, Injected, inject
 

@@ -15,10 +15,10 @@ The basic way to use them is as follows:
 """
 from __future__ import unicode_literals
 
-import json
-import logging
 from builtins import int, object
 from hashlib import sha256
+import json
+import logging
 from typing import Any, List, Union
 
 from future.utils import viewitems

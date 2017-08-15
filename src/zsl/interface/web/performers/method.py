@@ -6,9 +6,9 @@
 """
 from __future__ import unicode_literals
 
+from importlib import import_module
 import logging
 import sys
-from importlib import import_module
 
 from zsl.router.method import get_method_packages
 

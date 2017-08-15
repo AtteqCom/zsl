@@ -6,9 +6,9 @@
 """
 from __future__ import unicode_literals
 
+from builtins import *
 import json
 import logging
-from builtins import *
 
 from flask import request
 from flask.wrappers import Response

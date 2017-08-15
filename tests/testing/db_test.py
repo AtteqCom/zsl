@@ -13,8 +13,8 @@ from zsl.application.modules.context_module import DefaultContextModule
 from zsl.application.modules.logger_module import LoggerModule
 from zsl.application.modules.task_router import TaskRouterModule
 from zsl.service.service import SessionFactory
-from zsl.testing.db import TestSessionFactory as SessionFactoryForTesting
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DbTestCase, DbTestModule
+from zsl.testing.db import TestSessionFactory as SessionFactoryForTesting
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 from zsl.utils.injection_helper import bind
 

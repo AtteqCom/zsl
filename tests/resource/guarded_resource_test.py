@@ -5,8 +5,8 @@ met and an proper http code when policy is broken.
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import http.client
 from builtins import *
+import http.client
 from unittest.case import TestCase
 
 from mocks import mock

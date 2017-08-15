@@ -7,8 +7,8 @@
 from __future__ import unicode_literals
 
 import abc
-import json
 from builtins import object
+import json
 
 from future.utils import with_metaclass
 

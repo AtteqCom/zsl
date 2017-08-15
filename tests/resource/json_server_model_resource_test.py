@@ -4,16 +4,16 @@
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from builtins import *
 import http.client
 import json
 import math
 import re
-import urllib
-from builtins import *
 from resource.resource_test_helper import (UserModel, UserTuple, addresses, create_resource_test_data,
                                            get_non_existent_id, users)
 from typing import AnyStr, Dict, List, Optional, Union
 from unittest.case import TestCase
+import urllib
 
 from future.utils import viewitems
 

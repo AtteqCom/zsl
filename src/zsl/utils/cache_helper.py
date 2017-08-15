@@ -7,9 +7,9 @@
 from __future__ import unicode_literals
 
 import abc
+from builtins import object
 import json
 import logging
-from builtins import object
 
 from zsl import inject
 from zsl.cache.id_helper import (IdHelper, app_model_decoder_fn, app_model_encoder_fn, create_key_object_prefix,
