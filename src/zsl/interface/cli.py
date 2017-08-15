@@ -17,7 +17,7 @@ from builtins import *
 
 import click
 
-from zsl import __version__
+from zsl.version import version
 
 click.disable_unicode_literals_warning = True
 
@@ -29,7 +29,7 @@ def _get_version(ctx, _, value):
         return
     message = 'Zsl %(version)s\nPython %(python_version)s'
     click.echo(message % {
-        'version': __version__,
+        'version': version,
         'python_version': sys.version,
     }, color=ctx.color)
     ctx.exit()

@@ -18,9 +18,9 @@ from injector import Module
 from zsl.application.initialization_context import InitializationContext as ApplicationContext
 from zsl.application.service_application import ServiceApplication
 from zsl.utils.injection_helper import inject
+from zsl.version import version
 
-__version__ = '0.18.1'
-
+__version__ = version
 
 Zsl = ServiceApplication
 

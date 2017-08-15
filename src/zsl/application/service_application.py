@@ -31,10 +31,10 @@ from injector import Binder
 from injector import Injector
 from injector import singleton
 
-from zsl import __version__
 from zsl._state import set_current_app
 from zsl.application.initialization_context import InitializationContext
 from zsl.utils.warnings import deprecated
+from zsl.version import version
 
 #: Name of the environment variable to be read for the profile configuration.
 SETTINGS_ENV_VAR_NAME = 'ZSL_SETTINGS'
@@ -70,7 +70,7 @@ def set_profile(profile):
 class ServiceApplication(Flask):
     """Atteq Service Flask application."""
 
-    VERSION = __version__
+    VERSION = version
 
     def __init__(self, import_name, static_path=None, static_url_path=None,
                  static_folder='static', template_folder='templates',
