@@ -34,7 +34,7 @@ def append_crossdomain(response, config):
 
 @inject(app=Zsl)
 def append_asl(response, app):
-    response.headers['ZSL-Flask-Layer'] = app.get_version()
+    response.headers['ZSL'] = app.get_version()
 
 
 def append_cache(response):
