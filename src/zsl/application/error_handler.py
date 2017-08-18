@@ -8,7 +8,6 @@ error handlers.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from abc import abstractmethod
 from builtins import *
 from functools import wraps
 import http.client
@@ -16,11 +15,11 @@ import logging
 import traceback
 
 from flask import request
-from zsl.interface.task import ModelConversionError
 
 from zsl import inject
 from zsl.db.model.app_model import AppModel
 from zsl.errors import ErrorConfiguration, ErrorHandler
+from zsl.interface.task import ModelConversionError
 from zsl.router.task import RoutingError
 from zsl.task.job_context import JobContext, StatusCodeResponder, WebJobContext, add_responder
 from zsl.task.task_decorator import json_output
