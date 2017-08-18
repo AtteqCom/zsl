@@ -19,20 +19,32 @@ from future.builtins import str
 from zsl import inject
 from zsl.errors import ZslError
 from zsl.router.task import TaskRouter
-from zsl.task.job_context import DelegatingJobContext, Job, JobContext, delegating_job_context
+from zsl.task.job_context import Job, delegating_job_context
 from zsl.task.task_data import TaskData
 from zsl.utils.reflection_helper import is_scalar
 
 
 class ModelConversionError(Exception):
-    pass
+    def __init__(self, obj, attribute):
+        msg = "Can not fit dictionary into model '{0}' since the model does not have attribute '{1}'"
+        super(ModelConversionError, self).__init__(msg.format(obj, attribute))
+        self._obj = obj
+        self._attribute = attribute
+
+    @property
+    def obj(self):
+        return self._obj
+
+    @property
+    def attribute(self):
+        return self._attribute
 
 
 def fill_model_with_payload(data, obj):
     # type:(Dict[str, Any])->Any
     for k, v in data.items():
         if not hasattr(obj, k):
-            raise ModelConversionError()
+            raise ModelConversionError(obj, k)
 
         if is_scalar(v):
             setattr(obj, k, v)
