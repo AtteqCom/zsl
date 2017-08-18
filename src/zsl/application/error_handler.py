@@ -16,6 +16,7 @@ import logging
 import traceback
 
 from flask import request
+from zsl.interface.task import ModelConversionError
 
 from zsl import inject
 from zsl.db.model.app_model import AppModel
@@ -73,9 +74,23 @@ class RoutingErrorHandler(ErrorHandler):
         return ErrorResponse(self.ERROR_CODE, str(ie))
 
 
+class ModelConversionErrorHandler(ErrorHandler):
+    ERROR_CODE = 'INVALID_REQUEST'
+
+    def can_handle(self, e):
+        return isinstance(e, ModelConversionError)
+
+    @json_output
+    def handle(self, e):
+        logging.error(str(e) + "\n" + traceback.format_exc())
+        add_responder(StatusCodeResponder(get_http_status_code_value(http.client.UNPROCESSABLE_ENTITY)))
+        return ErrorResponse(self.ERROR_CODE, str(e))
+
+
 _DEFAULT_ERROR_HANDLER = DefaultErrorHandler()
 _ROUTING_ERROR_HANDLER = RoutingErrorHandler()
-_error_handlers = [_ROUTING_ERROR_HANDLER]
+_MODEL_CONVERSION_ERROR_HANDLER = ModelConversionErrorHandler()
+_error_handlers = [_MODEL_CONVERSION_ERROR_HANDLER, _ROUTING_ERROR_HANDLER]
 
 
 def error_handler(f):
