@@ -126,30 +126,34 @@ class AlembicCli(object):
                                  allow_extra_args=True
                              ))
         @click.pass_context
-        @inject(alembic_cfg=AlembicConfiguration)
-        def alembic(ctx, alembic_cfg):
-            # type: (Context, AlembicConfiguration) -> None
-            is_initializing = len(ctx.args) and ctx.args[0] == 'init'
-            alembic_directory = alembic_cfg.alembic_directory
-            if is_initializing:
-                cwd = None
-                ctx.args.append(alembic_directory)
-            else:
-                cwd = os.getcwd()
-                os.chdir(alembic_directory)
-            CommandLine().main(ctx.args)
-            if is_initializing:
-                default_ini_path = 'alembic.ini'
-                target_ini_path = os.path.join(alembic_directory, 'alembic.ini')
-                os.rename(default_ini_path, target_ini_path)
-            else:
-                os.chdir(cwd)
+        def alembic(ctx):
+            # type: (Context) -> None
+            self.call_alembic(ctx.args)
 
         self._alembic = alembic
 
     @property
     def alembic(self):
         return self._alembic
+
+    @inject(alembic_cfg=AlembicConfiguration)
+    def call_alembic(self, args, alembic_cfg):
+        # type: (List[str], AlembicConfiguration)->None
+        is_initializing = len(args) and args[0] == 'init'
+        alembic_directory = alembic_cfg.alembic_directory
+        if is_initializing:
+            cwd = None
+            args.append(alembic_directory)
+        else:
+            cwd = os.getcwd()
+            os.chdir(alembic_directory)
+        CommandLine().main(args)
+        if is_initializing:
+            default_ini_path = 'alembic.ini'
+            target_ini_path = os.path.join(alembic_directory, 'alembic.ini')
+            os.rename(default_ini_path, target_ini_path)
+        else:
+            os.chdir(cwd)
 
     def __call__(self, *args, **kwargs):
         self._alembic()
