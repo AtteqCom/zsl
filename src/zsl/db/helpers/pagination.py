@@ -117,3 +117,5 @@ class PaginationResponse(AppModel):
         max_page_size = pagination.page_size
         self.page_count = (record_count + max_page_size - 1) // max_page_size
         self.page_size = page_size
+        self.max_page_size = max_page_size
+        self.page_no = pagination.page_no
