@@ -1,5 +1,5 @@
 """
-:mod:`zsl.contrib.modules.alembic_module`
+:mod:`zsl.contrib.alembic.alembic_module`
 -----------------------------------------
 
 Alembic module is responsible for handling database migrations for SqlAlchemy
@@ -99,7 +99,7 @@ from injector import Binder, Module, provides, singleton
 
 from zsl import Config, inject
 from zsl.application.modules.cli_module import ZslCli
-from zsl.contrib.modules.alembic_config import AlembicConfiguration
+from zsl.contrib.alembic.alembic_config import AlembicConfiguration
 from zsl.utils.injection_helper import simple_bind
 
 try:

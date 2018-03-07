@@ -82,11 +82,11 @@ def generate_random_string(size=6, chars=string.ascii_uppercase + string.digits)
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-def addslashes(s, l=None):
+def addslashes(s, escaped_chars=None):
     """Add slashes for given characters. Default is for ``\`` and ``'``.
 
     :param s: string
-    :param l: list of characters to prefix with a slash ``\``
+    :param escaped_chars: list of characters to prefix with a slash ``\``
     :return: string with slashed characters
     :rtype: str
 
@@ -94,11 +94,11 @@ def addslashes(s, l=None):
         >>> addslashes("'")
         "\\'"
     """
-    if l is None:
-        l = ["\\", "'", ]
+    if escaped_chars is None:
+        escaped_chars = ["\\", "'", ]
 
     # l = ["\\", '"', "'", "\0", ]
-    for i in l:
+    for i in escaped_chars:
         if i in s:
             s = s.replace(i, '\\' + i)
     return s

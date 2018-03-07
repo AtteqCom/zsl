@@ -237,7 +237,7 @@ def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
             rv = ret_val
         else:
             rv = {'data': ret_val}
-    except:
+    except:  # NOQA
         exc = traceback.format_exc()
         logging.error(exc)
         rv = {'error': "{0}".format(exc)}
