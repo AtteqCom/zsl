@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
-from past.builtins import execfile
 import os
+
+from past.builtins import execfile
 
 app = None
 

@@ -42,13 +42,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from builtins import *
 
 from flask import logging
-from injector import Binder, singleton
-from injector import provides
+from injector import Binder, provides, singleton
 from raven import Client, setup_logging
 from raven.handlers.logging import SentryHandler
 from raven.transport import ThreadedRequestsHTTPTransport
 
-from zsl import Module, Config, inject, Zsl
+from zsl import Config, Module, Zsl, inject
 from zsl.application.error_handler import register
 from zsl.application.modules.cli_module import ZslCli
 from zsl.contrib.sentry.sentry_config import SentryConfiguration
