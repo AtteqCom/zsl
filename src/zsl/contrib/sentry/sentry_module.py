@@ -1,6 +1,6 @@
 """
 :mod:`zsl.contrib.modules.sentry_module`
------------------------------------------
+----------------------------------------
 
 Sentry module is responsible for handling errors and sending them to a sentry
 backend. Just provide a DSN (url) of the backend and you are all set up.
