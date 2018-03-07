@@ -43,7 +43,7 @@ class ZslTaskCli(object):
             try:
                 result = exec_task(task_path, data)
                 click.echo(result)
-            except:
+            except:  # NOQA
                 msg = "Error when calling task '{0}'\n\n{1}.".format(
                     task_path, traceback.format_exc())
                 logging.getLogger(__name__).error(msg)
