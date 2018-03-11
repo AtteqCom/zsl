@@ -114,7 +114,7 @@ class SentryErrorProcessor(ErrorProcessor):
     def _register_logging_handler(self, config):
         # type: (SentryConfiguration)->SentryHandler
         handler = SentryHandler(self._client)
-        handler.setLevel(config.sentry_handler_logging_level)
+        handler.setLevel(config.sentry_logging_handler_level)
         setup_logging(handler)
         return handler
 
