@@ -18,7 +18,7 @@ if sys.version_info < (3, 0):
     requirements.append('enum34')
 
 setup(name='zsl',
-      version='0.18.5',
+      version='0.19.3',
       description='zsl application framework for web based services',
       author='Atteq s.r.o.',
       author_email='open.source@atteq.com',
@@ -32,6 +32,7 @@ setup(name='zsl',
           'celery': ['zsl_client'],
           'gearman': ['zsl_client', 'gearman'],
           'alembic': ['alembic'],
+          'sentry': ['raven'],
           'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme',
                             'alembic']
       },

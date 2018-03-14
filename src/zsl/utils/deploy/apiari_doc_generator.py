@@ -23,7 +23,6 @@ from zsl.router.task import TaskRouter
 
 
 class ApiaryDoc(pydoc.Doc):
-
     _API_DOC_STR = "API Documentation:"
 
     def __init__(self):
@@ -57,7 +56,7 @@ class ApiaryDoc(pydoc.Doc):
             if start == -1:
                 return
             apistr = obj.__doc__[start + len(self._API_DOC_STR):]
-        except:
+        except:  # NOQA
             return
 
         apistr = apistr.splitlines()
@@ -77,10 +76,10 @@ class ApiaryDoc(pydoc.Doc):
             return c
 
         m = white_space_at_beginning(apistr[0])
-        for l in apistr:
-            if l.isspace() or l == "":
+        for char in apistr:
+            if char.isspace() or char == "":
                 continue
-            wl = white_space_at_beginning(l)
+            wl = white_space_at_beginning(char)
             if m > wl:
                 m = wl
         apistr = [x[m:] for x in apistr]
@@ -110,7 +109,7 @@ class ApiaryDoc(pydoc.Doc):
             try:
                 module = loader.find_module(module_name).load_module(module_name)
                 self.docmodule(module)
-            except:
+            except:  # NOQA
                 pass
 
     def get_doc(self):

@@ -85,7 +85,7 @@ def transactional(f):
                 tx_holder.commit()
 
             return rv
-        except:
+        except:  # NOQA
             if trans_close:
                 tx_holder.rollback()
             raise

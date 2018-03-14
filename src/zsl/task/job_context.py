@@ -141,8 +141,6 @@ class WebJobContext(JobContext):
         try:
             for r in self._responders:
                 r.respond(response)
-        except:
-            raise
         finally:
             self._responders = []
 

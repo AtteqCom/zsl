@@ -13,12 +13,13 @@ from functools import wraps
 import http.client
 import logging
 import traceback
+from typing import List
 
 from flask import request
 
 from zsl import inject
 from zsl.db.model.app_model import AppModel
-from zsl.errors import ErrorConfiguration, ErrorHandler
+from zsl.errors import ErrorConfiguration, ErrorHandler, ErrorProcessor
 from zsl.interface.task import ModelConversionError
 from zsl.router.task import RoutingError
 from zsl.task.job_context import JobContext, StatusCodeResponder, WebJobContext, add_responder
@@ -35,8 +36,11 @@ class ErrorResponse(AppModel):
 
 
 def register(e):
-    # type: (ErrorHandler)->None
-    _error_handlers.append(e)
+    # type: (ErrorHandler|ErrorProcessor)->None
+    if isinstance(e, ErrorHandler):
+        _error_handlers.append(e)
+    if isinstance(e, ErrorProcessor):
+        _error_processors.append(e)
 
 
 class DefaultErrorHandler(ErrorHandler):
@@ -89,7 +93,8 @@ class ModelConversionErrorHandler(ErrorHandler):
 _DEFAULT_ERROR_HANDLER = DefaultErrorHandler()
 _ROUTING_ERROR_HANDLER = RoutingErrorHandler()
 _MODEL_CONVERSION_ERROR_HANDLER = ModelConversionErrorHandler()
-_error_handlers = [_MODEL_CONVERSION_ERROR_HANDLER, _ROUTING_ERROR_HANDLER]
+_error_handlers = [_MODEL_CONVERSION_ERROR_HANDLER, _ROUTING_ERROR_HANDLER]  # type: List[ErrorHandler]
+_error_processors = []
 
 
 def error_handler(f):
@@ -118,6 +123,9 @@ def error_handler(f):
         except Exception as ex:
             if should_skip_handling():
                 raise
+
+            for ep in _error_processors:
+                ep.handle(ex)
 
             for eh in _error_handlers:
                 if eh.can_handle(ex):

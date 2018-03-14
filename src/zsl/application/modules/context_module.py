@@ -16,7 +16,6 @@ from zsl.application.initializers.library_initializer import LibraryInitializer
 from zsl.application.initializers.service_initializer import ServiceInitializer
 from zsl.application.initializers.unittest_initializer import UnitTestInitializer
 
-
 #: Initializers used in all applications
 default_initializers = (LibraryInitializer, ServiceInitializer)
 
