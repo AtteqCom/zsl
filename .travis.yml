@@ -48,5 +48,6 @@ deploy:
     secure: "a25jmMpkhGwRuKLYP9USTYrvc4tuMexXidgdWB8tsi4IYauRzXuK3A/ohbdjknN1woamJZbfmk2MwZlg+RxwgX0ZqBJ1OlCQnoJ+q2y2LV+pVFdoBBvTu+fSavApPjB1N6lJNYwJRnkcc2v3zTbGezXxNShZZ4lTz66CG6W4WMxRUP7OWx9Ej/+PjmkqQi8znkP4YnneENqhB477V2H/iIfKHlNCTy0T5Yi3+SZrcg6TvTJY0MZ6ZU3z0fd/I5ZxXrFEaWWfBqnxsGkvqXXPnYEkpJJRz4BhrAIa+OrJkxVIBUN/1DQbcqTlGaE7lQqN6mppxdaLPQeypip2hAKu9J6Mktz4l8USs6JileOfMWZbK+SFBC5kWawyV9YeR0XDXdk9qpjNlt5kEE4LKuNDsbSKBXlEOqJJOl9DrIWRAFQhDGX3BvhLVBAlZdY+EJR5QVwFnBnMSMAzBzl58f89hmpBPS9+VJNKT/qgZsRcJx2vVqjUKu0EtVc+CdWSu3eMxiJxQBBASPgk467a1oajtmgW+79qyRWtBiej4tuPF258A4gz3haFgEeiWGE7LmYfgDowSVcdpcHp+A+hWTtj930mvsQ9a6EvQDemKNc2ryEQRZPhkT7mmguGUNKs3SIDDsrZoN1zS6TaQ8IMvmkDwVkRo0awTlGBu86MxCyBlX0="
   on:
     tags: true
+    condition: $TOXENV = check
     distributions: sdist bdist_wheel
     repo: AtteqCom/zsl
