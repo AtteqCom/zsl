@@ -485,3 +485,15 @@ def crossdomain(origin=None, methods=None, allow_headers=None,
         return crossdomain_inner_fn
 
     return decorator
+
+
+def forbid_web_access(f):
+
+    @wraps(f)
+    def wrapper_fn(*args, **kwargs):
+        if isinstance(JobContext.get_current_context(), WebJobContext):
+            raise Exception('Access forbidden from web.')
+
+        return f(*args, **kwargs)
+
+    return wrapper_fn
