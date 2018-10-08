@@ -50,8 +50,14 @@ def compute_token(random_token, config):
     :rtype: str
     """
     secure_token = config[TOKEN_SERVICE_SECURITY_CONFIG]
+    msg_to_hash = random_token + secure_token
+
     sha1hash = hashlib.sha1()
-    sha1hash.update(random_token + secure_token)
+    try:
+        sha1hash.update(msg_to_hash.encode('utf-8'))
+    except TypeError:
+        sha1hash.update(msg_to_hash)
+
     return sha1hash.hexdigest().upper()
 
 
