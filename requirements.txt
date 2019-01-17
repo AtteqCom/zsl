@@ -13,3 +13,4 @@ Werkzeug>=0.12
 bpython
 alembic
 bumpversion
+python3_gearman

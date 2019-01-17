@@ -6,7 +6,7 @@
 """
 from __future__ import unicode_literals
 
-import gearman
+import python3_gearman as gearman
 from gearman.job import GearmanJob
 
 from zsl.interface.gearman.json_data_encoder import JSONDataEncoder

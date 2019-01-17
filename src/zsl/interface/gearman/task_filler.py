@@ -8,7 +8,7 @@ from __future__ import print_function, unicode_literals
 
 import json
 
-import gearman
+import python3_gearman as gearman
 
 from zsl import Config, Injected, inject
 

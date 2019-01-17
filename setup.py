@@ -12,6 +12,7 @@ requirements = [
     'SQLAlchemy>=1',
     'typing>=3.5',
     'Werkzeug>=0.12',
+    'python3_gearman',
 ]
 
 if sys.version_info < (3, 0):
@@ -30,7 +31,7 @@ setup(name='zsl',
           'cli': ['bpython'],
           'redis': ['redis>=2.10'],
           'celery': ['zsl_client'],
-          'gearman': ['zsl_client', 'gearman'],
+          'gearman': ['zsl_client', 'python3_gearman'],
           'alembic': ['alembic'],
           'sentry': ['raven'],
           'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme',
