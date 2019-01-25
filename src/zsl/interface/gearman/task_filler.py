@@ -4,12 +4,11 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, absolute_import
 
 import json
 
-import python3_gearman as gearman
-
+from zsl._modules import gearman
 from zsl import Config, Injected, inject
 
 

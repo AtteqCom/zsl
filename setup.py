@@ -12,11 +12,15 @@ requirements = [
     'SQLAlchemy>=1',
     'typing>=3.5',
     'Werkzeug>=0.12',
-    'python3_gearman',
 ]
 
 if sys.version_info < (3, 0):
-    requirements.append('enum34')
+    requirements.extend(['enum34',
+                         'gearman==2.0.2',
+                        ])
+else:
+    requirements.extend(['python3_gearman',])
+
 
 setup(name='zsl',
       version='0.19.6',
@@ -31,7 +35,7 @@ setup(name='zsl',
           'cli': ['bpython'],
           'redis': ['redis>=2.10'],
           'celery': ['zsl_client'],
-          'gearman': ['zsl_client', 'python3_gearman'],
+          'gearman': ['zsl_client'], # it ought to be correct if the gearman module has already been in the requirements variable, isn't it?
           'alembic': ['alembic'],
           'sentry': ['raven'],
           'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme',

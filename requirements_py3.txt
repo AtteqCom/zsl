@@ -1,5 +1,4 @@
 tox
-enum34
 future
 zsl_client
 click>=6.6
