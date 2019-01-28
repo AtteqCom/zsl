@@ -5,7 +5,7 @@
 Alembic module is responsible for handling database migrations for SqlAlchemy
 database backend. The complete documentation of the Alembic project,
 all the options and command may be found `Alembic website
-<http://alembic.zzzcomputing.com/en/latest/index.html>`_.
+<https://alembic.sqlalchemy.org/en/latest/index.html>`_.
 
 If you need database migrations just install `alembic` extra of `zsl`
 package. Then you may use `alembic` commands from ZSL cli interface via
