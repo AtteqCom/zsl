@@ -1,4 +1,5 @@
 tox
+enum34
 future
 zsl_client
 click>=6.6
@@ -12,4 +13,3 @@ Werkzeug>=0.12
 bpython
 alembic
 bumpversion
-python3_gearman

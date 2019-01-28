@@ -34,7 +34,7 @@ setup(name='zsl',
       install_requires=requirements,
       extras_require={
           'cli': ['bpython'],
-          'redis': ['redis>=2.10'],
+          'redis': ['redis>=2.10.0'],
           'celery': ['zsl_client'],
           'gearman': ['zsl_client'], # it ought to be correct if the gearman module has already been in the requirements variable, isn't it?
           'alembic': ['alembic'],
