@@ -3,13 +3,13 @@ enum34
 future
 zsl_client
 click>=6.6
-Flask>=0.11
+Flask==0.12
 injector==0.12.1
 redis>=2.10
 requests>=2.7
-SQLAlchemy>=1
+SQLAlchemy==1.2
 typing>=3.5
-Werkzeug>=0.12
+Werkzeug==0.14
 bpython
 alembic
 bumpversion
