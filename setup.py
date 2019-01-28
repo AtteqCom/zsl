@@ -5,6 +5,7 @@ from setuptools import find_packages, setup
 _is_py3 = sys.version_info > (3, 0)
 
 requirements = [
+    'docutils',
     'flask',
     'future',
     'injector==0.12.1',
