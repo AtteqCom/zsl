@@ -38,8 +38,8 @@ Required fields
   in these packages with given order.
 
 * ``DATABASE_URI``
-  Database URL for `SQLAlchemy <http://sqlalchemy.org>`_'s
-  `crate_engine <http://docs.sqlalchemy.org/en/latest/core/engines.html#sqlalchemy.create_engine>`_.
+  Database URL for `SQLAlchemy <https://www.sqlalchemy.org/>`_'s
+  `crate_engine <https://docs.sqlalchemy.org/en/latest/core/engines.html#sqlalchemy.create_engine>`_.
 
 * ``DATABASE_ENGINE_PROPS``
   A dictionary of optional properties for the DB connection.

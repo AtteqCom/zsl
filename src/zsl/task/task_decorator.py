@@ -165,7 +165,7 @@ def jsonp_wrap(callback_key='callback'):
 def jsend_output(fail_exception_classes=None):
     """
     Format task result to json output in jsend specification format. See:
-    http://labs.omniti.com/labs/jsend. Task return value must be dict or None.
+    https://github.com/omniti-labs. Task return value must be dict or None.
 
     @param fail_exception_classes: exceptions which will produce 'fail' response
     status.
