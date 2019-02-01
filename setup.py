@@ -17,9 +17,9 @@ requirements = [
 if sys.version_info < (3, 0):
     requirements.extend(['enum34',
                          'gearman==2.0.2',
-                        ])
+                         ])
 else:
-    requirements.extend(['python3_gearman',])
+    requirements.extend(['python3_gearman'])
 
 
 setup(name='zsl',
