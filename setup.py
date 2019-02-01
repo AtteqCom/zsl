@@ -35,7 +35,7 @@ setup(name='zsl',
           'cli': ['bpython'],
           'redis': ['redis>=2.10.0'],
           'celery': ['zsl_client'],
-          'gearman': ['zsl_client'], # it ought to be correct if the gearman module has already been in the requirements variable, isn't it?
+          'gearman': ['zsl_client'],
           'alembic': ['alembic'],
           'sentry': ['raven'],
           'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme',

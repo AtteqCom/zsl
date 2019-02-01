@@ -4,9 +4,9 @@
 
 .. moduleauthor:: Martin
 """
-from __future__ import unicode_literals, absolute_import
+from __future__ import unicode_literals
 
-from zsl._modules import gearman
+from zsl.gearman import gearman
 from zsl.interface.gearman.json_data_encoder import JSONDataEncoder
 from zsl.interface.task_queue import TaskQueueWorker
 from zsl.task.job_context import Job

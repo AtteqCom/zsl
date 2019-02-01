@@ -4,11 +4,11 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals, absolute_import
+from __future__ import unicode_literals
 
 import json
 
-from zsl._modules import gearman
+from zsl.gearman import gearman
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
 
 
