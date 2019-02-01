@@ -5,14 +5,13 @@ from setuptools import find_packages, setup
 _is_py3 = sys.version_info > (3, 0)
 
 requirements = [
-    'docutils',
-    'flask',
+    'flask==0.12',
     'future',
     'injector==0.12.1',
     'requests>=2.7',
-    'SQLAlchemy>=1',
+    'SQLAlchemy==1.2',
     'typing>=3.5',
-    'Werkzeug>=0.12',
+    'Werkzeug==0.14',
 ]
 
 if sys.version_info < (3, 0):
