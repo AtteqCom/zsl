@@ -8,8 +8,8 @@ from __future__ import unicode_literals
 
 import json
 
-from zsl.gearman import gearman
 from zsl import Config, inject
+from zsl.gearman import gearman
 
 
 @inject(config=Config)
