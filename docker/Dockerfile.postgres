@@ -1,3 +1,3 @@
 FROM atteqcom/zsl:latest
 
-RUN pip install zsl[celery]==0.19.6 py-postgresql
+RUN pip install zsl[celery]==0.19.7 py-postgresql
