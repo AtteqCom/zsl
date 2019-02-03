@@ -6,7 +6,7 @@
 ZSL is a Python micro-framework utilizing
 [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection)
 for creating service applications on top of
-[Flask](http://flask.pocoo.org/docs/0.11/) web framework and
+[Flask](http://flask.pocoo.org/docs/0.12/) web framework and
 [Gearman](http://gearman.org/) job server or
 [Celery](http://http://www.celeryproject.org/) task queue.
 
@@ -28,9 +28,9 @@ to make it better.
 
 ## Installation
 
-We recommend to install it trough [PyPi](https://pypi.python.org/pypi) and run it in
+We recommend to install it trough [PyPi](https://pypi.org/) and run it in
 a [virtualenv](https://docs.python.org/3/library/venv.html) or
-[docker](https://docker.com) container.
+[docker](https://www.docker.com/) container.
 
 ```bash
 $ pip install zsl

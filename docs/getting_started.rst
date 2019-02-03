@@ -4,9 +4,9 @@ Getting started
 Installation
 ------------
 
-We recommend to install it trough `PyPi <https://pypi.python.org/pypi>`_ and
+We recommend to install it trough `PyPi <https://pypi.org/>`_ and
 run it in a `virtualenv <https://docs.python.org/3/library/venv.html>`_ or
-`docker <https://docker.com>`_ container.
+`docker <https://www.docker.com/>`_ container.
 
 .. code-block:: console
 
