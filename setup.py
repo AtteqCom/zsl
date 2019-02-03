@@ -5,17 +5,22 @@ from setuptools import find_packages, setup
 _is_py3 = sys.version_info > (3, 0)
 
 requirements = [
-    'flask',
+    'flask==0.12',
     'future',
     'injector==0.12.1',
     'requests>=2.7',
-    'SQLAlchemy>=1',
+    'SQLAlchemy==1.2',
     'typing>=3.5',
-    'Werkzeug>=0.12',
+    'Werkzeug==0.14',
 ]
 
 if sys.version_info < (3, 0):
-    requirements.append('enum34')
+    requirements.extend(['enum34',
+                         'gearman==2.0.2',
+                         ])
+else:
+    requirements.extend(['python3_gearman'])
+
 
 setup(name='zsl',
       version='0.19.6',
@@ -28,9 +33,9 @@ setup(name='zsl',
       install_requires=requirements,
       extras_require={
           'cli': ['bpython'],
-          'redis': ['redis>=2.10'],
+          'redis': ['redis>=2.10.0'],
           'celery': ['zsl_client'],
-          'gearman': ['zsl_client', 'gearman'],
+          'gearman': ['zsl_client'],
           'alembic': ['alembic'],
           'sentry': ['raven'],
           'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme',

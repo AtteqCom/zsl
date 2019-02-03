@@ -6,4 +6,3 @@ redis
 celery
 alembic
 zsl_client
-gearman
