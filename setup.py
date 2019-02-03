@@ -15,7 +15,12 @@ requirements = [
 ]
 
 if sys.version_info < (3, 0):
-    requirements.append('enum34')
+    requirements.extend(['enum34',
+                         'gearman==2.0.2',
+                         ])
+else:
+    requirements.extend(['python3_gearman'])
+
 
 setup(name='zsl',
       version='0.19.6',
@@ -28,9 +33,9 @@ setup(name='zsl',
       install_requires=requirements,
       extras_require={
           'cli': ['bpython'],
-          'redis': ['redis>=2.10'],
+          'redis': ['redis>=2.10.0'],
           'celery': ['zsl_client'],
-          'gearman': ['zsl_client', 'gearman'],
+          'gearman': ['zsl_client'],
           'alembic': ['alembic'],
           'sentry': ['raven'],
           'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme',

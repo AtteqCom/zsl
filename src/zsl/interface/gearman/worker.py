@@ -6,9 +6,7 @@
 """
 from __future__ import unicode_literals
 
-import gearman
-from gearman.job import GearmanJob
-
+from zsl.gearman import gearman
 from zsl.interface.gearman.json_data_encoder import JSONDataEncoder
 from zsl.interface.task_queue import TaskQueueWorker
 from zsl.task.job_context import Job
@@ -27,11 +25,11 @@ class ReloadingWorker(gearman.GearmanWorker):
 
 
 def job_from_gearman_job(gearman_job):
-    # type: (GearmanJob) -> Job
+    # type: (gearman.job.GearmanJob) -> Job
     """Creates zsl job from gearman job.
 
     :param gearman_job: gearman job
-    :type gearman_job: GearmanJob
+    :type gearman_job: gearman.job.GearmanJob
     :return: zsl job
     :rtype: Job
     """
@@ -58,7 +56,7 @@ class GearmanTaskQueueWorker(TaskQueueWorker):
         self._current_worker._should_stop = True
 
     def execute_gearman_job(self, worker, job):
-        # type: (ReloadingWorker, GearmanJob) -> dict
+        # type: (ReloadingWorker, gearman.job.GearmanJob) -> dict
         job = job_from_gearman_job(job)
         self._current_worker = worker
         return self.execute_job(job)
