@@ -76,9 +76,9 @@ def verify_security_data(security):
 def _sha1_py3(msg):
     """Compute sha1 hash of a message.
 
-    :param msg:
+    :param msg: string to hash
     :type msg: str
-    :return:
+    :return: upper case hexdigest representation of a hash
     :type: str
     """
     sha1hash = hashlib.sha1()
@@ -89,9 +89,9 @@ def _sha1_py3(msg):
 def _sha1_py2(msg):
     """Compute sha1 hash of a message.
 
-    :param msg:
+    :param msg: string to hash
     :type msg: str
-    :return:
+    :return: upper case hexdigest representation of a hash
     :type: str
     """
     sha1hash = hashlib.sha1()
