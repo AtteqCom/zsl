@@ -73,13 +73,27 @@ def verify_security_data(security):
     return str(hashed_token) == str(compute_token(random_token))
 
 
-def _sha1_py3(msg: str) -> str:
+def _sha1_py3(msg):
+    """Compute sha1 hash of a message.
+
+    :param msg:
+    :type msg: str
+    :return:
+    :type: str
+    """
     sha1hash = hashlib.sha1()
     sha1hash.update(msg.encode('utf-8'))
     return sha1hash.hexdigest().upper()
 
 
-def _sha1_py2(msg: str) -> str:
+def _sha1_py2(msg):
+    """Compute sha1 hash of a message.
+
+    :param msg:
+    :type msg: str
+    :return:
+    :type: str
+    """
     sha1hash = hashlib.sha1()
     sha1hash.update(msg)
     return sha1hash.hexdigest().upper()
