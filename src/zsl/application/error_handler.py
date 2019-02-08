@@ -20,7 +20,7 @@ from flask import request
 from zsl import inject
 from zsl.db.model.app_model import AppModel
 from zsl.errors import ErrorConfiguration, ErrorHandler, ErrorProcessor
-from zsl.interface.task import ModelConversionError, ForbiddenError
+from zsl.interface.task import ForbiddenError, ModelConversionError
 from zsl.router.task import RoutingError
 from zsl.task.job_context import JobContext, StatusCodeResponder, WebJobContext, add_responder
 from zsl.task.task_decorator import json_output

@@ -1,12 +1,11 @@
 import http.client
 from unittest import TestCase
 
-from zsl import inject, Zsl
+from zsl import Zsl, inject
 from zsl.application.containers.web_container import WebContainer
 from zsl.application.modules.web.cors import CORSConfiguration
 from zsl.interface.web.performers.task import perform_web_task
 from zsl.router.task import TaskConfiguration
-
 from zsl.task.task_decorator import forbid_web_access
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
