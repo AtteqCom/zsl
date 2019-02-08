@@ -24,6 +24,7 @@ from zsl import Config, Injected, Zsl, inject
 from zsl.application.modules.web.cors import CORSConfiguration
 from zsl.constants import MimeType
 from zsl.db.model import AppModelJSONEncoder
+from zsl.interface.task import ForbiddenError
 from zsl.task.job_context import JobContext, Responder, WebJobContext, add_responder
 from zsl.task.task_data import TaskData
 from zsl.utils.file_helper import makedirs
@@ -498,7 +499,7 @@ def forbid_web_access(f):
     @wraps(f)
     def wrapper_fn(*args, **kwargs):
         if isinstance(JobContext.get_current_context(), WebJobContext):
-            raise Exception('Access forbidden from web.')
+            raise ForbiddenError('Access forbidden from web.')
 
         return f(*args, **kwargs)
 
