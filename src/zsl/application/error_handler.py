@@ -106,7 +106,8 @@ _DEFAULT_ERROR_HANDLER = DefaultErrorHandler()
 _ROUTING_ERROR_HANDLER = RoutingErrorHandler()
 _FORBIDDEN_ERROR_HANDLER = ForbiddenErrorHandler()
 _MODEL_CONVERSION_ERROR_HANDLER = ModelConversionErrorHandler()
-_error_handlers = [_MODEL_CONVERSION_ERROR_HANDLER, _FORBIDDEN_ERROR_HANDLER, _ROUTING_ERROR_HANDLER]  # type: List[ErrorHandler]
+_error_handlers = [_MODEL_CONVERSION_ERROR_HANDLER, _FORBIDDEN_ERROR_HANDLER,
+                   _ROUTING_ERROR_HANDLER]  # type: List[ErrorHandler]
 _error_processors = []
 
 
