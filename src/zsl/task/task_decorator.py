@@ -488,6 +488,12 @@ def crossdomain(origin=None, methods=None, allow_headers=None,
 
 
 def forbid_web_access(f):
+    """
+    Forbids running task using http request.
+
+    :param f: Callable
+    :return Callable
+    """
 
     @wraps(f)
     def wrapper_fn(*args, **kwargs):
