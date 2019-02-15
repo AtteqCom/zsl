@@ -1,17 +1,17 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import http.client
 from builtins import *
+import http.client
 from unittest.case import TestCase
 
 from zsl.application.containers.web_container import WebContainer
 from zsl.application.modules.web.cors import CORSConfiguration
 from zsl.router.task import TaskConfiguration
-from zsl.task.task_decorator import secured_task, json_input
+from zsl.task.task_decorator import json_input, secured_task
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 from zsl.testing.http import HTTPTestCase
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
-from zsl.utils.security_helper import TOKEN_SERVICE_SECURITY_CONFIG, TOKEN_RANDOM, TOKEN_HASHED, compute_token
+from zsl.utils.security_helper import TOKEN_HASHED, TOKEN_RANDOM, TOKEN_SERVICE_SECURITY_CONFIG, compute_token
 
 
 class SecuredTask(object):
