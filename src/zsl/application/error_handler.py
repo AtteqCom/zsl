@@ -23,7 +23,7 @@ from zsl.errors import ErrorConfiguration, ErrorHandler, ErrorProcessor
 from zsl.interface.task import ModelConversionError
 from zsl.router.task import RoutingError
 from zsl.task.job_context import JobContext, StatusCodeResponder, WebJobContext, add_responder
-from zsl.task.task_decorator import json_output, ForbiddenError
+from zsl.task.task_decorator import ForbiddenError, json_output
 from zsl.utils.documentation import documentation_link
 from zsl.utils.http import get_http_status_code_value
 
