@@ -18,14 +18,14 @@ class HttpForbiddenTask(object):
         return "ok"
 
 
-class HttpForbiddenTaskTestCase(ZslTestCase, TestCase):
+class ForbidWebAccessTestCase(ZslTestCase, TestCase):
     CONFIG = IN_MEMORY_DB_SETTINGS.copy()
     CONFIG.update(
         CORS=CORSConfiguration('origin'),
         TASKS=TaskConfiguration().create_namespace('n')
             .add_routes({'r': HttpForbiddenTask}).get_configuration())
     ZSL_TEST_CONFIGURATION = ZslTestConfiguration(
-        app_name='HttpForbiddenTaskTestCase', container=WebContainer,
+        app_name='ForbidWebAccessTestCase', container=WebContainer,
         config_object=CONFIG)
 
     @inject(app=Zsl)

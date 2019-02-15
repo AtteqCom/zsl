@@ -24,10 +24,6 @@ from zsl.task.task_data import TaskData
 from zsl.utils.reflection_helper import is_scalar
 
 
-class ForbiddenError(Exception):
-    pass
-
-
 class ModelConversionError(Exception):
     def __init__(self, obj, attribute):
         msg = "Can not fit dictionary into model '{0}' since the model does not have attribute '{1}'"
