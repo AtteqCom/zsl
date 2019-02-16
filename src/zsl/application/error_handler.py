@@ -23,7 +23,7 @@ from zsl.errors import ErrorConfiguration, ErrorHandler, ErrorProcessor
 from zsl.interface.task import ModelConversionError
 from zsl.router.task import RoutingError
 from zsl.task.job_context import JobContext, StatusCodeResponder, WebJobContext, add_responder
-from zsl.task.task_decorator import json_output
+from zsl.task.task_decorator import ForbiddenError, json_output
 from zsl.utils.documentation import documentation_link
 from zsl.utils.http import get_http_status_code_value
 
@@ -90,10 +90,24 @@ class ModelConversionErrorHandler(ErrorHandler):
         return ErrorResponse(self.ERROR_CODE, str(e))
 
 
+class ForbiddenErrorHandler(ErrorHandler):
+    ERROR_CODE = 'FORBIDDEN'
+
+    def can_handle(self, e):
+        return isinstance(e, ForbiddenError)
+
+    @json_output
+    def handle(self, e):
+        add_responder(StatusCodeResponder(get_http_status_code_value(http.client.FORBIDDEN)))
+        return ErrorResponse(self.ERROR_CODE, str(e))
+
+
 _DEFAULT_ERROR_HANDLER = DefaultErrorHandler()
 _ROUTING_ERROR_HANDLER = RoutingErrorHandler()
+_FORBIDDEN_ERROR_HANDLER = ForbiddenErrorHandler()
 _MODEL_CONVERSION_ERROR_HANDLER = ModelConversionErrorHandler()
-_error_handlers = [_MODEL_CONVERSION_ERROR_HANDLER, _ROUTING_ERROR_HANDLER]  # type: List[ErrorHandler]
+_error_handlers = [_MODEL_CONVERSION_ERROR_HANDLER, _FORBIDDEN_ERROR_HANDLER,
+                   _ROUTING_ERROR_HANDLER]  # type: List[ErrorHandler]
 _error_processors = []
 
 
