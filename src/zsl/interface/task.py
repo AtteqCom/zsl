@@ -21,7 +21,7 @@ from zsl.errors import ZslError
 from zsl.router.task import TaskRouter
 from zsl.task.job_context import Job, delegating_job_context
 from zsl.task.task_data import TaskData
-from zsl.utils.reflection_helper import is_scalar
+from zsl.utils.reflection_helper import is_scalar, is_list
 
 
 class ModelConversionError(Exception):
@@ -46,7 +46,7 @@ def fill_model_with_payload(data, obj):
         if not hasattr(obj, k):
             raise ModelConversionError(obj, k)
 
-        if is_scalar(v):
+        if is_scalar(v) or is_list(v):
             setattr(obj, k, v)
         else:
             fill_model_with_payload(v, getattr(obj, k))

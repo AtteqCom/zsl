@@ -34,6 +34,10 @@ def is_scalar(v):
     return isinstance(v, (type(None), str, int, float, bool))
 
 
+def is_list(v):
+    return isinstance(v, list)
+
+
 def proxy_object_to_delegate(proxy_object, delegate_object):
     proxy_class_name = 'Proxy{0}To{1}'.format(
         proxy_object.__class__.__name__,
