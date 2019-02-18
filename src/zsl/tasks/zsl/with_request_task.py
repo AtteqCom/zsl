@@ -10,10 +10,9 @@ from __future__ import unicode_literals
 
 from builtins import object
 
-
 from zsl import Zsl, inject
 from zsl.interface.task import payload_into_model
-from zsl.task.task_decorator import json_output, json_input
+from zsl.task.task_decorator import json_input, json_output
 
 
 class WithRequestTask(object):

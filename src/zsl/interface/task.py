@@ -21,7 +21,7 @@ from zsl.errors import ZslError
 from zsl.router.task import TaskRouter
 from zsl.task.job_context import Job, delegating_job_context
 from zsl.task.task_data import TaskData
-from zsl.utils.reflection_helper import is_scalar, is_list
+from zsl.utils.reflection_helper import is_list, is_scalar
 
 
 class ModelConversionError(Exception):
