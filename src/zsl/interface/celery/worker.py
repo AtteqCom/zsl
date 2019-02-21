@@ -70,7 +70,7 @@ class CeleryTaskQueueMainWorker(CeleryTaskQueueWorkerBase):
         self._app.logger.info("Stopping Celery worker on demand - quitting.")
         self.celery_worker.stop()
 
-    def run(self, argv, *args, **kwargs):
+    def run(self, argv):
         self._app.logger.info("Running the worker.")
         self.celery_worker = self.celery_app.worker_main((sys.argv[0],) + argv)
 

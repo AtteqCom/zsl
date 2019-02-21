@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 import click
 from injector import ClassProvider, Module, singleton
 
-from zsl import Zsl, inject
+from zsl import inject
 from zsl.application.modules.cli_module import ZslCli
 from zsl.interface.gearman.task_filler import exec_task_filler
 from zsl.interface.gearman.worker import GearmanTaskQueueWorker
@@ -20,7 +20,7 @@ class GearmanCli(object):
     def __init__(self, zsl_cli):
         # type: (ZslCli)->GearmanCli
 
-        @zsl_cli.cli.group("Gearman related tasks.")
+        @zsl_cli.cli.group(help="Gearman related tasks.")
         def gearman():
             pass
 
@@ -29,7 +29,7 @@ class GearmanCli(object):
             # type: () -> None
             run_worker()
 
-        @gearman.command()
+        @gearman.command(help="send task to queue")
         @click.argument('task_path', metavar='task')
         @click.argument('data', default=None, required=False)
         def task_filler(task_path, data):
