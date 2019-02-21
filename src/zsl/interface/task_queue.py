@@ -123,10 +123,16 @@ class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
 
 
 @inject(worker=TaskQueueWorker)
-def run_worker(self, worker, *args, **kwargs):
-    # type: (TaskQueueWorker, *Any, **Any)->None
+def _get_worker(worker):
+    # type: (TaskQueueWorker) -> TaskQueueWorker
+    return worker
+
+
+def run_worker(*args, **kwargs):
+    # type: (*Any, **Any)->None
     """Run the app as a task queue worker.
 
     The worker instance is given as a DI module.
     """
-    worker.run((), *args, **kwargs)
+    worker = _get_worker()
+    worker.run(*args, **kwargs)
