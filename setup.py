@@ -33,7 +33,7 @@ setup(name='zsl',
       install_requires=requirements,
       extras_require={
           'cli': ['bpython'],
-          'redis': ['redis>=2.10.0'],
+          'redis': ['redis>=3.2.0'],
           'celery': ['zsl_client'],
           'gearman': ['zsl_client'],
           'alembic': ['alembic'],
