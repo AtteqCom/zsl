@@ -39,6 +39,8 @@ def extend_object_by_dict(target, dict_data, hints=None):
                 setattr(target, field_name, [related_cls(x, 'id', related_hints) for x in field_value])
             else:
                 setattr(target, field_name, related_cls(field_value.__dict__, 'id', related_hints))
+        elif isinstance(field_value, (list, tuple)):
+            setattr(target, field_name, [x for x in field_value])
 
 
 def _get_hints(original_hints):
