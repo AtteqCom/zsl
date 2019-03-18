@@ -15,7 +15,7 @@ from future.utils import with_metaclass
 from zsl.db.model.app_model import AppModel
 from zsl.db.model.app_model_json_decoder import get_json_decoder
 from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
-from zsl.utils.dict_to_object_conversion import RELATED_FIELDS, RELATED_FIELDS_HINTS, RELATED_FIELDS_CLASS
+from zsl.utils.dict_to_object_conversion import RELATED_FIELDS, RELATED_FIELDS_CLASS, RELATED_FIELDS_HINTS
 from zsl.utils.import_helper import fetch_class
 
 

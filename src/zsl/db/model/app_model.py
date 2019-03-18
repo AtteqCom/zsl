@@ -13,6 +13,12 @@ from future.utils import viewitems
 
 from zsl.utils.dict_to_object_conversion import extend_object_by_dict
 
+DATE_DATA = 'date_data'
+DATETIME_DATA = 'datetime_data'
+RELATED_FIELDS = 'related_fields'
+RELATED_FIELDS_CLASS = 'cls'
+RELATED_FIELDS_HINTS = 'hints'
+
 ISO_8601_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 
