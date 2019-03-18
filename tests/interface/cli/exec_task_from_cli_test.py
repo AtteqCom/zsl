@@ -43,6 +43,5 @@ class ExecTaskFromCliTestCase(ZslTestCase, TestCase):
         # type:(ZslCli)->None
         runner = CliRunner()
         result = runner.invoke(zsl_cli.cli, ['task', 'task/zsl/with_request_task', '{"list_of_numbers": [1,2,3] }'])
-        print(result)
         self.assertEqual(0, result.exit_code, "No error is expected.")
         self.assertEqual('[1, 2, 3]', result.output.strip(), "Valid task output must be shown")
