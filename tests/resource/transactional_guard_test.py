@@ -23,9 +23,6 @@ except ImportError:
     import mock
 
 
-
-
-
 class UserResource(ModelResource):
     __model__ = UserModel
 
@@ -57,7 +54,7 @@ class TransactionalGuardTest(TestCase):
         user = resource.read('1', {}, {})
 
         self.assertDictEqual(users[0]._asdict(), user.get_attributes(),
-                             "should return firs user")
+                             "should return first user")
 
     @staticmethod
     def testRollbackBefore():
