@@ -21,6 +21,7 @@ from zsl.errors import ZslError
 from zsl.router.task import TaskRouter
 from zsl.task.job_context import Job, delegating_job_context
 from zsl.task.task_data import TaskData
+from zsl.utils.dict_to_object_conversion import extend_object_by_dict
 from zsl.utils.reflection_helper import is_list, is_scalar
 
 
@@ -42,14 +43,8 @@ class ModelConversionError(Exception):
 
 def fill_model_with_payload(data, obj):
     # type:(Dict[str, Any])->Any
-    for k, v in data.items():
-        if not hasattr(obj, k):
-            raise ModelConversionError(obj, k)
-
-        if is_scalar(v) or is_list(v):
-            setattr(obj, k, v)
-        else:
-            fill_model_with_payload(v, getattr(obj, k))
+    hints = obj.hints if hasattr(obj, "hints") else None
+    extend_object_by_dict(obj, data, hints)
 
 
 def payload_into_model(model_type, argument_name='request', remove_data=True):
