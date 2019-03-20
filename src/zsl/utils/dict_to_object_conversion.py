@@ -1,16 +1,13 @@
 from __future__ import unicode_literals
 
-from datetime import date, datetime
-
 # noinspection PyCompatibility
 from builtins import int, str
-from future.utils import viewitems
-from typing import Any
-from typing import Dict
-from typing import Union
+from datetime import date, datetime
+from typing import Any, Dict, Union
 
-from zsl.utils.date_helper import format_date_portable, \
-    format_datetime_portable
+from future.utils import viewitems
+
+from zsl.utils.date_helper import format_date_portable, format_datetime_portable
 
 DATE_DATA = 'date_data'
 DATETIME_DATA = 'datetime_data'

@@ -8,6 +8,7 @@ from __future__ import unicode_literals
 
 # noinspection PyCompatibility
 from builtins import map, object
+
 from future.utils import viewitems
 
 from zsl.utils.dict_to_object_conversion import extend_object_by_dict
