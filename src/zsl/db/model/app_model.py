@@ -8,7 +8,6 @@ from __future__ import unicode_literals
 
 # noinspection PyCompatibility
 from builtins import map, object
-
 from future.utils import viewitems
 
 from zsl.utils.dict_to_object_conversion import extend_object_by_dict
@@ -24,12 +23,14 @@ ISO_8601_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 class AppModel(object):
     """AppModel's are used as a thin and simple communication objects. Also
-    they can be saved into cache.
+    they can be saved into cache. Basically they are known as Data Transfer
+    Objects or DTOs.
 
     .. automethod:: __init__
     """
 
-    _not_serialized_attributes = ['_not_serialized_attributes', '_hints', '_id_name']
+    _not_serialized_attributes = ['_not_serialized_attributes', '_hints',
+                                  '_id_name']
 
     def __init__(self, raw, id_name='id', hints=None):
         """
@@ -37,10 +38,17 @@ class AppModel(object):
 
         :param raw: Dictionary of properties of the raw data.
         :param id_name: Name of the identifier property.
-        :param hints: Tells which of the raw attributes are date or datetime string and what is theirs format \
-        Example: ``{DATE_DATA: {'birthday': '%d.%m.%Y'}, DATETIME_DATA: {'created': '%Y-%m-%d %H:%M:%S' }}`` \
-        this attributes are then saved in the standard zsl service date/datetime format (consult \
-        zsl.utils.date_helper)
+        :param hints: Tells which of the raw attributes are date or datetime
+                      string and what is theirs format. Example:
+                      ```
+                      {
+                          DATE_DATA: { 'birthday': '%d.%m.%Y' },
+                          DATETIME_DATA: { 'created': '%Y-%m-%d %H:%M:%S' }
+                      }
+                      ```
+                      this attributes are then saved in the standard zsl
+                      service date/datetime format (consult
+                      :mod:`zsl.utils.date_helper` for more.)
         """
 
         extend_object_by_dict(self, raw, hints)
