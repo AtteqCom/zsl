@@ -23,7 +23,7 @@ else:
 
 
 setup(name='zsl',
-      version='0.20.0',
+      version='0.21.0',
       description='zsl application framework for web based services',
       author='Atteq s.r.o.',
       author_email='open.source@atteq.com',
