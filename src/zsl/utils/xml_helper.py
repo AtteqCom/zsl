@@ -103,8 +103,9 @@ def get_xml_root(xml_path):
     :type xml_path: str
     :return: xml root
     """
-    tree = ET.fromstring(requests.get(xml_path).content)
-    return tree.getroot()
+    r = requests.get(xml_path)
+    root = ET.fromstring(r.text)
+    return root
 
 
 def element_to_int(element, attribute=None):
