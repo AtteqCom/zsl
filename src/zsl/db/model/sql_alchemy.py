@@ -2,7 +2,7 @@
 :mod:`zsl.db.model.sql_alchemy`
 -------------------------------
 
-one base the rule them all
+one base to rule them all
 
 .. moduleauthor:: Peter Morihladko
 """
