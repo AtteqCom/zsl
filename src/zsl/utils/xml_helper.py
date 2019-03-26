@@ -7,7 +7,7 @@ Helper functions for working with XML and ElementTree.
 from __future__ import unicode_literals
 
 from functools import reduce
-import xml.etree.cElementTree as ET
+import xml.etree.ElementTree as ET
 
 from future.utils import viewitems
 import requests
