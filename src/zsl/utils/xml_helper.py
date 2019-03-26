@@ -104,7 +104,7 @@ def get_xml_root(xml_path):
     :return: xml root
     """
     r = requests.get(xml_path)
-    root = ET.fromstring(r.text)
+    root = ET.fromstring(r.content)
     return root
 
 
