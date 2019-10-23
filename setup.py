@@ -11,7 +11,7 @@ requirements = [
     'requests>=2.7',
     'SQLAlchemy==1.2',
     'typing>=3.5',
-    'Werkzeug==0.14',
+    'Werkzeug==0.15.3',
 ]
 
 if sys.version_info < (3, 0):
