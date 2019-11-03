@@ -32,8 +32,10 @@ class SecuredTaskTestCase(ZslTestCase, HTTPTestCase, TestCase):
     })
 
     ZSL_TEST_CONFIGURATION = ZslTestConfiguration(
-        app_name='SecuredTaskTestCase', container=WebContainer,
-        config_object=CONFIG)
+        app_name='SecuredTaskTestCase',
+        container=WebContainer,
+        config_object=CONFIG
+    )
 
     def testSecuredTaskWithCorrectSecurityToken(self):
         client = self.getHTTPClient()

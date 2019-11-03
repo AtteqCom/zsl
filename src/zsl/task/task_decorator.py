@@ -333,7 +333,7 @@ def secured_task(f):
             raise SecurityException(
                 task_data.get_data()['security']['hashed_token'])
 
-        task_data.transform_payload(lambda x: x['data'] if 'data' in x else {})
+        task_data.transform_payload(lambda x: x.get('data', {}))
         return f(*args, **kwargs)
 
     return secured_task_decorator
