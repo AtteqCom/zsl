@@ -82,7 +82,7 @@ class {name}(parent):
         return self
     """.format(name=name, items=item_definitions, arglist=arglist)
     namespace = {'parent': parent, 'defaults': defaults}
-    exec (class_code, namespace)
+    exec(class_code, namespace)
     result = namespace[name]
     result._source = class_code
     if model_module is None:
