@@ -111,4 +111,5 @@ Session.vim
 tags
 
 .idea
+.vscode
 /docs/api.rst

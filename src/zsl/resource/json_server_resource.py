@@ -8,7 +8,7 @@ from builtins import *
 import http.client
 import logging
 import re
-from typing import Any
+from typing import Any, Dict
 
 from flask import request
 from sqlalchemy import or_

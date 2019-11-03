@@ -15,6 +15,7 @@ from typing import Callable, Dict, List, Union
 from flask import request
 
 from zsl import Config, Injected, Zsl, inject
+from zsl.db.model import AppModel
 from zsl.interface.resource import ResourceResult
 from zsl.resource.model_resource import ModelResource
 from zsl.utils.string_helper import underscore_to_camelcase

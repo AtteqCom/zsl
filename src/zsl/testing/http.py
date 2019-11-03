@@ -6,6 +6,7 @@ This module allows for querying the API via HTTP.
 from __future__ import absolute_import, unicode_literals
 
 from builtins import *
+from http import HTTPStatus
 import json
 from typing import Any, AnyStr, Dict, Union
 
