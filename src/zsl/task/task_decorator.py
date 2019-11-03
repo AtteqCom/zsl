@@ -485,3 +485,25 @@ def crossdomain(origin=None, methods=None, allow_headers=None,
         return crossdomain_inner_fn
 
     return decorator
+
+
+def forbid_web_access(f):
+    """
+    Forbids running task using http request.
+
+    :param f: Callable
+    :return Callable
+    """
+
+    @wraps(f)
+    def wrapper_fn(*args, **kwargs):
+        if isinstance(JobContext.get_current_context(), WebJobContext):
+            raise ForbiddenError('Access forbidden from web.')
+
+        return f(*args, **kwargs)
+
+    return wrapper_fn
+
+
+class ForbiddenError(Exception):
+    pass

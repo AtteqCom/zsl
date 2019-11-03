@@ -21,12 +21,13 @@ from zsl.errors import ZslError
 from zsl.router.task import TaskRouter
 from zsl.task.job_context import Job, delegating_job_context
 from zsl.task.task_data import TaskData
-from zsl.utils.reflection_helper import is_scalar
+from zsl.utils.dict_to_object_conversion import extend_object_by_dict
 
 
 class ModelConversionError(Exception):
     def __init__(self, obj, attribute):
-        msg = "Can not fit dictionary into model '{0}' since the model does not have attribute '{1}'"
+        msg = "Can not fit dictionary into model '{0}' since the model " \
+              "does not have attribute '{1}'"
         super(ModelConversionError, self).__init__(msg.format(obj, attribute))
         self._obj = obj
         self._attribute = attribute
@@ -41,19 +42,13 @@ class ModelConversionError(Exception):
 
 
 def fill_model_with_payload(data, obj):
-    # type:(Dict[str, Any])->Any
-    for k, v in data.items():
-        if not hasattr(obj, k):
-            raise ModelConversionError(obj, k)
-
-        if is_scalar(v):
-            setattr(obj, k, v)
-        else:
-            fill_model_with_payload(v, getattr(obj, k))
+    # type:(Dict[str, Any], object)->None
+    hints = getattr(obj, "_hints", None)
+    extend_object_by_dict(obj, data, hints)
 
 
 def payload_into_model(model_type, argument_name='request', remove_data=True):
-    # type: (Callable, str)->Callable
+    # type: (Callable, str, bool)->Callable
     def wrapper(f):
         @wraps(f)
         def executor(*args, **kwargs):
@@ -77,7 +72,8 @@ def create_simple_model(name, items, defaults=None, parent=object,
     default_code = "self.{0} = {0} if {0} is not None " \
                    "else (defaults.get('{0}', None))"
     item_definitions = "; ".join(map(lambda i: default_code.format(i), items))
-    arglist = '=None, '.join(items) + ("=None, **kwargs" if len(items) else "**kwargs")
+    arglist = '=None, '.join(items) + (
+        "=None, **kwargs" if len(items) else "**kwargs")
     class_code = """
 class {name}(parent):
     def __new__(_cls, {arglist}):
@@ -86,7 +82,7 @@ class {name}(parent):
         return self
     """.format(name=name, items=item_definitions, arglist=arglist)
     namespace = {'parent': parent, 'defaults': defaults}
-    exec(class_code, namespace)
+    exec (class_code, namespace)
     result = namespace[name]
     result._source = class_code
     if model_module is None:

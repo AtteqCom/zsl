@@ -1,5 +1,5 @@
 import unittest
-import xml.etree.cElementTree
+import xml.etree.ElementTree
 
 from zsl.utils.xml_to_json import xml_to_json
 
@@ -32,7 +32,7 @@ class TestXmlToJson(unittest.TestCase):
     '''
 
     def setUp(self):
-        self._root = xml.etree.cElementTree.fromstring(self.xml)
+        self._root = xml.etree.ElementTree.fromstring(self.xml)
 
     def test_simple_definitions(self):
         def_attribute = '@atr'

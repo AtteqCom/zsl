@@ -7,7 +7,7 @@ Helper functions for working with XML and ElementTree.
 from __future__ import unicode_literals
 
 from functools import reduce
-import xml.etree.cElementTree as ET
+import xml.etree.ElementTree as ET
 
 from future.utils import viewitems
 import requests
@@ -103,8 +103,9 @@ def get_xml_root(xml_path):
     :type xml_path: str
     :return: xml root
     """
-    tree = ET.fromstring(requests.get(xml_path).content)
-    return tree.getroot()
+    r = requests.get(xml_path)
+    root = ET.fromstring(r.content)
+    return root
 
 
 def element_to_int(element, attribute=None):

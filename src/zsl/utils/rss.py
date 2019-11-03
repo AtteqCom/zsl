@@ -8,7 +8,7 @@ Helper function for handling rss.
 """
 from __future__ import unicode_literals
 
-import xml.etree.cElementTree as ET
+import xml.etree.ElementTree as ET
 
 from future.utils import viewitems
 

@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 _is_py3 = sys.version_info > (3, 0)
 
 requirements = [
-    'flask==0.12',
+    'flask>=0.12.3',
     'future',
     'injector==0.12.1',
     'requests>=2.7',
@@ -23,7 +23,7 @@ else:
 
 
 setup(name='zsl',
-      version='0.19.7',
+      version='0.21.1',
       description='zsl application framework for web based services',
       author='Atteq s.r.o.',
       author_email='open.source@atteq.com',
