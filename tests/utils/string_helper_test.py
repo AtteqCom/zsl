@@ -5,29 +5,29 @@ from zsl.utils.string_helper import camelcase_to_underscore, join_list, undersco
 
 class InflectionTestCase(TestCase):
     def testCamelCaseToUnderscore(self):
-        self.assertEquals(
+        self.assertEqual(
             "camel_case_to_underscore",
             camelcase_to_underscore("camelCaseToUnderscore"),
             "CC to usc conversion"
         )
-        self.assertEquals(
+        self.assertEqual(
             "camel_case_to_underscore",
             camelcase_to_underscore("CamelCaseToUnderscore"),
             "CC to usc conversion"
         )
 
     def testUnderscoreToCamelCase(self):
-        self.assertEquals(
+        self.assertEqual(
             "camelCaseToUnderscore",
             underscore_to_camelcase("camel_case_to_underscore", False),
             "CC to usc conversion"
         )
-        self.assertEquals(
+        self.assertEqual(
             "CamelCaseToUnderscore",
             underscore_to_camelcase("camel_case_to_underscore"),
             "CC to usc conversion"
         )
-        self.assertEquals(
+        self.assertEqual(
             "CamelCaseToUnderscore",
             underscore_to_camelcase("camel_case_to_underscore", True),
             "CC to usc conversion"

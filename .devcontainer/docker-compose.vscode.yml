@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  zsl:
+    image: python:3.7
+    command: sleep infinity
+    volumes:
+      - ../:/zsl
+      - ~/.ssh:/root/.ssh-raw:ro

@@ -5,13 +5,13 @@ from setuptools import find_packages, setup
 _is_py3 = sys.version_info > (3, 0)
 
 requirements = [
-    'flask>=0.12.3',
+    'flask>=1.1,<1.2',
     'future',
     'injector==0.12.1',
-    'requests>=2.7',
-    'SQLAlchemy==1.2',
-    'typing>=3.5',
-    'Werkzeug==0.14',
+    'requests>=2.22',
+    'SQLAlchemy>=1.3,<1.4',
+    'typing>=3.7',
+    'Werkzeug>=0.15,<0.17',
 ]
 
 if sys.version_info < (3, 0):
@@ -32,7 +32,7 @@ setup(name='zsl',
       package_dir={'': 'src'},
       install_requires=requirements,
       extras_require={
-          'cli': ['bpython'],
+          'cli': ['bpython', 'click>=7.0'],
           'redis': ['redis>=3.2.0'],
           'celery': ['zsl_client'],
           'gearman': ['zsl_client'],

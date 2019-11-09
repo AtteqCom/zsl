@@ -1,0 +1,10 @@
+{
+	"name": "zsl",
+	"dockerComposeFile": [
+		"./docker-compose.vscode.yml"
+	],
+	"service": "zsl",
+	"workspaceFolder": "/zsl",
+	"extensions": ["ms-python.python"],
+	"postCreateCommand": "mkdir -p ~/.ssh && cp -r ~/.ssh-raw/* ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/*"
+}

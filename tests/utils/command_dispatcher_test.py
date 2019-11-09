@@ -70,9 +70,11 @@ class TestCommandDispatcher(unittest.TestCase):
                           dispatcher.execute_command, 'adder', {'a': 1, 'b': 2, 'e': 3})
         self.assertRaises(TypeError, dispatcher.execute_command, 'adder')
 
-        self.assertEquals(dispatcher.execute_command('summer', {'n': 2, '1': 1, '2': 2, '3': 3}),
-                          sum([2, 4, 6]),
-                          "Command doesn't support kwarg parameters")
+        self.assertEqual(
+            dispatcher.execute_command('summer', {'n': 2, '1': 1, '2': 2, '3': 3}),
+            sum([2, 4, 6]),
+            "Command doesn't support kwarg parameters"
+        )
 
         with self.assertRaises(KeyError):
             dispatcher.execute_command('error_command')
