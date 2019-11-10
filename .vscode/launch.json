@@ -1,0 +1,48 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Test: tests/task_decorators/secured_task_test.py",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      },
+      "args": [
+        "--capture=sys",
+        "--log-cli-level=DEBUG",
+        "tests/task_decorators/secured_task_test.py"
+      ]
+    },
+    {
+      "name": "Test: tests/interface/exec_task_test.py",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      },
+      "args": [
+        "--capture=sys",
+        "--log-cli-level=DEBUG",
+        "tests/interface/exec_task_test.py"
+      ]
+    },
+    {
+      "name": "Test: all",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src:${workspaceFolder}/tests"
+      },
+      "args": [
+        "--capture=sys",
+        "--log-cli-level=DEBUG",
+        "-vv",
+        "--ignore=src"
+      ]
+    }
+  ]
+}

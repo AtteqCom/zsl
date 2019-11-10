@@ -13,3 +13,4 @@ tox
 typing>=3.7
 Werkzeug>=0.15,<0.17
 zsl_client
+pytest
