@@ -141,7 +141,7 @@ def jsonp_wrap(callback_key='callback'):
         @wraps(f)
         def jsonp_output_decorator(*args, **kwargs):
             task_data = _get_data_from_args(args)
-            data = task_data.get_data()
+            data = task_data.payload
 
             if callback_key not in data:
                 raise KeyError(
@@ -255,7 +255,7 @@ def required_data(*data):
 
         @wraps(f)
         def required_data_decorator(*args, **kwargs):
-            task_data = _get_data_from_args(args).get_data()
+            task_data = _get_data_from_args(args).payload
             for i in data:
                 if i not in task_data:
                     raise KeyError(
@@ -287,7 +287,7 @@ def append_get_parameters(accept_only_web=True):
                 # Update the data with GET parameters
                 web_request = jc.get_web_request()
                 task_data = _get_data_from_args(args)
-                data = task_data.get_data()
+                data = task_data.payload
                 data.update(web_request.args.to_dict(flat=True))
             elif accept_only_web:
                 # Raise exception on non web usage if necessary
@@ -329,9 +329,9 @@ def secured_task(f):
     def secured_task_decorator(*args, **kwargs):
         task_data = _get_data_from_args(args)
         assert isinstance(task_data, TaskData)
-        if not verify_security_data(task_data.get_data()['security']):
+        if not verify_security_data(task_data.payload['security']):
             raise SecurityException(
-                task_data.get_data()['security']['hashed_token'])
+                task_data.payload['security']['hashed_token'])
 
         task_data.transform_payload(lambda x: x.get('data', {}))
         return f(*args, **kwargs)

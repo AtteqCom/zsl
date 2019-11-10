@@ -13,6 +13,7 @@ from builtins import object
 from injector import inject
 
 from zsl import Zsl
+from zsl.task.task_data import TaskData
 from zsl.task.task_decorator import json_input, json_output
 
 
@@ -24,5 +25,7 @@ class SumTask(object):
     @json_input
     @json_output
     def perform(self, data):
-        self._app.logger.debug("Sum task with data '{0}'.".format(data.get_data()))
-        return {"input": data.get_data(), "result": sum(data.get_data())}
+        # type: (TaskData)->str
+        payload = data.payload
+        self._app.logger.debug("Sum task with data '{0}'.".format(payload))
+        return {"input": payload, "result": sum(payload)}

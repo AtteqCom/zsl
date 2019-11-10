@@ -40,10 +40,15 @@ class ZslTestCase(object):
         config = cls.ZSL_TEST_CONFIGURATION  # type: ZslTestConfiguration
         if config.profile:
             set_profile(config.profile)
-        app = Zsl(config.app_name + "-test",
-                  version=config.version,
-                  modules=config.container.modules(),
-                  config_object=config.config_object)
+        app = Zsl(
+            config.app_name + "-test",
+            version=config.version,
+            modules=config.container.modules(),
+            config_object=config.config_object
+        )
+        app.testing = True
+        app.debug = True
+
         logging.getLogger(config.app_name).debug(
             "ZSL test app created {0}.".format(app))
 
