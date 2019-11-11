@@ -1,0 +1,6 @@
+FROM python:3.8
+
+ADD . .
+RUN pip install -e ".[cli,redis,alembic]"
+
+CMD python -m zsl
