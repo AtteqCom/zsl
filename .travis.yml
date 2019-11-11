@@ -7,11 +7,16 @@ senv:
   global:
     - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
     - SEGFAULT_SIGNALS=all
-  matrix:
-    - TOXENV=check
-    - TOXENV=docs
 matrix:
   include:
+    - python: '3.8'
+      env:
+        - TOXENV=check
+        - SCRIPT=tox
+    - python: '3.8'
+      env:
+        - TOXENV=docs
+        - SCRIPT=tox
     - python: '3.6'
       env:
         - TOXENV=3.6-nocov
@@ -49,7 +54,8 @@ script:
         ;;
 
       docker)
-        docker build . -f docker/Dockerfile.test -t zsl-text
+        docker build . -f docker/Dockerfile.test -t zsl-test
+        docker run --rm zsl-test --version
         ;;
     esac
 after_failure:
