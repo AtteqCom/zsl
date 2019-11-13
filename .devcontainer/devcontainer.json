@@ -1,0 +1,11 @@
+{
+	"name": "zsl",
+	"dockerComposeFile": [
+		"./docker-compose.vscode.yml"
+	],
+	"service": "zsl",
+	"workspaceFolder": "/zsl",
+	"extensions": ["ms-python.python"],
+	"runArgs": [ "-u", "user" ],	
+	"postCreateCommand": "/zsl/.devcontainer/install.sh"
+}

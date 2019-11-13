@@ -71,7 +71,7 @@ class AddressModel(Base, ModelBase):
 
     id = Column(Integer, primary_key=True)
     email_address = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'))
+    user_id = Column(Integer, ForeignKey(UserModel.id))
     user = relationship('UserModel', back_populates='addresses')
 
     def __repr__(self):

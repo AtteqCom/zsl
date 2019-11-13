@@ -47,7 +47,7 @@ class TestXmlToJson(unittest.TestCase):
         def func(element):
             return element.tag
 
-        self.assertEquals('root', xml_to_json(self._root, func))
+        self.assertEqual('root', xml_to_json(self._root, func))
 
     def test_tuple_definitions(self):
         self.assertEqual('23', xml_to_json(self._root, ('node_d', '@id')))

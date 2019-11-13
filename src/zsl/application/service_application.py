@@ -68,16 +68,35 @@ class ServiceApplication(Flask):
 
     VERSION = version
 
-    def __init__(self, import_name, static_path=None, static_url_path=None,
-                 static_folder='static', template_folder='templates',
-                 instance_path=None, instance_relative_config=False,
-                 modules=None, config_object=None, version=None,
-                 default_settings_module='settings.default_settings'):
-        super(ServiceApplication, self).__init__(import_name, static_path,
-                                                 static_url_path,
-                                                 static_folder, template_folder,
-                                                 instance_path,
-                                                 instance_relative_config)
+    def __init__(
+        self,
+        import_name,
+        static_url_path=None,
+        static_folder="static",
+        static_host=None,
+        host_matching=False,
+        subdomain_matching=False,
+        template_folder="templates",
+        instance_path=None,
+        instance_relative_config=False,
+        root_path=None,
+        modules=None,
+        version=None,
+        config_object=None,
+        default_settings_module='settings.default_settings'
+    ):
+        super(ServiceApplication, self).__init__(
+            import_name,
+            static_url_path,
+            static_folder,
+            static_host,
+            host_matching,
+            subdomain_matching,
+            template_folder,
+            instance_path,
+            instance_relative_config,
+            root_path
+        )
         self._dependencies_initialized = False
         self._default_settings_module = default_settings_module
         self._is_initialized = False

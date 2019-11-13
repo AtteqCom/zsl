@@ -10,7 +10,7 @@ from abc import abstractmethod
 from builtins import *
 import contextlib
 from threading import current_thread
-from typing import Callable, Dict
+from typing import Any, Callable, Dict
 
 from flask.wrappers import Response
 

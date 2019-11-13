@@ -30,6 +30,9 @@ class ExecTaskTestCase(ZslTestCase, TestCase):
 
     def testCreateTaskValidPath(self):
         task, task_callable = create_task("task/zsl/version_task")
+        # This gets reimported since app.debug = True.
+        # So we use the latest cached version - import it again.
+        from zsl.tasks.zsl.version_task import VersionTask
         self.assertIsInstance(task, VersionTask,
                               "A proper task must be returned.")
         self.assertIsInstance(task_callable, Callable,

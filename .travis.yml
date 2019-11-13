@@ -1,27 +1,41 @@
 language: python
 sudo: false
 cache: pip
-env:
+services:
+  - docker
+senv:
   global:
     - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
     - SEGFAULT_SIGNALS=all
-  matrix:
-    - TOXENV=check
-    - TOXENV=docs
 matrix:
   include:
-    - python: '2.7'
+    - python: '3.8'
       env:
-        - TOXENV=2.7-cover,report,coveralls,codecov
-    - python: '2.7'
+        - TOXENV=check
+        - SCRIPT=tox
+    - python: '3.8'
       env:
-        - TOXENV=2.7-nocov
-    - python: '3.6'
-      env:
-        - TOXENV=3.6-cover,report,coveralls,codecov
+        - TOXENV=docs
+        - SCRIPT=tox
     - python: '3.6'
       env:
         - TOXENV=3.6-nocov
+        - SCRIPT=tox
+    - python: '3.7'
+      env:
+        - TOXENV=3.7-cover,report,coveralls,codecov
+        - SCRIPT=tox
+    - python: '3.7'
+      env:
+        - TOXENV=3.7-nocov
+        - SCRIPT=tox
+    - python: '3.8'
+      env:
+        - TOXENV=3.8-nocov
+        - SCRIPT=tox
+    - python: '3.8'
+      env:
+        - SCRIPT=docker
 before_install:
   - python --version
   - uname -a
@@ -33,7 +47,17 @@ install:
   - pip --version
   - tox --version
 script:
-  - tox -v
+  - |
+    case $SCRIPT in
+      tox)
+        tox -v
+        ;;
+
+      docker)
+        docker build . -f docker/Dockerfile.test -t zsl-test
+        docker run --rm zsl-test --version
+        ;;
+    esac
 after_failure:
   - more .tox/log/* | cat
   - more .tox/*/log/* | cat

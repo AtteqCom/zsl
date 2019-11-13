@@ -440,7 +440,8 @@ class ModelResource(ModelResourceBase):
         """
 
         assert isinstance(ctx, ResourceQueryContext)
-        return self._orm.query(self.model_cls).filter(self._model_pk == row_id)
+        pk_name = next(name for name, definition in self.model_cls.__dict__.items() if definition == self._model_pk)
+        return self._orm.query(self.model_cls).filter(getattr(self.model_cls, pk_name) == row_id)
 
     def _delete_collection(self, ctx):
         """

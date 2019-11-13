@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  zsl:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: zsl-python
+    command: sleep infinity
+    volumes:
+      - ../:/zsl
+      - ~/.ssh:/home/user/.ssh:ro
+      - ~/.bash_aliases:/home/user/.bash_aliases:ro
+    user: user

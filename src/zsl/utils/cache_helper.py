@@ -182,7 +182,7 @@ def create_key_for_data(prefix, data, key_params):
     """
     From ``data`` params in task create corresponding key with help of ``key_params`` (defined in decorator)
     """
-    d = data.get_data()
+    d = data.payload
     values = []
     for k in key_params:
         if k in d and type(d[k]) is list:

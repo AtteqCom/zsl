@@ -8,6 +8,8 @@ graft src
 graft ci
 graft tests
 
+prune .devcontainer
+prune .vscode
 prune docker
 prune test_data
 

@@ -35,6 +35,6 @@ class LoggerModule(Module):
 
     def _recreate_app_logger(self, app):
         logging._acquireLock()
-        del logging.getLogger(app.logger_name).manager.loggerDict[app.logger_name]
+        del logging.getLogger(app.name).manager.loggerDict[app.name]
         logging._releaseLock()
-        app._logger = logging.getLogger(app.logger_name)
+        app._logger = logging.getLogger(app.name)
