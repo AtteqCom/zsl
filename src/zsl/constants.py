@@ -6,9 +6,7 @@ from enum import Enum
 
 class MimeType(Enum):
     APPLICATION_JSON = 'application/json'
-    # type: str
 
 
 class HttpHeaders(Enum):
     CONTENT_TYPE = 'Content-Type'
-    # type: str

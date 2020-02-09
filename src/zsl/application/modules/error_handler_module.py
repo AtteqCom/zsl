@@ -13,11 +13,11 @@ class ErrorHandlerModule(Module):
         return config.get(ERROR_CONFIG_NAME, ErrorConfiguration())
 
     def configure(self, binder):
+        # type: (Binder)->None
         @inject(error_config=ErrorConfiguration)
         def get_error_config(error_config):
             # type: (ErrorConfiguration)->ErrorConfiguration
             return error_config
-            # type: (Binder)->None
 
         super(ErrorHandlerModule, self).configure(binder)
         for handler in get_error_config().handlers:

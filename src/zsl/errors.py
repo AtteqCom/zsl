@@ -20,24 +20,24 @@ class ErrorHandler(object):
 
     @abstractmethod
     def can_handle(self, e):
+        # type: (ErrorHandler, Exception)->bool
         """
         Indicator if the handler is able to handle the given exception `e`.
 
         :param e: The exception that shall be determined if can be handled by the handler.
         :return: `True` or `False` depending on whether the handler can/should handle the method.
         """
-        # type: (ErrorHandler, Exception)->bool
         pass
 
     @abstractmethod
     def handle(self, e):
+        # type: (ErrorHandler, Exception)->bool
         """
         Handle the exception.
 
         :param e: The handled exception.
         :return: The error response for the exception.
         """
-        # type: (ErrorHandler, Exception)->bool
         pass
 
 
