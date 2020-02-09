@@ -1,8 +1,9 @@
-sphinx>=1.3
-recommonmark
-sphinx-rtd-theme
 -e .
-redis
-celery
 alembic
+celery
+raven
+recommonmark
+redis
+sphinx>=1.3
+sphinx-rtd-theme
 zsl_client
