@@ -108,8 +108,8 @@ class DbTestCase(object):
 
     @inject(session_factory=TestSessionFactory)
     def setUp(self, session_factory):
-        super(DbTestCase, self).setUp()
         # type: (TestSessionFactory)->None
+        super(DbTestCase, self).setUp()
         logging.getLogger(__name__).debug("DbTestCase.setUp")
         session_factory.create_test_session()
 

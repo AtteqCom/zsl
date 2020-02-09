@@ -80,17 +80,18 @@ class Pagination(object):
         self._offset = offset
 
     def apply_pagination(self, q):
+        # type: (Query)->Query
         """
         Filters the query so that a given page is returned. The record count
         must be set in advance.
         :param q: Query to be paged.
         :return: Paged query.
         """
-        # type: (Query)->Query
         assert self.record_count >= 0, "Record count must be set."
         return q.limit(self.page_size).offset(self.offset)
 
     def paginate(self, q):
+        # type: (Query)->Query
         """
         Filters the query so that a given page is returned. The record count
         is computed automatically from query.

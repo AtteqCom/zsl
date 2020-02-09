@@ -40,8 +40,8 @@ To test the functionality use CLI
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from builtins import *
+import logging
 
-from flask import logging
 from injector import Binder, provides, singleton
 from raven import Client, setup_logging
 from raven.handlers.logging import SentryHandler

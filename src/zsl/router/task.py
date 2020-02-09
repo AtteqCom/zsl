@@ -27,12 +27,12 @@ class TaskNamespace(object):
         self._namespace = namespace
 
     def add_packages(self, packages):
+        # type: (List[str])->TaskNamespace
         """
         Adds an automatic resolution of urls into tasks.
         :param packages: The url will determine package/module and the class.
         :return: self
         """
-        # type: (List[str])->TaskNamespace
         assert isinstance(packages, list), "Packages must be list of strings."
         self._task_packages += packages
         return self
@@ -42,6 +42,7 @@ class TaskNamespace(object):
         return list(self._task_packages)
 
     def add_routes(self, routes):
+        # type: (Dict[str, Callable])->TaskNamespace
         """Adds the detailed mapping of urls to tasks.
 
         :param routes: Mapping which defines how urls of the namespace are
@@ -50,7 +51,6 @@ class TaskNamespace(object):
 
         :return: self
         """
-        # type: (Dict[str, Callable])->TaskNamespace
         self._routes.update(routes)
         return self
 

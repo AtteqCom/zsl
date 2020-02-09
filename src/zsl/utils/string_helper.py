@@ -165,6 +165,7 @@ def _identity(x):
 
 
 def join_list(values, delimiter=', ', transform=None):
+    # type: (Union[List[str], str], str)->str
     """
     Concatenates the upper-cased values using the given delimiter if
     the given values variable is a list. Otherwise it is just returned.
@@ -172,7 +173,6 @@ def join_list(values, delimiter=', ', transform=None):
     :param delimiter: The delimiter used to join the values.
     :return: The concatenation or identity.
     """
-    # type: (Union[List[str], str], str)->str
     if transform is None:
         transform = _identity
 
