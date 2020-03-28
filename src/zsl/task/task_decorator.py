@@ -419,7 +419,7 @@ class MimeSetterWebTaskResponder(Responder):
 
 class CrossdomainWebTaskResponder(Responder):
     """
-    source: http://flask.pocoo.org/snippets/56/
+    source: https://github.com/fengsp/flask-snippets/blob/master/decorators/http_access_control.py
     """
 
     @inject(app=Zsl, cors_config=CORSConfiguration)

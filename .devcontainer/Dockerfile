@@ -13,7 +13,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && mkdir -p /home/$USERNAME/.vscode-server /home/$USERNAME/.vscode-server-insiders \
     && chown ${USER_UID}:${USER_GID} /home/$USERNAME/.vscode-server* \
     && apt-get update \
-    && apt-get install -y build-essential curl git iproute2 net-tools vim software-properties-common sudo zsh \
+    && apt-get install -y build-essential curl git iproute2 locales net-tools vim software-properties-common sudo zsh \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
