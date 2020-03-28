@@ -38,7 +38,7 @@ class Pagination(object):
             pagination = PaginationRequest()
         elif isinstance(pagination, dict):
             page_size = int(pagination.get('page_size', DEFAULT_PAGE_SIZE))
-            pagination = PaginationRequest(
+            pagination = PaginationRequest.create(
                 FIRST_PAGE + int(pagination.get('offset', 0)) // page_size,
                 page_size)
         return pagination
@@ -103,11 +103,17 @@ class Pagination(object):
 
 
 class PaginationRequest(AppModel):
-    def __init__(self, page_no=FIRST_PAGE,
-                 page_size=DEFAULT_PAGE_SIZE):
-        super(PaginationRequest, self).__init__({})
-        self.page_no = int(page_no) if page_no else FIRST_PAGE
-        self.page_size = int(page_size) if page_size else DEFAULT_PAGE_SIZE
+    def __init__(self, raw=None, id_name='id', hints=None):
+        if raw is None:
+            raw = {'page_no': FIRST_PAGE, 'page_size': DEFAULT_PAGE_SIZE}
+
+        super(PaginationRequest, self).__init__(raw, id_name, hints)
+        self.page_no = int(self.page_no) if self.page_no else FIRST_PAGE
+        self.page_size = int(self.page_size) if self.page_size else DEFAULT_PAGE_SIZE
+
+    @staticmethod
+    def create(page_no: int = FIRST_PAGE, page_size: int = DEFAULT_PAGE_SIZE) -> 'PaginationRequest':
+        return PaginationRequest({'page_no': page_no, 'page_size': page_size})
 
 
 class PaginationResponse(AppModel):

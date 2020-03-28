@@ -21,7 +21,7 @@ from zsl.errors import ZslError
 from zsl.router.task import TaskRouter
 from zsl.task.job_context import Job, delegating_job_context
 from zsl.task.task_data import TaskData
-from zsl.utils.dict_to_object_conversion import extend_object_by_dict
+from zsl.utils.dict_to_object_conversion import RELATED_FIELDS, RELATED_FIELDS_CLASS, extend_object_by_dict
 
 
 class ModelConversionError(Exception):
@@ -93,6 +93,7 @@ class {name}(parent):
             pass
     if model_module is not None:
         result.__module__ = model_module
+    result._hints = {RELATED_FIELDS: {f: {RELATED_FIELDS_CLASS: type(v)} for f, v in defaults.items()}}
     return result
 
 
