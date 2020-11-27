@@ -73,29 +73,29 @@ def filter_from_url_arg(model_cls, query, arg, query_operator=and_,
     return query.join(*joins).filter(query_operator(*exprs))
 
 
-def _join_equal_columns_to_or(exprs):
-    left_sides = list(map(lambda expr: expr.get_children()[0], exprs))
-    if len(left_sides) == len(set(left_sides)):
-        return exprs
+def _join_equal_columns_to_or(filter_expressions):
+    columns = list(map(lambda expr: expr.get_children()[0], filter_expressions))
+    if len(columns) == len(set(columns)):
+        return filter_expressions
 
-    joined_exprs = {}
-    for expr in exprs:
-        left_side = expr.get_children()[0]
-        if left_side in joined_exprs:
-            joined_exprs[left_side].append(expr)
+    joined_expressions = {}
+    for filter_expression in filter_expressions:
+        column = filter_expression.get_children()[0]
+        if column in joined_expressions:
+            joined_expressions[column].append(filter_expression)
         else:
-            joined_exprs[left_side] = [expr]
+            joined_expressions[column] = [filter_expression]
 
-    new_exprs = []
-    for _, expressions in joined_exprs.items():
+    final_expressions = []
+    for _, expressions in joined_expressions.items():
         if len(expressions) == 0:
             continue
         elif len(expressions) == 1:
-            new_exprs.append(expressions[0])
+            final_expressions.append(expressions[0])
         else:
-            new_exprs.append(or_(*expressions))
+            final_expressions.append(or_(*expressions))
 
-    return new_exprs
+    return final_expressions
 
 
 operator_to_method = {
