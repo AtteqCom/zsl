@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from builtins import *
 
 from future.utils import viewitems, viewvalues
-from sqlalchemy import and_, asc, desc
+from sqlalchemy import and_, asc, desc, or_
 from sqlalchemy.orm import class_mapper, joinedload
 
 
@@ -69,7 +69,33 @@ def filter_from_url_arg(model_cls, query, arg, query_operator=and_,
         else:
             raise Exception('Invalid property {0} in class {1}.'.format(column_name, e_model_cls))
 
+    exprs = _join_equal_columns_to_or(exprs)
     return query.join(*joins).filter(query_operator(*exprs))
+
+
+def _join_equal_columns_to_or(exprs):
+    left_sides = list(map(lambda expr: expr.get_children()[0], exprs))
+    if len(left_sides) == len(set(left_sides)):
+        return exprs
+
+    joined_exprs = {}
+    for expr in exprs:
+        left_side = expr.get_children()[0]
+        if left_side in joined_exprs:
+            joined_exprs[left_side].append(expr)
+        else:
+            joined_exprs[left_side] = [expr]
+
+    new_exprs = []
+    for _, expressions in joined_exprs.items():
+        if len(expressions) == 0:
+            continue
+        elif len(expressions) == 1:
+            new_exprs.append(expressions[0])
+        else:
+            new_exprs.append(or_(*expressions))
+
+    return new_exprs
 
 
 operator_to_method = {
