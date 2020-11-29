@@ -1,16 +1,11 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from builtins import *
+import unittest.mock as mock
 
 from zsl.service.service import SessionFactory
 from zsl.testing.db import TestSessionFactory as DbTestTestSessionFactory
 from zsl.utils.injection_helper import bind
-
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
-
 
 
 def mock_db_session():

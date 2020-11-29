@@ -23,6 +23,7 @@ from typing import Any, List, Union
 
 from future.utils import viewitems
 from sqlalchemy.orm import class_mapper
+from sqlalchemy.orm.attributes import InstrumentedAttribute
 
 from zsl import inject
 from zsl.cache.cache_module import CacheModule
@@ -440,7 +441,7 @@ class ModelResource(ModelResourceBase):
         """
 
         assert isinstance(ctx, ResourceQueryContext)
-        pk_name = next(name for name, definition in self.model_cls.__dict__.items() if definition == self._model_pk)
+        pk_name = self._model_pk.name
         return self._orm.query(self.model_cls).filter(getattr(self.model_cls, pk_name) == row_id)
 
     def _delete_collection(self, ctx):

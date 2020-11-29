@@ -76,7 +76,7 @@ class TransactionalGuardTest(TestCase):
             resource = GuardedUserModel()
             resource.read('', {}, {})
 
-        TestTHolder.rollback.assert_called()
+        TestTHolder.rollback.assert_called_with()
         TestTHolder._orm.assert_not_called()
 
     @staticmethod
@@ -101,8 +101,9 @@ class TransactionalGuardTest(TestCase):
                 resource = GuardedUserModel()
                 resource.read('', {}, {})
 
-                mock_sess.query.assert_called()
-                mock_sess.rollback.assert_called()
+                if hasattr(mock_sess.query, 'assert_called'):
+                    mock_sess.query.assert_called()
+                mock_sess.rollback.assert_called_with()
 
         test_case = MyTestCase()
         test_case.setUp()
