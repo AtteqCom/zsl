@@ -41,7 +41,7 @@ before_install:
   - uname -a
   - lsb_release -a
 install:
-  - pip install tox
+  - pip install tox twine
   - virtualenv --version
   - easy_install --version
   - pip --version
@@ -68,10 +68,11 @@ notifications:
 deploy:
   provider: pypi
   user: atteq
+  edge: true
   password:
-    secure: "a25jmMpkhGwRuKLYP9USTYrvc4tuMexXidgdWB8tsi4IYauRzXuK3A/ohbdjknN1woamJZbfmk2MwZlg+RxwgX0ZqBJ1OlCQnoJ+q2y2LV+pVFdoBBvTu+fSavApPjB1N6lJNYwJRnkcc2v3zTbGezXxNShZZ4lTz66CG6W4WMxRUP7OWx9Ej/+PjmkqQi8znkP4YnneENqhB477V2H/iIfKHlNCTy0T5Yi3+SZrcg6TvTJY0MZ6ZU3z0fd/I5ZxXrFEaWWfBqnxsGkvqXXPnYEkpJJRz4BhrAIa+OrJkxVIBUN/1DQbcqTlGaE7lQqN6mppxdaLPQeypip2hAKu9J6Mktz4l8USs6JileOfMWZbK+SFBC5kWawyV9YeR0XDXdk9qpjNlt5kEE4LKuNDsbSKBXlEOqJJOl9DrIWRAFQhDGX3BvhLVBAlZdY+EJR5QVwFnBnMSMAzBzl58f89hmpBPS9+VJNKT/qgZsRcJx2vVqjUKu0EtVc+CdWSu3eMxiJxQBBASPgk467a1oajtmgW+79qyRWtBiej4tuPF258A4gz3haFgEeiWGE7LmYfgDowSVcdpcHp+A+hWTtj930mvsQ9a6EvQDemKNc2ryEQRZPhkT7mmguGUNKs3SIDDsrZoN1zS6TaQ8IMvmkDwVkRo0awTlGBu86MxCyBlX0="
+    secure: pZWPbBZUW1fZ4UmbvVJxsjPX7Kj6uDHdpUDQKixOKL3M6H414U88Ej5W3JwP4jITAUefUzGNmE1NyBOadIkDIVgvCVmYOzwwZDYRq2aAJZtw1rFupzmFOCKGKxxPDMYSYX5UY9SfNZabm0d0Rr4hfM0pcJ0p4oTnhLDYZl7VNqfAp/lw/fTFUOX3TeVMQxmfC/NM5J0jeCDH/iCXd87nYkVG94EC9LoT/FqfM0jwTMf7W+oiuX2IM8os+SLrYY97ikovo/Y2T2dZEKnCykHantp2PbOb/Ugx2hDLT97PWNdka9PbU0u+YKi/NsU8u7ttRJ9l29q5xrdneSychXaRVfejtyZvDy+bQpXwB1dkVYtFbp7Fk+LCWFTcJF0mXg2xzGG4c3hJBWNkjxMQEj1+x23dUdRgv3o8V/2VpsDQIAxrO4sfd/Vz3lTpULoAXH0X6RcdNl9jyNZ24AYsK/RrtmrlE6WjqWwLcLUFEZo3+s9TJekuUz2hdv6o7H0blkXZ2Hjy8F3iSNhXSehaCYjIOM0DPUnCgnptFzsrfP9b19jnDpRp6tS005eU4Anq4D0JrQdXfk+R9RTuQusQFH4R5SG2Jo1hwPAqSZyqso30LI7zd74YqozLBtZRPjilmEF9gABbXA/KFCw50K1Oj7zK7fa2WIVbpq8oWOtHJ/9CYo4=
+  distributions: sdist bdist_wheel
   on:
     tags: true
     condition: $TOXENV = check
-    distributions: sdist bdist_wheel
     repo: AtteqCom/zsl
