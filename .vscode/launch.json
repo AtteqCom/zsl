@@ -57,6 +57,23 @@
         "-vv",
         "--ignore=src"
       ]
+    },
+    {
+      "name": "Test 3.5: tests/testing/db_test.py",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "python": "${workspaceFolder}/.tox/3.5-nocov/bin/python",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src:${workspaceFolder}/tests"
+      },
+      "args": [
+        "--capture=sys",
+        "--log-cli-level=DEBUG",
+        "-vv",
+        "--ignore=src",
+        "tests/testing/db_test.py"
+      ]
     }
   ]
 }

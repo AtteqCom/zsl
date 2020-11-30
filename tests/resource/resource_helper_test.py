@@ -2,7 +2,7 @@ from unittest.case import TestCase
 
 from sqlalchemy.orm import Session
 
-from tests.resource.resource_test_helper import create_resource_test_data, UserModel
+from tests.resource.resource_test_helper import UserModel, create_resource_test_data
 from zsl import Zsl
 from zsl.resource.resource_helper import filter_from_url_arg
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS

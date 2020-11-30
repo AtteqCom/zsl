@@ -39,7 +39,7 @@ Required fields
 
 * ``DATABASE_URI``
   Database URL for `SQLAlchemy <https://www.sqlalchemy.org/>`_'s
-  `crate_engine <https://docs.sqlalchemy.org/en/latest/core/engines.html#sqlalchemy.create_engine>`_.
+  `crate_engine <https://docs.sqlalchemy.org/en/14/core/engines.html#sqlalchemy.create_engine>`_.
 
 * ``DATABASE_ENGINE_PROPS``
   A dictionary of optional properties for the DB connection.
@@ -53,7 +53,7 @@ Required fields
       })
 
 * ``REDIS``
-  `Redis <https://redis-py.readthedocs.io/en/latest/#redis.Redis>`_ configuration.
+  `Redis <https://redis-py.readthedocs.io/en/latest/index.html>`_ configuration.
 
 Optional fields
 ---------------

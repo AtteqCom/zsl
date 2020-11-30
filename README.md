@@ -6,7 +6,7 @@
 ZSL is a Python micro-framework utilizing
 [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection)
 for creating service applications on top of
-[Flask](http://flask.pocoo.org/docs/0.12/) web framework and
+[Flask](https://flask.palletsprojects.com/en/1.1.x/) web framework and
 [Gearman](http://gearman.org/) job server or
 [Celery](http://http://www.celeryproject.org/) task queue.
 

@@ -47,17 +47,17 @@ class DbTestCaseTest(ZslTestCase, TestCase):
             mock_sess = mock_db_session()
             test.setUp()
             test.tearDown()
-            mock_metadata.create_all.assert_called_once()
-            mock_sess.begin_nested.assert_called_once()
-            mock_sess.rollback.assert_called_once()
-            mock_sess.close.assert_called_once()
+            mock_metadata.create_all.assert_called_once_with(mock_metadata.bind)
+            mock_sess.begin_nested.assert_called_once_with()
+            mock_sess.rollback.assert_called_once_with()
+            mock_sess.close.assert_called_once_with()
 
     def test_db_test_case_session(self):
         test = DbTestCaseTest.DbTest()
         mock_tsf = mock.MagicMock()
         bind(SessionFactoryForTesting, to=mock_tsf)
         test.setUp()
-        mock_tsf.create_test_session.assert_called_once()
+        mock_tsf.create_test_session.assert_called_once_with()
         mock_tsf.create_session.assert_not_called()
 
 
