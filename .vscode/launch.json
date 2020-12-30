@@ -44,6 +44,20 @@
       ]
     },
     {
+      "name": "Test: tests/application/version_test.py",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      },
+      "args": [
+        "--capture=sys",
+        "--log-cli-level=DEBUG",
+        "tests/application/version_test.py"
+      ]
+    },
+    {
       "name": "Test: all",
       "type": "python",
       "request": "launch",
@@ -74,6 +88,6 @@
         "--ignore=src",
         "tests/testing/db_test.py"
       ]
-    }
+    },
   ]
 }

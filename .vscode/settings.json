@@ -1,3 +1,6 @@
 {
   "python.pythonPath": ".venv/bin/python",
+  "python.venvPath": "${workspaceFolder}/.venv/bin/python",
+  "python.terminal.activateEnvironment": true,
+  "restructuredtext.confPath": "${workspaceFolder}/docs"
 }

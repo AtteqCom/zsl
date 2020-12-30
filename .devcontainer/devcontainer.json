@@ -5,7 +5,7 @@
 	],
 	"service": "zsl",
 	"workspaceFolder": "/zsl",
-	"extensions": ["ms-python.python"],
-	"runArgs": [ "-u", "user" ],	
+	"extensions": ["ms-python.python", "lextudio.restructuredtext"],
+	"runArgs": [ "-u", "user" ],
 	"postCreateCommand": "/zsl/.devcontainer/install.sh"
 }

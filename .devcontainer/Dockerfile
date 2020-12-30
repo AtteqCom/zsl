@@ -9,7 +9,9 @@ ENV USERNAME=${USERNAME} \
     USER_GID=${USER_GID}
 
 RUN groupadd --gid $USER_GID $USERNAME \
+    && groupadd --gid 999 docker \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && usermod -a -G docker $USERNAME \
     && mkdir -p /home/$USERNAME/.vscode-server /home/$USERNAME/.vscode-server-insiders \
     && chown ${USER_UID}:${USER_GID} /home/$USERNAME/.vscode-server* \
     && apt-get update \
