@@ -54,6 +54,7 @@ script:
         ;;
 
       docker)
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         docker build . -f docker/Dockerfile.test -t zsl-test
         docker run --rm zsl-test --version
         ;;

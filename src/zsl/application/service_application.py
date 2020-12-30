@@ -196,11 +196,23 @@ class ServiceApplication(Flask):
         self._injector = value
 
     def get_version(self):
-        v = self.config.get('VERSION')
-        if v is None:
-            return ServiceApplication.VERSION
+        return self.version
+
+    @property
+    def version(self):
+        app_version = self.app_version
+        if app_version is None:
+            return self.zsl_version
         else:
-            return ServiceApplication.VERSION + ":" + v
+            return self.zsl_version + ":" + app_version
+
+    @property
+    def zsl_version(self):
+        return ServiceApplication.VERSION
+
+    @property
+    def app_version(self):
+        return self._app_version
 
     def _create_injector(self):
         self.logger.debug('Creating injector')
