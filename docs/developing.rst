@@ -22,7 +22,14 @@ To run all of the ZSL unit tests one should start
 
     $ tox
 
-To run only a selected test, e.g. tests in :mod:`tests.resource.guarded_resource_test`:
+To run tests in a single environment one can use
+
+.. code-block:: console
+
+    $ tox -e 2.7-nocov
+
+To run only a selected test, e.g. tests in
+:mod:`tests.resource.guarded_resource_test`:
 
 .. code-block:: console
 
