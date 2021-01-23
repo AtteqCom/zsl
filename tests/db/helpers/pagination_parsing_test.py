@@ -66,8 +66,8 @@ class PaginationParsingTestCase(ZslTestCase, HTTPTestCase, TestCase):
         }
     )
 
-    @inject(app=Zsl)
-    def testErrorTaskExecution(self, app):
+    @inject
+    def testErrorTaskExecution(self, app: Zsl) -> None:
         with self.getHTTPClient() as client:
             random_token = '1'
 

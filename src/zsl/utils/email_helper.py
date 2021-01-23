@@ -9,11 +9,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 
-from zsl import Config, Injected, inject
+from zsl import Config, inject
 
 
-@inject(config=Config)
-def send_email(sender, receivers, subject, text=None, html=None, charset='utf-8', config=Injected):
+@inject
+def send_email(sender, receivers, subject, text=None, html=None, charset='utf-8', config: Config = None) -> None:
     """Sends an email.
 
     :param sender: Sender as string or None for default got from config.

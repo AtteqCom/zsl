@@ -21,8 +21,8 @@ class VersionTask(object):
     Shows the versions of ASL and the various used libraries.
     """
 
-    @inject(app=Zsl)
-    def __init__(self, app):
+    @inject
+    def __init__(self, app: Zsl) -> None:
         self._app = app
 
     @json_output

@@ -45,9 +45,8 @@ class TestKeymaker(ZslTestCase, TestCase):
         self.assertEqual(keymaker.a(), 'testing:AAA', "Pure method with prefix")
         self.assertEqual(keymaker.b('x', 'y'), 'testing:XX:x:y', "Method with arguments and prefix")
 
-    @inject(config=Config)
-    def test_with_global_prefix(self, config):
-        # type: (Config)->None
+    @inject
+    def test_with_global_prefix(self, config: Config) -> None:
         config.setdefault('REDIS', {'prefix': 'global_prefix'})
 
         keymaker = Keymaker({'a': 'AAA', 'b': 'XX'}, prefix="testing")

@@ -5,9 +5,8 @@ import logging
 import traceback
 
 import click
-from injector import Binder, Module, singleton
+from injector import Binder, Module, inject, singleton
 
-from zsl import inject
 from zsl.interface.cli import cli
 from zsl.task.job_context import Job, JobContext, create_job
 from zsl.utils.injection_helper import simple_bind
@@ -31,9 +30,8 @@ class ZslCli(object):
 
 
 class ZslTaskCli(object):
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) -> ZslTaskCli
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.command(help="Execute a single task.")
         @click.argument('task_path', metavar='task')
         @click.argument('data', default=None, required=False)
@@ -52,9 +50,8 @@ class ZslTaskCli(object):
 
 
 class ZslTestCli(object):
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) -> ZslTestCli
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> ZslTaskCli:
         @zsl_cli.cli.group(help="Perform unit tests.")
         def test():
             pass
@@ -65,9 +62,8 @@ class ZslTestCli(object):
 
 
 class ZslGenerateCli(object):
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) -> ZslGenerateCli
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.group(help="Perform unit tests.")
         def generate():
             pass
@@ -106,8 +102,7 @@ class ZslGenerateCli(object):
 class CliModule(Module):
     """Adds Alembic support for migrations."""
 
-    def configure(self, binder):
-        # type: (Binder) -> None
+    def configure(self, binder: Binder) -> None:
         bindings = [ZslCli, ZslTaskCli, ZslTestCli, ZslGenerateCli]
         for binding in bindings:
             simple_bind(binder, binding, singleton)

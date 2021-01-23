@@ -6,9 +6,6 @@ This module does the error handling. It allows users to register
 an error handler for a given exception type. It also provides default
 error handlers.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 from functools import wraps
 import http.client
 import logging
@@ -122,9 +119,8 @@ def error_handler(f):
 
     @wraps(f)
     def error_handling_function(*args, **kwargs):
-        @inject(error_config=ErrorConfiguration)
-        def get_error_configuration(error_config):
-            # type:(ErrorConfiguration)->ErrorConfiguration
+        @inject
+        def get_error_configuration(error_config: ErrorConfiguration) -> ErrorConfiguration:
             return error_config
 
         def should_skip_handling():

@@ -63,8 +63,8 @@ class ResourcePolicy(object):
         class AdminPolicy(ResourcePolicy):
             '''Only admin has access'''
 
-            @inject(user_service=UserService)
-            def __init__(self, user_service):
+            @inject
+            def __init__(self, user_service: UserService):
                 self._user_service = user_service
 
             @property

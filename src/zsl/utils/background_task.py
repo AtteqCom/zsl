@@ -34,9 +34,8 @@ def background_task_method(task):
 
         gearman = None
 
-        @inject(config=Config)
-        def gearman_connect(config):
-            # type: (Config) -> GearmanService
+        @inject
+        def gearman_connect(config: Config) -> GearmanService:
             if 'GEARMAN' not in config or 'host' not in config['GEARMAN'] or 'GEARMAN_TASK_NAME' not in config:
                 raise Exception("Missing gearman settings (trying to use backgorund task)")
 

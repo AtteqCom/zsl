@@ -2,9 +2,6 @@
 :mod:`zsl.application.initializers.library_initializer`
 -------------------------------------------------------
 """
-from __future__ import unicode_literals
-
-from builtins import object
 import logging
 import os
 import sys
@@ -20,10 +17,12 @@ def append_paths(path, vendor_modules):
 
 
 class LibraryInitializer(object):
+    # TODO: Change to iface
+
     """Add vendor modules to current path."""
     @staticmethod
-    @inject(config=Config)
-    def initialize(config):
+    @inject
+    def initialize(config: Config) -> None:
         logging.debug("Initializing project external libraries.")
 
         external_libraries = config.get('EXTERNAL_LIBRARIES', None)

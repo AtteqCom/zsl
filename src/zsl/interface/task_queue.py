@@ -10,11 +10,9 @@ task queue handles asynchronous and distributed code executions.
 import abc
 import socket
 import traceback
-from typing import Any
+from typing import Any, Dict
 
-from future.utils import with_metaclass
-
-from zsl import Config, Injected, Zsl, inject
+from zsl import Config, Zsl, inject
 from zsl.router.task import TaskRouter
 from zsl.task.job_context import Job, JobContext
 
@@ -24,16 +22,15 @@ class KillWorkerException(Exception):
     pass
 
 
-@inject(app=Zsl, task_router=TaskRouter)
-def execute_job(job, app=Injected, task_router=Injected):
-    # type: (Job, Zsl, TaskRouter) -> dict
+@inject
+def execute_job(job: Job, app: Zsl, task_router: TaskRouter) -> Dict:
     """Execute a job.
 
     :param job: job to execute
     :type job: Job
-    :param app: service application instance, injected
+    :param app: service application instance
     :type app: ServiceApplication
-    :param task_router: task router instance, injected
+    :param task_router: task router instance
     :type task_router: TaskRouter
     :return: task result
     :rtype: dict
@@ -52,7 +49,7 @@ def execute_job(job, app=Injected, task_router=Injected):
     return {'task_name': job.path, 'data': result}
 
 
-class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
+class TaskQueueWorker(abc.ABC):
     """Task queue worker abstraction.
 
     A task queue worker is responsible for communicating with a task queue and
@@ -60,9 +57,8 @@ class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
     It should be able to run as a stand alone application.
     """
 
-    @inject(app=Zsl, config=Config)
-    def __init__(self, app, config):
-        # type: (Zsl, Config, TaskRouter) -> None
+    @inject
+    def __init__(self, app: Zsl, config: Config) -> None:
         self._app = app
         self._config = config
         self._should_stop = False
@@ -122,9 +118,8 @@ class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-@inject(worker=TaskQueueWorker)
-def _get_worker(worker):
-    # type: (TaskQueueWorker) -> TaskQueueWorker
+@inject
+def _get_worker(worker: TaskQueueWorker) -> TaskQueueWorker:
     return worker
 
 

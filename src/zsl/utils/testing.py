@@ -23,11 +23,11 @@ def set_test_responder():
     set_default_responder(identity_responder)
 
 
-@inject(config=Config)
-def load_and_run_tests(config):
+@inject
+def load_and_run_tests(config: Config):
     """Load application test package and run it using testing util.
 
-    :param config: application configuration, injected
+    :param config: application configuration
     :type config: Config
     """
     set_test_responder()

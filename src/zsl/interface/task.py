@@ -137,8 +137,8 @@ def exec_task(task_path, data):
         return jc.task_callable(jc.task_data)
 
 
-@inject(task_router=TaskRouter)
-def create_task(task_path, task_router):
+@inject
+def create_task(task_path: str, task_router: TaskRouter):
     if isinstance(task_path, str):
         (task, task_callable) = task_router.route(task_path)
     elif task_path is Callable or isinstance(task_path, type):

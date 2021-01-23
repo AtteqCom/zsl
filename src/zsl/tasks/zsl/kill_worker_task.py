@@ -18,8 +18,8 @@ from zsl.task.job_context import JobContext, WebJobContext
 
 
 class KillWorkerTask(object):
-    @inject(app=Zsl)
-    def __init__(self, app):
+    @inject
+    def __init__(self, app: Zsl) -> None:
         self._app = app
 
     @staticmethod

@@ -187,8 +187,7 @@ class ServiceApplication(Flask):
         return self._dependencies_initialized
 
     @property
-    def injector(self):
-        # type: () -> Injector
+    def injector(self) -> Injector:
         return self._injector
 
     @injector.setter

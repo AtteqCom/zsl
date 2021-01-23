@@ -14,7 +14,7 @@ from typing import Callable, Dict, List, Union
 
 from flask import request
 
-from zsl import Config, Injected, Zsl, inject
+from zsl import Config, Zsl, inject
 from zsl.db.model import AppModel
 from zsl.interface.resource import ResourceResult
 from zsl.resource.model_resource import ModelResource
@@ -40,7 +40,7 @@ def parse_resource_path(path):
     return splits[0], splits[1:]
 
 
-def get_method(resource, method):
+def get_method(resource: ModelResource, method: str) -> Callable:
     """Test and return a method by name on resource.
 
     :param resource: resource object
@@ -53,17 +53,19 @@ def get_method(resource, method):
     if hasattr(resource, method) and callable(getattr(resource, method)):
         return getattr(resource, method)
     else:
-        raise MethodNotImplementedException()
+        raise MethodNotImplementedException(f"Method {method} of resource {resource} is not implemented.")
 
 
-@inject(config=Config)
-def get_resource_task(resource_path, config=Injected):
-    # type: (str, Config) -> Callable[[str, Dict, Dict], Union[List[AppModel], AppModel, ResourceResult]]
+ResourceTask = Callable[[str, Dict, Dict], Union[List[AppModel], AppModel, ResourceResult]]
+
+
+@inject
+def get_resource_task(resource_path: str, config: Config) -> ResourceTask:
     """Search and return a bounded method for given path.
 
     :param resource_path: resource path
     :type resource_path: str
-    :param config: current configuration, injected
+    :param config: current configuration
     :type config: Config
     :return: bounded method or None when not found
     :raises NameError: when can't find given resource by path
@@ -127,15 +129,15 @@ def get_resource_task(resource_path, config=Injected):
         return None
 
 
-@inject(app=Zsl)
-def create_model_resource(resource_map, name, app=Injected):
+@inject
+def create_model_resource(resource_map, name, app: Zsl):
     """Create a model resource from a dict ``resource_map``
     {'resource name': ('model package', 'model class')}
 
     :param resource_map: dict with resource descriptions
     :type resource_map: dict(str, tuple(str))
     :param name: name of the concrete resource
-    :param app: current application, injected
+    :param app: current application
     :type app: Zsl
     :return: instantiated model resource
     """

@@ -34,8 +34,8 @@ class Service(TransactionalSupportMixin):
     Main service class.
     """
 
-    @inject(app=Zsl, engine=Engine)
-    def __init__(self, app, engine):
+    @inject
+    def __init__(self, app: Zsl, engine: Engine) -> None:
         """Constructor - initializes and injects the needed libraries."""
         super(Service, self).__init__()
         self._app = app
@@ -46,13 +46,13 @@ _TX_HOLDER_ATTRIBUTE = '_tx_holder'
 
 
 def transactional(f):
-    @inject(session_factory=SessionFactory)
-    def _get_session_factory(session_factory):
+    @inject
+    def _get_session_factory(session_factory: SessionFactory) -> SessionFactory:
         # type: (SessionFactory) -> SessionFactory
         return session_factory
 
-    @inject(tx_holder_factory=TransactionHolderFactory)
-    def _get_tx_holder_factory(tx_holder_factory):
+    @inject
+    def _get_tx_holder_factory(tx_holder_factory: TransactionHolderFactory) -> TransactionHolderFactory:
         # type: (TransactionHolderFactory) -> TransactionHolderFactory
         return tx_holder_factory
 

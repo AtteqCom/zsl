@@ -6,10 +6,6 @@ Created on 24.12.2012
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
-
-from builtins import object
-
 from flask import Response
 from injector import inject
 import sqlalchemy.engine
@@ -30,8 +26,8 @@ class DbTestTask(object):
     @author: Martin Babka
     """
 
-    @inject(db=sqlalchemy.engine.Engine, app=Zsl)
-    def __init__(self, db, app):
+    @inject
+    def __init__(self, db: sqlalchemy.engine.Engine, app: Zsl) -> None:
         self._db = db
         self._app = app
         self._app.logger.debug("Call from DbTestTesk.__init__, db {0}".format(db))

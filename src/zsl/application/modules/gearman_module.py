@@ -2,8 +2,6 @@
 :mod:`zsl.application.modules.gearman_module`
 ---------------------------------------------
 """
-from __future__ import unicode_literals
-
 import click
 from injector import ClassProvider, Module, singleton
 
@@ -16,23 +14,20 @@ from zsl.utils.injection_helper import simple_bind
 
 
 class GearmanCli(object):
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli)->GearmanCli
-
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.group(help="Gearman related tasks.")
-        def gearman():
+        def gearman() -> None:
             pass
 
         @gearman.command(help="run worker")
-        def worker():
-            # type: () -> None
+        def worker() -> None:
             run_worker()
 
         @gearman.command(help="send task to queue")
         @click.argument('task_path', metavar='task')
         @click.argument('data', default=None, required=False)
-        def task_filler(task_path, data):
+        def task_filler(task_path, data) -> None:
             exec_task_filler(task_path, data)
 
         self._gearman = gearman

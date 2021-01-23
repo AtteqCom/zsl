@@ -73,11 +73,10 @@ class HTTPTestCase(object):
         # type: (Response) -> Dict
         return json.loads(rv.data.decode())
 
-    @inject(app=Zsl)
-    def getHTTPClient(self, app):
-        # type: (Zsl) -> FlaskClient
+    @inject
+    def getHTTPClient(self, app: Zsl) -> FlaskClient:
         return app.test_client()
 
-    @inject(app=Zsl)
-    def getRequestContext(self, app):
+    @inject
+    def getRequestContext(self, app: Zsl):
         return app.test_request_context()

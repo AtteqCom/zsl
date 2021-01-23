@@ -116,13 +116,13 @@ class ApiaryDoc(pydoc.Doc):
         return "FORMAT: 1A\n\n" + "\n\n".join(self._docs)
 
 
-@inject(task_router=TaskRouter)
-def generate_apiary_doc(task_router):
+@inject
+def generate_apiary_doc(task_router: TaskRouter) -> None:
     """Generate apiary documentation.
 
     Create a Apiary generator and add application packages to it.
 
-    :param task_router: task router, injected
+    :param task_router: task router
     :type task_router: TaskRouter
     :return: apiary generator
     :rtype: ApiaryDoc

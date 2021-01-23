@@ -46,8 +46,8 @@ class RunDummyWorkerWithParamsTestCase(ZslTestCase, TestCase):
     _PARAM_1_TEST_VALUE = 1
     _PARAM_2_TEST_VALUE = 'Dont forget to read some good books!'
 
-    @inject(worker=TaskQueueWorker)
-    def testWorkerRunCountAndRunParams(self, worker):
+    @inject
+    def testWorkerRunCountAndRunParams(self, worker: TaskQueueWorker) -> None:
         self.assertEqual(worker.run_count, 0, "worker.run() shouldn't be called yet.")
 
         run_worker(self._PARAM_1_TEST_VALUE, param_2=self._PARAM_2_TEST_VALUE)

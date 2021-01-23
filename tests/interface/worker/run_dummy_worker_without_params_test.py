@@ -39,8 +39,8 @@ class RunDummyWorkerWithoutParamsTestCase(ZslTestCase, TestCase):
         app_name='RunDummyWorkerWithoutParamsTestCase', container=DummyWorkerContainer,
         config_object=CONFIG)
 
-    @inject(worker=TaskQueueWorker)
-    def testWorkerRunCount(self, worker):
+    @inject
+    def testWorkerRunCount(self, worker: TaskQueueWorker) -> None:
         self.assertEqual(worker.run_count, 0, "worker.run() shouldn't be called yet.")
 
         run_worker()

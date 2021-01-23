@@ -23,8 +23,8 @@ from zsl.utils.request_helper import args_to_dict
 from zsl.utils.resource_helper import get_resource_task, parse_resource_path
 
 
-@inject(app=Zsl)
-def create_resource_mapping(app):
+@inject
+def create_resource_mapping(app: Zsl) -> None:
     @app.route("/resource/<path:path>",
                methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'])
     @append_headers

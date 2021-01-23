@@ -94,8 +94,8 @@ def get_non_existent_id():
     return len(users) + 10
 
 
-@inject(engine=Engine, session_holder=SessionHolder)
-def create_resource_test_data(engine, session_holder):
+@inject
+def create_resource_test_data(engine: Engine, session_holder: SessionHolder) -> None:
     Base.metadata.create_all(engine)
     session = session_holder()
 

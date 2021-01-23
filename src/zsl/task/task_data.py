@@ -4,17 +4,19 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from typing import Type
 
-from builtins import *
+from injector import noninjectable
 
-from zsl import Injected, Zsl, inject
+from zsl import Zsl, inject
 from zsl.utils.warnings import deprecated
 
 
 class TaskData(object):
-    @inject(app=Zsl)
-    def __init__(self, payload, app=Injected, payload_type=str):
+
+    @inject
+    @noninjectable('payload_type')
+    def __init__(self, payload: str, app: Zsl, payload_type: Type = str) -> None:
         self._app = app
         self._payload = payload
         self._payload_type = payload_type

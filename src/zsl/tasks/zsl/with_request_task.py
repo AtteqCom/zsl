@@ -25,8 +25,8 @@ class WithRequestTask(object):
     Returns received data if any or 'empty'
     """
 
-    @inject(app=Zsl)
-    def __init__(self, app):
+    @inject
+    def __init__(self, app: Zsl) -> None:
         self._app = app
 
     @json_input

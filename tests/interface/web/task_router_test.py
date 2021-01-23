@@ -30,8 +30,8 @@ class TaskRouterTestCase(ZslTestCase, TestCase):
         app_name='ErrorHandlingTestCase', container=WebContainer,
         config_object=CONFIG)
 
-    @inject(app=Zsl)
-    def testRoutingRoutes(self, app):
+    @inject
+    def testRoutingRoutes(self, app: Zsl):
         with app.test_request_context('/'):
             response = perform_web_task('n', 'r')
 
@@ -40,8 +40,8 @@ class TaskRouterTestCase(ZslTestCase, TestCase):
                              "Status code must be ok.")
             self.assertEqual('ok', response.data.decode('utf-8'))
 
-    @inject(app=Zsl)
-    def testNotFound(self, app):
+    @inject
+    def testNotFound(self, app: Zsl):
         with app.test_request_context('/'):
             response = perform_web_task('nn', 'r')
 
@@ -49,8 +49,8 @@ class TaskRouterTestCase(ZslTestCase, TestCase):
                              response.status_code,
                              "Status code must be NOT_FOUND.")
 
-    @inject(app=Zsl)
-    def testRoutingPackages(self, app):
+    @inject
+    def testRoutingPackages(self, app: Zsl):
         with app.test_request_context('/'):
             response = perform_web_task('z', 'test_task')
             print(response.status_code)

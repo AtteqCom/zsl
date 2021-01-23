@@ -8,12 +8,12 @@ from __future__ import print_function, unicode_literals
 
 import json
 
-from zsl import Config, Injected, inject
+from zsl import Config, inject
 from zsl.gearman import gearman
 
 
-@inject(config=Config)
-def exec_task_filler(task_path, json_data, config=Injected):
+@inject
+def exec_task_filler(task_path: str, json_data: str, config: Config) -> None:
     print("Initializing client.")
     gm_client = gearman.GearmanClient(["{0}:{1}".format(config['GEARMAN']['host'], config['GEARMAN']['port'])])
     print("Client initialized.")

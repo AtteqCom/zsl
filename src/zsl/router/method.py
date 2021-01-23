@@ -4,16 +4,14 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
-from builtins import *
 import json
 import logging
+from typing import Any, Callable
 
 from flask import request
 from flask.wrappers import Response
 
-from zsl import Config, Injected, Zsl, inject
+from zsl import Config, Zsl, inject
 from zsl.application.error_handler import error_handler
 from zsl.application.modules.web.configuration import MethodConfiguration
 from zsl.constants import MimeType
@@ -79,8 +77,8 @@ def _get_method_configuration(config):
     return config.get(METHOD_CONFIG_NAME, MethodConfiguration())
 
 
-@inject(app=Zsl, config=Config)
-def route(path, app=Injected, config=Injected, **options):
+@inject
+def route(path: str, app: Zsl, config: Config, **options: Any) -> Callable:
     def _decorator(f):
         method_config = _get_method_configuration(config)
         url = "/{0}{1}".format(method_config.url_prefix, path)
@@ -92,6 +90,6 @@ def route(path, app=Injected, config=Injected, **options):
     return _decorator
 
 
-@inject(config=Config)
-def get_method_packages(config):
+@inject
+def get_method_packages(config: Config):
     return _get_method_configuration(config).packages

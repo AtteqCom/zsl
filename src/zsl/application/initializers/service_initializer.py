@@ -2,30 +2,29 @@
 :mod:`zsl.application.initializers.service_initializer`
 -------------------------------------------------------
 """
-from __future__ import unicode_literals
-
-from builtins import object
 import importlib
 import logging
 
 from injector import Binder, singleton
 
-from zsl import Config, Injected, inject
+from zsl import Config, inject
 from zsl.utils.string_helper import camelcase_to_underscore
 
 
 class ServiceInitializer(object):
+    # TODO: change to iface
+
     """Add outside services to application injector."""
     @staticmethod
-    @inject(binder=Binder)
-    def _bind_service(package_name, cls_name, binder=Injected):
+    @inject
+    def _bind_service(package_name: str, cls_name: str, binder: Binder) -> None:
         """Bind service to application injector.
 
         :param package_name: service package
         :type package_name: str
         :param cls_name: service class
         :type cls_name: str
-        :param binder: current application binder, injected
+        :param binder: current application binder
         :type binder: Binder
         """
         module = importlib.import_module(package_name)
@@ -39,11 +38,11 @@ class ServiceInitializer(object):
         logging.debug("Created {0} binding.".format(cls))
 
     @staticmethod
-    @inject(config=Config)
-    def initialize(config):
+    @inject
+    def initialize(config: Config) -> None:
         """Initialize method.
 
-        :param config: current application config, injected
+        :param config: current application config
         :type config: Config
         """
         service_injection_config = config.get('SERVICE_INJECTION', ())

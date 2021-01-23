@@ -18,8 +18,8 @@ from zsl.task.task_decorator import json_input, json_output
 
 
 class SumTask(object):
-    @inject(app=Zsl)
-    def __init__(self, app):
+    @inject
+    def __init__(self, app: Zsl) -> None:
         self._app = app
 
     @json_input

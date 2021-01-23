@@ -13,15 +13,13 @@ The basic way to use them is as follows:
 
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
-from builtins import int, object
 from hashlib import sha256
 import json
 import logging
-from typing import Any, List, Union
+from typing import Any, List, Type, Union
 
 from future.utils import viewitems
+from injector import noninjectable
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 
@@ -461,11 +459,14 @@ class ModelResource(ModelResourceBase):
 
 class CachedModelResource(ModelResource):
     """
-    The cached resource - uses redis to cache the resource for the given amount of seconds.
+    The cached resource - uses redis to cache the resource for the given amount
+    of seconds.
     """
 
-    @inject(cache_module=CacheModule, id_helper=IdHelper, logger=logging.Logger)
-    def __init__(self, model_cls, cache_module, id_helper, logger, timeout='short'):
+    @inject
+    def __init__(self, model_cls: Type, cache_module: CacheModule,
+                 id_helper: IdHelper, logger: logging.Logger,
+                 timeout: str = 'short'):
         super(CachedModelResource, self).__init__(model_cls)
         self._cache_module = cache_module
         self._id_helper = id_helper

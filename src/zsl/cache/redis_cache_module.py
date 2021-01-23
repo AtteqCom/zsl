@@ -4,19 +4,18 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
-
+from injector import inject
 import redis
 
-from zsl import Config, Zsl, inject
+from zsl import Config, Zsl
 from zsl.cache.cache_module import CacheModule
 
 
 class RedisCacheModule(CacheModule):
     """Abstraction layer for caching."""
 
-    @inject(app=Zsl, config=Config)
-    def __init__(self, app, config):
+    @inject
+    def __init__(self, app: Zsl, config: Config) -> None:
         """Abstraction layer for caching."""
         self._app = app
         self._config = config

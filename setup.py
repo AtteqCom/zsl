@@ -7,10 +7,9 @@ _is_py3 = sys.version_info > (3, 0)
 requirements = [
     'flask>=1.1,<1.2',
     'future',
-    'injector==0.12.1',
+    'injector==0.18.4',
     'requests>=2.22',
     'SQLAlchemy>=1.3,<1.4',
-    'typing>=3.7',
     'Werkzeug>=0.15,<0.17',
 ]
 

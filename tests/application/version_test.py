@@ -18,7 +18,7 @@ class AppVersionTestCase(ZslTestCase, TestCase):
         version="1234.1111.4321",
         config_object=CONFIG)
 
-    @inject(app=Zsl)
+    @inject
     def testErrorTaskExecution(self, app: Zsl) -> None:
         self.assertEqual(Zsl.VERSION, app.zsl_version)
         self.assertEqual("1234.1111.4321", app.app_version)
@@ -35,7 +35,7 @@ class NoAppVersionTestCase(ZslTestCase, TestCase):
         app_name='ErrorHandlingTestCase', container=CoreContainer,
         config_object=CONFIG)
 
-    @inject(app=Zsl)
+    @inject
     def testErrorTaskExecution(self, app: Zsl) -> None:
         self.assertEqual(Zsl.VERSION, app.zsl_version)
         self.assertIsNone(app.app_version)

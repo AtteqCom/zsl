@@ -19,15 +19,13 @@ TASK_CONFIGURATION_NAME = 'TASKS'
 
 
 class TaskNamespace(object):
-    def __init__(self, namespace, task_configuration):
-        # type: (str, TaskConfiguration)->None
+    def __init__(self, namespace: str, task_configuration: 'TaskConfiguration') -> None:
         self._task_packages = []
         self._routes = {}
         self._task_configuration = task_configuration
         self._namespace = namespace
 
-    def add_packages(self, packages):
-        # type: (List[str])->TaskNamespace
+    def add_packages(self, packages: List[str]) -> 'TaskNamespace':
         """
         Adds an automatic resolution of urls into tasks.
         :param packages: The url will determine package/module and the class.
@@ -37,8 +35,7 @@ class TaskNamespace(object):
         self._task_packages += packages
         return self
 
-    def get_packages(self):
-        # type:()->List[str]
+    def get_packages(self) -> List[str]:
         return list(self._task_packages)
 
     def add_routes(self, routes):
@@ -207,9 +204,8 @@ class PackageTaskRouterStrategy(RouterStrategy):
 
 
 class TaskRouter(object):
-    @inject(config=Config, task_configuration=TaskConfiguration)
-    def __init__(self, config, task_configuration):
-        # type: (Config, TaskConfiguration) -> None
+    @inject
+    def __init__(self, config: Config, task_configuration: TaskConfiguration) -> None:
         self._config = config
         self._task_configuration = task_configuration  # type: TaskConfiguration
         self._strategies = [

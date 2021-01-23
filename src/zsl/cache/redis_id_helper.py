@@ -4,11 +4,11 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
 import logging
 
-from zsl import Config, inject
+from injector import inject
+
+from zsl import Config
 from zsl.cache.id_helper import IdHelper, decoder_identity, encoder_identity, model_key_generator
 from zsl.cache.redis_cache_module import RedisCacheModule
 
@@ -16,8 +16,8 @@ from zsl.cache.redis_cache_module import RedisCacheModule
 class RedisIdHelper(IdHelper):
     CACHE_DEFAULT_TIMEOUT = 300
 
-    @inject(config=Config, redis_cache_module=RedisCacheModule)
-    def __init__(self, config, redis_cache_module):
+    @inject
+    def __init__(self, config: Config, redis_cache_module: RedisCacheModule) -> None:
         """
         Creates the id helper for caching support of AppModels.
         """

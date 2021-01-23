@@ -20,8 +20,9 @@ from zsl.task.job_context import JobContext
 
 class CacheDecorator(object):
 
-    @inject(id_helper=IdHelper)
-    def __init__(self, id_helper):
+    @inject
+    # TODO: Redo as module
+    def __init__(self, id_helper: IdHelper) -> None:
         self._id_helper = id_helper
         logging.debug("Initializing CacheDecorator.")
 
