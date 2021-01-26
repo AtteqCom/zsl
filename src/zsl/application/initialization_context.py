@@ -7,11 +7,12 @@ loads and initializes the application if necessary.
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
+from typing import Any, List
 
 
-class InitializationContext(object):
-    def __init__(self, unit_test=False, initializers=None):
+class InitializationContext:
+
+    def __init__(self, unit_test: bool = False, initializers: List[Any] = None):
         if not initializers:
             initializers = []
 
@@ -19,7 +20,7 @@ class InitializationContext(object):
         self._initializers = initializers
         self._is_initialized = False
 
-    def get_unit_testing(self):
+    def get_unit_testing(self) -> bool:
         return self._unit_test
 
     unit_testing = property(get_unit_testing)

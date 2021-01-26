@@ -7,7 +7,6 @@ in the documentary comments. Then outputs it to a file.
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import absolute_import, print_function, unicode_literals
 
 import importlib
 import inspect
@@ -44,7 +43,7 @@ class ApiaryDoc(pydoc.Doc):
         obj_id = self._get_obj_id(obj)
         if obj_id in self._done:
             return
-        logging.debug('Adding {0}.'.format(obj_id))
+        logging.debug('Adding {}.'.format(obj_id))
         self._done.add(obj_id)
 
         apistr = ""
@@ -105,7 +104,7 @@ class ApiaryDoc(pydoc.Doc):
             return
 
         for loader, module_name, _ispkg in pkgutil.iter_modules(obj.__path__):
-            logging.debug("Loading module {0} in {1}.".format(module_name, obj.__path__))
+            logging.debug("Loading module {} in {}.".format(module_name, obj.__path__))
             try:
                 module = loader.find_module(module_name).load_module(module_name)
                 self.docmodule(module)
@@ -116,13 +115,13 @@ class ApiaryDoc(pydoc.Doc):
         return "FORMAT: 1A\n\n" + "\n\n".join(self._docs)
 
 
-@inject(task_router=TaskRouter)
-def generate_apiary_doc(task_router):
+@inject
+def generate_apiary_doc(task_router: TaskRouter) -> None:
     """Generate apiary documentation.
 
     Create a Apiary generator and add application packages to it.
 
-    :param task_router: task router, injected
+    :param task_router: task router
     :type task_router: TaskRouter
     :return: apiary generator
     :rtype: ApiaryDoc

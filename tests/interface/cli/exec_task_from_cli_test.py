@@ -33,17 +33,16 @@ class ExecTaskFromCliTestCase(ZslTestCase, TestCase):
         container=TestCliContainer,
     )
 
-    @inject(zsl_cli=ZslCli)
-    def testRunningTestTask(self, zsl_cli):
+    @inject
+    def testRunningTestTask(self, zsl_cli: ZslCli) -> None:
         # type:(ZslCli)->None
         runner = CliRunner()
         result = runner.invoke(zsl_cli.cli, ["task", "task/zsl/test_task"])
         self.assertEqual(0, result.exit_code, "No error is expected.")
         self.assertEqual("ok", result.output.strip(), "Valid task output must be shown")
 
-    @inject(zsl_cli=ZslCli)
-    def testRunningTaskWithListInput(self, zsl_cli):
-        # type:(ZslCli)->None
+    @inject
+    def testRunningTaskWithListInput(self, zsl_cli: ZslCli) -> None:
         runner = CliRunner()
         result = runner.invoke(
             zsl_cli.cli,

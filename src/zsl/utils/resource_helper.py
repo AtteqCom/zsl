@@ -6,7 +6,6 @@ Helper module for resource management.
 """
 # TODO describe what model resource is and use cases
 
-from __future__ import unicode_literals
 
 import importlib
 import logging
@@ -14,7 +13,7 @@ from typing import Callable, Dict, List, Union
 
 from flask import request
 
-from zsl import Config, Injected, Zsl, inject
+from zsl import Config, Zsl, inject
 from zsl.db.model import AppModel
 from zsl.interface.resource import ResourceResult
 from zsl.resource.model_resource import ModelResource
@@ -40,7 +39,7 @@ def parse_resource_path(path):
     return splits[0], splits[1:]
 
 
-def get_method(resource, method):
+def get_method(resource: ModelResource, method: str) -> Callable:
     """Test and return a method by name on resource.
 
     :param resource: resource object
@@ -53,17 +52,19 @@ def get_method(resource, method):
     if hasattr(resource, method) and callable(getattr(resource, method)):
         return getattr(resource, method)
     else:
-        raise MethodNotImplementedException()
+        raise MethodNotImplementedException(f"Method {method} of resource {resource} is not implemented.")
 
 
-@inject(config=Config)
-def get_resource_task(resource_path, config=Injected):
-    # type: (str, Config) -> Callable[[str, Dict, Dict], Union[List[AppModel], AppModel, ResourceResult]]
+ResourceTask = Callable[[str, Dict, Dict], Union[List[AppModel], AppModel, ResourceResult]]
+
+
+@inject
+def get_resource_task(resource_path: str, config: Config) -> ResourceTask:
     """Search and return a bounded method for given path.
 
     :param resource_path: resource path
     :type resource_path: str
-    :param config: current configuration, injected
+    :param config: current configuration
     :type config: Config
     :return: bounded method or None when not found
     :raises NameError: when can't find given resource by path
@@ -74,7 +75,7 @@ def get_resource_task(resource_path, config=Injected):
 
     resource = None
     for resource_package in resource_packages:
-        module_name = "{0}.{1}".format(resource_package, resource_path)
+        module_name = "{}.{}".format(resource_package, resource_path)
 
         try:
             module = importlib.import_module(module_name)
@@ -85,7 +86,7 @@ def get_resource_task(resource_path, config=Injected):
                 resource = instantiate(cls)
                 break
             except AttributeError:
-                raise NameError("Can't find resource [{0}]".format(resource_path))
+                raise NameError("Can't find resource [{}]".format(resource_path))
 
         except ImportError:
 
@@ -96,11 +97,11 @@ def get_resource_task(resource_path, config=Injected):
                 resource = exposer.get_resource(class_name)
                 break
             except Exception as e:
-                logging.error("Can not load resource {0} [{1}].".format(resource_path, e))
+                logging.error("Can not load resource {} [{}].".format(resource_path, e))
                 pass
 
     if resource is None:
-        raise NameError("Can't find resource [{0}]".format(resource_path))
+        raise NameError("Can't find resource [{}]".format(resource_path))
 
     try:
         if request.method == 'POST':
@@ -127,15 +128,15 @@ def get_resource_task(resource_path, config=Injected):
         return None
 
 
-@inject(app=Zsl)
-def create_model_resource(resource_map, name, app=Injected):
+@inject
+def create_model_resource(resource_map, name, app: Zsl):
     """Create a model resource from a dict ``resource_map``
     {'resource name': ('model package', 'model class')}
 
     :param resource_map: dict with resource descriptions
     :type resource_map: dict(str, tuple(str))
     :param name: name of the concrete resource
-    :param app: current application, injected
+    :param app: current application
     :type app: Zsl
     :return: instantiated model resource
     """
@@ -147,9 +148,9 @@ def create_model_resource(resource_map, name, app=Injected):
         elif len(resource_description) == 3:
             module_name, model_name, resource_class = resource_map[name]
         else:
-            raise ImportError("Invalid resource description for resource '{0}'".format(name))
+            raise ImportError("Invalid resource description for resource '{}'".format(name))
     except KeyError:
-        raise ImportError("Missing resource description for resource '{0}'".format(name))
+        raise ImportError("Missing resource description for resource '{}'".format(name))
 
     module = importlib.import_module(module_name)
     model_cls = getattr(module, model_name)

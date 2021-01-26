@@ -6,12 +6,11 @@ Implementation of celery workers.
 
 .. moduleauthor:: Peter Morihladko
 """
-from __future__ import unicode_literals
-
 import sys
+from typing import Dict
 
 from celery import Celery, shared_task
-from injector import Module, provides, singleton
+from injector import Module, provider, singleton
 
 from zsl import Config, inject
 from zsl.interface.task_queue import TaskQueueWorker
@@ -50,9 +49,8 @@ class CeleryTaskQueueOutsideWorker(CeleryTaskQueueWorkerBase):
         self._app.logger.error("Running from celery worker, start from shell!")
 
 
-@inject(config=Config)
-def create_celery_app(config):
-    # type:(Config)->Celery
+@inject
+def create_celery_app(config: Config) -> Celery:
     celery_app = Celery()
     celery_app.config_from_object(config['CELERY'])
     return celery_app
@@ -62,7 +60,7 @@ class CeleryTaskQueueMainWorker(CeleryTaskQueueWorkerBase):
     """Worker implementation for Celery task queue."""
 
     def __init__(self, ):
-        super(CeleryTaskQueueMainWorker, self).__init__()
+        super().__init__()
         self.celery_app = create_celery_app()
         self.celery_worker = None
 
@@ -76,9 +74,8 @@ class CeleryTaskQueueMainWorker(CeleryTaskQueueWorkerBase):
 
 
 @shared_task
-@inject(worker=CeleryTaskQueueWorkerBase)
-def zsl_task(job_data, worker):
-    # type: (dict, CeleryTaskQueueWorkerBase) -> dict
+@inject
+def zsl_task(job_data: Dict, worker: CeleryTaskQueueWorkerBase) -> Dict:
     """This function will be registered as a celery task.
 
     :param job_data: task data

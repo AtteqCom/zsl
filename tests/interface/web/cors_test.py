@@ -36,8 +36,8 @@ class CorsTestCase(ZslTestCase, TestCase):
         app_name='CorsTestCase', container=WebContainer,
         config_object=CONFIG)
 
-    @inject(app=Zsl)
-    def testNotFound(self, app):
+    @inject
+    def testNotFound(self, app: Zsl) -> None:
         with app.test_request_context('/'):
             response = perform_web_task('nn', 'r')
 
@@ -51,8 +51,8 @@ class CorsTestCase(ZslTestCase, TestCase):
             self.assertEqual('42', response.headers['Access-Control-Max-Age'])
 
 
-    @inject(app=Zsl)
-    def testCustom(self, app):
+    @inject
+    def testCustom(self, app: Zsl):
         with app.test_request_context('/'):
             response = perform_web_task('n', 'r')
 

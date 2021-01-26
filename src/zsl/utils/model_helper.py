@@ -5,7 +5,6 @@
 Helper module for working with models.
 """
 
-from __future__ import unicode_literals
 
 import logging
 
@@ -29,13 +28,13 @@ def update_model(raw_model, app_model, forbidden_keys=None, inverse=False):
 
     if inverse:
         for k in app_model:
-            logging.debug("Considering property {0}.".format(k))
+            logging.debug("Considering property {}.".format(k))
             if (hasattr(raw_model, k)) and (k not in forbidden_keys):
-                logging.debug("Setting property {0} to value '{1}'.".format(k, app_model[k]))
+                logging.debug("Setting property {} to value '{}'.".format(k, app_model[k]))
                 setattr(raw_model, k, app_model[k])
     else:
         for k in raw_model.__dict__:
-            logging.debug("Considering property {0}.".format(k))
+            logging.debug("Considering property {}.".format(k))
             if (k in app_model) and (k not in forbidden_keys):
-                logging.debug("Setting property {0} to value '{1}'.".format(k, app_model[k]))
+                logging.debug("Setting property {} to value '{}'.".format(k, app_model[k]))
                 setattr(raw_model, k, app_model[k])

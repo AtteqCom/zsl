@@ -1,14 +1,13 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import unittest.mock as mock
 
+from zsl import Zsl
+from zsl import inject as zsl_inject
 from zsl.service.service import SessionFactory
 from zsl.testing.db import TestSessionFactory as DbTestTestSessionFactory
-from zsl.utils.injection_helper import bind
 
 
-def mock_db_session():
+@zsl_inject
+def mock_db_session(app: Zsl):
     mock_sess = mock.MagicMock()
 
     def session_holder():
@@ -16,9 +15,10 @@ def mock_db_session():
 
     class TestSessionFactory(DbTestTestSessionFactory):
         def __init__(self):
-            super(TestSessionFactory, self).__init__()
+            app.injector.call_with_injection(super(TestSessionFactory, self).__init__)
             self._session_holder = session_holder
 
-    bind(SessionFactory, to=TestSessionFactory)
-    bind(DbTestTestSessionFactory, to=TestSessionFactory)
+    tsf = app.injector.create_object(TestSessionFactory)
+    app.injector.binder.bind(SessionFactory, to=tsf)
+    app.injector.binder.bind(DbTestTestSessionFactory, to=tsf)
     return mock_sess

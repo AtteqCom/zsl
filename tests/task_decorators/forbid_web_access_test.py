@@ -28,8 +28,8 @@ class ForbidWebAccessTestCase(ZslTestCase, TestCase):
         app_name='ForbidWebAccessTestCase', container=WebContainer,
         config_object=CONFIG)
 
-    @inject(app=Zsl)
-    def testHttpAccessToWebForbiddenTask(self, app):
+    @inject
+    def testHttpAccessToWebForbiddenTask(self, app: Zsl) -> None:
         """
 
         :param app: Zsl

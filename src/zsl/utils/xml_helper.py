@@ -4,7 +4,6 @@
 
 Helper functions for working with XML and ElementTree.
 """
-from __future__ import unicode_literals
 
 from functools import reduce
 import xml.etree.ElementTree as ET
@@ -64,7 +63,7 @@ def msg_err_missing_attributes(tag, *attributes):
     :return: message
     :rtype: str
     """
-    return "Missing one or more required attributes (%s) in xml tag %s" % ('|'.join(attributes), tag)
+    return "Missing one or more required attributes ({}) in xml tag {}".format('|'.join(attributes), tag)
 
 
 def msg_err_missing_children(tag, *children):
@@ -75,7 +74,7 @@ def msg_err_missing_children(tag, *children):
     :return: message
     :rtype: str
     """
-    return "Missing one or more required children (%s) in xml tag %s" % ('|'.join(children), tag)
+    return "Missing one or more required children ({}) in xml tag {}".format('|'.join(children), tag)
 
 
 def attrib_to_dict(element, *args, **kwargs):

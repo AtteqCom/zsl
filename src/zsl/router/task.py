@@ -2,10 +2,8 @@
 :mod:`zsl.router.task`
 ------------------------
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 from abc import ABCMeta
-from builtins import *
 import importlib
 import logging
 from typing import Any, Callable, Dict, List, Tuple
@@ -18,16 +16,14 @@ from zsl.utils.task_helper import get_callable, instantiate
 TASK_CONFIGURATION_NAME = 'TASKS'
 
 
-class TaskNamespace(object):
-    def __init__(self, namespace, task_configuration):
-        # type: (str, TaskConfiguration)->None
+class TaskNamespace:
+    def __init__(self, namespace: str, task_configuration: 'TaskConfiguration') -> None:
         self._task_packages = []
         self._routes = {}
         self._task_configuration = task_configuration
         self._namespace = namespace
 
-    def add_packages(self, packages):
-        # type: (List[str])->TaskNamespace
+    def add_packages(self, packages: List[str]) -> 'TaskNamespace':
         """
         Adds an automatic resolution of urls into tasks.
         :param packages: The url will determine package/module and the class.
@@ -37,8 +33,7 @@ class TaskNamespace(object):
         self._task_packages += packages
         return self
 
-    def get_packages(self):
-        # type:()->List[str]
+    def get_packages(self) -> List[str]:
         return list(self._task_packages)
 
     def add_routes(self, routes):
@@ -68,7 +63,7 @@ class TaskNamespace(object):
         return self._namespace
 
 
-class TaskConfiguration(object):
+class TaskConfiguration:
     def __init__(self):
         self._namespaces = []  # type: List[TaskNamespace]
 
@@ -85,8 +80,8 @@ class TaskConfiguration(object):
 
 class RoutingError(ZslError):
     def __init__(self, path):
-        msg = "Can not find task at path '{0}'.".format(path)
-        super(RoutingError, self).__init__(msg)
+        msg = "Can not find task at path '{}'.".format(path)
+        super().__init__(msg)
         self._path = path
 
     @property
@@ -94,7 +89,7 @@ class RoutingError(ZslError):
         return self._path
 
 
-class RouterStrategy(object):
+class RouterStrategy:
     __metaclass__ = ABCMeta
 
     def can_route(self, path):
@@ -189,7 +184,7 @@ class PackageTaskRouterStrategy(RouterStrategy):
         exceptions = []
         module_ = None
         for task_package in task_packages:
-            module_name = "{0}.{1}".format(task_package, ".".join(package_path))
+            module_name = "{}.{}".format(task_package, ".".join(package_path))
 
             try:
                 logger.debug("Trying to load module with name '%s' and class name '%s'.",
@@ -206,10 +201,9 @@ class PackageTaskRouterStrategy(RouterStrategy):
         return module_, exceptions
 
 
-class TaskRouter(object):
-    @inject(config=Config, task_configuration=TaskConfiguration)
-    def __init__(self, config, task_configuration):
-        # type: (Config, TaskConfiguration) -> None
+class TaskRouter:
+    @inject
+    def __init__(self, config: Config, task_configuration: TaskConfiguration) -> None:
         self._config = config
         self._task_configuration = task_configuration  # type: TaskConfiguration
         self._strategies = [
@@ -243,5 +237,5 @@ class TaskRouter(object):
         :return:
         """
         task = instantiate(cls)
-        logging.getLogger(__name__).debug("Task object {0} created [{1}].".format(cls.__name__, task))
+        logging.getLogger(__name__).debug("Task object {} created [{}].".format(cls.__name__, task))
         return task, get_callable(task)

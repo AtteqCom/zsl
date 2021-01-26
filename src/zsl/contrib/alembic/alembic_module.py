@@ -19,7 +19,7 @@ Just use a standard way of calling cli with a container having `AlembicModule`.
         alembic = AlembicModule
 
 
-    @inject(zsl_cli=ZslCli)
+    @inject
     def main(zsl_cli: ZslCli) -> None:
         zsl_cli()
 
@@ -65,8 +65,8 @@ use a correct `Engine`.
 
 .. code-block:: python
 
-    @inject(zsl_config=Config)
-    def run_migrations_offline(zsl_config):
+    @inject
+    def run_migrations_offline(zsl_config: Config):
         url = zsl_config['DATABASE_URI']
         context.configure(url=url, target_metadata=target_metadata, literal_binds=True)
 
@@ -74,8 +74,8 @@ use a correct `Engine`.
             context.run_migrations()
 
 
-    @inject(engine=Engine)
-    def run_migrations_online(engine):
+    @inject
+    def run_migrations_online(engine: Engine):
         with engine.connect() as connection:
             context.configure(
                 connection=connection,
@@ -87,18 +87,15 @@ use a correct `Engine`.
 
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *  # NOQA
 import logging
 import os
 from typing import List
 
 import click
 from click.core import Context
-from injector import Binder, Module, provides, singleton
+from injector import Binder, Module, inject, noninjectable, provider, singleton
 
-from zsl import Config, inject
+from zsl import Config
 from zsl.application.modules.cli_module import ZslCli
 from zsl.contrib.alembic.alembic_config import AlembicConfiguration
 from zsl.utils.injection_helper import simple_bind
@@ -113,12 +110,11 @@ except ImportError:
     raise
 
 
-class AlembicCli(object):
+class AlembicCli:
     """Alembic Cli interface support."""
 
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) -> AlembicCli
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> None:
         logging.getLogger(__name__).debug("Creating Alembic CLI.")
 
         @zsl_cli.cli.command(help='Run alembic maintenance tasks.',
@@ -137,9 +133,9 @@ class AlembicCli(object):
     def alembic(self):
         return self._alembic
 
-    @inject(alembic_cfg=AlembicConfiguration)
-    def call_alembic(self, args, alembic_cfg):
-        # type: (List[str], AlembicConfiguration)->None
+    @inject
+    @noninjectable('args')
+    def call_alembic(self, args: List[str], alembic_cfg: AlembicConfiguration) -> None:
         is_initializing = len(args) and args[0] == 'init'
         alembic_directory = alembic_cfg.alembic_directory
         if is_initializing:
@@ -165,12 +161,10 @@ class AlembicModule(Module):
 
     ALEMBIC_CONFIG_NAME = 'ALEMBIC'
 
-    @provides(AlembicConfiguration)
-    @inject(config=Config)
-    def provide_alembic_configuration(self, config):
-        # type: (Config) -> AlembicConfiguration
+    @singleton
+    @provider
+    def provide_alembic_configuration(self, config: Config) -> AlembicConfiguration:
         return config.get(AlembicModule.ALEMBIC_CONFIG_NAME)
 
-    def configure(self, binder):
-        # type: (Binder) -> None
+    def configure(self, binder: Binder) -> None:
         simple_bind(binder, AlembicCli, singleton)

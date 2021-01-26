@@ -58,6 +58,20 @@
       ]
     },
     {
+      "name": "Test: tests/resource/transactional_guard_test.py",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src:${workspaceFolder}/tests"
+      },
+      "args": [
+        "--capture=sys",
+        "--log-cli-level=DEBUG",
+        "tests/resource/transactional_guard_test.py"
+      ]
+    },
+    {
       "name": "Test: all",
       "type": "python",
       "request": "launch",

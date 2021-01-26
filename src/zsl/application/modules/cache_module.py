@@ -2,7 +2,6 @@
 :mod:`zsl.application.modules.cache_module`
 -------------------------------------------
 """
-from __future__ import unicode_literals
 
 import logging
 
@@ -29,7 +28,7 @@ class RedisCacheInjectionModule(Module):
         :param Binder binder: The binder object holding the binding context, we\
          add cache to the binder.
         """
-        redis_cache_module = RedisCacheModule()
+        redis_cache_module = binder.injector.get(RedisCacheModule)
         binder.bind(
             RedisCacheModule,
             to=redis_cache_module,
@@ -41,7 +40,7 @@ class RedisCacheInjectionModule(Module):
             scope=singleton
         )
 
-        redis_id_helper = RedisIdHelper()
+        redis_id_helper = binder.injector.get(RedisIdHelper)
         binder.bind(
             RedisIdHelper,
             to=redis_id_helper,

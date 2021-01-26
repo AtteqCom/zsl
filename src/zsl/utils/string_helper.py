@@ -4,9 +4,7 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
 
-from builtins import range, str
 import random
 import re
 import string
@@ -83,10 +81,10 @@ def generate_random_string(size=6, chars=string.ascii_uppercase + string.digits)
 
 
 def addslashes(s, escaped_chars=None):
-    """Add slashes for given characters. Default is for ``\`` and ``'``.
+    """Add slashes for given characters. Default is for ``\\`` and ``'``.
 
     :param s: string
-    :param escaped_chars: list of characters to prefix with a slash ``\``
+    :param escaped_chars: list of characters to prefix with a slash ``\\``
     :return: string with slashed characters
     :rtype: str
 

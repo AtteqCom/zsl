@@ -1,13 +1,10 @@
-# coding: utf-8
 """
 :mod:`zsl.utils.url_helper`
 ---------------------------
 
 Helper module for URL handling.
 """
-from __future__ import unicode_literals
 
-from builtins import str
 import re
 import unicodedata
 import urllib
@@ -36,7 +33,7 @@ def slugify(value, allow_unicode=False):
     else:
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
         value = re.sub(r'[^\w\s-]', '', value).strip().lower()
-        return re.sub('[-\s]+', '-', value)
+        return re.sub(r'[-\s]+', '-', value)
 
 
 def urlencode(query):

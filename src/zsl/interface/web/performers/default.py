@@ -4,7 +4,6 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
 
 from flask.globals import request
 
@@ -16,8 +15,8 @@ from zsl.router.task import RoutingError
 from zsl.task.job_context import WebJobContext
 
 
-@inject(app=Zsl)
-def create_not_found_mapping(app):
+@inject
+def create_not_found_mapping(app: Zsl) -> None:
     @app.route("/", defaults={'path': ''})
     @app.route("/<path:path>")
     @append_headers

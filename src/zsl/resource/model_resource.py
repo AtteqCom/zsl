@@ -13,15 +13,13 @@ The basic way to use them is as follows:
 
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
-from builtins import int, object
 from hashlib import sha256
 import json
 import logging
-from typing import Any, List, Union
+from typing import Any, List, Type, Union
 
 from future.utils import viewitems
+from injector import noninjectable
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 
@@ -83,7 +81,7 @@ def _is_list(list_):
         return False
 
 
-class ResourceQueryContext(object):
+class ResourceQueryContext:
     """
     The context of the resource query.
      - holds the parameters and arguments of the query,
@@ -155,7 +153,7 @@ class ModelResourceBase(TransactionalSupportMixin):
         Create Model CRUD resource for ``model_cls``
         """
 
-        super(ModelResourceBase, self).__init__()
+        super().__init__()
 
         if not model_cls:
             self.model_cls = self.__model__
@@ -461,12 +459,15 @@ class ModelResource(ModelResourceBase):
 
 class CachedModelResource(ModelResource):
     """
-    The cached resource - uses redis to cache the resource for the given amount of seconds.
+    The cached resource - uses redis to cache the resource for the given amount
+    of seconds.
     """
 
-    @inject(cache_module=CacheModule, id_helper=IdHelper, logger=logging.Logger)
-    def __init__(self, model_cls, cache_module, id_helper, logger, timeout='short'):
-        super(CachedModelResource, self).__init__(model_cls)
+    @inject
+    def __init__(self, model_cls: Type, cache_module: CacheModule,
+                 id_helper: IdHelper, logger: logging.Logger,
+                 timeout: str = 'short'):
+        super().__init__(model_cls)
         self._cache_module = cache_module
         self._id_helper = id_helper
         self._logger = logger
@@ -474,7 +475,7 @@ class CachedModelResource(ModelResource):
 
     def _create_key(self, arghash):
         key_prefix = create_key_class_prefix(self.model_cls)
-        return "cached-resource:{0}:{1}".format(key_prefix, arghash)
+        return "cached-resource:{}:{}".format(key_prefix, arghash)
 
     def _create_key_from_context(self, ctx):
         arghash = sha256(json.dumps({'params': ctx.params, 'args': ctx.args, 'data': ctx.data})).hexdigest()
@@ -483,13 +484,13 @@ class CachedModelResource(ModelResource):
     def _get_one(self, row_id, ctx):
         # Make hash of params, args and data and ache using the hash in the key.
         key = self._create_key_from_context(ctx)
-        self._logger.debug("CachedModelResource - get one, key: {0}.".format(key))
+        self._logger.debug("CachedModelResource - get one, key: {}.".format(key))
 
         if self._id_helper.check_key(key):
             result = json.loads(self._id_helper.get_key(key))
         else:
             self._logger.debug("CachedModelResource - get one not cached, transferring to resource...")
-            result = super(CachedModelResource, self)._get_one(row_id, ctx)
+            result = super()._get_one(row_id, ctx)
             # serialize as model
             self._id_helper.set_key(key, app_model_encoder_fn(result), self._timeout)
 
@@ -500,13 +501,13 @@ class CachedModelResource(ModelResource):
     def _get_collection_count(self, ctx):
         # Make hash of params, args and data and ache using the hash in the key.
         key = self._create_key_from_context(ctx)
-        self._logger.debug("CachedModelResource - get one, key: {0}.".format(key))
+        self._logger.debug("CachedModelResource - get one, key: {}.".format(key))
 
         if self._id_helper.check_key(key):
             result = int(self._id_helper.get_key(key))
         else:
             self._logger.debug("CachedModelResource - get one not cached, transferring to resource...")
-            result = super(CachedModelResource, self)._get_collection_count(ctx)
+            result = super()._get_collection_count(ctx)
             self._id_helper.set_key(key, app_model_encoder_fn(result), self._timeout)
 
         return result
@@ -514,13 +515,13 @@ class CachedModelResource(ModelResource):
     def _get_collection(self, ctx):
         # Make hash of params, args and data and ache using the hash in the key.
         key = self._create_key_from_context(ctx)
-        self._logger.debug("CachedModelResource - collection, key: {0}.".format(key))
+        self._logger.debug("CachedModelResource - collection, key: {}.".format(key))
 
         if self._id_helper.check_key(key):
             result = self._id_helper.gather_page(key, app_model_decoder_fn)
         else:
             self._logger.debug("CachedModelResource - collection not cached, transferring to resource...")
-            result = super(CachedModelResource, self)._get_collection(ctx)
+            result = super()._get_collection(ctx)
             self._id_helper.fill_page(key, result, self._timeout, app_model_encoder_fn)
 
         return result
@@ -551,8 +552,8 @@ class CachedModelResource(ModelResource):
 class ReadOnlyResourceUpdateOperationException(Exception):
     def __init__(self, operation):
         self._operation = operation
-        super(ReadOnlyResourceUpdateOperationException, self).__init__(
-            "Can not perform operation '{0}' on ReadOnlyResource.".format(operation))
+        super().__init__(
+            "Can not perform operation '{}' on ReadOnlyResource.".format(operation))
 
     def get_operation(self):
         return self._operation
@@ -560,7 +561,7 @@ class ReadOnlyResourceUpdateOperationException(Exception):
     operation = property(get_operation)
 
 
-class ReadOnlyResourceMixin(object):
+class ReadOnlyResourceMixin:
     """
     The mixin to be used to forbid the update/delete and create operations.
     Remember the Python's MRO and place this mixin at the right place in the inheritance declaration.

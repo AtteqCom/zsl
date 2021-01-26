@@ -4,10 +4,8 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
 
 # noinspection PyCompatibility
-from builtins import map, object
 
 from future.utils import viewitems
 
@@ -22,7 +20,7 @@ RELATED_FIELDS_HINTS = 'hints'
 ISO_8601_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 
-class AppModel(object):
+class AppModel:
     """AppModel's are used as a thin and simple communication objects. Also
     they can be saved into cache. Basically they are known as Data Transfer
     Objects or DTOs.
@@ -92,4 +90,4 @@ class AppModel(object):
         return d
 
     def __str__(self):
-        return "{0}: {1}".format(self.__class__, self.__dict__)
+        return "{}: {}".format(self.__class__, self.__dict__)

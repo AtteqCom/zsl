@@ -4,14 +4,12 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
 
-from builtins import object
 
 from zsl.utils.model_helper import update_model
 
 
-class ModelBase(object):
+class ModelBase:
     def update(self, app_model, forbidden_keys=None, inverse=False):
         """
         Updates the raw model. Consult `zsl.utils.model_helper.update_model`.

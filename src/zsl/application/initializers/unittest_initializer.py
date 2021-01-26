@@ -2,18 +2,16 @@
 :mod:`zsl.application.initializers.unittest_initializer`
 --------------------------------------------------------
 """
-from __future__ import unicode_literals
-
-from builtins import object
-
 from zsl import ApplicationContext, Config, inject
 
 
-class UnitTestInitializer(object):
+class UnitTestInitializer:
+    # TODO: Change to iface
+
     """Initializer handling the unit test settings."""
     @staticmethod
-    @inject(config=Config)
-    def initialize(config):
+    @inject
+    def initialize(config: Config) -> None:
 
         if not UnitTestInitializer.is_unit_testing():
             return
@@ -26,6 +24,6 @@ class UnitTestInitializer(object):
                 'TEST_DATABASE_ENGINE_PROPS']
 
     @staticmethod
-    @inject(ctx=ApplicationContext)
-    def is_unit_testing(ctx):
+    @inject
+    def is_unit_testing(ctx: ApplicationContext) -> bool:
         return ctx.unit_testing

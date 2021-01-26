@@ -4,16 +4,14 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
-from builtins import *
 import json
 import logging
+from typing import Any, Callable
 
 from flask import request
 from flask.wrappers import Response
 
-from zsl import Config, Injected, Zsl, inject
+from zsl import Config, Zsl, inject
 from zsl.application.error_handler import error_handler
 from zsl.application.modules.web.configuration import MethodConfiguration
 from zsl.constants import MimeType
@@ -46,7 +44,7 @@ def set_default_responder(responder):
 _default_responder_method = default_web_responder
 
 
-class Performer(object):
+class Performer:
     def __init__(self, f):
         global _default_responder_method
         self._f = f
@@ -79,19 +77,19 @@ def _get_method_configuration(config):
     return config.get(METHOD_CONFIG_NAME, MethodConfiguration())
 
 
-@inject(app=Zsl, config=Config)
-def route(path, app=Injected, config=Injected, **options):
+@inject
+def route(path: str, app: Zsl, config: Config, **options: Any) -> Callable:
     def _decorator(f):
         method_config = _get_method_configuration(config)
-        url = "/{0}{1}".format(method_config.url_prefix, path)
+        url = "/{}{}".format(method_config.url_prefix, path)
         logging.getLogger(__name__).info(
-            "Mapping url '{0}' as a method.".format(url))
+            "Mapping url '{}' as a method.".format(url))
         routed_function = app.route(url, **options)
         return routed_function(Performer(f))
 
     return _decorator
 
 
-@inject(config=Config)
-def get_method_packages(config):
+@inject
+def get_method_packages(config: Config):
     return _get_method_configuration(config).packages

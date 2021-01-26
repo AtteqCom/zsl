@@ -4,7 +4,6 @@
 
 Status codes for REST services
 """
-from __future__ import unicode_literals
 
 OK = {'status': 'ok'}
 

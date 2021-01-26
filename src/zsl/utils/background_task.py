@@ -2,7 +2,6 @@
 :mod:`zsl.utils.background_task`
 --------------------------------
 """
-from __future__ import unicode_literals
 
 from functools import wraps
 from typing import Callable
@@ -34,9 +33,8 @@ def background_task_method(task):
 
         gearman = None
 
-        @inject(config=Config)
-        def gearman_connect(config):
-            # type: (Config) -> GearmanService
+        @inject
+        def gearman_connect(config: Config) -> GearmanService:
             if 'GEARMAN' not in config or 'host' not in config['GEARMAN'] or 'GEARMAN_TASK_NAME' not in config:
                 raise Exception("Missing gearman settings (trying to use backgorund task)")
 
@@ -79,7 +77,7 @@ def get_background_method(obj, params):
     method = getattr(obj, method_name)
 
     if not callable(method) or not hasattr(method, '_background_fn'):
-        raise Exception('{0} is not a background task'.format(params['method']))
+        raise Exception('{} is not a background task'.format(params['method']))
 
     method = getattr(method, '_background_fn')
 

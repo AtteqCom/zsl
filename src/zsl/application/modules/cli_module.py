@@ -1,20 +1,16 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import logging
 import traceback
 
 import click
-from injector import Binder, Module, singleton
+from injector import Binder, Module, inject, singleton
 
-from zsl import inject
 from zsl.interface.cli import cli
 from zsl.task.job_context import Job, JobContext, create_job
 from zsl.utils.injection_helper import simple_bind
 from zsl.utils.testing import load_and_run_tests
 
 
-class ZslCli(object):
+class ZslCli:
     def __init__(self):
         # type: () -> ZslCli
         logging.getLogger(__name__).debug("Creating ZSL CLI.")
@@ -30,10 +26,9 @@ class ZslCli(object):
         cli(**kwargs)
 
 
-class ZslTaskCli(object):
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) -> ZslTaskCli
+class ZslTaskCli:
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.command(help="Execute a single task.")
         @click.argument('task_path', metavar='task')
         @click.argument('data', default=None, required=False)
@@ -44,17 +39,16 @@ class ZslTaskCli(object):
                 result = exec_task(task_path, data)
                 click.echo(result)
             except:  # NOQA
-                msg = "Error when calling task '{0}'\n\n{1}.".format(
+                msg = "Error when calling task '{}'\n\n{}.".format(
                     task_path, traceback.format_exc())
                 logging.getLogger(__name__).error(msg)
                 click.echo(msg)
                 exit(1)
 
 
-class ZslTestCli(object):
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) -> ZslTestCli
+class ZslTestCli:
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> ZslTaskCli:
         @zsl_cli.cli.group(help="Perform unit tests.")
         def test():
             pass
@@ -64,10 +58,9 @@ class ZslTestCli(object):
             load_and_run_tests()
 
 
-class ZslGenerateCli(object):
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) -> ZslGenerateCli
+class ZslGenerateCli:
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.group(help="Perform unit tests.")
         def generate():
             pass
@@ -106,8 +99,7 @@ class ZslGenerateCli(object):
 class CliModule(Module):
     """Adds Alembic support for migrations."""
 
-    def configure(self, binder):
-        # type: (Binder) -> None
+    def configure(self, binder: Binder) -> None:
         bindings = [ZslCli, ZslTaskCli, ZslTestCli, ZslGenerateCli]
         for binding in bindings:
             simple_bind(binder, binding, singleton)

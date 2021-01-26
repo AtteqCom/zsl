@@ -2,9 +2,7 @@
 :mod:`zsl.interface.webservice.performers.resource`
 ---------------------------------------------------
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *
 import json
 import logging
 
@@ -23,8 +21,8 @@ from zsl.utils.request_helper import args_to_dict
 from zsl.utils.resource_helper import get_resource_task, parse_resource_path
 
 
-@inject(app=Zsl)
-def create_resource_mapping(app):
+@inject
+def create_resource_mapping(app: Zsl) -> None:
     @app.route("/resource/<path:path>",
                methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'])
     @append_headers
@@ -41,7 +39,7 @@ def create_resource_mapping(app):
             (resource, params) = parse_resource_path(path)
             resource_task = get_resource_task(resource)
             if resource_task is None:
-                raise ImportError("No resource named '{0}'.".format(resource))
+                raise ImportError("No resource named '{}'.".format(resource))
             msg_format = "Fetched resource named '{0}' with data\n{1}."
             logging.debug(msg_format.format(resource, request.data))
 

@@ -2,9 +2,7 @@
 :mod:`zsl.resource.json_server_resource`
 ----------------------------------------
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *
 import http.client
 import logging
 import re
@@ -32,7 +30,7 @@ NOT_IMPLEMENTED = ResourceResult(
 )
 
 # any other arguments from these are considered as `property_name(_operator)=some_vaule` filter
-_SKIPPED_ARGUMENTS = set(['callback', '_', 'q', '_start', '_end', '_sort', '_order', '_limit', '_embed', '_expand'])
+_SKIPPED_ARGUMENTS = {'callback', '_', 'q', '_start', '_end', '_sort', '_order', '_limit', '_embed', '_expand'}
 
 # first group is the column name, then it can have a . separator or an operator suffix
 _re_column_name = re.compile(r'^([^.]*?)(\..*?)?(_lte|_gte|_ne|_like)?$')
@@ -84,7 +82,7 @@ class JsonServerResource(ModelResource):
 
     def create(self, *args, **kwargs):
         """Adds created http status response and location link."""
-        resource = super(JsonServerResource, self).create(*args, **kwargs)
+        resource = super().create(*args, **kwargs)
 
         return ResourceResult(
             body=resource,
@@ -223,7 +221,7 @@ class JsonServerResource(ModelResource):
 
         try:
             return ResourceResult(
-                body=super(JsonServerResource, self).read(params, args, data),
+                body=super().read(params, args, data),
                 count=result_count,
                 links=result_links
             )
@@ -239,7 +237,7 @@ class JsonServerResource(ModelResource):
         if request.method == 'PUT':
             logging.warning("Called not implemented resource method PUT")
 
-        resource = super(JsonServerResource, self).update(*args, **kwargs)
+        resource = super().update(*args, **kwargs)
 
         if resource:
             return resource

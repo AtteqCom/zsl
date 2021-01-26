@@ -5,9 +5,7 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>,
                   Peter Morihladko <morihladko@atteq.com>
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *  # NOQA
 from functools import wraps
 import logging
 
@@ -20,7 +18,7 @@ from zsl.application.modules.alchemy_module import EmptyTransactionalHolder, Ses
 _EMPTY_TX_HOLDER = EmptyTransactionalHolder()
 
 
-class TransactionalSupportMixin(object):
+class TransactionalSupportMixin:
     """This mixin allows the objects to access transactional holder."""
 
     @property
@@ -34,10 +32,10 @@ class Service(TransactionalSupportMixin):
     Main service class.
     """
 
-    @inject(app=Zsl, engine=Engine)
-    def __init__(self, app, engine):
+    @inject
+    def __init__(self, app: Zsl, engine: Engine) -> None:
         """Constructor - initializes and injects the needed libraries."""
-        super(Service, self).__init__()
+        super().__init__()
         self._app = app
         self._engine = engine
 
@@ -46,13 +44,13 @@ _TX_HOLDER_ATTRIBUTE = '_tx_holder'
 
 
 def transactional(f):
-    @inject(session_factory=SessionFactory)
-    def _get_session_factory(session_factory):
+    @inject
+    def _get_session_factory(session_factory: SessionFactory) -> SessionFactory:
         # type: (SessionFactory) -> SessionFactory
         return session_factory
 
-    @inject(tx_holder_factory=TransactionHolderFactory)
-    def _get_tx_holder_factory(tx_holder_factory):
+    @inject
+    def _get_tx_holder_factory(tx_holder_factory: TransactionHolderFactory) -> TransactionHolderFactory:
         # type: (TransactionHolderFactory) -> TransactionHolderFactory
         return tx_holder_factory
 

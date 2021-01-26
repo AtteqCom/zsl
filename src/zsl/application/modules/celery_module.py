@@ -2,12 +2,11 @@
 :mod:`zsl.application.modules.celery_module`
 --------------------------------------------
 """
-from __future__ import unicode_literals
 
 import click
 from injector import Module, singleton
 
-from zsl import Injected, Zsl
+from zsl import Zsl
 from zsl.application.modules.cli_module import ZslCli
 from zsl.interface.celery.worker import (CeleryTaskQueueMainWorker, CeleryTaskQueueOutsideWorker,
                                          CeleryTaskQueueWorkerBase)
@@ -36,11 +35,9 @@ class CeleryTaskQueueOutsideWorkerModule(Module):
         binder.bind(CeleryTaskQueueWorkerBase, to=worker, scope=singleton)
 
 
-class CeleryCli(object):
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) ->  CeleryCli
-
+class CeleryCli:
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.group(help='Celery related tasks.')
         def celery():
             pass

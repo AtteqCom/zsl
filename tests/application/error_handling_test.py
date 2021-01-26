@@ -37,8 +37,8 @@ class ErrorHandlingTestCase(ZslTestCase, TestCase):
         app_name='ErrorHandlingTestCase', container=WebContainer,
         config_object=CONFIG)
 
-    @inject(app=Zsl)
-    def testErrorTaskExecution(self, app):
+    @inject
+    def testErrorTaskExecution(self, app: Zsl):
         with app.test_request_context('/'):
             with self.assertRaises(Exception):
                 jc = WebJobContext(None, None, None, None, None)

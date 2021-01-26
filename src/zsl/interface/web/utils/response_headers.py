@@ -4,8 +4,6 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
 from functools import wraps
 
 from flask import Response
@@ -15,9 +13,8 @@ from zsl import Config, Zsl, inject
 from zsl.task.task_decorator import CrossdomainWebTaskResponder
 
 
-@inject(config=Config)
-def append_crossdomain(response, config):
-    # type: (Response, Config)->None
+@inject
+def append_crossdomain(response: Response, config: Config) -> None:
     """
     Adds the default crossdomain headers.
     Uses the :class:`zsl.task.task_decorator.CrossdomainWebTaskResponder`
@@ -32,16 +29,16 @@ def append_crossdomain(response, config):
     CrossdomainWebTaskResponder().respond(response)
 
 
-@inject(app=Zsl)
-def append_asl(response, app):
+@inject
+def append_asl(response: Response, app: Zsl) -> None:
     response.headers['ZSL'] = app.get_version()
 
 
-def append_cache(response):
+def append_cache(response: Response):
     response.headers['Cache-Control'] = 'no-cache'
 
 
-def append_all(response):
+def append_all(response: Response):
     append_asl(response)
     append_cache(response)
     append_crossdomain(response)

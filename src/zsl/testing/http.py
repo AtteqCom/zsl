@@ -3,9 +3,7 @@
 -----------------------
 This module allows for querying the API via HTTP.
 """
-from __future__ import absolute_import, unicode_literals
 
-from builtins import *
 from http import HTTPStatus
 import json
 from typing import Any, AnyStr, Dict, Union
@@ -27,7 +25,7 @@ def json_loads(str_):
     return json.loads(str_)
 
 
-class HTTPTestCase(object):
+class HTTPTestCase:
     """Extends TestCase with methods for easier testing of HTTP requests."""
 
     _DEFAULT_REQUEST_TASK_HEADERS = {
@@ -73,11 +71,10 @@ class HTTPTestCase(object):
         # type: (Response) -> Dict
         return json.loads(rv.data.decode())
 
-    @inject(app=Zsl)
-    def getHTTPClient(self, app):
-        # type: (Zsl) -> FlaskClient
+    @inject
+    def getHTTPClient(self, app: Zsl) -> FlaskClient:
         return app.test_client()
 
-    @inject(app=Zsl)
-    def getRequestContext(self, app):
+    @inject
+    def getRequestContext(self, app: Zsl):
         return app.test_request_context()

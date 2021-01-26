@@ -6,12 +6,11 @@ Helper module for working with redis.
 
 .. moduleauthor::  Peter Morihladko
 """
-from __future__ import unicode_literals
-
-from builtins import object
 from functools import partial
+from typing import Dict, Optional
 
 from future.utils import viewitems
+from injector import noninjectable
 
 from zsl import Config, inject
 
@@ -32,7 +31,7 @@ def redis_key(*args):
     return ':'.join(str(a) for a in args if a is not None)
 
 
-class Keymaker(object):
+class Keymaker:
     """Keymaker is a class to generate an object to generate Redis keys.
 
     :Example:
@@ -43,9 +42,9 @@ class Keymaker(object):
 
     # TODO I think this should be done in proper OOP
 
-    @inject(config=Config)
-    def __init__(self, keys, prefix=None, config=None):
+    @inject
+    @noninjectable('keys', 'prefix')
+    def __init__(self, keys: Dict[str, str], prefix: Optional[str] = None, config: Config = None) -> None:
         project_specific_prefix = config.get('REDIS', {}).get('prefix')
-
         for method, key in viewitems(keys):
             setattr(self, method, partial(redis_key, project_specific_prefix, prefix, key))

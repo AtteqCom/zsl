@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 """
 :mod:`zsl.utils.date_helper`
 ----------------------------
 """
-from __future__ import unicode_literals
 
 from datetime import date, timedelta
 

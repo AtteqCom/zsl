@@ -1,12 +1,9 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 from unittest.case import TestCase
 
 from mocks import mock, mock_db_session
 from sqlalchemy.orm.session import Session
 
-from zsl import inject
+from zsl import Zsl, inject
 from zsl.application.containers.container import IoCContainer
 from zsl.application.modules.alchemy_module import AlchemyModule
 from zsl.application.modules.context_module import DefaultContextModule
@@ -16,7 +13,6 @@ from zsl.service.service import SessionFactory
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DbTestCase, DbTestModule
 from zsl.testing.db import TestSessionFactory as SessionFactoryForTesting
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
-from zsl.utils.injection_helper import bind
 
 
 class TestContainerNoTestSessionFactory(IoCContainer):
@@ -52,10 +48,11 @@ class DbTestCaseTest(ZslTestCase, TestCase):
             mock_sess.rollback.assert_called_once_with()
             mock_sess.close.assert_called_once_with()
 
-    def test_db_test_case_session(self):
+    @inject
+    def test_db_test_case_session(self, app: Zsl):
         test = DbTestCaseTest.DbTest()
         mock_tsf = mock.MagicMock()
-        bind(SessionFactoryForTesting, to=mock_tsf)
+        app.injector.binder.bind(SessionFactoryForTesting, to=mock_tsf)
         test.setUp()
         mock_tsf.create_test_session.assert_called_once_with()
         mock_tsf.create_session.assert_not_called()
@@ -68,11 +65,14 @@ class TestSessionFactoryTest(ZslTestCase, TestCase):
         container=TestContainerNoTestSessionFactory
     )
 
-    def test_single_session(self):
-        self.assertNotEqual(SessionFactoryForTesting(), SessionFactoryForTesting(),
+    @inject
+    def test_single_session(self, app: Zsl) -> None:
+        # This tests that two calls do constructor create different objects and no unexpected singletons are crated.
+        self.assertNotEqual(app.injector.create_object(SessionFactoryForTesting),
+                            app.injector.create_object(SessionFactoryForTesting),
                             "Two different instances may not be equal.")
 
-        f = SessionFactoryForTesting()
+        f = app.injector.create_object(SessionFactoryForTesting)
         f.create_test_session()
         self.assertEqual(f.create_session(), f.create_session(),
                          "Two results must be equal.")
@@ -87,14 +87,13 @@ class DbTestModuleTest(ZslTestCase, TestCase):
         container=TestContainerTestSessionFactory
     )
 
-    def test_test_session_factory_is_injected(self):
-        @inject(session_factory=SessionFactory)
-        def get_session_factory(session_factory):
-            return session_factory
+    @inject
+    def test_test_session_factory_is_injected(self, app: Zsl):
+        def get_session_factory() -> SessionFactory:
+            return app.injector.get(SessionFactory)
 
-        @inject(test_session_factory=SessionFactoryForTesting)
-        def get_test_session_factory(test_session_factory):
-            return test_session_factory
+        def get_test_session_factory() -> SessionFactoryForTesting:
+            return app.injector.get(SessionFactoryForTesting)
 
         self.assertIsInstance(get_session_factory(), SessionFactoryForTesting,
                               "Correct session factory must be returned")

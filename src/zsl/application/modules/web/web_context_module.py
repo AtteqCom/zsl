@@ -1,13 +1,10 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import logging
 from typing import Any
 
 import click
-from injector import Binder, provides, singleton
+from injector import Binder, inject, provider, singleton
 
-from zsl import Config, Zsl, inject
+from zsl import Config, Zsl
 from zsl.application.initialization_context import InitializationContext
 from zsl.application.modules.cli_module import ZslCli
 from zsl.application.modules.context_module import DefaultContextModule, default_initializers
@@ -16,7 +13,7 @@ from zsl.interface.web.performers.task import create_task_mapping
 from zsl.utils.injection_helper import simple_bind
 
 
-class WebInitializer(object):
+class WebInitializer:
     """Initialize the web application."""
 
     @staticmethod
@@ -37,11 +34,9 @@ class WebInitializer(object):
 web_initializers = default_initializers + (WebInitializer,)
 
 
-class WebCli(object):
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) -> None
-
+class WebCli:
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.group(help='Web related tasks.')
         def web():
             pass
@@ -49,9 +44,8 @@ class WebCli(object):
         @web.command(help="Run web server and serve the application")
         @click.option('--host', '-h', help="host to bind to", default='127.0.0.1')
         @click.option('--port', '-p', help="port to bind to", default=5000)
-        @inject(web_handler=WebHandler)
-        def run(web_handler, host, port):
-            # type: (WebHandler, str, int)->None
+        @inject
+        def run(web_handler: WebHandler, host: str, port: int) -> None:
             web_handler.run_web(host=host, port=port)
 
         self._web = web
@@ -61,9 +55,9 @@ class WebCli(object):
         return self._web
 
 
-class WebHandler(object):
-    @inject(flask=Zsl)
-    def run_web(self, flask, host='127.0.0.1', port=5000, **options):
+class WebHandler:
+    @inject
+    def run_web(self, flask: Zsl, host: str = '127.0.0.1', port: int = 5000, **options: Any):
         # type: (Zsl, str, int, **Any)->None
         """Alias for Flask.run"""
         return flask.run(
@@ -81,22 +75,23 @@ class WebContextModule(DefaultContextModule):
         logging.getLogger(__name__).debug("Creating web context.")
         return InitializationContext(initializers=web_initializers)
 
-    @provides(interface=WebCli, scope=singleton)
-    def provide_web_cli(self):
+    @singleton
+    @provider
+    def provide_web_cli(self) -> WebCli:
         return WebCli()
 
-    @provides(interface=WebHandler, scope=singleton)
-    def provide_web_handler(self):
+    @singleton
+    @provider
+    def provide_web_handler(self) -> WebHandler:
         return WebHandler()
 
-    @provides(interface=CORSConfiguration, scope=singleton)
-    @inject(config=Config)
-    def provide_cors_configuration(self, config):
-        # type: (Config)->CORSConfiguration
+    @singleton
+    @provider
+    @inject
+    def provide_cors_configuration(self, config: Config) -> CORSConfiguration:
         return config.get(CORS_CONFIGURATION_NAME, CORSConfiguration())
 
-    def configure(self, binder):
-        # type: (Binder) -> None
-        super(WebContextModule, self).configure(binder)
+    def configure(self, binder: Binder) -> None:
+        super().configure(binder)
         simple_bind(binder, WebCli, singleton)
         create_task_mapping()

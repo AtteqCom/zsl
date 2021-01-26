@@ -2,13 +2,11 @@
 :mod:`zsl.application.modules.logger_module`
 --------------------------------------------
 """
-from __future__ import unicode_literals
-
 import logging.config
 
-from injector import Binder, Module
+from injector import Binder, Module, inject
 
-from zsl import Config, Zsl, inject
+from zsl import Config, Zsl
 
 
 class LoggerModule(Module):
@@ -16,14 +14,12 @@ class LoggerModule(Module):
 
     LOGGING_CONFIG_NAME = 'LOGGING'
 
-    def configure(self, binder):
-        # type: (Binder) -> None
-        super(LoggerModule, self).configure(binder)
-        self.configure_logging()
+    def configure(self, binder: Binder) -> None:
+        super().configure(binder)
+        binder.injector.call_with_injection(self.configure_logging)
 
-    @inject(config=Config, app=Zsl)
-    def configure_logging(self, config, app):
-        # type: (Config) -> None
+    @inject
+    def configure_logging(self, config: Config, app: Zsl) -> None:
         default_config = dict(
             version=1,
             root=dict(

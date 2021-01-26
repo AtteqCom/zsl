@@ -21,16 +21,14 @@ The module provides class :class:`.TestSessionFactory` - it always returns
 the same session. Also one should add :class:`.DbTestModule` to the test
 container when creating Zsl instance, see :ref:`unit-testing-zsl-instance`.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import logging
 
-from injector import Module, provides, singleton
+from injector import Module, inject, provider, singleton
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm.session import Session
 
-from zsl import inject
+from zsl import Zsl
+from zsl import inject as zsl_inject
 from zsl.application.modules.alchemy_module import TransactionHolder, TransactionHolderFactory
 from zsl.db.model.sql_alchemy import metadata
 from zsl.service.service import SessionFactory
@@ -40,9 +38,8 @@ class TestSessionFactory(SessionFactory):
     """Factory always returning the single test transaction."""
     _test_session = None
 
-    @inject(engine=Engine)
-    def create_test_session(self, engine):
-        # type: (Engine) -> Session
+    @zsl_inject
+    def create_test_session(self, engine: Engine) -> Session:
         assert TestSessionFactory._test_session is None
         metadata.bind = engine
         metadata.create_all(engine)
@@ -84,43 +81,43 @@ class DbTestModule(Module):
     """Module fixing the :class:`zsl.service.service.SessionFactory`
     to our :class:`.TestSessionFactory`."""
 
-    @provides(SessionFactory, scope=singleton)
-    def get_session_factory(self):
-        # type: ()->SessionFactory
-        return TestSessionFactory()
+    @singleton
+    @provider
+    @inject
+    def get_session_factory(self, app: Zsl) -> SessionFactory:
+        return app.injector.create_object(TestSessionFactory)
 
-    @provides(TestSessionFactory, scope=singleton)
-    @inject(session_factory=SessionFactory)
-    def get_test_session_factory(self, session_factory):
-        # type: (SessionFactory)->SessionFactory
+    @singleton
+    @provider
+    @inject
+    def get_test_session_factory(self, session_factory: SessionFactory) -> TestSessionFactory:
         return session_factory
 
-    @provides(TransactionHolderFactory, scope=singleton)
-    def provide_transaction_holder_factory(self):
+    @singleton
+    @provider
+    def provide_transaction_holder_factory(self) -> TransactionHolderFactory:
         return TestTransactionHolderFactory()
 
 
-class DbTestCase(object):
+class DbTestCase:
     """:class:`.DbTestCase` is a mixin to be used when testing with
     a database."""
 
     _session = None
 
-    @inject(session_factory=TestSessionFactory)
-    def setUp(self, session_factory):
-        # type: (TestSessionFactory)->None
-        super(DbTestCase, self).setUp()
+    @zsl_inject
+    def setUp(self, session_factory: TestSessionFactory) -> None:
+        super().setUp()
         logging.getLogger(__name__).debug("DbTestCase.setUp")
         session_factory.create_test_session()
 
-    @inject(session_factory=TestSessionFactory)
-    def tearDown(self, session_factory):
-        # type: (TestSessionFactory)->None
+    @zsl_inject
+    def tearDown(self, session_factory: TestSessionFactory) -> None:
         # This will return the same transaction/session
         # as the one used in setUp.
         logging.getLogger(__name__).debug("DbTestCase.tearDown")
         session_factory.close_test_session()
-        super(DbTestCase, self).tearDown()
+        super().tearDown()
 
 
 IN_MEMORY_DB_SETTINGS = {

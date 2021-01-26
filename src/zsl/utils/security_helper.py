@@ -5,9 +5,7 @@
 Helper module with function dealing with security.
 """
 
-from __future__ import unicode_literals
 
-from builtins import str
 import hashlib
 import sys
 
@@ -41,8 +39,8 @@ def wrap_plain_data_as_secure(data):
     return {'security': generate_security_data(), 'data': data}
 
 
-@inject(config=Config)
-def compute_token(random_token, config):
+@inject
+def compute_token(random_token: str, config: Config) -> str:
     """Compute a hash of the given token with a preconfigured secret.
 
     :param random_token: random token

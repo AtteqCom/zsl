@@ -2,9 +2,7 @@
 :mod:`zsl.tasks.asl.schedule_gearman_task`
 ------------------------------------------
 """
-from __future__ import unicode_literals
 
-from builtins import object
 
 from zsl.interface.celery.worker import create_celery_app, zsl_task
 from zsl.task.task_data import TaskData
@@ -16,7 +14,7 @@ def schedule_celery_task(path, data):
     zsl_task.delay({"path": path, "data": data})
 
 
-class ScheduleCeleryTask(object):
+class ScheduleCeleryTask:
     @json_input
     def perform(self, data):
         # type: (TaskData)->str

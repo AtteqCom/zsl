@@ -37,17 +37,15 @@ To test the functionality use CLI
     python app.py sentry test
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *
 import logging
 
-from injector import Binder, provides, singleton
+from injector import Binder, inject, provider, singleton
 from raven import Client, setup_logging
 from raven.handlers.logging import SentryHandler
 from raven.transport import ThreadedRequestsHTTPTransport
 
-from zsl import Config, Module, Zsl, inject
+from zsl import Config, Module, Zsl
 from zsl.application.error_handler import register
 from zsl.application.modules.cli_module import ZslCli
 from zsl.contrib.sentry.sentry_config import SentryConfiguration
@@ -64,14 +62,13 @@ except ImportError:
     raise
 
 
-class SentryCli(object):
+class SentryCli:
     pass
 
     """Sentry CLI interface support."""
 
-    @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) -> None
+    @inject
+    def __init__(self, zsl_cli: ZslCli) -> None:
         logging.getLogger(__name__).debug("Creating Sentry CLI.")
 
         @zsl_cli.cli.group()
@@ -92,9 +89,8 @@ class SentryCli(object):
 
 class SentryErrorProcessor(ErrorProcessor):
 
-    @inject(config=SentryConfiguration, zsl=Zsl)
-    def __init__(self, config, zsl):
-        # type: (SentryConfiguration, Zsl)->None
+    @inject
+    def __init__(self, config: SentryConfiguration, zsl: Zsl) -> None:
         self._client = self._create_client(config, zsl)
 
         if config.register_logging_handler:
@@ -119,7 +115,7 @@ class SentryErrorProcessor(ErrorProcessor):
         return handler
 
     def handle(self, e):
-        logging.getLogger(__name__).info('Sending error message for {0}.'.format(e))
+        logging.getLogger(__name__).info('Sending error message for {}.'.format(e))
         self._client.captureException()
 
 
@@ -128,13 +124,12 @@ class SentryModule(Module):
 
     SENTRY_CONFIG_NAME = 'SENTRY'
 
-    @provides(SentryConfiguration)
-    @inject(config=Config)
-    def provide_sentry_configuration(self, config):
-        # type: (Config) -> SentryConfiguration
+    @singleton
+    @provider
+    @inject
+    def provide_sentry_configuration(self, config: Config) -> SentryConfiguration:
         return config.get(SentryModule.SENTRY_CONFIG_NAME)
 
-    def configure(self, binder):
-        # type: (Binder) -> None
+    def configure(self, binder: Binder) -> None:
         simple_bind(binder, SentryCli, singleton)
         register(SentryErrorProcessor())

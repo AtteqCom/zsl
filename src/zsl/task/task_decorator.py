@@ -7,20 +7,18 @@
                   Jan Janco <janco@atteq.com>,
                   Lubos Pis <pis@atteq.com>
 """
-from __future__ import unicode_literals
-
-from builtins import *
 from datetime import timedelta
 from functools import wraps
 import json
 import logging
 from os.path import os
 import traceback
-from typing import Callable, List, Union
+from typing import Callable, List, Optional, Union
 
 from flask import request
+from injector import noninjectable
 
-from zsl import Config, Injected, Zsl, inject
+from zsl import Config, Zsl, inject
 from zsl.application.modules.web.cors import CORSConfiguration
 from zsl.constants import MimeType
 from zsl.db.model import AppModelJSONEncoder
@@ -108,8 +106,8 @@ def json_output(f):
 
     @wraps(f)
     def json_output_decorator(*args, **kwargs):
-        @inject(config=Config)
-        def get_config(config):
+        @inject
+        def get_config(config: Config) -> Config:
             return config
 
         config = get_config()
@@ -145,7 +143,7 @@ def jsonp_wrap(callback_key='callback'):
 
             if callback_key not in data:
                 raise KeyError(
-                    'Missing required parameter "{0}" for task.'.format(
+                    'Missing required parameter "{}" for task.'.format(
                         callback_key))
 
             callback = data[callback_key]
@@ -240,7 +238,7 @@ def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
     except:  # NOQA
         exc = traceback.format_exc()
         logging.error(exc)
-        rv = {'error': "{0}".format(exc)}
+        rv = {'error': "{}".format(exc)}
 
     return json.dumps(rv)
 
@@ -259,7 +257,7 @@ def required_data(*data):
             for i in data:
                 if i not in task_data:
                     raise KeyError(
-                        'Missing required parameter "{0}" for task.'.format(i))
+                        'Missing required parameter "{}" for task.'.format(i))
 
             return f(*args, **kwargs)
 
@@ -389,7 +387,7 @@ def _get_data_from_args(args):
 class SecurityException(Exception):
     def __init__(self, hashed_token):
         Exception.__init__(self,
-                           "Invalid hashed token '{0}'.".format(hashed_token))
+                           "Invalid hashed token '{}'.".format(hashed_token))
         self._hashed_token = hashed_token
 
     def get_hashed_token(self):
@@ -422,11 +420,11 @@ class CrossdomainWebTaskResponder(Responder):
     source: https://github.com/fengsp/flask-snippets/blob/master/decorators/http_access_control.py
     """
 
-    @inject(app=Zsl, cors_config=CORSConfiguration)
-    def __init__(self, origin=None, methods=None, allow_headers=None,
-                 expose_headers=None, max_age=None, app=Injected,
-                 cors_config=Injected):
-        # type: (str, List[str], str, str, Union[int, timedelta], Zsl, CORSConfiguration)->None
+    @inject
+    @noninjectable('origin', 'methods', 'allow_headers', 'expose_headers', 'max_age')
+    def __init__(self, origin: Optional[str] = None, methods: Optional[List[str]] = None,
+                 allow_headers: Optional[str] = None, expose_headers: Optional[str] = None,
+                 max_age: Union[int, timedelta] = None, app: Zsl = None, cors_config: CORSConfiguration = None):
         self._app = app
 
         methods = join_list(methods, transform=lambda x: x.upper())

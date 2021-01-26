@@ -4,19 +4,18 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
-
+from injector import inject
 import redis
 
-from zsl import Config, Zsl, inject
+from zsl import Config, Zsl
 from zsl.cache.cache_module import CacheModule
 
 
 class RedisCacheModule(CacheModule):
     """Abstraction layer for caching."""
 
-    @inject(app=Zsl, config=Config)
-    def __init__(self, app, config):
+    @inject
+    def __init__(self, app: Zsl, config: Config) -> None:
         """Abstraction layer for caching."""
         self._app = app
         self._config = config
@@ -44,12 +43,12 @@ class RedisCacheModule(CacheModule):
 
     def invalidate_key(self, key):
         pkey = self._prefix_key(key)
-        self.logger.debug("Key invalidation '{0}'.".format(key))
+        self.logger.debug("Key invalidation '{}'.".format(key))
         self._client.delete(pkey)
 
     def set_key_expiration(self, key, timeout):
         pkey = self._prefix_key(key)
-        self.logger.debug("Key expiration '{0}' = {1}.".format(key, timeout))
+        self.logger.debug("Key expiration '{}' = {}.".format(key, timeout))
         self._client.expire(pkey, timeout)
 
     def contains_key(self, key):
@@ -83,5 +82,5 @@ class RedisCacheModule(CacheModule):
 
         for key in keylist:
             # This does not need to prefixed.
-            self.logger.debug('Invalidating key {0}.'.format(key))
+            self.logger.debug('Invalidating key {}.'.format(key))
             self._client.delete(key)

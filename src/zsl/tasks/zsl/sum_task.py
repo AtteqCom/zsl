@@ -6,9 +6,7 @@ Created on 22.12.2012
 
 ..moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
 
-from builtins import object
 
 from injector import inject
 
@@ -17,9 +15,9 @@ from zsl.task.task_data import TaskData
 from zsl.task.task_decorator import json_input, json_output
 
 
-class SumTask(object):
-    @inject(app=Zsl)
-    def __init__(self, app):
+class SumTask:
+    @inject
+    def __init__(self, app: Zsl) -> None:
         self._app = app
 
     @json_input
@@ -27,5 +25,5 @@ class SumTask(object):
     def perform(self, data):
         # type: (TaskData)->str
         payload = data.payload
-        self._app.logger.debug("Sum task with data '{0}'.".format(payload))
+        self._app.logger.debug("Sum task with data '{}'.".format(payload))
         return {"input": payload, "result": sum(payload)}
