@@ -6,7 +6,6 @@ Helpers for parameter handling
 
 .. moduleauthor:: Peter Morihladko
 """
-from __future__ import unicode_literals
 
 from functools import reduce
 import inspect

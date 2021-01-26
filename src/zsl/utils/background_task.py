@@ -2,7 +2,6 @@
 :mod:`zsl.utils.background_task`
 --------------------------------
 """
-from __future__ import unicode_literals
 
 from functools import wraps
 from typing import Callable
@@ -78,7 +77,7 @@ def get_background_method(obj, params):
     method = getattr(obj, method_name)
 
     if not callable(method) or not hasattr(method, '_background_fn'):
-        raise Exception('{0} is not a background task'.format(params['method']))
+        raise Exception('{} is not a background task'.format(params['method']))
 
     method = getattr(method, '_background_fn')
 

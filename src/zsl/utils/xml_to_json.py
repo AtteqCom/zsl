@@ -4,7 +4,6 @@
 
 Helper functions for simpler parsing xml into object with schemas.
 """
-from __future__ import unicode_literals
 
 from future.utils import viewitems
 
@@ -56,7 +55,7 @@ def xml_to_json(element, definition, required=False):
 
             if sub_element is None:
                 if required:
-                    raise NotCompleteXmlException('Expecting {0} in element {1}'.format(definition, element.tag))
+                    raise NotCompleteXmlException('Expecting {} in element {}'.format(definition, element.tag))
                 return None
 
             return sub_element.text.strip() if sub_element.text else None
@@ -135,7 +134,7 @@ def _parse_tuple(element, definition, required):
 
     if sub_elem is None:
         if required:
-            raise NotCompleteXmlException('Expecting {0} in element {1}'.format(first, element.tag))
+            raise NotCompleteXmlException('Expecting {} in element {}'.format(first, element.tag))
 
         return None
 

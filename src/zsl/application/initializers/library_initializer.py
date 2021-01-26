@@ -16,7 +16,7 @@ def append_paths(path, vendor_modules):
     sys.path = new_path + sys.path
 
 
-class LibraryInitializer(object):
+class LibraryInitializer:
     # TODO: Change to iface
 
     """Add vendor modules to current path."""
@@ -32,5 +32,5 @@ class LibraryInitializer(object):
         vendor_path = external_libraries['vendor_path']
         append_paths(vendor_path, external_libraries['libs'])
 
-        logging.info("Current PYTHON_PATH={0}.".format(sys.path))
+        logging.info("Current PYTHON_PATH={}.".format(sys.path))
         logging.debug("Project external libraries initialized.")

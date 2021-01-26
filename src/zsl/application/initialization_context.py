@@ -10,7 +10,7 @@ loads and initializes the application if necessary.
 from typing import Any, List
 
 
-class InitializationContext(object):
+class InitializationContext:
 
     def __init__(self, unit_test: bool = False, initializers: List[Any] = None):
         if not initializers:

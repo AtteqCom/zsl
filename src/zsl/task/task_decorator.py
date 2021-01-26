@@ -143,7 +143,7 @@ def jsonp_wrap(callback_key='callback'):
 
             if callback_key not in data:
                 raise KeyError(
-                    'Missing required parameter "{0}" for task.'.format(
+                    'Missing required parameter "{}" for task.'.format(
                         callback_key))
 
             callback = data[callback_key]
@@ -238,7 +238,7 @@ def error_and_result_decorator_inner_fn(f, web_only, *args, **kwargs):
     except:  # NOQA
         exc = traceback.format_exc()
         logging.error(exc)
-        rv = {'error': "{0}".format(exc)}
+        rv = {'error': "{}".format(exc)}
 
     return json.dumps(rv)
 
@@ -257,7 +257,7 @@ def required_data(*data):
             for i in data:
                 if i not in task_data:
                     raise KeyError(
-                        'Missing required parameter "{0}" for task.'.format(i))
+                        'Missing required parameter "{}" for task.'.format(i))
 
             return f(*args, **kwargs)
 
@@ -387,7 +387,7 @@ def _get_data_from_args(args):
 class SecurityException(Exception):
     def __init__(self, hashed_token):
         Exception.__init__(self,
-                           "Invalid hashed token '{0}'.".format(hashed_token))
+                           "Invalid hashed token '{}'.".format(hashed_token))
         self._hashed_token = hashed_token
 
     def get_hashed_token(self):

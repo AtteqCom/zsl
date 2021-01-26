@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import logging
 import traceback
 
@@ -13,7 +10,7 @@ from zsl.utils.injection_helper import simple_bind
 from zsl.utils.testing import load_and_run_tests
 
 
-class ZslCli(object):
+class ZslCli:
     def __init__(self):
         # type: () -> ZslCli
         logging.getLogger(__name__).debug("Creating ZSL CLI.")
@@ -29,7 +26,7 @@ class ZslCli(object):
         cli(**kwargs)
 
 
-class ZslTaskCli(object):
+class ZslTaskCli:
     @inject
     def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.command(help="Execute a single task.")
@@ -42,14 +39,14 @@ class ZslTaskCli(object):
                 result = exec_task(task_path, data)
                 click.echo(result)
             except:  # NOQA
-                msg = "Error when calling task '{0}'\n\n{1}.".format(
+                msg = "Error when calling task '{}'\n\n{}.".format(
                     task_path, traceback.format_exc())
                 logging.getLogger(__name__).error(msg)
                 click.echo(msg)
                 exit(1)
 
 
-class ZslTestCli(object):
+class ZslTestCli:
     @inject
     def __init__(self, zsl_cli: ZslCli) -> ZslTaskCli:
         @zsl_cli.cli.group(help="Perform unit tests.")
@@ -61,7 +58,7 @@ class ZslTestCli(object):
             load_and_run_tests()
 
 
-class ZslGenerateCli(object):
+class ZslGenerateCli:
     @inject
     def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.group(help="Perform unit tests.")

@@ -11,7 +11,7 @@ from zsl import Config, inject
 from zsl.utils.string_helper import camelcase_to_underscore
 
 
-class ServiceInitializer(object):
+class ServiceInitializer:
     # TODO: change to iface
 
     """Add outside services to application injector."""
@@ -35,7 +35,7 @@ class ServiceInitializer(object):
             to=binder.injector.create_object(cls),
             scope=singleton
         )
-        logging.debug("Created {0} binding.".format(cls))
+        logging.debug("Created {} binding.".format(cls))
 
     @staticmethod
     @inject
@@ -60,5 +60,5 @@ class ServiceInitializer(object):
 
                 for cls_name in services:
                     module_name = camelcase_to_underscore(cls_name)
-                    package_name = "{0}.{1}".format(service_package, module_name)
+                    package_name = "{}.{}".format(service_package, module_name)
                     ServiceInitializer._bind_service(package_name, cls_name)

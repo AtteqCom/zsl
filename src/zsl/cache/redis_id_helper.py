@@ -39,7 +39,7 @@ class RedisIdHelper(IdHelper):
 
     def gather_page(self, page_key, decoder=decoder_identity):
         page_keys = self._redis_cache_module.get_list(page_key)
-        logging.debug("Fetching page {0} from redis using keys {1}.".format(page_key, page_keys))
+        logging.debug("Fetching page {} from redis using keys {}.".format(page_key, page_keys))
 
         p = []
         for k in page_keys:

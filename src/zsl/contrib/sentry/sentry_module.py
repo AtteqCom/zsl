@@ -37,9 +37,7 @@ To test the functionality use CLI
     python app.py sentry test
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *
 import logging
 
 from injector import Binder, inject, provider, singleton
@@ -64,7 +62,7 @@ except ImportError:
     raise
 
 
-class SentryCli(object):
+class SentryCli:
     pass
 
     """Sentry CLI interface support."""
@@ -117,7 +115,7 @@ class SentryErrorProcessor(ErrorProcessor):
         return handler
 
     def handle(self, e):
-        logging.getLogger(__name__).info('Sending error message for {0}.'.format(e))
+        logging.getLogger(__name__).info('Sending error message for {}.'.format(e))
         self._client.captureException()
 
 

@@ -5,9 +5,7 @@
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>,
                   Martin Babka <babka@atteq.com>
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *  # NOQA
 from functools import wraps
 import json
 from json.encoder import JSONEncoder
@@ -28,7 +26,7 @@ class ModelConversionError(Exception):
     def __init__(self, obj, attribute):
         msg = "Can not fit dictionary into model '{0}' since the model " \
               "does not have attribute '{1}'"
-        super(ModelConversionError, self).__init__(msg.format(obj, attribute))
+        super().__init__(msg.format(obj, attribute))
         self._obj = obj
         self._attribute = attribute
 
@@ -146,6 +144,6 @@ def create_task(task_path: str, task_router: TaskRouter):
         task_callable = task.perform
     else:
         raise ZslError(
-            "Can not create task with path '{0}'.".format(task_path))
+            "Can not create task with path '{}'.".format(task_path))
 
     return task, task_callable

@@ -14,7 +14,7 @@ from sqlalchemy.orm.session import Session, sessionmaker
 from zsl import Config
 
 
-class SessionHolder(object):
+class SessionHolder:
     def __init__(self, sess_cls: Type[Session]) -> None:
         self._sess_cls = sess_cls
 
@@ -22,7 +22,7 @@ class SessionHolder(object):
         return self._sess_cls()
 
 
-class SessionFactory(object):
+class SessionFactory:
     """Creates a db session with an open transaction."""
 
     @inject
@@ -33,7 +33,7 @@ class SessionFactory(object):
         return self._session_holder()
 
 
-class TransactionHolder(object):
+class TransactionHolder:
     def __init__(self) -> None:
         self._orm = None
         self._transaction_callback = []
@@ -82,7 +82,7 @@ class TransactionHolder(object):
             c()
 
 
-class EmptyTransactionalHolder(object):
+class EmptyTransactionalHolder:
     def __init__(self) -> None:
         self._session = None
 

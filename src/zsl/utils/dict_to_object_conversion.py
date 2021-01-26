@@ -1,7 +1,4 @@
-from __future__ import unicode_literals
-
 # noinspection PyCompatibility
-from builtins import int, str
 from datetime import date, datetime
 from typing import Any, Dict, Union
 

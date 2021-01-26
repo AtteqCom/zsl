@@ -4,10 +4,8 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
 
 import abc
-from builtins import object
 import json
 
 from future.utils import with_metaclass
@@ -38,7 +36,7 @@ def app_model_encoder_fn(x):
 
 
 def create_key_class_prefix(cls):
-    return "{0}.{1}".format(cls.__module__, cls.__name__)
+    return "{}.{}".format(cls.__module__, cls.__name__)
 
 
 def create_key_object_prefix(obj):
@@ -69,9 +67,9 @@ def model_key_generator(model):
 
     related = sorted(get_app_model_related_fields(model))
     if len(related):
-        return "{0}:{1}:+{2}".format(create_key_object_prefix(model), model.get_id(), "+".join(related))
+        return "{}:{}:+{}".format(create_key_object_prefix(model), model.get_id(), "+".join(related))
     else:
-        return "{0}:{1}".format(create_key_object_prefix(model), model.get_id())
+        return "{}:{}".format(create_key_object_prefix(model), model.get_id())
 
 # TODO: Test
 

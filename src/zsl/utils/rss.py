@@ -6,7 +6,6 @@ Helper function for handling rss.
 
 .. moduleauthor:: Peter Morihladko
 """
-from __future__ import unicode_literals
 
 import xml.etree.ElementTree as ET
 

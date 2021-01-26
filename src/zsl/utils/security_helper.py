@@ -5,9 +5,7 @@
 Helper module with function dealing with security.
 """
 
-from __future__ import unicode_literals
 
-from builtins import str
 import hashlib
 import sys
 

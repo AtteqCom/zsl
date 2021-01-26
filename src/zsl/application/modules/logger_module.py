@@ -15,7 +15,7 @@ class LoggerModule(Module):
     LOGGING_CONFIG_NAME = 'LOGGING'
 
     def configure(self, binder: Binder) -> None:
-        super(LoggerModule, self).configure(binder)
+        super().configure(binder)
         binder.injector.call_with_injection(self.configure_logging)
 
     @inject

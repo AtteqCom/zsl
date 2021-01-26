@@ -13,7 +13,7 @@ import sqlalchemy.engine
 from zsl import Zsl
 
 
-class DbTestTask(object):
+class DbTestTask:
     """
     Connects to a database and executes a simple query. The result of the query should be 6.
 
@@ -30,7 +30,7 @@ class DbTestTask(object):
     def __init__(self, db: sqlalchemy.engine.Engine, app: Zsl) -> None:
         self._db = db
         self._app = app
-        self._app.logger.debug("Call from DbTestTesk.__init__, db {0}".format(db))
+        self._app.logger.debug("Call from DbTestTesk.__init__, db {}".format(db))
 
     def perform(self, data):
-        return Response("{0}".format(self._db.execute("select 1 * 2 * 3").scalar()), mimetype='text/plain')
+        return Response("{}".format(self._db.execute("select 1 * 2 * 3").scalar()), mimetype='text/plain')

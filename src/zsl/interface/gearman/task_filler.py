@@ -4,7 +4,6 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import print_function, unicode_literals
 
 import json
 
@@ -15,7 +14,7 @@ from zsl.gearman import gearman
 @inject
 def exec_task_filler(task_path: str, json_data: str, config: Config) -> None:
     print("Initializing client.")
-    gm_client = gearman.GearmanClient(["{0}:{1}".format(config['GEARMAN']['host'], config['GEARMAN']['port'])])
+    gm_client = gearman.GearmanClient(["{}:{}".format(config['GEARMAN']['host'], config['GEARMAN']['port'])])
     print("Client initialized.")
 
     if json_data.startswith("file://"):
@@ -25,6 +24,6 @@ def exec_task_filler(task_path: str, json_data: str, config: Config) -> None:
     ret_val = gm_client.submit_job(config['GEARMAN_TASK_NAME'], json.dumps(
         {'path': task_path, 'data': json.loads(json_data)}))
 
-    print("Returned value '{0}'.".format(ret_val))
+    print("Returned value '{}'.".format(ret_val))
     output = json.loads(ret_val.result)['data']
-    print("Returned data '{0}' of type '{1}'.".format(output, type(output)))
+    print("Returned data '{}' of type '{}'.".format(output, type(output)))

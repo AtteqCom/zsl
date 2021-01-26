@@ -6,9 +6,7 @@ This module allows for unit testing with a Zsl instance. Use
 while testing. Refer to unit testing section :ref:`unit-testing-zsl-instance`
 for an example.
 """
-from __future__ import absolute_import, unicode_literals
 
-from builtins import *
 from collections import namedtuple
 from functools import partial
 import logging
@@ -27,7 +25,7 @@ ZslTestConfiguration.__new__ = partial(ZslTestConfiguration.__new__,
                                        profile=None)
 
 
-class ZslTestCase(object):
+class ZslTestCase:
     ZSL_TEST_CONFIGURATION = None  # type: ZslTestConfiguration
 
     @classmethod
@@ -50,13 +48,13 @@ class ZslTestCase(object):
         app.debug = True
 
         logging.getLogger(config.app_name).debug(
-            "ZSL test app created {0}.".format(app))
+            "ZSL test app created {}.".format(app))
 
-        super(ZslTestCase, cls).setUpClass()
+        super().setUpClass()
 
     @classmethod
     def tearDownClass(cls):
         config = cls.ZSL_TEST_CONFIGURATION  # type: ZslTestConfiguration
         logging.getLogger(config.app_name).debug(
-            "ZSL test app tear down {0}.".format(config.app_name))
+            "ZSL test app tear down {}.".format(config.app_name))
         set_current_app(None)

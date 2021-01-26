@@ -6,10 +6,8 @@ Helper module for OOP operations.
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 oldstr = str
-from builtins import *  # NOQA
 
 
 def extend(instance, new_class):
@@ -19,7 +17,7 @@ def extend(instance, new_class):
     :param new_class: Ancestor.
     """
     instance.__class__ = type(
-        '%s_extended_with_%s' % (instance.__class__.__name__, new_class.__name__),
+        '{}_extended_with_{}'.format(instance.__class__.__name__, new_class.__name__),
         (new_class, instance.__class__,),
         {}
     )
@@ -39,7 +37,7 @@ def is_list(v):
 
 
 def proxy_object_to_delegate(proxy_object, delegate_object):
-    proxy_class_name = 'Proxy{0}To{1}'.format(
+    proxy_class_name = 'Proxy{}To{}'.format(
         proxy_object.__class__.__name__,
         delegate_object.__class__.__name__)
     proxy_object.__class__ = type(oldstr(proxy_class_name),

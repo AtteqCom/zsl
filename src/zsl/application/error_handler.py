@@ -27,7 +27,7 @@ from zsl.utils.http import get_http_status_code_value
 
 class ErrorResponse(AppModel):
     def __init__(self, code, message):
-        super(ErrorResponse, self).__init__({})
+        super().__init__({})
         self.code = code
         self.message = message
 
@@ -51,11 +51,11 @@ class DefaultErrorHandler(ErrorHandler):
     def handle(self, ex):
         logger = logging.getLogger(__name__)
         logger.error(str(ex) + "\n" + traceback.format_exc())
-        logger.error("Request:\n{0}\n{1}\n".format(request.headers,
-                                                   request.data))
+        logger.error("Request:\n{}\n{}\n".format(request.headers,
+                                                 request.data))
         link = documentation_link('error_handling')
         logger.info("Provide your own error handler so that "
-                    "a better error is produced, check {0}.".format(link))
+                    "a better error is produced, check {}.".format(link))
 
         add_responder(StatusCodeResponder(http.client.INTERNAL_SERVER_ERROR))
         return ErrorResponse(self.ERROR_CODE, self.ERROR_MESSAGE)

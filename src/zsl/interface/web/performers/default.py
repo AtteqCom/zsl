@@ -4,7 +4,6 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
 
 from flask.globals import request
 

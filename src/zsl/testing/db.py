@@ -99,7 +99,7 @@ class DbTestModule(Module):
         return TestTransactionHolderFactory()
 
 
-class DbTestCase(object):
+class DbTestCase:
     """:class:`.DbTestCase` is a mixin to be used when testing with
     a database."""
 
@@ -107,7 +107,7 @@ class DbTestCase(object):
 
     @zsl_inject
     def setUp(self, session_factory: TestSessionFactory) -> None:
-        super(DbTestCase, self).setUp()
+        super().setUp()
         logging.getLogger(__name__).debug("DbTestCase.setUp")
         session_factory.create_test_session()
 
@@ -117,7 +117,7 @@ class DbTestCase(object):
         # as the one used in setUp.
         logging.getLogger(__name__).debug("DbTestCase.tearDown")
         session_factory.close_test_session()
-        super(DbTestCase, self).tearDown()
+        super().tearDown()
 
 
 IN_MEMORY_DB_SETTINGS = {

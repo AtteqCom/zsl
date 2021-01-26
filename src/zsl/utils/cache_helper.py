@@ -4,10 +4,8 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
 
 import abc
-from builtins import object
 import json
 import logging
 
@@ -18,7 +16,7 @@ from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
 from zsl.task.job_context import JobContext
 
 
-class CacheDecorator(object):
+class CacheDecorator:
 
     @inject
     # TODO: Redo as module
@@ -187,9 +185,9 @@ def create_key_for_data(prefix, data, key_params):
     values = []
     for k in key_params:
         if k in d and type(d[k]) is list:
-            values.append("{0}:{1}".format(k, " -".join(d[k])))
+            values.append("{}:{}".format(k, " -".join(d[k])))
         else:
             value = d[k] if k in d else ''
-            values.append("{0}:{1}".format(k, value))
+            values.append("{}:{}".format(k, value))
 
-    return "{0}-{1}".format(prefix, "-".join(values))
+    return "{}-{}".format(prefix, "-".join(values))

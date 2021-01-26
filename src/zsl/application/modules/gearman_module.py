@@ -13,7 +13,7 @@ from zsl.interface.task_queue import TaskQueueWorker, run_worker
 from zsl.utils.injection_helper import simple_bind
 
 
-class GearmanCli(object):
+class GearmanCli:
     @inject
     def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.group(help="Gearman related tasks.")

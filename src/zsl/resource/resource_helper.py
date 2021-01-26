@@ -4,9 +4,7 @@
 
 .. moduleauthor:: Peter Morihladko
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *
 
 from future.utils import viewitems, viewvalues
 from sqlalchemy import and_, asc, desc, or_
@@ -45,7 +43,7 @@ def filter_from_url_arg(model_cls, query, arg, query_operator=and_,
                 break
 
         if operator is None:
-            raise Exception('No operator in expression "{0}".'.format(expr))
+            raise Exception('No operator in expression "{}".'.format(expr))
 
         (column_names, value) = expr.split(operator)
 
@@ -67,7 +65,7 @@ def filter_from_url_arg(model_cls, query, arg, query_operator=and_,
             column = getattr(e_model_cls, column_name)
             exprs.append(getattr(column, method)(typed_value))
         else:
-            raise Exception('Invalid property {0} in class {1}.'.format(column_name, e_model_cls))
+            raise Exception('Invalid property {} in class {}.'.format(column_name, e_model_cls))
 
     exprs = _join_equal_columns_to_or(exprs)
     return query.join(*joins).filter(query_operator(*exprs))
@@ -140,7 +138,7 @@ def order_from_url_arg(model_cls, query, arg):
             order_by = asc(column) if direction == 'asc' else desc(column)
             orderings.append(order_by)
         else:
-            raise Exception('Invalid property {0} in class {1}.'.format(column_name, model_cls))
+            raise Exception('Invalid property {} in class {}.'.format(column_name, model_cls))
 
     return query.join(*joins).order_by(*orderings)
 

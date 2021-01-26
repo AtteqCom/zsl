@@ -7,9 +7,7 @@ help of the ``guard`` class decorator and ``ResourcePolicy`` declarative
 policy class a complex security resource behaviour can be achieved.
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *
 from enum import Enum
 from functools import wraps
 import http.client
@@ -30,7 +28,7 @@ class Access(Enum):
     CONTINUE = 3
 
 
-class ResourcePolicy(object):
+class ResourcePolicy:
     """Declarative policy class.
 
     Every CRUD method has is corespondent *can_method__before* and
@@ -127,10 +125,10 @@ class PolicyViolationError(Exception):
 
     def __init__(self, message, code=_HTTP_STATUS_FORBIDDEN):
         self.code = code
-        super(PolicyViolationError, self).__init__(message)
+        super().__init__(message)
 
 
-class GuardedMixin(object):
+class GuardedMixin:
     """Add guarded CRUD methods to resource.
 
     The ``guard`` replaces the CRUD guarded methods with a wrapper with
@@ -169,7 +167,7 @@ def default_error_handler(e, *_):
     )
 
 
-class guard(object):
+class guard:
     """Guard decorator.
 
     This decorator wraps the CRUD methods with security checks before and
@@ -373,7 +371,7 @@ class _TransactionalPolicyViolationError(PolicyViolationError):
     def __init__(self, result):
         # type: (ResourceResult) -> None
         self.result = result
-        super(_TransactionalPolicyViolationError, self).__init__(
+        super().__init__(
             result.body,
             result.status
         )

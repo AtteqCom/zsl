@@ -5,7 +5,7 @@
 from zsl import ApplicationContext, Config, inject
 
 
-class UnitTestInitializer(object):
+class UnitTestInitializer:
     # TODO: Change to iface
 
     """Initializer handling the unit test settings."""

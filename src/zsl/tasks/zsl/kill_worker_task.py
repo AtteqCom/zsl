@@ -6,9 +6,7 @@ Created on 22.12.2012
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
 
-from builtins import object
 
 from injector import inject
 
@@ -17,7 +15,7 @@ from zsl.interface.task_queue import KillWorkerException
 from zsl.task.job_context import JobContext, WebJobContext
 
 
-class KillWorkerTask(object):
+class KillWorkerTask:
     @inject
     def __init__(self, app: Zsl) -> None:
         self._app = app

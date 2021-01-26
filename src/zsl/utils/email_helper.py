@@ -3,7 +3,6 @@
 -----------------------------
 """
 
-from __future__ import unicode_literals
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText

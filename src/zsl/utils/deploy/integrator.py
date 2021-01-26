@@ -3,7 +3,6 @@
 ----------------------------------
 """
 
-from __future__ import unicode_literals
 
 import os
 import tempfile
@@ -17,7 +16,7 @@ def integrate_to_file(what, filename, start_line, end_line):
     try:
         with open(filename) as f:
             lines = f.readlines()
-    except IOError:
+    except OSError:
         lines = []
 
     tmp_file = tempfile.NamedTemporaryFile(delete=False)

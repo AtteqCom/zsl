@@ -110,7 +110,7 @@ except ImportError:
     raise
 
 
-class AlembicCli(object):
+class AlembicCli:
     """Alembic Cli interface support."""
 
     @inject

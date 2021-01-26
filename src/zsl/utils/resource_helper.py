@@ -6,7 +6,6 @@ Helper module for resource management.
 """
 # TODO describe what model resource is and use cases
 
-from __future__ import unicode_literals
 
 import importlib
 import logging
@@ -76,7 +75,7 @@ def get_resource_task(resource_path: str, config: Config) -> ResourceTask:
 
     resource = None
     for resource_package in resource_packages:
-        module_name = "{0}.{1}".format(resource_package, resource_path)
+        module_name = "{}.{}".format(resource_package, resource_path)
 
         try:
             module = importlib.import_module(module_name)
@@ -87,7 +86,7 @@ def get_resource_task(resource_path: str, config: Config) -> ResourceTask:
                 resource = instantiate(cls)
                 break
             except AttributeError:
-                raise NameError("Can't find resource [{0}]".format(resource_path))
+                raise NameError("Can't find resource [{}]".format(resource_path))
 
         except ImportError:
 
@@ -98,11 +97,11 @@ def get_resource_task(resource_path: str, config: Config) -> ResourceTask:
                 resource = exposer.get_resource(class_name)
                 break
             except Exception as e:
-                logging.error("Can not load resource {0} [{1}].".format(resource_path, e))
+                logging.error("Can not load resource {} [{}].".format(resource_path, e))
                 pass
 
     if resource is None:
-        raise NameError("Can't find resource [{0}]".format(resource_path))
+        raise NameError("Can't find resource [{}]".format(resource_path))
 
     try:
         if request.method == 'POST':
@@ -149,9 +148,9 @@ def create_model_resource(resource_map, name, app: Zsl):
         elif len(resource_description) == 3:
             module_name, model_name, resource_class = resource_map[name]
         else:
-            raise ImportError("Invalid resource description for resource '{0}'".format(name))
+            raise ImportError("Invalid resource description for resource '{}'".format(name))
     except KeyError:
-        raise ImportError("Missing resource description for resource '{0}'".format(name))
+        raise ImportError("Missing resource description for resource '{}'".format(name))
 
     module = importlib.import_module(module_name)
     model_cls = getattr(module, model_name)

@@ -13,7 +13,7 @@ from zsl.interface.web.performers.task import create_task_mapping
 from zsl.utils.injection_helper import simple_bind
 
 
-class WebInitializer(object):
+class WebInitializer:
     """Initialize the web application."""
 
     @staticmethod
@@ -34,7 +34,7 @@ class WebInitializer(object):
 web_initializers = default_initializers + (WebInitializer,)
 
 
-class WebCli(object):
+class WebCli:
     @inject
     def __init__(self, zsl_cli: ZslCli) -> None:
         @zsl_cli.cli.group(help='Web related tasks.')
@@ -55,7 +55,7 @@ class WebCli(object):
         return self._web
 
 
-class WebHandler(object):
+class WebHandler:
     @inject
     def run_web(self, flask: Zsl, host: str = '127.0.0.1', port: int = 5000, **options: Any):
         # type: (Zsl, str, int, **Any)->None
@@ -92,6 +92,6 @@ class WebContextModule(DefaultContextModule):
         return config.get(CORS_CONFIGURATION_NAME, CORSConfiguration())
 
     def configure(self, binder: Binder) -> None:
-        super(WebContextModule, self).configure(binder)
+        super().configure(binder)
         simple_bind(binder, WebCli, singleton)
         create_task_mapping()

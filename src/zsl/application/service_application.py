@@ -19,8 +19,6 @@ package. The name of the environment configuration file is controlled via
     file.
 
 """
-from __future__ import unicode_literals
-
 import os
 from typing import Any, Callable
 
@@ -52,7 +50,7 @@ def get_settings_from_profile(profile, profile_dir=None):
     if hasattr(profile_dir, '__file__'):
         profile_dir = os.path.dirname(profile_dir.__file__)
 
-    return os.path.join(profile_dir, '{0}.cfg'.format(profile))
+    return os.path.join(profile_dir, '{}.cfg'.format(profile))
 
 
 def set_profile(profile):
@@ -85,7 +83,7 @@ class ServiceApplication(Flask):
         config_object=None,
         default_settings_module='settings.default_settings'
     ):
-        super(ServiceApplication, self).__init__(
+        super().__init__(
             import_name,
             static_url_path,
             static_folder,
@@ -112,7 +110,7 @@ class ServiceApplication(Flask):
         self._dependencies_initialized = True
 
     def __str__(self):
-        return "ZSL(application={0}, zsl_version={1}, app_version={2})".format(
+        return "ZSL(application={}, zsl_version={}, app_version={})".format(
             self.name, self.VERSION,
             self._app_version)
 
@@ -176,7 +174,7 @@ class ServiceApplication(Flask):
         self._create_injector()
         self._bind_core()
         self._bind_modules(modules)
-        self.logger.debug("Injector configuration with modules {0}.".format(modules))
+        self.logger.debug("Injector configuration with modules {}.".format(modules))
         self._dependencies_initialized = True
 
     @deprecated

@@ -5,9 +5,7 @@
 Helper for nginx push stream module
 https://github.com/wandenberg/nginx-push-stream-module
 """
-from __future__ import unicode_literals
 
-from builtins import object
 import json
 
 import requests
@@ -15,13 +13,13 @@ import requests
 from zsl.utils.url_helper import urlencode
 
 
-class NginxPusher(object):
+class NginxPusher:
     def __init__(self, server_path, channel_prefix=None):
         self._server_path = server_path
         self._channel_prefix = (channel_prefix + '.') if channel_prefix is not None else ''
 
     def channel_path(self, channel_id):
-        return '{0}?id={1}{2}'.format(self._server_path, self._channel_prefix, channel_id)
+        return '{}?id={}{}'.format(self._server_path, self._channel_prefix, channel_id)
 
     def push_msg(self, channel_id, msg):
         """Push ``msg`` for given ``channel_id``. If ``msg`` is not string, it

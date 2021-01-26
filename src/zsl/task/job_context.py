@@ -4,10 +4,8 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 from abc import abstractmethod
-from builtins import *
 import contextlib
 from threading import current_thread
 from typing import Any, Callable, Dict
@@ -18,7 +16,7 @@ from zsl.task.task_data import TaskData
 from zsl.utils.reflection_helper import proxy_object_to_delegate
 
 
-class Job(object):
+class Job:
     def __init__(self, data):
         # type: (dict) -> None
 
@@ -52,7 +50,7 @@ class Job(object):
         return self.data and 'path' in self.data and 'data' in self.data
 
 
-class JobContext(object):
+class JobContext:
     """Job Context"""
 
     def __init__(self, job, task, task_callable):
@@ -92,7 +90,7 @@ class JobContext(object):
         current_thread()._current_job_context = context
 
 
-class Responder(object):
+class Responder:
     @abstractmethod
     def respond(self, r):
         pass
@@ -127,7 +125,7 @@ def create_job(path, data):
 class WebJobContext(JobContext):
     def __init__(self, path, data, task, task_callable, request):
         """Constructor"""
-        super(WebJobContext, self).__init__(create_job(path, data), task, task_callable)
+        super().__init__(create_job(path, data), task, task_callable)
         self._request = request
         self._responders = []
 
@@ -148,7 +146,7 @@ class WebJobContext(JobContext):
 class DelegatingJobContext(JobContext):
     def __init__(self, job, task, task_callable):
         wrapped_job_context = JobContext.get_current_context()
-        super(DelegatingJobContext, self).__init__(job, task, task_callable)
+        super().__init__(job, task, task_callable)
         self._wrapped_job_context = wrapped_job_context
         proxy_object_to_delegate(self, wrapped_job_context)
 

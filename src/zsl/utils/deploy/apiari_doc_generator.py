@@ -7,7 +7,6 @@ in the documentary comments. Then outputs it to a file.
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import absolute_import, print_function, unicode_literals
 
 import importlib
 import inspect
@@ -44,7 +43,7 @@ class ApiaryDoc(pydoc.Doc):
         obj_id = self._get_obj_id(obj)
         if obj_id in self._done:
             return
-        logging.debug('Adding {0}.'.format(obj_id))
+        logging.debug('Adding {}.'.format(obj_id))
         self._done.add(obj_id)
 
         apistr = ""
@@ -105,7 +104,7 @@ class ApiaryDoc(pydoc.Doc):
             return
 
         for loader, module_name, _ispkg in pkgutil.iter_modules(obj.__path__):
-            logging.debug("Loading module {0} in {1}.".format(module_name, obj.__path__))
+            logging.debug("Loading module {} in {}.".format(module_name, obj.__path__))
             try:
                 module = loader.find_module(module_name).load_module(module_name)
                 self.docmodule(module)

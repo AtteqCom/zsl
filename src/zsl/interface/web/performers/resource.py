@@ -2,9 +2,7 @@
 :mod:`zsl.interface.webservice.performers.resource`
 ---------------------------------------------------
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *
 import json
 import logging
 
@@ -41,7 +39,7 @@ def create_resource_mapping(app: Zsl) -> None:
             (resource, params) = parse_resource_path(path)
             resource_task = get_resource_task(resource)
             if resource_task is None:
-                raise ImportError("No resource named '{0}'.".format(resource))
+                raise ImportError("No resource named '{}'.".format(resource))
             msg_format = "Fetched resource named '{0}' with data\n{1}."
             logging.debug(msg_format.format(resource, request.data))
 

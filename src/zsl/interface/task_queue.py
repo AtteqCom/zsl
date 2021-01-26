@@ -36,7 +36,7 @@ def execute_job(job: Job, app: Zsl, task_router: TaskRouter) -> Dict:
     :rtype: dict
     """
 
-    app.logger.info("Job fetched, preparing the task '{0}'.".format(job.path))
+    app.logger.info("Job fetched, preparing the task '{}'.".format(job.path))
 
     task, task_callable = task_router.route(job.path)
     jc = JobContext(job, task, task_callable)
@@ -44,7 +44,7 @@ def execute_job(job: Job, app: Zsl, task_router: TaskRouter) -> Dict:
     app.logger.info("Executing task.")
     result = jc.task_callable(jc.task_data)
 
-    app.logger.info("Task {0} executed successfully.".format(job.path))
+    app.logger.info("Task {} executed successfully.".format(job.path))
 
     return {'task_name': job.path, 'data': result}
 
@@ -71,7 +71,7 @@ class TaskQueueWorker(abc.ABC):
         :return: client id
         :rtype: str
         """
-        return "zsl-client-{0}".format(socket.gethostname())
+        return "zsl-client-{}".format(socket.gethostname())
 
     def handle_exception(self, e, task_path):
         # type: (Exception, str) -> dict

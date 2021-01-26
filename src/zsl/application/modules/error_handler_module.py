@@ -15,6 +15,6 @@ class ErrorHandlerModule(Module):
 
     def configure(self, binder: Binder) -> None:
         error_config = binder.injector.get(ErrorConfiguration)
-        super(ErrorHandlerModule, self).configure(binder)
+        super().configure(binder)
         for handler in error_config.handlers:
             register(handler)

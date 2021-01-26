@@ -2,9 +2,7 @@
 :mod:`zsl.interface.webservice.performers.task`
 -----------------------------------------------
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *  # NOQA
 from functools import partial
 import logging
 
@@ -39,8 +37,8 @@ def create_task_mapping(app: Zsl, task_configuration: TaskConfiguration) -> None
         namespace = namespace_configuration.namespace.rstrip('/')
 
         f = partial(perform_web_task, namespace)
-        name = "perform-web-task-{0}".format(namespace)
+        name = "perform-web-task-{}".format(namespace)
         f.__name__ = name
 
-        logging.getLogger(__name__).debug("Registering {0} at /{1}".format(name, namespace))
-        app.add_url_rule("/{0}/<path:path>".format(namespace), name, f, methods=["POST", "GET", "OPTIONS"])
+        logging.getLogger(__name__).debug("Registering {} at /{}".format(name, namespace))
+        app.add_url_rule("/{}/<path:path>".format(namespace), name, f, methods=["POST", "GET", "OPTIONS"])

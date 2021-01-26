@@ -12,7 +12,7 @@ from zsl import Zsl, inject
 from zsl.utils.warnings import deprecated
 
 
-class TaskData(object):
+class TaskData:
 
     @inject
     @noninjectable('payload_type')

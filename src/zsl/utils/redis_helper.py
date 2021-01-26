@@ -31,7 +31,7 @@ def redis_key(*args):
     return ':'.join(str(a) for a in args if a is not None)
 
 
-class Keymaker(object):
+class Keymaker:
     """Keymaker is a class to generate an object to generate Redis keys.
 
     :Example:

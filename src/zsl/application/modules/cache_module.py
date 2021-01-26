@@ -2,7 +2,6 @@
 :mod:`zsl.application.modules.cache_module`
 -------------------------------------------
 """
-from __future__ import unicode_literals
 
 import logging
 

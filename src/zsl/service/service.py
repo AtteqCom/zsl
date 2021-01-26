@@ -5,9 +5,7 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>,
                   Peter Morihladko <morihladko@atteq.com>
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-from builtins import *  # NOQA
 from functools import wraps
 import logging
 
@@ -20,7 +18,7 @@ from zsl.application.modules.alchemy_module import EmptyTransactionalHolder, Ses
 _EMPTY_TX_HOLDER = EmptyTransactionalHolder()
 
 
-class TransactionalSupportMixin(object):
+class TransactionalSupportMixin:
     """This mixin allows the objects to access transactional holder."""
 
     @property
@@ -37,7 +35,7 @@ class Service(TransactionalSupportMixin):
     @inject
     def __init__(self, app: Zsl, engine: Engine) -> None:
         """Constructor - initializes and injects the needed libraries."""
-        super(Service, self).__init__()
+        super().__init__()
         self._app = app
         self._engine = engine
 
