@@ -36,6 +36,10 @@ matrix:
     - python: '3.8'
       env:
         - SCRIPT=docker
+    - python: '3.9'
+      env:
+        - TOXENV=3.9-nocov
+        - SCRIPT=tox
 before_install:
   - python --version
   - uname -a
