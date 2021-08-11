@@ -9,7 +9,7 @@ requirements = [
     'future',
     'injector==0.12.1',
     'requests>=2.22',
-    'SQLAlchemy>=1.3,<1.4',
+    'SQLAlchemy>=1.3,<=1.4',
     'typing>=3.7',
     'Werkzeug>=0.15,<0.17',
 ]
@@ -23,7 +23,7 @@ else:
 
 
 setup(name='zsl',
-      version='0.23.2',
+      version='0.24.0',
       description='zsl application framework for web based services',
       long_description='Combines SQLAlchemy, flask swagger and others.',
       long_description_content_type='text/x-rst',
