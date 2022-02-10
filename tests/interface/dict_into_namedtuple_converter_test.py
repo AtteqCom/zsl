@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import NamedTuple, Optional, Union
+from typing import NamedTuple, Optional, Union, List
 from unittest import TestCase
 
 from zsl.interface.dict_into_namedtuple_converter import DictIntoNamedTupleConverter, ModelConversionError
@@ -123,6 +123,42 @@ class DictIntoNamedTupleConverterTest(TestCase):
         self.assertIsInstance(result.val, int, 'Incorrectly parsed int in optional union type')
         self.assertEqual(result.val, 5465132, 'Incorrectly parsed int in optional union value')
 
+    def test_correctly_converts_list_type(self):
+        class Model(NamedTuple):
+            val: List[int]
+
+        result = self.converter.convert({
+            'val': [1, 3, 2]
+        }, Model)
+
+        self.assertIsInstance(result.val, list, 'Incorrectly parsed list type')
+        self.assertListEqual(result.val, [1, 3, 2], 'Incorrectly parsed list value')
+
+    def test_correctly_converts_list_of_optional_type(self):
+        class Model(NamedTuple):
+            val: List[Optional[bool]]
+
+        result = self.converter.convert({
+            'val': [True, None, False]
+        }, Model)
+
+        self.assertIsInstance(result.val, list, 'Incorrectly parsed list type')
+        self.assertListEqual(result.val, [True, None, False], 'Incorrectly parsed list value')
+
+    def test_correctly_converts_list_in_list_type(self):
+        class Model(NamedTuple):
+            val: List[List[str]]
+
+        result = self.converter.convert({
+            'val': [["1", "5"], ["z", "a", "g"]]
+        }, Model)
+
+        self.assertIsInstance(result.val, list, 'Incorrectly parsed list type')
+        self.assertIsInstance(result.val[0], list, 'Incorrectly parsed list in list type')
+        self.assertEqual(len(result.val), 2, 'Incorrectly parsed list type')
+        self.assertListEqual(result.val[0], ["1", "5"], 'Incorrectly parsed first list in list value')
+        self.assertListEqual(result.val[1], ["z", "a", "g"], 'Incorrectly parsed second list in list value')
+
     def test_correctly_converts_with_default_value__when_default_not_used(self):
         class Model(NamedTuple):
             val: str = "Don't blink. Blink and you're dead. They are fast. Faster than you can believe."
@@ -188,3 +224,38 @@ class DictIntoNamedTupleConverterTest(TestCase):
 
         with self.assertRaises(ModelConversionError):
             self.converter.convert({'val': 3.65}, Model)
+
+    def test_error_when_generic_list(self):
+        class Model(NamedTuple):
+            val: List
+
+        with self.assertRaises(TypeError):
+            self.converter.convert({'val': [1, 2, 3]}, Model)
+
+    def test_error_when_list_type_with_multiple_inner_types(self):
+        with self.assertRaises(TypeError):
+            class Model(NamedTuple):
+                val: List[int, str]
+
+            self.converter.convert({'val': [1, "a"]}, Model)
+
+    def test_error_when_list_type_mismatch(self):
+        class Model(NamedTuple):
+            val: List[str]
+
+        with self.assertRaises(ModelConversionError):
+            self.converter.convert({'val': "roflmao"}, Model)
+
+    def test_error_when_inner_list_values_type_mismatch(self):
+        class Model(NamedTuple):
+            val: List[str]
+
+        with self.assertRaises(ModelConversionError):
+            self.converter.convert({'val': [1, 2, 3]}, Model)
+
+    def test_error_when_inner_list_value_type_mismatch(self):
+        class Model(NamedTuple):
+            val: List[str]
+
+        with self.assertRaises(ModelConversionError):
+            self.converter.convert({'val': ["1", 2, "3"]}, Model)

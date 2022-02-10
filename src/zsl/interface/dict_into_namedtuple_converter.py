@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import decimal
 from builtins import *  # NOQA
 from builtins import Exception, super, property
-from typing import Dict, Type, TypeVar, Union, Tuple
+from typing import Dict, Type, TypeVar, Union, Tuple, T
 
 from future.builtins import str
 
@@ -113,6 +113,23 @@ class DictIntoNamedTupleConverter:
             raise Exception(f"Unsupported typehint for field: {typehint}")
         elif typehint.__origin__ is Union:
             return type(value) in typehint.__args__
+        elif typehint.__origin__ is list:
+            inner_type_hints = typehint.__args__
+            if len(inner_type_hints) > 1:
+                raise TypeError(f"Too many inner types for list: {len(typehint.__args__)}")
+
+            if len(inner_type_hints) == 1 and inner_type_hints[0] is T:
+                raise TypeError(f"Missing inner type for list")
+
+            if type(value) is not list:
+                return False
+
+            inner_type = inner_type_hints[0]
+            for list_item in value:
+                if not self._is_type(list_item, inner_type):
+                    return False
+
+            return True
         else:
             raise Exception(f"Unsupported typehint for field: {typehint}")
 
