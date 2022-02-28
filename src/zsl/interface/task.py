@@ -18,27 +18,11 @@ from future.builtins import str
 
 from zsl import inject
 from zsl.errors import ZslError
+from zsl.interface.dict_into_namedtuple_converter import DictIntoNamedTupleConverter, is_typed_named_tuple_type
 from zsl.router.task import TaskRouter
 from zsl.task.job_context import Job, delegating_job_context
 from zsl.task.task_data import TaskData
 from zsl.utils.dict_to_object_conversion import RELATED_FIELDS, RELATED_FIELDS_CLASS, extend_object_by_dict
-
-
-class ModelConversionError(Exception):
-    def __init__(self, obj, attribute):
-        msg = "Can not fit dictionary into model '{0}' since the model " \
-              "does not have attribute '{1}'"
-        super(ModelConversionError, self).__init__(msg.format(obj, attribute))
-        self._obj = obj
-        self._attribute = attribute
-
-    @property
-    def obj(self):
-        return self._obj
-
-    @property
-    def attribute(self):
-        return self._attribute
 
 
 def fill_model_with_payload(data, obj):
@@ -53,8 +37,12 @@ def payload_into_model(model_type, argument_name='request', remove_data=True):
         @wraps(f)
         def executor(*args, **kwargs):
             data = args[1]  # type: TaskData
-            model = model_type()
-            fill_model_with_payload(data.payload, model)
+            if is_typed_named_tuple_type(model_type):
+                converter = DictIntoNamedTupleConverter()
+                model = converter.convert(data.payload, model_type)
+            else:
+                model = model_type()
+                fill_model_with_payload(data.payload, model)
             kwargs[argument_name] = model
             if remove_data:
                 args = args[:-1]
