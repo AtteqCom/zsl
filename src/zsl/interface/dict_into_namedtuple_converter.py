@@ -1,10 +1,13 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import decimal
+import enum
+import io
 from builtins import *  # NOQA
 from builtins import Exception, super, property
 from typing import Dict, Type, TypeVar, Union, Tuple, T
 
+from PIL import Image
 from future.builtins import str
 
 
@@ -109,6 +112,10 @@ class DictIntoNamedTupleConverter:
             return type(value) == typehint
         elif typehint == decimal.Decimal:
             return type(value) == float or type(value) == int or type(value) == decimal.Decimal
+        elif typehint == Image.Image:
+            return type(value) == bytes
+        elif self._is_enum_type(typehint):
+            return value in set(item.value for item in typehint)
         elif not hasattr(typehint, '__origin__'):
             raise Exception(f"Unsupported typehint for field: {typehint}")
         elif typehint.__origin__ is Union:
@@ -133,9 +140,25 @@ class DictIntoNamedTupleConverter:
         else:
             raise Exception(f"Unsupported typehint for field: {typehint}")
 
+    def _is_enum_type(self, typehint: Type) -> bool:
+        try:
+            return issubclass(typehint, enum.Enum)
+        except TypeError:
+            return False
+
     def _convert_to_type(self, value, typehint):
         # type: (any, Type)->any
-        if typehint == decimal.Decimal:
+        if typehint in [type(None)]:
+            return None
+        elif typehint in [str, int, float, bool]:
+            return typehint(value)
+        elif typehint == decimal.Decimal:
             return decimal.Decimal(value)
+        elif typehint == Image.Image:
+            return Image.open(io.BytesIO(value))
+        elif self._is_enum_type(typehint):
+            return typehint(value)
+        elif hasattr(typehint, '__origin__') and typehint.__origin__ is Union and len(typehint.__args__) == 2 and typehint.__args__[1] in [type(None)]:
+            return self._convert_to_type(value, typehint.__args__[0])
         else:
             return value

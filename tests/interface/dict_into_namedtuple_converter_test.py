@@ -1,3 +1,4 @@
+import enum
 from decimal import Decimal
 from typing import NamedTuple, Optional, Union, List
 from unittest import TestCase
@@ -58,6 +59,21 @@ class DictIntoNamedTupleConverterTest(TestCase):
 
         self.assertIsInstance(result.decimal, Decimal, 'Incorrectly parsed decimal type')
         self.assertEqual(result.decimal, Decimal(12.42), 'Incorrectly parsed decimal value')
+
+    def test_correctly_converts_enum_type(self):
+        class Type(enum.Enum):
+            CITY = "city"
+            COUNTRY = "country"
+
+        class Model(NamedTuple):
+            type: Type
+
+        result = self.converter.convert({
+            'type': 'country'
+        }, Model)
+
+        self.assertIsInstance(result.type, Type, 'Incorrectly parsed enum type')
+        self.assertEqual(result.type, Type.COUNTRY, 'Incorrectly parsed enum value')
 
     def test_correctly_converts_optional_type__when_value_missing(self):
         class Model(NamedTuple):
