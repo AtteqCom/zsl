@@ -183,8 +183,8 @@ class ServiceApplication(Flask):
         self._dependencies_initialized = True
 
     def _configure_flask_app(self):
-        if 'MAX_CONTENT_LENGTH' in self.config:
-            app.config['MAX_CONTENT_LENGTH'] = self.config['MAX_CONTENT_LENGTH']
+        if 'HTTP_REQUEST_MAX_CONTENT_LENGTH' in self.config:
+            app.config['HTTP_REQUEST_MAX_CONTENT_LENGTH'] = self.config['HTTP_REQUEST_MAX_CONTENT_LENGTH']
 
     @deprecated
     def get_initialization_context(self):
