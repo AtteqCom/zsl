@@ -29,6 +29,7 @@ from injector import Binder, Injector, singleton
 
 from zsl._state import set_current_app
 from zsl.application.initialization_context import InitializationContext
+from zsl.task import app
 from zsl.utils.warnings import deprecated
 from zsl.version import version
 
@@ -137,6 +138,8 @@ class ServiceApplication(Flask):
         if zsl_settings is not None:
             self.config.from_envvar(SETTINGS_ENV_VAR_NAME)
 
+        self._configure_flask_app()
+
     def _initialize(self):
         """Run the initializers."""
         ctx = self.injector.get(InitializationContext)
@@ -178,6 +181,10 @@ class ServiceApplication(Flask):
         self._bind_modules(modules)
         self.logger.debug("Injector configuration with modules {0}.".format(modules))
         self._dependencies_initialized = True
+
+    def _configure_flask_app(self):
+        if 'MAX_CONTENT_LENGTH' in self.config:
+            app.config['MAX_CONTENT_LENGTH'] = self.config['MAX_CONTENT_LENGTH']
 
     @deprecated
     def get_initialization_context(self):
