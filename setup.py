@@ -12,6 +12,7 @@ requirements = [
     'SQLAlchemy>=1.3,<1.4',
     'typing>=3.7',
     'Werkzeug>=0.15,<0.17',
+    'markupsafe==2.0.1',
 ]
 
 if sys.version_info < (3, 0):
