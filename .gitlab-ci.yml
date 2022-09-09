@@ -3,12 +3,14 @@ default:
 
 stages:
   - test
-  - extra
+  - docs
+  - build
+  - deploy
 
-test:
+test-check:
   stage: test
   script:
-    - tox
+    - tox -v -e check
 
 test-py36-nocov:
   stage: test
@@ -20,7 +22,6 @@ test-py37-nocov:
   script:
     - tox -v -e 3.7-nocov
 
-
 test-py37-cover:
   stage: test
   script:
@@ -30,6 +31,15 @@ test-py38-nocov:
   stage: test
   script:
     - tox -v -e 3.8-nocov
+
 docs:
-  stage: extra
+  stage: docs
   script: tox -v -e docs
+
+build:
+  stage: build
+  script: python setup.py sdist bdist_wheel
+
+deploy:
+  stage: deploy
+  script: twine upload -r testpypi --non-interactive dist/*
