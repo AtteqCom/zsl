@@ -26,3 +26,4 @@ include tox.ini .travis.yml
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib
 exclude requirements*
+exclude .gitlab-ci.yml
