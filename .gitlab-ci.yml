@@ -1,5 +1,5 @@
 default:
-  image: themattrix/tox
+  image: $CI_REGISTRY/atteq/z-service-layer/zsl/tox-env
 
 stages:
   - test
