@@ -39,7 +39,7 @@ docs:
 build:
   stage: build
   script: python3 setup.py sdist bdist_wheel
-  articacts:
+  artifacts:
     path:
       - dist/*
 
