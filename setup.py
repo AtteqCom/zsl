@@ -2,8 +2,6 @@ import sys
 
 from setuptools import find_packages, setup
 
-_is_py3 = sys.version_info > (3, 0)
-
 requirements = [
     'flask>=1.1,<1.2',
     'future',
@@ -24,7 +22,7 @@ else:
 
 
 setup(name='zsl',
-      version='0.23.2',
+      version='0.23.3',
       description='zsl application framework for web based services',
       long_description='Combines SQLAlchemy, flask swagger and others.',
       long_description_content_type='text/x-rst',
@@ -46,7 +44,6 @@ setup(name='zsl',
       },
       classifiers=[
           'Development Status :: 3 - Alpha',
-          'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3.6',
           'Operating System :: OS Independent',
           'Topic :: Software Development :: Libraries :: Application Frameworks'
