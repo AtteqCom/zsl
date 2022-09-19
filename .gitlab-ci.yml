@@ -38,7 +38,7 @@ docs:
 
 build:
   stage: build
-  script: python setup.py sdist bdist_wheel
+  script: python3 setup.py sdist bdist_wheel
 
 deploy:
   stage: deploy
