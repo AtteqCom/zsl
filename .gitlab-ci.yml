@@ -35,10 +35,18 @@ test-py38-nocov:
 docs:
   stage: docs
   script: tox -v -e docs
+  only:
+    - tags
+  except:
+    - branches
 
 build:
   stage: build
   script: python3 setup.py sdist bdist_wheel
+  only:
+    - tags
+  except:
+    - branches
   artifacts:
     paths:
       - dist/*
@@ -47,3 +55,7 @@ build:
 deploy:
   stage: deploy
   script: twine upload -r testpypi --non-interactive dist/*
+  only:
+    - tags
+  except:
+    - branches
