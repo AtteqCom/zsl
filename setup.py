@@ -22,7 +22,7 @@ else:
 
 
 setup(name='zsl',
-      version='0.23.5',
+      version='0.23.6',
       description='zsl application framework for web based services',
       long_description='Combines SQLAlchemy, flask swagger and others.',
       long_description_content_type='text/x-rst',
