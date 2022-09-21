@@ -54,7 +54,7 @@ build:
 
 deploy:
   stage: deploy
-  script: twine upload -r testpypi --non-interactive dist/*
+  script: twine upload --non-interactive dist/*
   only:
     - tags
   except:
