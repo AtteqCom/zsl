@@ -35,10 +35,6 @@ test-py38-nocov:
 docs:
   stage: docs
   script: tox -v -e docs
-  only:
-    - tags
-  except:
-    - branches
 
 build:
   stage: build
