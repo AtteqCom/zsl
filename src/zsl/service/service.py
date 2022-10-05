@@ -14,7 +14,7 @@ import logging
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm.session import Session
 
-from zsl import Zsl, inject, Injected
+from zsl import Injected, Zsl, inject
 from zsl.application.modules.alchemy_module import EmptyTransactionalHolder, SessionFactory, TransactionHolderFactory
 
 _EMPTY_TX_HOLDER = EmptyTransactionalHolder()
