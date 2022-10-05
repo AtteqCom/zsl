@@ -1,5 +1,5 @@
 #
-# 20.04 because of legacy pythons, upgrad when moving to newer ones
+# 20.04 because of legacy pythons, upgrade when moving to newer ones
 #
 FROM ubuntu:20.04
 
@@ -13,6 +13,7 @@ RUN apt install -y\
     python3.6-distutils \
     python3.7 \
     python3.7-distutils \
+    python3.10 \
     python3-pip \
     git
 RUN pip install \
