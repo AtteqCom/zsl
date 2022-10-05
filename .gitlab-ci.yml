@@ -1,0 +1,57 @@
+default:
+  image: $CI_REGISTRY/atteq/z-service-layer/zsl/tox-env
+
+stages:
+  - test
+  - docs
+  - build
+  - deploy
+
+test-check:
+  stage: test
+  script:
+    - tox -v -e check
+
+test-py36-nocov:
+  stage: test
+  script:
+    - tox -v -e 3.6-nocov
+
+test-py37-nocov:
+  stage: test
+  script:
+    - tox -v -e 3.7-nocov
+
+test-py37-cover:
+  stage: test
+  script:
+    - tox -v -e 3.7-cover
+
+test-py38-nocov:
+  stage: test
+  script:
+    - tox -v -e 3.8-nocov
+
+docs:
+  stage: docs
+  script: tox -v -e docs
+
+build:
+  stage: build
+  script: python3 setup.py sdist bdist_wheel
+  only:
+    - tags
+  except:
+    - branches
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1 week
+
+deploy:
+  stage: deploy
+  script: twine upload --non-interactive dist/*
+  only:
+    - tags
+  except:
+    - branches

@@ -2,8 +2,6 @@ import sys
 
 from setuptools import find_packages, setup
 
-_is_py3 = sys.version_info > (3, 0)
-
 requirements = [
     'flask>=1.1,<1.2',
     'future',
@@ -12,6 +10,7 @@ requirements = [
     'SQLAlchemy>=1.3,<1.4',
     'typing>=3.7',
     'Werkzeug>=0.15,<0.17',
+    'markupsafe==2.0.1',
 ]
 
 if sys.version_info < (3, 0):
@@ -45,7 +44,6 @@ setup(name='zsl',
       },
       classifiers=[
           'Development Status :: 3 - Alpha',
-          'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3.6',
           'Operating System :: OS Independent',
           'Topic :: Software Development :: Libraries :: Application Frameworks'

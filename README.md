@@ -99,3 +99,21 @@ $ python -m zsl web
 $ curl http://localhost:5000/task/hello/hello_world_task
 Hello world!
 ```
+
+## Deploying
+
+Deploy will happen upon pushing a new tag to Gitlab.
+
+### Creating new tag/version
+
+Use [bump2version](https://github.com/c4urself/bump2version) to update version in config files. It will also create commit and new tag.
+
+```bash
+$ bumpversion --new-version ${VERSION} {major|minor|patch} --tag-name ${VERSION}
+```
+
+Version name uses [semver](https://semver.org/). Starts with number.
+
+### Pipeline
+
+Current pipeline tries to copy previous Travis runs. It runs tox target seperately and on a tag push will create deploy.
