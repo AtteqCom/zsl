@@ -14,7 +14,7 @@ import logging
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm.session import Session
 
-from zsl import Zsl, inject
+from zsl import Zsl, inject, Injected
 from zsl.application.modules.alchemy_module import EmptyTransactionalHolder, SessionFactory, TransactionHolderFactory
 
 _EMPTY_TX_HOLDER = EmptyTransactionalHolder()
@@ -35,7 +35,7 @@ class Service(TransactionalSupportMixin):
     """
 
     @inject(app=Zsl, engine=Engine)
-    def __init__(self, app, engine):
+    def __init__(self, app=Injected, engine=Injected):
         """Constructor - initializes and injects the needed libraries."""
         super(Service, self).__init__()
         self._app = app
