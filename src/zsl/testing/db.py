@@ -30,7 +30,7 @@ from injector import Module, provides, singleton
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm.session import Session
 
-from zsl import inject
+from zsl import Injected, inject
 from zsl.application.modules.alchemy_module import TransactionHolder, TransactionHolderFactory
 from zsl.db.model.sql_alchemy import metadata
 from zsl.service.service import SessionFactory
@@ -107,14 +107,14 @@ class DbTestCase(object):
     _session = None
 
     @inject(session_factory=TestSessionFactory)
-    def setUp(self, session_factory):
+    def setUp(self, session_factory=Injected):
         # type: (TestSessionFactory)->None
         super(DbTestCase, self).setUp()
         logging.getLogger(__name__).debug("DbTestCase.setUp")
         session_factory.create_test_session()
 
     @inject(session_factory=TestSessionFactory)
-    def tearDown(self, session_factory):
+    def tearDown(self, session_factory=Injected):
         # type: (TestSessionFactory)->None
         # This will return the same transaction/session
         # as the one used in setUp.
