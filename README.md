@@ -117,3 +117,28 @@ Version name uses [semver](https://semver.org/). Starts with number.
 ### Pipeline
 
 Current pipeline tries to copy previous Travis runs. It runs tox target seperately and on a tag push will create deploy.
+
+#### Tox Docker image
+
+Gitlab pipeline runs inside a docker image which is defined in `docker/Dockerfile.tox`. Currently we manually configure, build and push it to gitlab container registry. So to update the container follow this steps.
+
+When pushing for the first time run, you have to create an access token and login to atteq gitlab container registry. 
+Go to https://gitlab.atteq.com/atteq/z-service-layer/zsl/-/settings/access_tokens and create a token to read/write to registry. Then run
+
+`docker login registry.gitlab.atteq.com:443`
+
+To build/push the image:
+
+1. Build image locally.
+
+    `docker build -t zsl/tox-env -f docker/Dockerfile.tox`
+
+2. Tag image.
+
+    `docker tag zsl/tox-env registry.gitlab.atteq.com:443/atteq/z-service-layer/zsl/tox-env:latest`
+
+3. Push image.
+
+    `docker push registry.gitlab.atteq.com:443/atteq/z-service-layer/zsl/tox-env:latest`
+
+4. Update image hash in `.gitlab-ci.yml`. (copy from build output or `docker images --digests`).

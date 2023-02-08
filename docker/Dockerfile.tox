@@ -1,21 +1,19 @@
-#
-# 20.04 because of legacy pythons, upgrade when moving to newer ones
-#
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-RUN apt update
-RUN apt install -y software-properties-common
-RUN add-apt-repository ppa:deadsnakes/ppa
-RUN apt update
-RUN apt install -y\
-    python3.5 \
-    python3.6 \
-    python3.6-distutils \
-    python3.7 \
-    python3.7-distutils \
-    python3.10 \
-    python3-pip \
-    git
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+
+RUN apt update \
+    && apt install -y software-properties-common \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt update \
+    && apt install -y \
+        python3.8 \
+        python3.8-distutils \
+        python3.11 \
+        python3-pip \
+        git \
+    && rm -rf /var/lib/apt/lists/*
 RUN pip install \
     tox \
     twine

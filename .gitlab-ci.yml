@@ -1,5 +1,5 @@
 default:
-  image: $CI_REGISTRY/atteq/z-service-layer/zsl/tox-env
+  image: $CI_REGISTRY/atteq/z-service-layer/zsl/tox-env@sha256:b73bdde18840315fc1ac8e03ed7d1d46a0eced86bc527208be30ac65b7ab7243
 
 stages:
   - test
@@ -12,25 +12,25 @@ test-check:
   script:
     - tox -v -e check
 
-test-py36-nocov:
-  stage: test
-  script:
-    - tox -v -e 3.6-nocov
-
-test-py37-nocov:
-  stage: test
-  script:
-    - tox -v -e 3.7-nocov
-
-test-py37-cover:
-  stage: test
-  script:
-    - tox -v -e 3.7-cover
-
 test-py38-nocov:
   stage: test
   script:
     - tox -v -e 3.8-nocov
+
+test-py38-cover:
+  stage: test
+  script:
+    - tox -v -e 3.8-cover
+
+test-py310-nocov:
+  stage: test
+  script:
+    - tox -v -e 3.10-nocov
+
+test-py311-nocov:
+  stage: test
+  script:
+    - tox -v -e 3.11-nocov
 
 docs:
   stage: docs
