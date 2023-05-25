@@ -43,9 +43,8 @@ from builtins import *
 import logging
 
 from injector import Binder, provides, singleton
-from raven import Client, setup_logging
-from raven.handlers.logging import SentryHandler
-from raven.transport import ThreadedRequestsHTTPTransport
+from sentry_sdk import HttpTransport
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 from zsl import Config, Module, Zsl, inject
 from zsl.application.error_handler import register
@@ -55,12 +54,11 @@ from zsl.errors import ErrorProcessor, ZslError
 from zsl.utils.injection_helper import simple_bind
 
 try:
-    import raven
+    import sentry_sdk
 except ImportError:
     CommandLine = None
     logging.getLogger(__name__).exception(
-        "Can not import sentry client raven. Please install it first `pip install zsl ["
-        "sentry]`.")
+        "Can not import sentry sdk. Please install it first `pip install zsl [sentry-sdk]`.")
     raise
 
 
@@ -95,32 +93,35 @@ class SentryErrorProcessor(ErrorProcessor):
     @inject(config=SentryConfiguration, zsl=Zsl)
     def __init__(self, config, zsl):
         # type: (SentryConfiguration, Zsl)->None
-        self._client = self._create_client(config, zsl)
-
-        if config.register_logging_handler:
-            self._register_logging_handler(config)
+        self._init_sdk(config, zsl)
 
     @staticmethod
-    def _create_client(config, zsl):
-        # type: (SentryConfiguration, Zsl)->Client
-        return Client(
-            config.dsn,
-            transport=ThreadedRequestsHTTPTransport,
+    def _init_sdk(config, zsl):
+        # type: (SentryConfiguration, Zsl)->None
+        logging_integration = SentryErrorProcessor._register_logging_handler(config)
+
+        sentry_sdk.init(
+            dsn=config.dsn,
+            transport=HttpTransport,
             environment=config.environment,
             release=zsl.get_version(),
-            tags=config.tags
+            integrations=[logging_integration] if logging_integration else None,
         )
 
-    def _register_logging_handler(self, config):
-        # type: (SentryConfiguration)->SentryHandler
-        handler = SentryHandler(self._client)
-        handler.setLevel(config.sentry_logging_handler_level)
-        setup_logging(handler)
-        return handler
+        for key, value in config.tags.items():
+            sentry_sdk.set_tag(key, value)
+
+    @staticmethod
+    def _register_logging_handler(config):
+        # type: (SentryConfiguration)->LoggingIntegration
+        return LoggingIntegration(
+            level=None,
+            event_level=config.sentry_logging_handler_level if config.register_logging_handler else None,
+        )
 
     def handle(self, e):
         logging.getLogger(__name__).info('Sending error message for {0}.'.format(e))
-        self._client.captureException()
+        sentry_sdk.capture_exception(e)
 
 
 class SentryModule(Module):

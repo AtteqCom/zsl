@@ -22,7 +22,7 @@ else:
 
 
 setup(name='zsl',
-      version='0.25.0',
+      version='0.27.0',
       description='zsl application framework for web based services',
       long_description='Combines SQLAlchemy, flask swagger and others.',
       long_description_content_type='text/x-rst',
@@ -38,7 +38,7 @@ setup(name='zsl',
           'celery': ['zsl_client'],
           'gearman': ['zsl_client'],
           'alembic': ['alembic'],
-          'sentry': ['raven'],
+          'sentry': ['sentry-sdk'],
           'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme',
                             'alembic']
       },
