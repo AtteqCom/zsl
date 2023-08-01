@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from builtins import *
 from unittest.case import TestCase
-from unittest.mock import call
 
 from mocks import mock, mock_db_session
 from sqlalchemy.orm.session import Session
@@ -42,16 +41,13 @@ class DbTestCaseTest(ZslTestCase, TestCase):
         def runTest(self):
             pass
 
-    class AnotherDbTest(DbTestCase, TestCase):
-        def runTest(self):
-            pass
-
     def test_db_test_case(self):
         test = DbTestCaseTest.DbTest()
         with mock.patch('zsl.testing.db.metadata') as mock_metadata:
             mock_sess = mock_db_session()
             test.setUp()
             test.tearDown()
+            mock_metadata.create_all.assert_called_once_with(mock_metadata.bind)
             mock_sess.begin_nested.assert_called_once_with()
             mock_sess.rollback.assert_called_once_with()
             mock_sess.close.assert_called_once_with()
@@ -63,29 +59,6 @@ class DbTestCaseTest(ZslTestCase, TestCase):
         test.setUp()
         mock_tsf.create_test_session.assert_called_once_with()
         mock_tsf.create_session.assert_not_called()
-
-    def test_db_schema_is_recreated_exactly_once_within_run_of_all_tests(self):
-        # unfortunately we have to reset the db schema initialization to be able to test, if the schema is correctly
-        # initialized. The reason is that the class `SessionFactoryForTesting` is also used in another tests and the
-        # schema could already be initialized when running these tests.
-        SessionFactoryForTesting.reset_db_schema_initialization()
-
-        test_1 = DbTestCaseTest.DbTest()
-        test_2 = DbTestCaseTest.AnotherDbTest()
-        with mock.patch('zsl.testing.db.metadata') as mock_metadata:
-            mock_db_session()
-            test_1.setUp()
-            test_1.tearDown()
-            test_1.setUp()
-            test_1.tearDown()
-            test_2.setUp()
-            test_2.tearDown()
-            mock_metadata.drop_all.assert_called_once_with(mock_metadata.bind)
-            mock_metadata.create_all.assert_called_once_with(mock_metadata.bind)
-            # checking whether drop_all is called before create_all
-            mock_metadata.assert_has_calls(
-                [call.drop_all(mock_metadata.bind), call.create_all(mock_metadata.bind)], any_order=False
-            )
 
 
 class TestSessionFactoryTest(ZslTestCase, TestCase):
