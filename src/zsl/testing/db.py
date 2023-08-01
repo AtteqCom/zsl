@@ -39,18 +39,13 @@ from zsl.service.service import SessionFactory
 class TestSessionFactory(SessionFactory):
     """Factory always returning the single test transaction."""
     _test_session = None
-    _db_schema_initialized = False
-
-    @classmethod
-    def reset_db_schema_initialization(cls):
-        cls._db_schema_initialized = False
 
     @inject(engine=Engine)
     def create_test_session(self, engine):
         # type: (Engine) -> Session
         assert TestSessionFactory._test_session is None
         metadata.bind = engine
-        self._initialize_db_schema(engine)
+        metadata.create_all(engine)
         logging.getLogger(__name__).debug("Create test session - begin test session/setUp")
         TestSessionFactory._test_session = self._session_holder()
         TestSessionFactory._test_session.autoflush = True
@@ -68,15 +63,6 @@ class TestSessionFactory(SessionFactory):
         TestSessionFactory._test_session.close()
         TestSessionFactory._test_session = None
         logging.getLogger(__name__).debug("Close test session - close test test session/tearDown")
-
-    def _initialize_db_schema(self, engine):
-        if not TestSessionFactory._db_schema_initialized:
-            logging.getLogger(__name__).info("Initialize db schema")
-            logging.getLogger(__name__).debug("Initialize db schema - Drop all tables.")
-            metadata.drop_all(engine)
-            logging.getLogger(__name__).debug("Initialize db schema - Create all tables.")
-            metadata.create_all(engine)
-            TestSessionFactory._db_schema_initialized = True
 
 
 class TestTransactionHolder(TransactionHolder):
