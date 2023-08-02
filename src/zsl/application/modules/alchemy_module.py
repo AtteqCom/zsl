@@ -2,10 +2,7 @@
 :mod:`zsl.application.modules.alchemy_module`
 ---------------------------------------------
 """
-from __future__ import unicode_literals
-
 from abc import ABCMeta, abstractmethod
-from builtins import object
 import logging
 
 from injector import Module, provides, singleton
@@ -15,50 +12,52 @@ from sqlalchemy.orm.session import Session, sessionmaker
 
 from zsl import Config, inject
 
+logger = logging.getLogger(__name__)
 
-class SessionHolder(object):
+
+class SessionHolder:
     def __init__(self, sess_cls):
         self._sess_cls = sess_cls
 
-    def __call__(self):
-        # type: () -> Session
+    def __call__(self) -> Session:
         return self._sess_cls()
 
 
-class SessionFactory(object):
+class SessionFactory:
     """Creates a db session with an open transaction."""
 
     @inject(session_holder=SessionHolder)
-    def __init__(self, session_holder):
-        # type: (SessionHolder)->None
+    def __init__(self, session_holder: SessionHolder) -> None:
         self._session_holder = session_holder
 
-    def create_session(self):
-        # type: ()->Session
+    def create_session(self) -> Session:
         return self._session_holder()
 
 
-class TransactionHolder(object):
+class TransactionHolder:
+    """
+    Holds the transaction and session.
+
+    Works like a SQAlchemy session proxy.
+    """
+
     def __init__(self):
         self._orm = None
         self._transaction_callback = []
         self._in_transaction = False
 
-    def has_session(self):
-        # type: () -> bool
+    def has_session(self) -> bool:
         return self._orm is not None
 
     @property
-    def session(self):
-        # type: () -> Session
+    def session(self) -> Session:
         return self._orm
 
     @property
     def in_transaction(self):
         return self._in_transaction
 
-    def inject_session(self, session):
-        # type: (Session) -> None
+    def inject_session(self, session: Session) -> None:
         """Used to set the session in the @transactional decorator."""
         self._orm = session
         self._in_transaction = True
@@ -67,15 +66,15 @@ class TransactionHolder(object):
         pass
 
     def commit(self):
-        logging.getLogger(__name__).debug("Commit.")
+        logger.debug("Commit.")
         self._orm.commit()
 
     def rollback(self):
-        logging.getLogger(__name__).debug("Rollback.")
+        logger.debug("Rollback.")
         self._orm.rollback()
 
     def close(self):
-        logging.getLogger(__name__).debug("Close.")
+        logger.debug("Close.")
         self._orm.close()
         self._orm = None
         self._in_transaction = False
@@ -90,7 +89,7 @@ class TransactionHolder(object):
             c()
 
 
-class EmptyTransactionalHolder(object):
+class EmptyTransactionalHolder:
     def __init__(self):
         self._session = None
 
@@ -99,18 +98,16 @@ class EmptyTransactionalHolder(object):
         return self._session
 
 
-class TransactionHolderFactory(object):
+class TransactionHolderFactory:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def create_transaction_holder(self):
-        # type: ()->TransactionHolder
+    def create_transaction_holder(self) -> TransactionHolder:
         pass
 
 
 class DefaultTransactionHolderFactory(TransactionHolderFactory):
-    def create_transaction_holder(self):
-        # type: ()->TransactionHolder
+    def create_transaction_holder(self) -> TransactionHolder:
         return TransactionHolder()
 
 
@@ -119,27 +116,24 @@ class AlchemyModule(Module):
 
     @provides(Engine, scope=singleton)
     @inject(config=Config)
-    def provide_engine(self, config):
-        # type: (Config) -> Engine
-
-        engine = create_engine(config['DATABASE_URI'],
-                               **config['DATABASE_ENGINE_PROPS'])
-        logging.debug("Created DB configuration to {0}.".
-                      format(config['DATABASE_URI']))
+    def provide_engine(self, config: Config) -> Engine:
+        engine = create_engine(
+            config["DATABASE_URI"], **config["DATABASE_ENGINE_PROPS"]
+        )
+        logging.debug("Created DB configuration to {0}.".format(config["DATABASE_URI"]))
 
         return engine
 
     @provides(SessionHolder, scope=singleton)
     @inject(engine=Engine)
-    def provide_session_holder(self, engine):
-        # type: (Engine) -> SessionHolder
-
-        session = SessionHolder(sessionmaker(engine, autocommit=False,
-                                             expire_on_commit=False))
+    def provide_session_holder(self, engine: Engine) -> SessionHolder:
+        session = SessionHolder(
+            sessionmaker(engine, autocommit=False, expire_on_commit=False)
+        )
         logging.debug("Created ORM session")
 
         return session
 
     @provides(TransactionHolderFactory, scope=singleton)
-    def provide_transaction_holder_factory(self):
+    def provide_transaction_holder_factory(self) -> TransactionHolderFactory:
         return DefaultTransactionHolderFactory()

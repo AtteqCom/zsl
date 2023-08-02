@@ -17,6 +17,48 @@ RELATED_FIELDS_HINTS = 'hints'
 
 
 def extend_object_by_dict(target, dict_data, hints=None):
+    """
+    Extends the target object with data from the provided dictionary, using hints to handle specific data types
+    and related objects.
+
+    :param target: The object to extend with data from the dictionary.
+    :type target: object
+    :param dict_data: The dictionary containing data to extend the target object with.
+    :type dict_data: dict
+    :param hints: A dictionary containing hints on how to handle specific fields.
+                  The hints should be organized in the following way::
+
+                      {
+                          'date_data': {
+                              'field_name': 'date_format',
+                              ...
+                          },
+                          'datetime_data': {
+                              'field_name': 'datetime_format',
+                              ...
+                          },
+                          'related_fields': {
+                              'field_name': {
+                                  'cls': RelatedClass,
+                                  'hints': {
+                                      'date_data': {...},
+                                      'datetime_data': {...},
+                                      'related_fields': {...}
+                                  }
+                              },
+                              ...
+                          }
+                      }
+
+                  The 'date_data' and 'datetime_data' keys contain dictionaries with field names as keys and date or
+                  datetime formats as values. This helps to correctly parse date and datetime strings in the provided
+                  dictionary.
+                  The 'related_fields' key contains a dictionary with field names as keys and dictionaries as values.
+                  Each dictionary should have a 'cls' key, which should be a related class, and an optional 'hints'
+                  key containing another hints dictionary, used for nested related objects.
+    :type hints: dict, optional
+    :return: None. The function modifies the target object in-place.
+    """
     hints = _get_hints(hints)
 
     for field_name, field_value in viewitems(dict_data):
