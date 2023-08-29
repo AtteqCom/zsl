@@ -114,6 +114,61 @@ $ bumpversion --new-version ${VERSION} {major|minor|patch} --tag-name ${VERSION}
 
 Version name uses [semver](https://semver.org/). Starts with number.
 
+### Creating a prerelease version
+
+Prerelease versions are intended for limited audience testing prior to the official release. Using these version identifiers, you can have alpha, beta, release candidates, and post-release versions.
+
+1. **Alpha Version**
+
+   An alpha version is an early version of the product that may not contain all of the features that are planned for the final version. Typically, the alpha version is used internally and is not released to external customers.
+
+   To create an alpha version:
+
+   ```bash
+   $ bumpversion --new-version 1.1.0a0 {major|minor|patch} --tag-name 1.1.0a0
+   ```
+
+2. **Beta Version**
+
+   A beta version is more complete than the alpha version. It contains most or all of the features planned for the final product but may still contain bugs.
+
+   To create a beta version:
+
+   ```bash
+   $ bumpversion --new-version 1.1.0b1 {major|minor|patch} --tag-name 1.1.0b1
+   ```
+
+   For the subsequent beta releases, increment the version number after 'b'. For example, the third beta version would be `1.1.0b3`.
+
+3. **Release Candidate (RC) Version**
+
+   Release candidates are versions that are potentially final products. They are ready for release unless significant bugs emerge. You can append additional metadata after the 'rc' identifier if needed.
+
+   To create a release candidate version:
+
+   ```bash
+   $ bumpversion --new-version 1.1.0rc1 {major|minor|patch} --tag-name 1.1.0rc1-something-new
+   ```
+
+4. **Post-release Version**
+
+   Post-release versions are versions that are released after the official version, often to address minor issues or to add non-breaking enhancements.
+
+   To create a post-release version:
+
+   ```bash
+   $ bumpversion --new-version 1.1.0.post1 {major|minor|patch} --tag-name 1.1.0.post1-release
+   ```
+
+#### Tips:
+
+- Always test the prerelease version internally before pushing the tag to Gitlab.
+- Communicate with your team to determine which type of prerelease is suitable for the current stage of your project.
+- Document the differences and changes between each prerelease version in your release notes or changelog.
+
+Remember, the main goal of prereleases is to ensure that the final release is as bug-free and reliable as possible. Proper versioning helps developers and users alike understand the progression and stability of the software.
+
+
 ### Pipeline
 
 Current pipeline tries to copy previous Travis runs. It runs tox target seperately and on a tag push will create deploy.
@@ -122,7 +177,7 @@ Current pipeline tries to copy previous Travis runs. It runs tox target seperate
 
 Gitlab pipeline runs inside a docker image which is defined in `docker/Dockerfile.tox`. Currently we manually configure, build and push it to gitlab container registry. So to update the container follow this steps.
 
-When pushing for the first time run, you have to create an access token and login to atteq gitlab container registry. 
+When pushing for the first time run, you have to create an access token and login to atteq gitlab container registry.
 Go to https://gitlab.atteq.com/atteq/z-service-layer/zsl/-/settings/access_tokens and create a token to read/write to registry. Then run
 
 `docker login registry.gitlab.atteq.com:443`
