@@ -8,7 +8,7 @@ from collections import namedtuple
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.engine.base import Engine
-from sqlalchemy.ext.declarative.api import declarative_base
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import Integer, String
