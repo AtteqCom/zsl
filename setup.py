@@ -7,7 +7,7 @@ requirements = [
     'future',
     'injector==0.12.1',
     'requests>=2.22',
-    'SQLAlchemy>=1.3,<1.4',
+    'SQLAlchemy>=1.3',
     'typing>=3.7',
     'Werkzeug>=0.15,<0.17',
     'markupsafe==2.0.1',

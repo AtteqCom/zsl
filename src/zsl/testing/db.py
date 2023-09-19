@@ -66,8 +66,18 @@ class TestSessionFactory(SessionFactory):
 
 
 class TestTransactionHolder(TransactionHolder):
+    def __init__(self):
+        super().__init__()
+        self._nested_tx = None
+
     def begin(self):
-        self.session.begin_nested()
+        self._nested_tx = self.session.begin_nested()
+
+    def commit(self):
+        self._nested_tx.commit()
+
+    def rollback(self):
+        self._nested_tx.rollback()
 
     def close(self):
         logging.getLogger(__name__).debug("Close.")

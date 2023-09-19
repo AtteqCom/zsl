@@ -70,17 +70,25 @@ def filter_from_url_arg(model_cls, query, arg, query_operator=and_,
             raise Exception('Invalid property {0} in class {1}.'.format(column_name, e_model_cls))
 
     exprs = _join_equal_columns_to_or(exprs)
-    return query.join(*joins).filter(query_operator(*exprs))
+
+    if joins:
+        query = query.join(*joins)
+
+    return query.filter(query_operator(*exprs))
 
 
 def _join_equal_columns_to_or(filter_expressions):
-    columns = list(map(lambda expr: expr.get_children()[0], filter_expressions))
+    # compatibility magic, in 2.0 get_children() will return itertools.chain which is not subscriptable
+    # so next(iter(chain)) will return the first element not only for chain but also for list
+    #
+    # 2.0 has a better access with .left/.right attributes, fix when we drop 1.3 support
+    columns = list(next(iter(fe.get_children())) for fe in filter_expressions)
     if len(columns) == len(set(columns)):
         return filter_expressions
 
     joined_expressions = {}
     for filter_expression in filter_expressions:
-        column = filter_expression.get_children()[0]
+        column = next(iter(filter_expression.get_children()))
         if column in joined_expressions:
             joined_expressions[column].append(filter_expression)
         else:
@@ -142,7 +150,10 @@ def order_from_url_arg(model_cls, query, arg):
         else:
             raise Exception('Invalid property {0} in class {1}.'.format(column_name, model_cls))
 
-    return query.join(*joins).order_by(*orderings)
+    if joins:
+        query = query.join(*joins)
+
+    return query.order_by(*orderings)
 
 
 def create_related_tree(fields):
