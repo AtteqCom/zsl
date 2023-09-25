@@ -38,7 +38,7 @@ setup(name='zsl',
           'celery': ['zsl_client'],
           'gearman': ['zsl_client'],
           'alembic': ['alembic'],
-          'sentry': ['sentry-sdk'],
+          'sentry': ['sentry-sdk[flask]'],
           'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme',
                             'alembic']
       },
