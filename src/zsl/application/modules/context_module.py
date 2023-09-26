@@ -5,8 +5,6 @@
 Application context describes the environment in which the application is run\
 and is responsible for specific initializations on it.
 """
-from __future__ import unicode_literals
-
 import logging
 
 from injector import Module, singleton

@@ -2,8 +2,6 @@
 :mod:`zsl.utils.background_task`
 --------------------------------
 """
-from __future__ import unicode_literals
-
 from functools import wraps
 from typing import Callable
 
@@ -11,8 +9,6 @@ from zsl_client import GearmanService, JsonTask, RawTask
 
 from zsl import Config, inject
 from zsl.utils.params_helper import required_params
-
-__author__ = 'Peter Morihladko'
 
 
 def background_task_method(task):

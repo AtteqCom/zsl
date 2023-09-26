@@ -6,10 +6,6 @@ Created on 24.12.2012
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
-
-from builtins import object
-
 from flask import Response
 from injector import inject
 import sqlalchemy.engine
@@ -17,7 +13,7 @@ import sqlalchemy.engine
 from zsl import Zsl
 
 
-class DbTestTask(object):
+class DbTestTask:
     """
     Connects to a database and executes a simple query. The result of the query should be 6.
 

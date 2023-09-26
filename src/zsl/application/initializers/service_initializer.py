@@ -2,9 +2,6 @@
 :mod:`zsl.application.initializers.service_initializer`
 -------------------------------------------------------
 """
-from __future__ import unicode_literals
-
-from builtins import object
 import importlib
 import logging
 
@@ -14,7 +11,7 @@ from zsl import Config, Injected, inject
 from zsl.utils.string_helper import camelcase_to_underscore
 
 
-class ServiceInitializer(object):
+class ServiceInitializer:
     """Add outside services to application injector."""
     @staticmethod
     @inject(binder=Binder)

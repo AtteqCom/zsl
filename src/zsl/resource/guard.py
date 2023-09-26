@@ -6,16 +6,10 @@ Guard module defines tools to inject security checks into a resource. With
 help of the ``guard`` class decorator and ``ResourcePolicy`` declarative
 policy class a complex security resource behaviour can be achieved.
 """
-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 from enum import Enum
 from functools import wraps
 import http.client
 from typing import Any, Callable, Dict, List, Optional
-
-from future.utils import raise_from
 
 from zsl.interface.resource import ResourceResult
 from zsl.service.service import _TX_HOLDER_ATTRIBUTE, SessionFactory, transactional
@@ -30,7 +24,7 @@ class Access(Enum):
     CONTINUE = 3
 
 
-class ResourcePolicy(object):
+class ResourcePolicy:
     """Declarative policy class.
 
     Every CRUD method has is corespondent *can_method__before* and
@@ -130,7 +124,7 @@ class PolicyViolationError(Exception):
         super(PolicyViolationError, self).__init__(message)
 
 
-class GuardedMixin(object):
+class GuardedMixin:
     """Add guarded CRUD methods to resource.
 
     The ``guard`` replaces the CRUD guarded methods with a wrapper with
@@ -169,7 +163,7 @@ def default_error_handler(e, *_):
     )
 
 
-class guard(object):
+class guard:
     """Guard decorator.
 
     This decorator wraps the CRUD methods with security checks before and
@@ -332,12 +326,11 @@ class guard(object):
             return type(cls.__name__, (cls, GuardedMixin), {})
 
 
-def transactional_error_handler(e, rv, _):
-    # type: (Any, Any, SessionFactory) -> Any
+def transactional_error_handler(e: Any, rv: Any, _: SessionFactory) -> Any:
     """Re-raise a violation error to be handled in the
     ``_nested_transactional``.
     """
-    raise_from(_TransactionalPolicyViolationError(rv), e)
+    raise _TransactionalPolicyViolationError(rv) from e
 
 
 def _nested_transactional(fn):

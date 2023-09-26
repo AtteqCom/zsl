@@ -4,16 +4,12 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
-
-from builtins import object
-
 from zsl.db.helpers.pagination import Pagination
 from zsl.db.helpers.query_filter import QueryFilter
 from zsl.db.helpers.sorter import Sorter
 
 
-class QueryHelper(object):
+class QueryHelper:
     def __init__(self, cls, query_filter, pagination, sorter):
         self._cls = cls
 

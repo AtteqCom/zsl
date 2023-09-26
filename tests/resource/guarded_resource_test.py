@@ -2,10 +2,6 @@
 Test http responses of resource guard. It should return a model if policy is
 met and an proper http code when policy is broken.
 """
-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import http.client
 from unittest.case import TestCase
 
@@ -30,7 +26,7 @@ SAMPLE_MODEL = {
 }
 
 
-class GuardedResourceTestResource(object):
+class GuardedResourceTestResource:
     """This will be patched."""
     pass
 

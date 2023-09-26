@@ -3,9 +3,6 @@ Created on May 14, 2014
 
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 from resource.resource_test_helper import UserAppModel, UserModel, UserTuple, create_resource_test_data, users
 from unittest import TestCase
 

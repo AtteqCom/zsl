@@ -6,10 +6,6 @@ Created on 22.12.2012
 
 ..moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
-
-from builtins import object
-
 from injector import inject
 
 from zsl import Zsl
@@ -17,7 +13,7 @@ from zsl.task.task_data import TaskData
 from zsl.task.task_decorator import json_input, json_output
 
 
-class SumTask(object):
+class SumTask:
     @inject(app=Zsl)
     def __init__(self, app):
         self._app = app

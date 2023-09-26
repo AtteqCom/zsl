@@ -4,11 +4,6 @@
 
 .. moduleauthor:: Peter Morihladko
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
-
-from future.utils import viewitems, viewvalues
 from sqlalchemy import and_, asc, desc, or_
 from sqlalchemy.orm import class_mapper, joinedload
 
@@ -172,7 +167,7 @@ def create_related_tree(fields):
     while len(q) > 0:
         node = q.pop()
 
-        for k, v in viewitems(node):
+        for k, v in node.items():
             if len(v) > 0:
                 q.append(v)
             else:
@@ -210,7 +205,7 @@ def model_tree(name, model_cls, visited=None):
 def flat_model(tree):
     """Flatten the tree into a list of properties adding parents as prefixes."""
     names = []
-    for columns in viewvalues(tree):
+    for columns in tree.values():
         for col in columns:
             if isinstance(col, dict):
                 col_name = list(col)[0]

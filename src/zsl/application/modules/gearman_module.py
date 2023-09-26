@@ -2,8 +2,6 @@
 :mod:`zsl.application.modules.gearman_module`
 ---------------------------------------------
 """
-from __future__ import unicode_literals
-
 import click
 from injector import ClassProvider, Module, singleton
 
@@ -15,7 +13,7 @@ from zsl.interface.task_queue import TaskQueueWorker, run_worker
 from zsl.utils.injection_helper import simple_bind
 
 
-class GearmanCli(object):
+class GearmanCli:
     @inject(zsl_cli=ZslCli)
     def __init__(self, zsl_cli):
         # type: (ZslCli)->GearmanCli

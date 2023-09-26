@@ -12,7 +12,7 @@ class ZslError(Exception):
 ERROR_CONFIG_NAME = 'ERRORS'
 
 
-class ErrorHandler(object):
+class ErrorHandler:
     """
     Custom error handler providing a response on a particular error.
     """
@@ -41,7 +41,7 @@ class ErrorHandler(object):
         pass
 
 
-class ErrorProcessor(object):
+class ErrorProcessor:
     """
     Custom error processor handling an error state caused by an error. For example an error processor may only log an
     error, send an email, etc. The main difference between an `ErrorProcessor` and an `ErrorHandler` is that the latter
@@ -56,7 +56,7 @@ class ErrorProcessor(object):
         pass
 
 
-class ErrorConfiguration(object):
+class ErrorConfiguration:
     """
     The configuration object for error handling.
     """

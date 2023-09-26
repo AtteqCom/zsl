@@ -4,9 +4,6 @@
 
 Helper functions for simpler parsing xml into object with schemas.
 """
-from __future__ import unicode_literals
-
-from future.utils import viewitems
 
 
 class XmlToJsonException(Exception):
@@ -92,7 +89,7 @@ def _parse_dict(element, definition):
     """
     sub_dict = {}
 
-    for name, subdef in viewitems(definition):
+    for name, subdef in definition.items():
         (name, required) = _parse_name(name)
 
         sub_dict[name] = xml_to_json(element, subdef, required)

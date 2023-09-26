@@ -6,9 +6,6 @@ This module does the error handling. It allows users to register
 an error handler for a given exception type. It also provides default
 error handlers.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 from functools import wraps
 import http.client
 import logging

@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *  # NOQA
 from functools import wraps
 from typing import Any, Callable
 
@@ -32,14 +29,12 @@ def convert_to_web_response(f):
     return wrapper
 
 
-def _create_web_response(result):
-    # type:(Any,WebJobContext)->Response
+def _create_web_response(result: Any) -> Response:
     return make_response(result)
 
 
 @inject(app=Zsl)
-def execute_web_task(job_context, callable, app):
-    # type:(WebJobContext, Callable, Zsl)->Response
+def execute_web_task(job_context: WebJobContext, callable: Callable, app: Zsl) -> Response:
     app.logger.debug("Data found '%s'.", str(job_context.task_data.payload))
     if request.method == 'OPTIONS':
         return app.make_default_options_response()

@@ -11,7 +11,7 @@ from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 
 
-class HttpForbiddenTask(object):
+class HttpForbiddenTask:
 
     @forbid_web_access
     def perform(self, data):

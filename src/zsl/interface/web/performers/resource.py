@@ -2,14 +2,10 @@
 :mod:`zsl.interface.webservice.performers.resource`
 ---------------------------------------------------
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import json
 import logging
 
 from flask import Response, request
-from future.utils import viewitems
 
 from zsl import Zsl, inject
 from zsl.application.error_handler import error_handler
@@ -70,7 +66,7 @@ def create_resource_mapping(app):
             if resource_result.links:
                 response.headers['Links'] = ', '.join(
                     ['<{url}>; rel="{name}"'.format(url=url, name=name)
-                     for name, url in viewitems(resource_result.links)]
+                     for name, url in resource_result.links.items()]
                 )
 
         return response

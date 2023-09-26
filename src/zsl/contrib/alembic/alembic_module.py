@@ -87,9 +87,6 @@ use a correct `Engine`.
 
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *  # NOQA
 import logging
 import os
 from typing import List
@@ -113,7 +110,7 @@ except ImportError:
     raise
 
 
-class AlembicCli(object):
+class AlembicCli:
     """Alembic Cli interface support."""
 
     @inject(zsl_cli=ZslCli)

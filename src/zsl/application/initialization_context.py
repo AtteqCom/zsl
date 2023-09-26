@@ -7,10 +7,9 @@ loads and initializes the application if necessary.
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
 
 
-class InitializationContext(object):
+class InitializationContext:
     def __init__(self, unit_test=False, initializers=None):
         if not initializers:
             initializers = []

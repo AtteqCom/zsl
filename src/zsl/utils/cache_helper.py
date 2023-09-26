@@ -4,10 +4,7 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
 import abc
-from builtins import object
 import json
 import logging
 
@@ -18,7 +15,7 @@ from zsl.db.model.app_model_json_encoder import AppModelJSONEncoder
 from zsl.task.job_context import JobContext
 
 
-class CacheDecorator(object):
+class CacheDecorator:
 
     @inject(id_helper=IdHelper)
     def __init__(self, id_helper):

@@ -2,12 +2,10 @@
 :mod:`zsl.application.containers.container`
 -------------------------------------------
 """
-from __future__ import unicode_literals
-
 import inspect
 
 
-class IoCContainer(object):
+class IoCContainer:
     """Collection of DI modules set as class attributes.
 
     This is used for declarative DI configuration, which can be easily

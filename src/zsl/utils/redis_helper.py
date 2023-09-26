@@ -6,12 +6,7 @@ Helper module for working with redis.
 
 .. moduleauthor::  Peter Morihladko
 """
-from __future__ import unicode_literals
-
-from builtins import object
 from functools import partial
-
-from future.utils import viewitems
 
 from zsl import Config, inject
 
@@ -32,7 +27,7 @@ def redis_key(*args):
     return ':'.join(str(a) for a in args if a is not None)
 
 
-class Keymaker(object):
+class Keymaker:
     """Keymaker is a class to generate an object to generate Redis keys.
 
     :Example:
@@ -47,5 +42,5 @@ class Keymaker(object):
     def __init__(self, keys, prefix=None, config=None):
         project_specific_prefix = config.get('REDIS', {}).get('prefix')
 
-        for method, key in viewitems(keys):
+        for method, key in keys.items():
             setattr(self, method, partial(redis_key, project_specific_prefix, prefix, key))

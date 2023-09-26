@@ -19,8 +19,6 @@ package. The name of the environment configuration file is controlled via
     file.
 
 """
-from __future__ import unicode_literals
-
 import os
 from typing import Any, Callable
 

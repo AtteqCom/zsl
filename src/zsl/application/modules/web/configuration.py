@@ -1,11 +1,7 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
-
 from zsl.configuration import InvalidConfigurationException
 
 
-class MethodConfiguration(object):
+class MethodConfiguration:
     def __init__(self, package=None, packages=None, url_prefix='method'):
         if packages is not None and package is not None:
             raise InvalidConfigurationException("Can not take both packages and package in method configuration.")

@@ -82,7 +82,7 @@ class TestCommandDispatcher(unittest.TestCase):
     def test_bound(self):
         dispatcher = self.dispatcher
 
-        class C(object):
+        class C:
             def __init__(self, a, b):
                 self._a = a
                 self._b = b
@@ -91,7 +91,7 @@ class TestCommandDispatcher(unittest.TestCase):
             def get_sum(self, x, y):
                 return self._a + self._b + x + y
 
-        class D(object):
+        class D:
             def __init__(self, a, b):
                 self._a = a
                 self._b = b

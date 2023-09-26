@@ -3,7 +3,7 @@ from typing import List, Union
 CORS_CONFIGURATION_NAME = 'CORS'
 
 
-class CORSConfiguration(object):
+class CORSConfiguration:
     DEFAULT_ALLOW_HEADERS = ['Accept', 'Origin', 'Content-Type',
                              'Authorization']
     DEFAULT_EXPOSE_HEADERS = ['Location', 'X-Total-Count', 'Link']
