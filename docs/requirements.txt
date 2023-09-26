@@ -4,6 +4,7 @@ celery
 raven
 recommonmark
 redis
+sentry-sdk[flask]
 sphinx>=1.3
 sphinx-rtd-theme
 zsl_client

@@ -33,16 +33,16 @@ class AppModel:
         :param raw: Dictionary of properties of the raw data.
         :param id_name: Name of the identifier property.
         :param hints: Tells which of the raw attributes are date or datetime
-                      string and what is theirs format. Example:
-                      ```
-                      {
-                          DATE_DATA: { 'birthday': '%d.%m.%Y' },
-                          DATETIME_DATA: { 'created': '%Y-%m-%d %H:%M:%S' }
-                      }
-                      ```
-                      this attributes are then saved in the standard zsl
-                      service date/datetime format (consult
-                      :mod:`zsl.utils.date_helper` for more.)
+            string and what is theirs format. Example:
+            ```
+            {
+                DATE_DATA: { 'birthday': '%d.%m.%Y' },
+                DATETIME_DATA: { 'created': '%Y-%m-%d %H:%M:%S' }
+            }
+            ```
+            this attributes are then saved in the standard zsl
+            service date/datetime format (consult
+            :mod:`zsl.utils.date_helper` for more.)
         """
 
         extend_object_by_dict(self, raw, hints)

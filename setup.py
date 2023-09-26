@@ -3,23 +3,13 @@ import sys
 from setuptools import find_packages, setup
 
 requirements = [
-    'flask>=1.1,<1.2',
-    'future',
+    'flask>=2.3.3',
     'injector==0.12.1',
+    'python3_gearman',
     'requests>=2.22',
     'SQLAlchemy>=1.3',
-    'typing>=3.7',
-    'Werkzeug>=0.15,<0.17',
-    'markupsafe==2.0.1',
+    'typing>=3.7'
 ]
-
-if sys.version_info < (3, 0):
-    requirements.extend(['enum34',
-                         'gearman==2.0.2',
-                         ])
-else:
-    requirements.extend(['python3_gearman'])
-
 
 setup(name='zsl',
       version='0.30.0',
