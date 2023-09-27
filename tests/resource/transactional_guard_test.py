@@ -4,6 +4,7 @@ before checking the policies and calling rollback if policy is broken.
 """
 from resource.resource_test_helper import UserModel, create_resource_test_data, users
 from unittest import TestCase
+import unittest.mock as mock
 
 from mocks import mock_db_session
 
@@ -13,11 +14,6 @@ from zsl.application.modules.alchemy_module import TransactionHolder
 from zsl.resource.guard import Access, GuardedMixin, ResourcePolicy, transactional_guard
 from zsl.resource.model_resource import ModelResource
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DbTestCase
-
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
 
 
 class UserResource(ModelResource):

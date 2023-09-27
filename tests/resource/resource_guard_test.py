@@ -3,11 +3,10 @@ Test resource guard.
 """
 import inspect
 import sys
-import unittest.mock as mock
 from unittest import TestCase
+import unittest.mock as mock
 
 from zsl.resource.guard import Access, GuardedMixin, ResourcePolicy, guard
-
 
 _methods = ['create', 'read', 'update', 'delete']
 
