@@ -9,7 +9,6 @@ Implementation of celery workers.
 import sys
 
 from celery import Celery, shared_task
-from injector import Module, provides, singleton
 
 from zsl import Config, inject
 from zsl.interface.task_queue import TaskQueueWorker
@@ -60,7 +59,7 @@ class CeleryTaskQueueMainWorker(CeleryTaskQueueWorkerBase):
     """Worker implementation for Celery task queue."""
 
     def __init__(self, ):
-        super(CeleryTaskQueueMainWorker, self).__init__()
+        super().__init__()
         self.celery_app = create_celery_app()
         self.celery_worker = None
 
