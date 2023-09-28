@@ -7,9 +7,6 @@
                   Jan Janco <janco@atteq.com>,
                   Lubos Pis <pis@atteq.com>
 """
-from __future__ import unicode_literals
-
-from builtins import *
 from datetime import timedelta
 from functools import wraps
 import json

@@ -4,9 +4,6 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
-from builtins import *
 import json
 import logging
 
@@ -46,7 +43,7 @@ def set_default_responder(responder):
 _default_responder_method = default_web_responder
 
 
-class Performer(object):
+class Performer:
     def __init__(self, f):
         global _default_responder_method
         self._f = f

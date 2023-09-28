@@ -4,9 +4,6 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
-
-from builtins import range, str
 import random
 import re
 import string

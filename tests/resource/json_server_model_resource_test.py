@@ -2,9 +2,6 @@
 :mod:`tests.resource.json_server_model_resource`
 ------------------------------------------------
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import http.client
 import json
 import math
@@ -13,9 +10,7 @@ from resource.resource_test_helper import (UserModel, UserTuple, addresses, crea
                                            get_non_existent_id, users)
 from typing import AnyStr, Dict, List, Optional, Union
 from unittest.case import TestCase
-import urllib
-
-from future.utils import viewitems
+from urllib.parse import urlencode
 
 from zsl import Zsl
 from zsl.application.containers.web_container import WebContainer
@@ -23,12 +18,6 @@ from zsl.resource.json_server_resource import JsonServerResource
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 from zsl.testing.http import HTTPTestCase, json_loads
 from zsl.testing.test_utils import parent_module
-
-# py23
-if hasattr(urllib, 'parse'):
-    urlencode = urllib.parse.urlencode
-else:
-    urlencode = urllib.urlencode
 
 
 def parse_links_header(links_str):
@@ -67,7 +56,7 @@ def parse_page_link_headers(links_str):
 
     return {
         name: int(re.search(r'_page=([\d]+)', url).group(1))
-        for name, url in viewitems(links)
+        for name, url in links.items()
     }
 
 

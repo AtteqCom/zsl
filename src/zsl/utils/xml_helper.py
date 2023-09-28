@@ -4,12 +4,9 @@
 
 Helper functions for working with XML and ElementTree.
 """
-from __future__ import unicode_literals
-
 from functools import reduce
 import xml.etree.ElementTree as ET
 
-from future.utils import viewitems
 import requests
 
 
@@ -91,7 +88,7 @@ def attrib_to_dict(element, *args, **kwargs):
         return {key: element.get(key) for key in args}
 
     if len(kwargs) > 0:
-        return {new_key: element.get(old_key) for new_key, old_key in viewitems(kwargs)}
+        return {new_key: element.get(old_key) for new_key, old_key in kwargs.items()}
 
     return element.attrib
 

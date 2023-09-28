@@ -4,15 +4,11 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
-
 from zsl import Injected, Zsl, inject
 from zsl.utils.warnings import deprecated
 
 
-class TaskData(object):
+class TaskData:
     @inject(app=Zsl)
     def __init__(self, payload, app=Injected, payload_type=str):
         self._app = app

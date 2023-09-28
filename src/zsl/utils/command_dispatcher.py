@@ -4,13 +4,10 @@
 
 .. moduleauthor:: peter morihladko
 """
-from __future__ import unicode_literals
-
-from builtins import object
 import inspect
 
 
-class CommandDispatcher(object):
+class CommandDispatcher:
     """
     A simple class for command dictionary. A command is a function
     which can take named parameters.

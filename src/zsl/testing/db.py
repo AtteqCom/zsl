@@ -21,9 +21,6 @@ The module provides class :class:`.TestSessionFactory` - it always returns
 the same session. Also one should add :class:`.DbTestModule` to the test
 container when creating Zsl instance, see :ref:`unit-testing-zsl-instance`.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import logging
 
 from injector import Module, provides, singleton
@@ -110,7 +107,7 @@ class DbTestModule(Module):
         return TestTransactionHolderFactory()
 
 
-class DbTestCase(object):
+class DbTestCase:
     """:class:`.DbTestCase` is a mixin to be used when testing with
     a database."""
 

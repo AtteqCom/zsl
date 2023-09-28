@@ -65,7 +65,7 @@ The minimum configuration has to contain these values:
 
     # hello.py
 
-    class HelloWorldTask(object):
+    class HelloWorldTask:
         def perform(self, data):
             return "Hello World"
 

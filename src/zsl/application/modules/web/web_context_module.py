@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import logging
 from typing import Any
 
@@ -16,7 +13,7 @@ from zsl.interface.web.performers.task import create_task_mapping
 from zsl.utils.injection_helper import simple_bind
 
 
-class WebInitializer(object):
+class WebInitializer:
     """Initialize the web application."""
 
     @staticmethod
@@ -37,7 +34,7 @@ class WebInitializer(object):
 web_initializers = default_initializers + (WebInitializer,)
 
 
-class WebCli(object):
+class WebCli:
     @inject(zsl_cli=ZslCli)
     def __init__(self, zsl_cli):
         # type: (ZslCli) -> None
@@ -61,7 +58,7 @@ class WebCli(object):
         return self._web
 
 
-class WebHandler(object):
+class WebHandler:
     @inject(flask=Zsl)
     def run_web(self, flask, host='127.0.0.1', port=5000, **options):
         # type: (Zsl, str, int, **Any)->None

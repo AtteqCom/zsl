@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import http.client
 from unittest.case import TestCase
 
@@ -14,7 +11,7 @@ from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 from zsl.utils.security_helper import TOKEN_HASHED, TOKEN_RANDOM, TOKEN_SERVICE_SECURITY_CONFIG, compute_token
 
 
-class SecuredTask(object):
+class SecuredTask:
 
     @json_input
     @secured_task

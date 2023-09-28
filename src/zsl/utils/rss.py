@@ -6,11 +6,7 @@ Helper function for handling rss.
 
 .. moduleauthor:: Peter Morihladko
 """
-from __future__ import unicode_literals
-
 import xml.etree.ElementTree as ET
-
-from future.utils import viewitems
 
 
 def complex_el_from_dict(parent, data, key):
@@ -29,7 +25,7 @@ def complex_el_from_dict(parent, data, key):
 
     if isinstance(value, dict):
         if '_attr' in value:
-            for a_name, a_value in viewitems(value['_attr']):
+            for a_name, a_value in value['_attr'].items():
                 el.set(a_name, a_value)
 
         if '_text' in value:

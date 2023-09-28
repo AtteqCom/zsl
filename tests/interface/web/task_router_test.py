@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import http.client
 from unittest.case import TestCase
 
@@ -13,7 +10,7 @@ from zsl.testing.db import IN_MEMORY_DB_SETTINGS
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 
 
-class TestTask(object):
+class TestTask:
     def perform(self, _data):
         return "ok"
 

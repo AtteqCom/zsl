@@ -2,9 +2,6 @@
 :mod:`zsl.db.helpers.pagination`
 --------------------------------
 """
-from __future__ import unicode_literals
-
-from builtins import object
 from typing import Dict, Union
 
 from sqlalchemy.orm.query import Query
@@ -15,7 +12,7 @@ FIRST_PAGE = 1
 DEFAULT_PAGE_SIZE = 25
 
 
-class Pagination(object):
+class Pagination:
     """
     Pagination support. Allows to paginate a query. There are two choices.
       #. :meth:`.paginate` - paginates a query and obtains the count

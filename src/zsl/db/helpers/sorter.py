@@ -2,16 +2,12 @@
 :mod:`zsl.db.helpers.sorter`
 ----------------------------
 """
-from __future__ import unicode_literals
-
-from builtins import object, zip
-
 from sqlalchemy import asc, desc
 
 DEFAULT_SORT_ORDER = 'ASC'  # If changed, look at the condition in apply_sorter if self.get_order() == "DESC":.
 
 
-class Sorter(object):
+class Sorter:
     """
     Helper class for applying ordering criteria to query.
     """

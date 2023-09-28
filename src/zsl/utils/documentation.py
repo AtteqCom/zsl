@@ -3,9 +3,6 @@
 :mod:`zsl.utils.date_helper`
 ----------------------------
 """
-from __future__ import unicode_literals
-
-from builtins import *
 
 
 def documentation_link(chapter):

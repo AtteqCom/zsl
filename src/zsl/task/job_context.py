@@ -4,10 +4,7 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 from abc import abstractmethod
-from builtins import *
 import contextlib
 from threading import current_thread
 from typing import Any, Callable, Dict
@@ -18,7 +15,7 @@ from zsl.task.task_data import TaskData
 from zsl.utils.reflection_helper import proxy_object_to_delegate
 
 
-class Job(object):
+class Job:
     def __init__(self, data):
         # type: (dict) -> None
 
@@ -52,11 +49,10 @@ class Job(object):
         return self.data and 'path' in self.data and 'data' in self.data
 
 
-class JobContext(object):
+class JobContext:
     """Job Context"""
 
-    def __init__(self, job, task, task_callable):
-        # type: (Job, object, Callable) -> None
+    def __init__(self, job: Job, task: object, task_callable: Callable):
         """
         Constructor
         """
@@ -92,7 +88,7 @@ class JobContext(object):
         current_thread()._current_job_context = context
 
 
-class Responder(object):
+class Responder:
     @abstractmethod
     def respond(self, r):
         pass

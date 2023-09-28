@@ -4,9 +4,6 @@
 
 Helper module for working with models.
 """
-
-from __future__ import unicode_literals
-
 import logging
 
 

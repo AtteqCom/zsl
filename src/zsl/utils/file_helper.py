@@ -4,9 +4,6 @@
 
 .. moduleauthor:: Peter Morihladko <morihladko@atteq.com>, Martin Babka <babka@atteq.com>
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import errno
 import os
 

@@ -2,8 +2,6 @@
 :mod:`zsl.application.modules.logger_module`
 --------------------------------------------
 """
-from __future__ import unicode_literals
-
 import logging.config
 
 from injector import Binder, Module

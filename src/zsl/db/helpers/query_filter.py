@@ -2,33 +2,28 @@
 :mod:`zsl.db.helpers.query_filter`
 ----------------------------------
 """
-from __future__ import unicode_literals
-
-from builtins import object
-
-from future.utils import viewitems
 from sqlalchemy.sql import func
 
 
-class OperatorEq(object):
+class OperatorEq:
     @staticmethod
     def apply(q, attr, v):
         return q.filter(attr == v)
 
 
-class OperatorNeq(object):
+class OperatorNeq:
     @staticmethod
     def apply(q, attr, v):
         return q.filter(attr != v)
 
 
-class OperatorLike(object):
+class OperatorLike:
     @staticmethod
     def apply(q, attr, v):
         return q.filter(attr.like('%{0}%'.format(v)))
 
 
-class OperatorLeftLike(object):
+class OperatorLeftLike:
     """
     Left side of string is like ...
     """
@@ -38,7 +33,7 @@ class OperatorLeftLike(object):
         return q.filter(attr.like('{0}%'.format(v)))
 
 
-class OperatorRightLike(object):
+class OperatorRightLike:
     """
     Right side of string is like ...
     """
@@ -48,13 +43,13 @@ class OperatorRightLike(object):
         return q.filter(attr.like('%{0}'.format(v)))
 
 
-class OperatorBetween(object):
+class OperatorBetween:
     @staticmethod
     def apply(q, attr, v):
         return q.filter(attr.between(v[0], v[1]))
 
 
-class OperatorCompareDates(object):
+class OperatorCompareDates:
     """
     Compares only dates, year is not taken into account.
     Compared date value must be string in format '%m-%d'
@@ -65,7 +60,7 @@ class OperatorCompareDates(object):
         return q.filter(func.date_format(attr, '%m-%d') == v)
 
 
-class RelationshipOperatorContains(object):
+class RelationshipOperatorContains:
     @staticmethod
     def apply(q, attr, v):
         return q.filter(attr.contains(v))
@@ -75,7 +70,7 @@ FILTER_HINT = 'hint'
 FILTER_VALUES = 'values'
 
 
-class QueryFilter(object):
+class QueryFilter:
     """
     Helper class for applying filter criteria to query.
     """
@@ -121,7 +116,7 @@ class QueryFilter(object):
         hints = self._query_filter[FILTER_HINT]
         values = self._query_filter[FILTER_VALUES]
 
-        for k, v in viewitems(values):
+        for k, v in values.items():
             if v is None and not self._allow_null:
                 continue
 

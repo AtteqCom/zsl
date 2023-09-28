@@ -6,9 +6,6 @@ This module allows for unit testing with a Zsl instance. Use
 while testing. Refer to unit testing section :ref:`unit-testing-zsl-instance`
 for an example.
 """
-from __future__ import absolute_import, unicode_literals
-
-from builtins import *
 from collections import namedtuple
 from functools import partial
 import logging
@@ -27,7 +24,7 @@ ZslTestConfiguration.__new__ = partial(ZslTestConfiguration.__new__,
                                        profile=None)
 
 
-class ZslTestCase(object):
+class ZslTestCase:
     ZSL_TEST_CONFIGURATION = None  # type: ZslTestConfiguration
 
     @classmethod
