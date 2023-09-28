@@ -104,7 +104,7 @@ class PaginationRequest(AppModel):
         if raw is None:
             raw = {'page_no': FIRST_PAGE, 'page_size': DEFAULT_PAGE_SIZE}
 
-        super(PaginationRequest, self).__init__(raw, id_name, hints)
+        super().__init__(raw, id_name, hints)
         self.page_no = int(self.page_no) if self.page_no else FIRST_PAGE
         self.page_size = int(self.page_size) if self.page_size else DEFAULT_PAGE_SIZE
 
@@ -116,7 +116,7 @@ class PaginationRequest(AppModel):
 class PaginationResponse(AppModel):
     def __init__(self, record_count, page_size, pagination):
         # type: (int, int, PaginationRequest)->None
-        super(PaginationResponse, self).__init__({})
+        super().__init__({})
         self.record_count = record_count
         max_page_size = pagination.page_size
         self.page_count = (record_count + max_page_size - 1) // max_page_size

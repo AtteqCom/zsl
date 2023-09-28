@@ -151,7 +151,7 @@ class ModelResourceBase(TransactionalSupportMixin):
         Create Model CRUD resource for ``model_cls``
         """
 
-        super(ModelResourceBase, self).__init__()
+        super().__init__()
 
         if not model_cls:
             self.model_cls = self.__model__
@@ -462,7 +462,7 @@ class CachedModelResource(ModelResource):
 
     @inject(cache_module=CacheModule, id_helper=IdHelper, logger=logging.Logger)
     def __init__(self, model_cls, cache_module, id_helper, logger, timeout='short'):
-        super(CachedModelResource, self).__init__(model_cls)
+        super().__init__(model_cls)
         self._cache_module = cache_module
         self._id_helper = id_helper
         self._logger = logger
@@ -485,7 +485,7 @@ class CachedModelResource(ModelResource):
             result = json.loads(self._id_helper.get_key(key))
         else:
             self._logger.debug("CachedModelResource - get one not cached, transferring to resource...")
-            result = super(CachedModelResource, self)._get_one(row_id, ctx)
+            result = super()._get_one(row_id, ctx)
             # serialize as model
             self._id_helper.set_key(key, app_model_encoder_fn(result), self._timeout)
 
@@ -502,7 +502,7 @@ class CachedModelResource(ModelResource):
             result = int(self._id_helper.get_key(key))
         else:
             self._logger.debug("CachedModelResource - get one not cached, transferring to resource...")
-            result = super(CachedModelResource, self)._get_collection_count(ctx)
+            result = super()._get_collection_count(ctx)
             self._id_helper.set_key(key, app_model_encoder_fn(result), self._timeout)
 
         return result
@@ -516,7 +516,7 @@ class CachedModelResource(ModelResource):
             result = self._id_helper.gather_page(key, app_model_decoder_fn)
         else:
             self._logger.debug("CachedModelResource - collection not cached, transferring to resource...")
-            result = super(CachedModelResource, self)._get_collection(ctx)
+            result = super()._get_collection(ctx)
             self._id_helper.fill_page(key, result, self._timeout, app_model_encoder_fn)
 
         return result
@@ -547,7 +547,7 @@ class CachedModelResource(ModelResource):
 class ReadOnlyResourceUpdateOperationException(Exception):
     def __init__(self, operation):
         self._operation = operation
-        super(ReadOnlyResourceUpdateOperationException, self).__init__(
+        super().__init__(
             "Can not perform operation '{0}' on ReadOnlyResource.".format(operation))
 
     def get_operation(self):

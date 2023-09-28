@@ -16,7 +16,7 @@ class LoggerModule(Module):
 
     def configure(self, binder):
         # type: (Binder) -> None
-        super(LoggerModule, self).configure(binder)
+        super().configure(binder)
         self.configure_logging()
 
     @inject(config=Config, app=Zsl)

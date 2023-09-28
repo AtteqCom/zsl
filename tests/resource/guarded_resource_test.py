@@ -88,7 +88,7 @@ class GuardedResourceTest(TestCase, HTTPTestCase):
     def testCustomDenyException(self):
         class PaymentError(PolicyViolationError):
             def __init__(self):
-                super(PaymentError, self).__init__('Payment required', code=402)
+                super().__init__('Payment required', code=402)
 
         class PaymentPolicy(ResourcePolicy):
             @property
