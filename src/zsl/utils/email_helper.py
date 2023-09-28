@@ -2,9 +2,6 @@
 :mod:`zsl.utils.email_helper`
 -----------------------------
 """
-
-from __future__ import unicode_literals
-
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib

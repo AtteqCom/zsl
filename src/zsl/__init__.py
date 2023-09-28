@@ -10,8 +10,6 @@ Main service module.
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
 from flask import Config
 from injector import Module
 

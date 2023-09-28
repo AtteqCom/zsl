@@ -6,8 +6,6 @@ Implementation of celery workers.
 
 .. moduleauthor:: Peter Morihladko
 """
-from __future__ import unicode_literals
-
 import sys
 
 from celery import Celery, shared_task

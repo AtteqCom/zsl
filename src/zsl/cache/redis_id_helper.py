@@ -4,8 +4,6 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
 import logging
 
 from zsl import Config, inject

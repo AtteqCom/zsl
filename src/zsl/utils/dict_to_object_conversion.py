@@ -1,11 +1,5 @@
-from __future__ import unicode_literals
-
-# noinspection PyCompatibility
-from builtins import int, str
 from datetime import date, datetime
 from typing import Any, Dict, Union
-
-from future.utils import viewitems
 
 from zsl.utils.date_helper import format_date_portable, format_datetime_portable
 
@@ -61,7 +55,7 @@ def extend_object_by_dict(target, dict_data, hints=None):
     """
     hints = _get_hints(hints)
 
-    for field_name, field_value in viewitems(dict_data):
+    for field_name, field_value in dict_data.items():
         if isinstance(field_value, (type(None), str, int, float, bool)):
             if field_name in hints[DATE_DATA] and field_value is not None:
                 d = datetime.strptime(field_value,

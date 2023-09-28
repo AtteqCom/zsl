@@ -1,9 +1,5 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
-
-
 def extract_data(request):
     data = request.data
-    json_data = request.get_json()
+    # silent, as compatibility with flask 1.1 behavior
+    json_data = request.get_json(silent=True)
     return json_data if json_data else data

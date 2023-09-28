@@ -1,20 +1,12 @@
 """
 Test resource guard.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import inspect
 import sys
 from unittest import TestCase
+import unittest.mock as mock
 
 from zsl.resource.guard import Access, GuardedMixin, ResourcePolicy, guard
-
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
-
 
 _methods = ['create', 'read', 'update', 'delete']
 
@@ -33,7 +25,7 @@ class AccessError(Exception):
 
 class TestResourceGuard(TestCase):
     def setUp(self):
-        class PlainResource(object):
+        class PlainResource:
             def create(self):
                 return TEST_VALUE_CREATED
 

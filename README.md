@@ -84,7 +84,7 @@ RELOAD = True
 ```python
 # hello.py
 
-class HelloWorldTask(object):
+class HelloWorldTask:
     def perform(self, data):
         return "Hello World"
 ```

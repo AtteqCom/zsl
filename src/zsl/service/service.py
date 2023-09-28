@@ -5,8 +5,6 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>,
                   Peter Morihladko <morihladko@atteq.com>
 """
-from __future__ import annotations
-
 from contextlib import contextmanager
 from functools import wraps
 import logging

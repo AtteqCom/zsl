@@ -2,10 +2,7 @@
 :mod:`zsl.router.task`
 ------------------------
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 from abc import ABCMeta
-from builtins import *
 import importlib
 import logging
 from typing import Any, Callable, Dict, List, Tuple
@@ -18,7 +15,7 @@ from zsl.utils.task_helper import get_callable, instantiate
 TASK_CONFIGURATION_NAME = 'TASKS'
 
 
-class TaskNamespace(object):
+class TaskNamespace:
     def __init__(self, namespace, task_configuration):
         # type: (str, TaskConfiguration)->None
         self._task_packages = []
@@ -68,7 +65,7 @@ class TaskNamespace(object):
         return self._namespace
 
 
-class TaskConfiguration(object):
+class TaskConfiguration:
     def __init__(self):
         self._namespaces = []  # type: List[TaskNamespace]
 
@@ -94,7 +91,7 @@ class RoutingError(ZslError):
         return self._path
 
 
-class RouterStrategy(object):
+class RouterStrategy:
     __metaclass__ = ABCMeta
 
     def can_route(self, path):
@@ -206,7 +203,7 @@ class PackageTaskRouterStrategy(RouterStrategy):
         return module_, exceptions
 
 
-class TaskRouter(object):
+class TaskRouter:
     @inject(config=Config, task_configuration=TaskConfiguration)
     def __init__(self, config, task_configuration):
         # type: (Config, TaskConfiguration) -> None

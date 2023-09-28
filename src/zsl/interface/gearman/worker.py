@@ -4,8 +4,6 @@
 
 .. moduleauthor:: Martin
 """
-from __future__ import unicode_literals
-
 from zsl.gearman import gearman
 from zsl.interface.gearman.json_data_encoder import JSONDataEncoder
 from zsl.interface.task_queue import TaskQueueWorker

@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import logging
 import traceback
 
@@ -14,7 +11,7 @@ from zsl.utils.injection_helper import simple_bind
 from zsl.utils.testing import load_and_run_tests
 
 
-class ZslCli(object):
+class ZslCli:
     def __init__(self):
         # type: () -> ZslCli
         logging.getLogger(__name__).debug("Creating ZSL CLI.")
@@ -30,7 +27,7 @@ class ZslCli(object):
         cli(**kwargs)
 
 
-class ZslTaskCli(object):
+class ZslTaskCli:
     @inject(zsl_cli=ZslCli)
     def __init__(self, zsl_cli):
         # type: (ZslCli) -> ZslTaskCli
@@ -51,7 +48,7 @@ class ZslTaskCli(object):
                 exit(1)
 
 
-class ZslTestCli(object):
+class ZslTestCli:
     @inject(zsl_cli=ZslCli)
     def __init__(self, zsl_cli):
         # type: (ZslCli) -> ZslTestCli
@@ -64,7 +61,7 @@ class ZslTestCli(object):
             load_and_run_tests()
 
 
-class ZslGenerateCli(object):
+class ZslGenerateCli:
     @inject(zsl_cli=ZslCli)
     def __init__(self, zsl_cli):
         # type: (ZslCli) -> ZslGenerateCli

@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 from unittest.case import TestCase
 
 from mocks import mock, mock_db_session

@@ -2,9 +2,6 @@
 :mod:`zsl.application.initializers.library_initializer`
 -------------------------------------------------------
 """
-from __future__ import unicode_literals
-
-from builtins import object
 import logging
 import os
 import sys
@@ -19,7 +16,7 @@ def append_paths(path, vendor_modules):
     sys.path = new_path + sys.path
 
 
-class LibraryInitializer(object):
+class LibraryInitializer:
     """Add vendor modules to current path."""
     @staticmethod
     @inject(config=Config)

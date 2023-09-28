@@ -13,15 +13,11 @@ The basic way to use them is as follows:
 
 .. moduleauthor:: Peter Morihladko <peter@atteq.com>, Martin Babka <babka@atteq.com>
 """
-from __future__ import unicode_literals
-
-from builtins import int, object
 from hashlib import sha256
 import json
 import logging
 from typing import Any, List, Union
 
-from future.utils import viewitems
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 
@@ -41,7 +37,7 @@ def dict_pick(dictionary, allowed_keys):
     """
     Return a dictionary only with keys found in `allowed_keys`
     """
-    return {key: value for key, value in viewitems(dictionary) if key in allowed_keys}
+    return {key: value for key, value in dictionary.items() if key in allowed_keys}
 
 
 def page_to_offset(params):
@@ -83,7 +79,7 @@ def _is_list(list_):
         return False
 
 
-class ResourceQueryContext(object):
+class ResourceQueryContext:
     """
     The context of the resource query.
      - holds the parameters and arguments of the query,
@@ -395,7 +391,7 @@ class ModelResource(ModelResourceBase):
         if model is None:
             return None
 
-        for name, value in viewitems(fields):
+        for name, value in fields.items():
             setattr(model, name, value)
 
         return model
@@ -560,7 +556,7 @@ class ReadOnlyResourceUpdateOperationException(Exception):
     operation = property(get_operation)
 
 
-class ReadOnlyResourceMixin(object):
+class ReadOnlyResourceMixin:
     """
     The mixin to be used to forbid the update/delete and create operations.
     Remember the Python's MRO and place this mixin at the right place in the inheritance declaration.

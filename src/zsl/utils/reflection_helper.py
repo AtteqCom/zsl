@@ -6,10 +6,7 @@ Helper module for OOP operations.
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 oldstr = str
-from builtins import *  # NOQA
 
 
 def extend(instance, new_class):

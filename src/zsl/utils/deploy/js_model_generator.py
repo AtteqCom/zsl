@@ -4,9 +4,6 @@
 
 .. moduleauthor:: Peter Morihladko
 """
-from __future__ import unicode_literals
-
-from builtins import object, range
 import hashlib
 import importlib
 import json
@@ -35,7 +32,7 @@ list_opts_tpl = """function(callback, field) {{
                 }}"""
 
 
-class ModelGenerator(object):
+class ModelGenerator:
     def __init__(self, module, model_prefix="", collection_prefix="", model_fn="Atteq.bb.Model",
                  collection_fn="Atteq.bb.Collection"):
         self.model_prefix = model_prefix

@@ -2,8 +2,6 @@
 :mod:`zsl.application.modules.celery_module`
 --------------------------------------------
 """
-from __future__ import unicode_literals
-
 import click
 from injector import Module, singleton
 
@@ -36,7 +34,7 @@ class CeleryTaskQueueOutsideWorkerModule(Module):
         binder.bind(CeleryTaskQueueWorkerBase, to=worker, scope=singleton)
 
 
-class CeleryCli(object):
+class CeleryCli:
     @inject(zsl_cli=ZslCli)
     def __init__(self, zsl_cli):
         # type: (ZslCli) ->  CeleryCli

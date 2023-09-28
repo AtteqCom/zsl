@@ -5,9 +5,6 @@
 Helper module for resource management.
 """
 # TODO describe what model resource is and use cases
-
-from __future__ import unicode_literals
-
 import importlib
 import logging
 from typing import Callable, Dict, List, Union

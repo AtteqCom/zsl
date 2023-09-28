@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import unittest.mock as mock
 
 from zsl.service.service import SessionFactory

@@ -4,13 +4,6 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
-
-# noinspection PyCompatibility
-from builtins import map, object
-
-from future.utils import viewitems
-
 from zsl.utils.dict_to_object_conversion import extend_object_by_dict
 
 DATE_DATA = 'date_data'
@@ -22,7 +15,7 @@ RELATED_FIELDS_HINTS = 'hints'
 ISO_8601_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 
-class AppModel(object):
+class AppModel:
     """AppModel's are used as a thin and simple communication objects. Also
     they can be saved into cache. Basically they are known as Data Transfer
     Objects or DTOs.
@@ -40,16 +33,16 @@ class AppModel(object):
         :param raw: Dictionary of properties of the raw data.
         :param id_name: Name of the identifier property.
         :param hints: Tells which of the raw attributes are date or datetime
-                      string and what is theirs format. Example:
-                      ```
-                      {
-                          DATE_DATA: { 'birthday': '%d.%m.%Y' },
-                          DATETIME_DATA: { 'created': '%Y-%m-%d %H:%M:%S' }
-                      }
-                      ```
-                      this attributes are then saved in the standard zsl
-                      service date/datetime format (consult
-                      :mod:`zsl.utils.date_helper` for more.)
+            string and what is theirs format. Example:
+            ```
+            {
+                DATE_DATA: { 'birthday': '%d.%m.%Y' },
+                DATETIME_DATA: { 'created': '%Y-%m-%d %H:%M:%S' }
+            }
+            ```
+            this attributes are then saved in the standard zsl
+            service date/datetime format (consult
+            :mod:`zsl.utils.date_helper` for more.)
         """
 
         extend_object_by_dict(self, raw, hints)
@@ -86,7 +79,7 @@ class AppModel(object):
                 d[k] = tuple(d[k])
 
             elif isinstance(d[k], dict):
-                for key, value in viewitems(getattr(self, k)):
+                for key, value in getattr(self, k).items():
                     d[k][key] = self.convert(value)
 
         return d

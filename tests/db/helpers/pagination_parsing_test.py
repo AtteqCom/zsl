@@ -1,6 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *
 import http.client
 from typing import NamedTuple
 from unittest.case import TestCase
@@ -23,7 +20,7 @@ from zsl.testing.http import HTTPTestCase
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 
 
-class PaginationParsingTaskResult(object):
+class PaginationParsingTaskResult:
 
     stuffage: str = ""
     page_no: int = 0
@@ -41,7 +38,7 @@ _PAGE_NO = 6
 _PAGE_SIZE = 65
 
 
-class PaginationParsingTask(object):
+class PaginationParsingTask:
 
     @json_output
     @payload_into_model(PaginationParsingRequest)

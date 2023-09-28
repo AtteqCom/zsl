@@ -2,14 +2,10 @@
 :mod:`zsl.application.initializers.unittest_initializer`
 --------------------------------------------------------
 """
-from __future__ import unicode_literals
-
-from builtins import object
-
 from zsl import ApplicationContext, Config, inject
 
 
-class UnitTestInitializer(object):
+class UnitTestInitializer:
     """Initializer handling the unit test settings."""
     @staticmethod
     @inject(config=Config)

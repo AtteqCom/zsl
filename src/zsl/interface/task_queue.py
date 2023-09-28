@@ -12,8 +12,6 @@ import socket
 import traceback
 from typing import Any
 
-from future.utils import with_metaclass
-
 from zsl import Config, Injected, Zsl, inject
 from zsl.router.task import TaskRouter
 from zsl.task.job_context import Job, JobContext
@@ -52,7 +50,7 @@ def execute_job(job, app=Injected, task_router=Injected):
     return {'task_name': job.path, 'data': result}
 
 
-class TaskQueueWorker(with_metaclass(abc.ABCMeta, object)):
+class TaskQueueWorker(metaclass=abc.ABCMeta):
     """Task queue worker abstraction.
 
     A task queue worker is responsible for communicating with a task queue and

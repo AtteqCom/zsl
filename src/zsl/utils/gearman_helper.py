@@ -4,8 +4,6 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import unicode_literals
-
 import json
 
 from zsl import Config, inject

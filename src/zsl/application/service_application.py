@@ -19,8 +19,6 @@ package. The name of the environment configuration file is controlled via
     file.
 
 """
-from __future__ import unicode_literals
-
 import os
 from typing import Any, Callable
 
@@ -32,7 +30,7 @@ from zsl.application.initialization_context import InitializationContext
 from zsl.utils.warnings import deprecated
 from zsl.version import version
 
-#: Name of the environment variable to be read for the profile configuration.
+# Name of the environment variable to be read for the profile configuration.
 SETTINGS_ENV_VAR_NAME = 'ZSL_SETTINGS'
 
 

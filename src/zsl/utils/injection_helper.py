@@ -4,15 +4,11 @@
 
 .. moduleauthor:: Martin Babka
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from builtins import *  # NOQA
 import functools
 import inspect
 import logging
 from typing import Type
 
-from future.utils import viewitems
 import injector
 from injector import Binder, BindingKey, CallError, ClassProvider, Scope, reraise
 
@@ -37,7 +33,7 @@ def inject(**bindings):
 
     def outer_wrapper(f):
         def function_wrapper(ff):
-            for key, value in viewitems(bindings):
+            for key, value in bindings.items():
                 bindings[key] = BindingKey(value)
 
             @functools.wraps(ff)
