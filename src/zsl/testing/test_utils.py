@@ -29,4 +29,4 @@ class TestTaskData(TaskData):
 
     def __init__(self, payload):
         # type: (Any)->None
-        super(TestTaskData, self).__init__(json.dumps(payload))
+        super().__init__(json.dumps(payload))

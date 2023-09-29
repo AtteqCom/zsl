@@ -13,7 +13,7 @@ def mock_db_session():
 
     class TestSessionFactory(DbTestTestSessionFactory):
         def __init__(self):
-            super(TestSessionFactory, self).__init__()
+            super().__init__()
             self._session_holder = session_holder
 
     bind(SessionFactory, to=TestSessionFactory)

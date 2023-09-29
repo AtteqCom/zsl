@@ -81,7 +81,7 @@ class JsonServerResource(ModelResource):
 
     def create(self, *args, **kwargs):
         """Adds created http status response and location link."""
-        resource = super(JsonServerResource, self).create(*args, **kwargs)
+        resource = super().create(*args, **kwargs)
 
         return ResourceResult(
             body=resource,
@@ -220,7 +220,7 @@ class JsonServerResource(ModelResource):
 
         try:
             return ResourceResult(
-                body=super(JsonServerResource, self).read(params, args, data),
+                body=super().read(params, args, data),
                 count=result_count,
                 links=result_links
             )
@@ -236,7 +236,7 @@ class JsonServerResource(ModelResource):
         if request.method == 'PUT':
             logging.warning("Called not implemented resource method PUT")
 
-        resource = super(JsonServerResource, self).update(*args, **kwargs)
+        resource = super().update(*args, **kwargs)
 
         if resource:
             return resource

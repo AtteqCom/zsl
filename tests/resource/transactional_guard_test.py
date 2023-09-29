@@ -27,7 +27,7 @@ class TransactionalGuardTest(TestCase):
         zsl.testing = True
 
         create_resource_test_data()
-        super(TransactionalGuardTest, self).setUp()
+        super().setUp()
 
     def testIsInTransaction(self):
         test_case = self
@@ -41,7 +41,7 @@ class TransactionalGuardTest(TestCase):
                 test_case.assertIsNotNone(self._orm)
                 test_case.assertTrue(self._in_transaction)
 
-                return super(GuardedUserModel, self).read(*args, **kwargs)
+                return super().read(*args, **kwargs)
 
         resource = GuardedUserModel()
         user = resource.read('1', {}, {})

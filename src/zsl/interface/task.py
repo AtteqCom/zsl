@@ -23,7 +23,7 @@ class ModelConversionError(Exception):
     def __init__(self, obj, attribute):
         msg = "Can not fit dictionary into model '{0}' since the model " \
               "does not have attribute '{1}'"
-        super(ModelConversionError, self).__init__(msg.format(obj, attribute))
+        super().__init__(msg.format(obj, attribute))
         self._obj = obj
         self._attribute = attribute
 

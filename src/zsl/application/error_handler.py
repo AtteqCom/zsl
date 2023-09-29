@@ -27,7 +27,7 @@ from zsl.utils.http import get_http_status_code_value
 
 class ErrorResponse(AppModel):
     def __init__(self, code, message):
-        super(ErrorResponse, self).__init__({})
+        super().__init__({})
         self.code = code
         self.message = message
 

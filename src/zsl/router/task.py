@@ -83,7 +83,7 @@ class TaskConfiguration:
 class RoutingError(ZslError):
     def __init__(self, path):
         msg = "Can not find task at path '{0}'.".format(path)
-        super(RoutingError, self).__init__(msg)
+        super().__init__(msg)
         self._path = path
 
     @property

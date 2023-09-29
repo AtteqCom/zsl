@@ -121,7 +121,7 @@ class PolicyViolationError(Exception):
 
     def __init__(self, message, code=_HTTP_STATUS_FORBIDDEN):
         self.code = code
-        super(PolicyViolationError, self).__init__(message)
+        super().__init__(message)
 
 
 class GuardedMixin:
@@ -366,7 +366,7 @@ class _TransactionalPolicyViolationError(PolicyViolationError):
     def __init__(self, result):
         # type: (ResourceResult) -> None
         self.result = result
-        super(_TransactionalPolicyViolationError, self).__init__(
+        super().__init__(
             result.body,
             result.status
         )

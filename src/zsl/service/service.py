@@ -37,7 +37,7 @@ class Service(TransactionalSupportMixin):
     @inject(app=Zsl, engine=Engine)
     def __init__(self, app=Injected, engine=Injected):
         """Constructor - initializes and injects the needed libraries."""
-        super(Service, self).__init__()
+        super().__init__()
         self._app = app
         self._engine = engine
 

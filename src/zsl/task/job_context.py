@@ -123,7 +123,7 @@ def create_job(path, data):
 class WebJobContext(JobContext):
     def __init__(self, path, data, task, task_callable, request):
         """Constructor"""
-        super(WebJobContext, self).__init__(create_job(path, data), task, task_callable)
+        super().__init__(create_job(path, data), task, task_callable)
         self._request = request
         self._responders = []
 
@@ -144,7 +144,7 @@ class WebJobContext(JobContext):
 class DelegatingJobContext(JobContext):
     def __init__(self, job, task, task_callable):
         wrapped_job_context = JobContext.get_current_context()
-        super(DelegatingJobContext, self).__init__(job, task, task_callable)
+        super().__init__(job, task, task_callable)
         self._wrapped_job_context = wrapped_job_context
         proxy_object_to_delegate(self, wrapped_job_context)
 

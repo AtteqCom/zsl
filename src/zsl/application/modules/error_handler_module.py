@@ -19,6 +19,6 @@ class ErrorHandlerModule(Module):
             # type: (ErrorConfiguration)->ErrorConfiguration
             return error_config
 
-        super(ErrorHandlerModule, self).configure(binder)
+        super().configure(binder)
         for handler in get_error_config().handlers:
             register(handler)
