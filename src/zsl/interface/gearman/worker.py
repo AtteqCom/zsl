@@ -12,11 +12,11 @@ from zsl.task.job_context import Job
 
 class ReloadingWorker(gearman.GearmanWorker):
     def __init__(self, host_list=None):
-        super(ReloadingWorker, self).__init__(host_list)
+        super().__init__(host_list)
         self._should_stop = False
 
     def on_job_complete(self, current_job, job_result):
-        super(ReloadingWorker, self).on_job_complete(current_job, job_result)
+        super().on_job_complete(current_job, job_result)
         if self._should_stop:
             quit()
         return True
@@ -37,7 +37,7 @@ def job_from_gearman_job(gearman_job):
 
 class GearmanTaskQueueWorker(TaskQueueWorker):
     def __init__(self):
-        super(GearmanTaskQueueWorker, self).__init__()
+        super().__init__()
 
         self.gearman_worker = ReloadingWorker(
             ["{0}:{1}".format(self._config['GEARMAN']['host'],

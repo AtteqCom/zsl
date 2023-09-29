@@ -12,7 +12,7 @@ from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 class DummyWorker(TaskQueueWorker):
 
     def __init__(self):
-        super(DummyWorker, self).__init__()
+        super().__init__()
         self.run_count = 0
         self.last_param_1 = None
         self.last_param_2 = None

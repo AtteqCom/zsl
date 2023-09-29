@@ -83,7 +83,7 @@ class ServiceApplication(Flask):
         config_object=None,
         default_settings_module='settings.default_settings'
     ):
-        super(ServiceApplication, self).__init__(
+        super().__init__(
             import_name,
             static_url_path,
             static_folder,

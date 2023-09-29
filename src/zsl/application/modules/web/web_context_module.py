@@ -94,6 +94,6 @@ class WebContextModule(DefaultContextModule):
 
     def configure(self, binder):
         # type: (Binder) -> None
-        super(WebContextModule, self).configure(binder)
+        super().configure(binder)
         simple_bind(binder, WebCli, singleton)
         create_task_mapping()

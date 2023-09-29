@@ -18,6 +18,7 @@ include .coveragerc
 include .cookiecutterrc
 include .editorconfig
 include .isort.cfg
+include .readthedocs.yaml
 
 include LICENSE
 include README.md

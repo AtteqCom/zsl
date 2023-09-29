@@ -5,6 +5,7 @@ from setuptools import find_packages, setup
 requirements = [
     'flask>=2.3.3',
     'injector==0.12.1',
+    'python3_gearman',
     'requests>=2.22',
     'SQLAlchemy>=1.3',
     'typing>=3.7'
