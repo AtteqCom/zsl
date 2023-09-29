@@ -52,7 +52,7 @@ class CeleryCli:
 
             :param : arguments for celery worker
             """
-            run_worker(argv)
+            run_worker(('worker',) + argv)
 
         self._celery = celery
 
