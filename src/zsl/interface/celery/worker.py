@@ -9,7 +9,6 @@ Implementation of celery workers.
 import sys
 
 from celery import Celery, shared_task
-from injector import Module, provides, singleton
 
 from zsl import Config, inject
 from zsl.interface.task_queue import TaskQueueWorker
@@ -68,9 +67,14 @@ class CeleryTaskQueueMainWorker(CeleryTaskQueueWorkerBase):
         self._app.logger.info("Stopping Celery worker on demand - quitting.")
         self.celery_worker.stop()
 
-    def run(self, argv):
+    def run(self, argv: list[str]):
+        """
+        Run the celery worker cmd with given arguments from the list.
+
+        Note: the first argument should be "worker".
+        """
         self._app.logger.info("Running the worker.")
-        self.celery_worker = self.celery_app.worker_main((sys.argv[0],) + argv)
+        self.celery_worker = self.celery_app.worker_main(argv)
 
 
 @shared_task

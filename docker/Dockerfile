@@ -1,3 +1,3 @@
 FROM python:3.11
 
-RUN pip install zsl[cli,redis,alembic]==1.0.0a1
+RUN pip install zsl[cli,redis,alembic]==1.0.0a3

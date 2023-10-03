@@ -11,11 +11,14 @@ requirements = [
     'typing>=3.7'
 ]
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 setup(name='zsl',
-      version='1.0.0a1',
+      version='1.0.0a3',
       description='zsl application framework for web based services',
-      long_description='Combines SQLAlchemy, flask swagger and others.',
-      long_description_content_type='text/x-rst',
+      long_description=long_description,
+      long_description_content_type='text/markdown',
       author='Atteq s.r.o.',
       author_email='open.source@atteq.com',
       url='https://github.com/AtteqCom/zsl',
@@ -25,8 +28,8 @@ setup(name='zsl',
       extras_require={
           'cli': ['bpython', 'click>=7.0'],
           'redis': ['redis>=3.2.0'],
-          'celery': ['zsl_client'],
-          'gearman': ['zsl_client'],
+          'celery': ['zsl_client', 'celery>=5.3.4'],
+          'gearman': ['zsl_client', 'python3_gearman'],
           'alembic': ['alembic'],
           'sentry': ['sentry-sdk[flask]'],
           'documentation': ['sphinx', 'recommonmark', 'sphinx_rtd_theme',
