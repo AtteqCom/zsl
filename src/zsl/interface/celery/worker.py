@@ -6,13 +6,11 @@ Implementation of celery workers.
 
 .. moduleauthor:: Peter Morihladko
 """
-import sys
-
 from celery import Celery, shared_task
 
-from zsl import Config, inject
-from zsl.interface.task_queue import TaskQueueWorker
-from zsl.task.job_context import Job
+from zsl import Config, Injected, inject
+from zsl.interface.task_queue import JobResult, TaskQueueWorker
+from zsl.task.job_context import Job, JobData
 
 
 class CeleryTaskQueueWorkerBase(TaskQueueWorker):
@@ -21,8 +19,7 @@ class CeleryTaskQueueWorkerBase(TaskQueueWorker):
     It contains only the task execution part of worker.
     """
 
-    def execute_celery_task(self, job_data):
-        # type: (dict) -> dict
+    def execute_celery_task(self, job_data: dict) -> JobResult:
         """Creates job from task and executes the job.
 
         :param job_data: job's data
@@ -36,7 +33,7 @@ class CeleryTaskQueueWorkerBase(TaskQueueWorker):
 class CeleryTaskQueueOutsideWorker(CeleryTaskQueueWorkerBase):
     """Celery worker used only for task execution.
 
-    This can be used when the worker is manage with some other application,
+    This can be used when the worker is managed with some other application,
     like `celery worker` or `celery multi`.
     """
 
@@ -48,24 +45,25 @@ class CeleryTaskQueueOutsideWorker(CeleryTaskQueueWorkerBase):
 
 
 @inject(config=Config)
-def create_celery_app(config):
-    # type:(Config)->Celery
+def create_celery_app(config: Config = Injected) -> Celery:
     celery_app = Celery()
-    celery_app.config_from_object(config['CELERY'])
+    celery_app.config_from_object(config["CELERY"])
     return celery_app
 
 
 class CeleryTaskQueueMainWorker(CeleryTaskQueueWorkerBase):
     """Worker implementation for Celery task queue."""
 
-    def __init__(self, ):
+    def __init__(
+        self,
+    ):
         super().__init__()
         self.celery_app = create_celery_app()
-        self.celery_worker = None
 
     def stop_worker(self):
-        self._app.logger.info("Stopping Celery worker on demand - quitting.")
-        self.celery_worker.stop()
+        self._app.logger.error(
+            "This is a celery app worker, kill the instance to stop it."
+        )
 
     def run(self, argv: list[str]):
         """
@@ -74,18 +72,32 @@ class CeleryTaskQueueMainWorker(CeleryTaskQueueWorkerBase):
         Note: the first argument should be "worker".
         """
         self._app.logger.info("Running the worker.")
-        self.celery_worker = self.celery_app.worker_main(argv)
+        self.celery_app.worker_main(argv)
 
 
 @shared_task
 @inject(worker=CeleryTaskQueueWorkerBase)
-def zsl_task(job_data, worker):
-    # type: (dict, CeleryTaskQueueWorkerBase) -> dict
-    """This function will be registered as a celery task.
+def zsl_task(job_data: JobData, worker: CeleryTaskQueueWorkerBase = Injected) -> JobResult:
+    """
+    Executes a task registered with Celery using the provided job data.
 
-    :param job_data: task data
-    :param worker: current celery worker
+    `job_data` is a dictionary that describes the path to the desired task along with the payload. Specifically,
+    it should contain a 'path' key pointing to the task and a 'data' key with the payload as a dictionary.
+
+    :param job_data: A dictionary containing the path to the task and its payload.
+    :type job_data: dict
+    :param worker: The Celery worker responsible for executing the task. *Injected.*
     :type worker: CeleryTaskQueueWorkerBase
-    :return: task results
+    :return: The result of the executed task.
+    :rtype: JobResult
+
+    :Example:
+    >>> job_data = {
+            "path": "some_module/some_task_function",
+            "data": {
+                "param1": "value1",
+                "param2": "value2"
+            }
+        }
     """
     return worker.execute_celery_task(job_data)

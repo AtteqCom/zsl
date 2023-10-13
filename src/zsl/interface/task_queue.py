@@ -10,7 +10,7 @@ task queue handles asynchronous and distributed code executions.
 import abc
 import socket
 import traceback
-from typing import Any
+from typing import Any, TypedDict
 
 from zsl import Config, Injected, Zsl, inject
 from zsl.router.task import TaskRouter
@@ -19,12 +19,19 @@ from zsl.task.job_context import Job, JobContext
 
 class KillWorkerException(Exception):
     """If any task raises this exception a standalone worker will be killed."""
+
     pass
 
 
+class JobResult(TypedDict):
+    task_name: Any
+    data: Any
+
+
 @inject(app=Zsl, task_router=TaskRouter)
-def execute_job(job, app=Injected, task_router=Injected):
-    # type: (Job, Zsl, TaskRouter) -> dict
+def execute_job(
+    job: Job, app: Zsl = Injected, task_router: TaskRouter = Injected
+) -> JobResult:
     """Execute a job.
 
     :param job: job to execute
@@ -47,7 +54,7 @@ def execute_job(job, app=Injected, task_router=Injected):
 
     app.logger.info("Task {0} executed successfully.".format(job.path))
 
-    return {'task_name': job.path, 'data': result}
+    return {"task_name": job.path, "data": result}
 
 
 class TaskQueueWorker(metaclass=abc.ABCMeta):
@@ -59,15 +66,13 @@ class TaskQueueWorker(metaclass=abc.ABCMeta):
     """
 
     @inject(app=Zsl, config=Config)
-    def __init__(self, app, config):
-        # type: (Zsl, Config, TaskRouter) -> None
+    def __init__(self, app: Zsl = Injected, config: Config = Injected):
         self._app = app
         self._config = config
         self._should_stop = False
 
     @staticmethod
-    def _get_client_id():
-        # type: () -> str
+    def _get_client_id() -> str:
         """Return client id.
 
         :return: client id
@@ -75,8 +80,7 @@ class TaskQueueWorker(metaclass=abc.ABCMeta):
         """
         return "zsl-client-{0}".format(socket.gethostname())
 
-    def handle_exception(self, e, task_path):
-        # type: (Exception, str) -> dict
+    def handle_exception(self, e: Exception, task_path: str) -> JobResult:
         """Handle exception raised during task execution.
 
         :param e: exception
@@ -88,10 +92,9 @@ class TaskQueueWorker(metaclass=abc.ABCMeta):
         """
 
         self._app.logger.error(str(e) + "\n" + traceback.format_exc())
-        return {'task_name': task_path, 'data': None, 'error': str(e)}
+        return {"task_name": task_path, "data": None, "error": str(e)}
 
-    def execute_job(self, job):
-        # type: (Job) -> dict
+    def execute_job(self, job: Job) -> JobResult:
         """Execute job given by the task queue.
 
         :param job: job
@@ -121,13 +124,11 @@ class TaskQueueWorker(metaclass=abc.ABCMeta):
 
 
 @inject(worker=TaskQueueWorker)
-def _get_worker(worker):
-    # type: (TaskQueueWorker) -> TaskQueueWorker
+def _get_worker(worker: TaskQueueWorker = Injected) -> TaskQueueWorker:
     return worker
 
 
-def run_worker(*args, **kwargs):
-    # type: (*Any, **Any)->None
+def run_worker(*args: Any, **kwargs: Any) -> None:
     """Run the app as a task queue worker.
 
     The worker instance is given as a DI module.
