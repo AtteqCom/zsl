@@ -5,7 +5,7 @@
 import click
 from injector import Module, singleton
 
-from zsl import Injected, Zsl
+from zsl import Injected
 from zsl.application.modules.cli_module import ZslCli
 from zsl.interface.celery.worker import (CeleryTaskQueueMainWorker, CeleryTaskQueueOutsideWorker,
                                          CeleryTaskQueueWorkerBase)
@@ -36,23 +36,22 @@ class CeleryTaskQueueOutsideWorkerModule(Module):
 
 class CeleryCli:
     @inject(zsl_cli=ZslCli)
-    def __init__(self, zsl_cli):
-        # type: (ZslCli) ->  CeleryCli
-
-        @zsl_cli.cli.group(help='Celery related tasks.')
+    def __init__(self, zsl_cli: ZslCli = Injected):
+        @zsl_cli.cli.group(help="Celery related tasks.")
         def celery():
             pass
 
-        @celery.command(help="run worker",
-                        context_settings=dict(ignore_unknown_options=True))
-        @click.argument('argv', nargs=-1, type=click.UNPROCESSED)
+        @celery.command(
+            help="run worker", context_settings=dict(ignore_unknown_options=True)
+        )
+        @click.argument("argv", nargs=-1, type=click.UNPROCESSED)
         @click.pass_context
         def worker(_, argv):
             """Run Zsl celery worker.
 
             :param : arguments for celery worker
             """
-            run_worker(('worker',) + argv)
+            run_worker(("worker",) + argv)
 
         self._celery = celery
 

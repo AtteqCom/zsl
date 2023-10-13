@@ -37,7 +37,7 @@ to make it better.
    error_handling
    unit_testing
    extending
-   message_queues
+   workers
    caching
    database
    api

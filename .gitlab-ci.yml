@@ -48,10 +48,11 @@ mirror-to-github:
     - git remote add github https://x-access-token:$GITHUB_ACCESS_TOKEN@github.com/AtteqCom/zsl.git || true
     - git push github HEAD:master --tags
 
-  only:
-    refs:
-      - master
-      - tags
+  rules:
+    # Runs for master branch
+    - if: '$CI_COMMIT_REF_NAME == "master"'
+    # Runs for tags with the desired format
+    - if: '$CI_COMMIT_REF_NAME =~ /^\d+\.\d+\.\d+$/'
 
 build:
   stage: build
