@@ -22,7 +22,3 @@ sphinx:
 python:
   install:
     - requirements: docs/requirements.txt
-    # downgrade Jinja as Flask 2.3 has a higher requirement
-    - method: pip
-      path: Jinja2==3.0.3
-
