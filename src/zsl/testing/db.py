@@ -32,18 +32,25 @@ from zsl.application.modules.alchemy_module import TransactionHolder, Transactio
 from zsl.db.model.sql_alchemy import metadata
 from zsl.service.service import SessionFactory
 
+logger = logging.getLogger(__name__)
+
 
 class TestSessionFactory(SessionFactory):
     """Factory always returning the single test transaction."""
     _test_session = None
+    _db_schema_initialized = False
+
+    @classmethod
+    def reset_db_schema_initialization(cls):
+        cls._db_schema_initialized = False
 
     @inject(engine=Engine)
     def create_test_session(self, engine):
         # type: (Engine) -> Session
         assert TestSessionFactory._test_session is None
         metadata.bind = engine
-        metadata.create_all(engine)
-        logging.getLogger(__name__).debug("Create test session - begin test session/setUp")
+        self._initialize_db_schema(engine)
+        logger.debug("Create test session - begin test session/setUp")
         TestSessionFactory._test_session = self._session_holder()
         TestSessionFactory._test_session.autoflush = True
         TestSessionFactory._test_session.begin_nested()
@@ -51,7 +58,7 @@ class TestSessionFactory(SessionFactory):
         return TestSessionFactory._test_session
 
     def create_session(self):
-        logging.getLogger(__name__).debug("Create test session")
+        logger.debug("Create test session")
         assert TestSessionFactory._test_session is not None
         return TestSessionFactory._test_session
 
@@ -59,7 +66,16 @@ class TestSessionFactory(SessionFactory):
         TestSessionFactory._test_session.rollback()
         TestSessionFactory._test_session.close()
         TestSessionFactory._test_session = None
-        logging.getLogger(__name__).debug("Close test session - close test test session/tearDown")
+        logger.debug("Close test session - close test test session/tearDown")
+
+    def _initialize_db_schema(self, engine):
+        if not TestSessionFactory._db_schema_initialized:
+            logger.info("Initialize db schema")
+            logger.debug("Initialize db schema - Drop all tables.")
+            metadata.drop_all(engine)
+            logger.debug("Initialize db schema - Create all tables.")
+            metadata.create_all(engine)
+            TestSessionFactory._db_schema_initialized = True
 
 
 class TestTransactionHolder(TransactionHolder):
@@ -77,7 +93,7 @@ class TestTransactionHolder(TransactionHolder):
         self._nested_tx.rollback()
 
     def close(self):
-        logging.getLogger(__name__).debug("Close.")
+        logger.debug("Close.")
         self._orm = None
         self._in_transaction = False
 
@@ -117,7 +133,7 @@ class DbTestCase:
     def setUp(self, session_factory=Injected):
         # type: (TestSessionFactory)->None
         super().setUp()
-        logging.getLogger(__name__).debug("DbTestCase.setUp")
+        logger.debug("DbTestCase.setUp")
         session_factory.create_test_session()
 
     @inject(session_factory=TestSessionFactory)
@@ -125,7 +141,7 @@ class DbTestCase:
         # type: (TestSessionFactory)->None
         # This will return the same transaction/session
         # as the one used in setUp.
-        logging.getLogger(__name__).debug("DbTestCase.tearDown")
+        logger.debug("DbTestCase.tearDown")
         session_factory.close_test_session()
         super().tearDown()
 

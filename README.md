@@ -122,7 +122,7 @@ Current pipeline tries to copy previous Travis runs. It runs tox target seperate
 
 Gitlab pipeline runs inside a docker image which is defined in `docker/Dockerfile.tox`. Currently we manually configure, build and push it to gitlab container registry. So to update the container follow this steps.
 
-When pushing for the first time run, you have to create an access token and login to atteq gitlab container registry. 
+When pushing for the first time run, you have to create an access token and login to atteq gitlab container registry.
 Go to https://gitlab.atteq.com/atteq/z-service-layer/zsl/-/settings/access_tokens and create a token to read/write to registry. Then run
 
 `docker login registry.gitlab.atteq.com:443`
@@ -131,7 +131,7 @@ To build/push the image:
 
 1. Build image locally.
 
-    `docker build -t zsl/tox-env -f docker/Dockerfile.tox`
+    `docker build -t zsl/tox-env -f docker/Dockerfile.tox .`
 
 2. Tag image.
 

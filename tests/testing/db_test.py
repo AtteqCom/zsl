@@ -1,6 +1,7 @@
+from unittest import mock
 from unittest.case import TestCase
 
-from mocks import mock, mock_db_session
+from mocks import mock_db_session
 from sqlalchemy.orm.session import Session
 
 from zsl import inject
@@ -44,7 +45,6 @@ class DbTestCaseTest(ZslTestCase, TestCase):
             mock_sess = mock_db_session()
             test.setUp()
             test.tearDown()
-            mock_metadata.create_all.assert_called_once_with(mock_metadata.bind)
             mock_sess.begin_nested.assert_called_once_with()
             mock_sess.rollback.assert_called_once_with()
             mock_sess.close.assert_called_once_with()
@@ -75,6 +75,10 @@ class TestSessionFactoryTest(ZslTestCase, TestCase):
                          "Two results must be equal.")
 
         self.assertIsInstance(f.create_session(), Session, "Session must be correct.")
+
+        # close the session otherwise other tests within which TestSessionFactory.create_test_session is called will
+        # fail on `assert TestSessionFactory._test_session is None`
+        f.close_test_session()
 
 
 class DbTestModuleTest(ZslTestCase, TestCase):
