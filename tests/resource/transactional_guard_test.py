@@ -7,13 +7,14 @@ from unittest import TestCase
 import unittest.mock as mock
 
 from mocks import mock_db_session
+import sqlalchemy.engine
 
-from zsl import Zsl
+from zsl import Injected, Zsl, inject
 from zsl.application.containers.web_container import WebContainer
 from zsl.application.modules.alchemy_module import TransactionHolder
 from zsl.resource.guard import Access, GuardedMixin, ResourcePolicy, transactional_guard
 from zsl.resource.model_resource import ModelResource
-from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DbTestCase
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DbTestCase, TestSessionFactory
 
 
 class UserResource(ModelResource):
@@ -21,13 +22,19 @@ class UserResource(ModelResource):
 
 
 class TransactionalGuardTest(TestCase):
-    def setUp(self):
+    @inject(engine=sqlalchemy.engine.Engine)
+    def setUp(self, engine = Injected):
         zsl = Zsl(__name__, config_object=IN_MEMORY_DB_SETTINGS,
                   modules=WebContainer.modules())
         zsl.testing = True
+        TestSessionFactory.reset_db_schema_initialization(engine)
 
-        create_resource_test_data()
         super().setUp()
+
+    @inject(engine=sqlalchemy.engine.Engine)
+    def tearDown(self, engine=Injected):
+        super(TransactionalGuardTest, self).tearDown()
+        TestSessionFactory.reset_db_schema_initialization(engine)
 
     def testIsInTransaction(self):
         test_case = self
@@ -42,6 +49,8 @@ class TransactionalGuardTest(TestCase):
                 test_case.assertTrue(self._in_transaction)
 
                 return super().read(*args, **kwargs)
+
+        create_resource_test_data()
 
         resource = GuardedUserModel()
         user = resource.read('1', {}, {})
@@ -62,6 +71,7 @@ class TransactionalGuardTest(TestCase):
             rollback = mock.MagicMock()
             _orm = mock.MagicMock()
 
+        create_resource_test_data()
         with mock.patch(
             'zsl.application.modules.alchemy_module.TransactionHolder',
             side_effect=TestTHolder
@@ -91,6 +101,7 @@ class TransactionalGuardTest(TestCase):
                 pass
 
             def testIt(self):
+                create_resource_test_data()
                 resource = GuardedUserModel()
                 resource.read('', {}, {})
 

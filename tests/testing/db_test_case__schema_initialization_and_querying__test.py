@@ -1,7 +1,10 @@
+from unittest import mock
 from unittest.case import TestCase
 
 import sqlalchemy
+from sqlalchemy import inspect, text
 
+from zsl import Injected, inject
 from zsl.application.containers.container import IoCContainer
 from zsl.application.modules.alchemy_module import AlchemyModule
 from zsl.application.modules.context_module import DefaultContextModule
@@ -10,7 +13,7 @@ from zsl.application.modules.task_router import TaskRouterModule
 from zsl.db.model.sql_alchemy import DeclarativeBase, metadata
 from zsl.service import transactional
 from zsl.service.service import TransactionalSupportMixin
-from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DbTestCase, DbTestModule
+from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DatabaseSchemaInitializationException, DbTestCase, DbTestModule
 from zsl.testing.db import TestSessionFactory as SessionFactoryForTesting
 from zsl.testing.zsl import ZslTestCase, ZslTestConfiguration
 
@@ -26,7 +29,7 @@ class TestContainerTestSessionFactory(TestContainerNoTestSessionFactory):
     session_factory = DbTestModule
 
 
-class DbTestCase_Querying_Test(ZslTestCase, TestCase):
+class DbTestCase_SchemaInitializationAndQuerying_Test(ZslTestCase, TestCase):
     ZSL_TEST_CONFIGURATION = ZslTestConfiguration(
         app_name="DbTestModuleTest",
         config_object=IN_MEMORY_DB_SETTINGS,
@@ -41,23 +44,23 @@ class DbTestCase_Querying_Test(ZslTestCase, TestCase):
         @transactional
         def test_select_record_by_name_from_foo(self):
             return (
-                self._orm.query(DbTestCase_Querying_Test._FOO_MODEL)
-                .filter(DbTestCase_Querying_Test._FOO_MODEL.name == "test")
+                self._orm.query(DbTestCase_SchemaInitializationAndQuerying_Test._FOO_MODEL)
+                .filter(DbTestCase_SchemaInitializationAndQuerying_Test._FOO_MODEL.name == "test")
                 .first()
             )
 
         @transactional
         def test_select_count_from_foo(self) -> int:
-            return self._orm.query(DbTestCase_Querying_Test._FOO_MODEL).count()
+            return self._orm.query(DbTestCase_SchemaInitializationAndQuerying_Test._FOO_MODEL).count()
 
         @transactional
-        def test_insert_into_foo(self):
-            foo = DbTestCase_Querying_Test._FOO_MODEL()
+        def test_insert_into_foo_and_select_count(self):
+            foo = DbTestCase_SchemaInitializationAndQuerying_Test._FOO_MODEL()
             foo.name = "test"
             self._orm.add(foo)
             self._orm.flush()
-            count = self._orm.query(DbTestCase_Querying_Test._FOO_MODEL).count()
-            self.assertEqual(count, 1, "There should be one row in the table foo")
+            count = self._orm.query(DbTestCase_SchemaInitializationAndQuerying_Test._FOO_MODEL).count()
+            return count
 
     class DbTest2(DbTest1):
         pass
@@ -85,16 +88,64 @@ class DbTestCase_Querying_Test(ZslTestCase, TestCase):
 
         cls._FOO_MODEL = None
 
-    def setUp(self):
+    @inject(engine=sqlalchemy.engine.Engine)
+    def setUp(self, engine=Injected):
         super().setUp()
         # unfortunately we have to reset the db schema initialization to be able to test, if the schema is correctly
         # initialized. The reason is that the class `SessionFactoryForTesting` is also used in another tests and the
         # schema could already be initialized when running these tests.
-        SessionFactoryForTesting.reset_db_schema_initialization()
+        SessionFactoryForTesting.reset_db_schema_initialization(engine)
+
+    @inject(engine=sqlalchemy.engine.Engine)
+    def tearDown(self, engine=Injected):
+        super().tearDown()
+        SessionFactoryForTesting.reset_db_schema_initialization(engine)
+
+    def test_db_schema_is_created_exactly_once_within_run_of_all_tests(self):
+        test_1 = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest1()
+        test_2 = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest2()
+        with mock.patch('zsl.testing.db.metadata') as mock_metadata:
+            test_1.setUpClass()
+            test_1.setUp()
+            test_1.tearDown()
+            test_1.setUp()
+            test_1.tearDown()
+            test_1.tearDownClass()
+
+            test_2.setUpClass()
+            test_2.setUp()
+            test_2.tearDown()
+            test_2.tearDownClass()
+
+            mock_metadata.drop_all.assert_not_called()
+            mock_metadata.create_all.assert_called_once_with(mock_metadata.bind)
+
+    @inject(engine=sqlalchemy.engine.Engine)
+    def test__when_db_contains_table__then_exception_is_raised_within_setup_and_schema_is_not_created(
+        self, engine
+    ):
+        # create a table in the database
+        with engine.connect() as connection:
+            connection.execute(text("CREATE TABLE bar (id INTEGER PRIMARY KEY, name TEXT)"))
+
+        db_test = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest1()
+
+        # database schema initialization should fail
+        with self.assertRaises(DatabaseSchemaInitializationException):
+            db_test.setUp()
+
+        # check that no table was created or dropped
+        inspector = inspect(engine)
+        existing_tables = inspector.get_table_names()
+        self.assertEqual(existing_tables, ["bar"], "No table should be dropped or created.")
+
+        # clean up
+        with engine.connect() as connection:
+            connection.execute(text("DROP TABLE bar"))
 
     def test_tables_exists_within_tests(self):
-        db_test_1 = DbTestCase_Querying_Test.DbTest1()
-        db_test_2 = DbTestCase_Querying_Test.DbTest2()
+        db_test_1 = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest1()
+        db_test_2 = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest2()
 
         try:
             db_test_1.setUpClass()
@@ -116,16 +167,17 @@ class DbTestCase_Querying_Test(ZslTestCase, TestCase):
             self.fail("Exception raised: " + str(e))
 
     def test_data_created_within_test_are_not_available_in_another_test(self):
-        db_test = DbTestCase_Querying_Test.DbTest1()
+        db_test = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest1()
 
         # inserting data into foo
         db_test.setUp()
-        db_test.test_insert_into_foo()
+        count_in_first_test = db_test.test_insert_into_foo_and_select_count()
         db_test.tearDown()
 
         db_test.setUp()
         # SELECT COUNT(*) FROM foo in another test
-        count = db_test.test_select_count_from_foo()
+        count_in_second_test = db_test.test_select_count_from_foo()
         db_test.tearDown()
 
-        self.assertEqual(count, 0, "There should be no rows in the table foo within another test")
+        self.assertEqual(count_in_first_test, 1, "There should be one row in the table foo within first test")
+        self.assertEqual(count_in_second_test, 0, "There should be no rows in the table foo within second test")
