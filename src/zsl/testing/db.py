@@ -24,8 +24,8 @@ container when creating Zsl instance, see :ref:`unit-testing-zsl-instance`.
 import logging
 
 from injector import Module, provides, singleton
+from sqlalchemy import inspect
 from sqlalchemy.engine import Engine
-from sqlalchemy.orm.session import Session
 
 from zsl import Injected, inject
 from zsl.application.modules.alchemy_module import TransactionHolder, TransactionHolderFactory
@@ -35,18 +35,22 @@ from zsl.service.service import SessionFactory
 logger = logging.getLogger(__name__)
 
 
+class DatabaseSchemaInitializationException(Exception):
+    pass
+
+
 class TestSessionFactory(SessionFactory):
     """Factory always returning the single test transaction."""
     _test_session = None
     _db_schema_initialized = False
 
     @classmethod
-    def reset_db_schema_initialization(cls):
+    def reset_db_schema_initialization(cls, engine: Engine) -> None:
+        metadata.drop_all(engine)
         cls._db_schema_initialized = False
 
     @inject(engine=Engine)
-    def create_test_session(self, engine):
-        # type: (Engine) -> Session
+    def create_test_session(self, engine: Engine) -> None:
         assert TestSessionFactory._test_session is None
         metadata.bind = engine
         self._initialize_db_schema(engine)
@@ -71,11 +75,23 @@ class TestSessionFactory(SessionFactory):
     def _initialize_db_schema(self, engine):
         if not TestSessionFactory._db_schema_initialized:
             logger.info("Initialize db schema")
-            logger.debug("Initialize db schema - Drop all tables.")
-            metadata.drop_all(engine)
+            logger.debug("Initialize db schema - Check if db contains any table.")
+            self._raise_if_database_is_not_empty(engine)
             logger.debug("Initialize db schema - Create all tables.")
             metadata.create_all(engine)
+            logger.debug("Initialize db schema - Create all tables - Done.")
             TestSessionFactory._db_schema_initialized = True
+            logger.info("Initialize db schema - Done.")
+
+    def _raise_if_database_is_not_empty(self, engine):
+        inspector = inspect(engine)
+        existing_tables = inspector.get_table_names()
+
+        if len(existing_tables) > 0:
+            raise DatabaseSchemaInitializationException(
+                f"The database contains already some tables. This is forbidden to prevent accidentally running tests "
+                f"on a production database. Database url: {engine.url}. Found tables: {existing_tables}"
+            )
 
 
 class TestTransactionHolder(TransactionHolder):
@@ -108,18 +124,16 @@ class DbTestModule(Module):
     to our :class:`.TestSessionFactory`."""
 
     @provides(SessionFactory, scope=singleton)
-    def get_session_factory(self):
-        # type: ()->SessionFactory
+    def get_session_factory(self) -> SessionFactory:
         return TestSessionFactory()
 
     @provides(TestSessionFactory, scope=singleton)
     @inject(session_factory=SessionFactory)
-    def get_test_session_factory(self, session_factory):
-        # type: (SessionFactory)->SessionFactory
+    def get_test_session_factory(self, session_factory: SessionFactory = Injected) -> SessionFactory:
         return session_factory
 
     @provides(TransactionHolderFactory, scope=singleton)
-    def provide_transaction_holder_factory(self):
+    def provide_transaction_holder_factory(self) -> TransactionHolderFactory:
         return TestTransactionHolderFactory()
 
 
@@ -130,15 +144,13 @@ class DbTestCase:
     _session = None
 
     @inject(session_factory=TestSessionFactory)
-    def setUp(self, session_factory=Injected):
-        # type: (TestSessionFactory)->None
+    def setUp(self, session_factory: TestSessionFactory = Injected) -> None:
         super().setUp()
         logger.debug("DbTestCase.setUp")
         session_factory.create_test_session()
 
     @inject(session_factory=TestSessionFactory)
-    def tearDown(self, session_factory=Injected):
-        # type: (TestSessionFactory)->None
+    def tearDown(self, session_factory: TestSessionFactory = Injected) -> None:
         # This will return the same transaction/session
         # as the one used in setUp.
         logger.debug("DbTestCase.tearDown")
