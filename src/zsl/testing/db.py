@@ -26,6 +26,7 @@ import logging
 from injector import Module, provides, singleton
 from sqlalchemy import inspect
 from sqlalchemy.engine import Engine
+from sqlalchemy.orm.session import Session
 
 from zsl import Injected, inject
 from zsl.application.modules.alchemy_module import TransactionHolder, TransactionHolderFactory
@@ -50,10 +51,23 @@ class TestSessionFactory(SessionFactory):
         cls._db_schema_initialized = False
 
     @inject(engine=Engine)
-    def create_test_session(self, engine: Engine) -> None:
+    def initialize_db_schema(self, engine: Engine = Injected) -> None:
+        if not TestSessionFactory._db_schema_initialized:
+            logger.info("Initialize db schema")
+            metadata.bind = engine
+
+            logger.debug("Initialize db schema - Check if db contains any table.")
+            self._raise_if_database_is_not_empty(engine)
+
+            logger.debug("Initialize db schema - Create all tables.")
+            metadata.create_all(engine)
+            logger.debug("Initialize db schema - Create all tables - Done.")
+
+            TestSessionFactory._db_schema_initialized = True
+            logger.info("Initialize db schema - Done.")
+
+    def create_test_session(self) -> Session:
         assert TestSessionFactory._test_session is None
-        metadata.bind = engine
-        self._initialize_db_schema(engine)
         logger.debug("Create test session - begin test session/setUp")
         TestSessionFactory._test_session = self._session_holder()
         TestSessionFactory._test_session.autoflush = True
@@ -71,17 +85,6 @@ class TestSessionFactory(SessionFactory):
         TestSessionFactory._test_session.close()
         TestSessionFactory._test_session = None
         logger.debug("Close test session - close test test session/tearDown")
-
-    def _initialize_db_schema(self, engine):
-        if not TestSessionFactory._db_schema_initialized:
-            logger.info("Initialize db schema")
-            logger.debug("Initialize db schema - Check if db contains any table.")
-            self._raise_if_database_is_not_empty(engine)
-            logger.debug("Initialize db schema - Create all tables.")
-            metadata.create_all(engine)
-            logger.debug("Initialize db schema - Create all tables - Done.")
-            TestSessionFactory._db_schema_initialized = True
-            logger.info("Initialize db schema - Done.")
 
     def _raise_if_database_is_not_empty(self, engine):
         inspector = inspect(engine)
@@ -142,6 +145,12 @@ class DbTestCase:
     a database."""
 
     _session = None
+
+    @classmethod
+    @inject(session_factory=TestSessionFactory)
+    def setUpClass(cls, session_factory: TestSessionFactory = Injected) -> None:
+        super().setUpClass()
+        session_factory.initialize_db_schema()
 
     @inject(session_factory=TestSessionFactory)
     def setUp(self, session_factory: TestSessionFactory = Injected) -> None:

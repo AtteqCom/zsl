@@ -101,6 +101,14 @@ class DbTestCase_SchemaInitializationAndQuerying_Test(ZslTestCase, TestCase):
         super().tearDown()
         SessionFactoryForTesting.reset_db_schema_initialization(engine)
 
+    def test_db_schema_is_created_in_setupclass(self):
+        test = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest1()
+        with mock.patch('zsl.testing.db.metadata') as mock_metadata:
+            test.setUpClass()
+
+            mock_metadata.drop_all.assert_not_called()
+            mock_metadata.create_all.assert_called_once_with(mock_metadata.bind)
+
     def test_db_schema_is_created_exactly_once_within_run_of_all_tests(self):
         test_1 = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest1()
         test_2 = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest2()
@@ -132,7 +140,7 @@ class DbTestCase_SchemaInitializationAndQuerying_Test(ZslTestCase, TestCase):
 
         # database schema initialization should fail
         with self.assertRaises(DatabaseSchemaInitializationException):
-            db_test.setUp()
+            db_test.setUpClass()
 
         # check that no table was created or dropped
         inspector = inspect(engine)
@@ -169,6 +177,8 @@ class DbTestCase_SchemaInitializationAndQuerying_Test(ZslTestCase, TestCase):
     def test_data_created_within_test_are_not_available_in_another_test(self):
         db_test = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest1()
 
+        db_test.setUpClass()
+
         # inserting data into foo
         db_test.setUp()
         count_in_first_test = db_test.test_insert_into_foo_and_select_count()
@@ -178,6 +188,8 @@ class DbTestCase_SchemaInitializationAndQuerying_Test(ZslTestCase, TestCase):
         # SELECT COUNT(*) FROM foo in another test
         count_in_second_test = db_test.test_select_count_from_foo()
         db_test.tearDown()
+
+        db_test.tearDownClass()
 
         self.assertEqual(count_in_first_test, 1, "There should be one row in the table foo within first test")
         self.assertEqual(count_in_second_test, 0, "There should be no rows in the table foo within second test")
