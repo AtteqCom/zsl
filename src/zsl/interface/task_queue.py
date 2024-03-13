@@ -7,9 +7,9 @@ task queue handles asynchronous and distributed code executions.
 
 .. moduleauthor:: Peter Morihladko
 """
+
 import abc
 import socket
-import traceback
 from typing import Any, TypedDict
 
 from zsl import Config, Injected, Zsl, inject
@@ -19,8 +19,6 @@ from zsl.task.job_context import Job, JobContext
 
 class KillWorkerException(Exception):
     """If any task raises this exception a standalone worker will be killed."""
-
-    pass
 
 
 class JobResult(TypedDict):
@@ -88,10 +86,10 @@ class TaskQueueWorker(metaclass=abc.ABCMeta):
         :param task_path: task path
         :type task_path: str
         :return: exception as task result
-        :rtype: dict
+        :rtype: JobResult
         """
 
-        self._app.logger.error(str(e) + "\n" + traceback.format_exc())
+        self._app.logger.error(e, exc_info=True, stack_info=True)
         return {"task_name": task_path, "data": None, "error": str(e)}
 
     def execute_job(self, job: Job) -> JobResult:
@@ -100,7 +98,7 @@ class TaskQueueWorker(metaclass=abc.ABCMeta):
         :param job: job
         :type job: Job
         :return: task result
-        :rtype: dict
+        :rtype: JobResult
         """
         try:
             return execute_job(job)
@@ -109,7 +107,7 @@ class TaskQueueWorker(metaclass=abc.ABCMeta):
             self._app.logger.info("Stopping Gearman worker on demand flag set.")
             self.stop_worker()
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             return self.handle_exception(e, job.path)
 
     @abc.abstractmethod
