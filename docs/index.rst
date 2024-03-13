@@ -9,7 +9,7 @@ ZSL - z' service layer
 ZSL is a Python 2.7 micro-framework utilizing
 `dependency injection <https://en.wikipedia.org/wiki/Dependency_injection>`_
 for creating service applications on top of `Flask <https://flask.palletsprojects.com/en/1.1.x/>`_
-and `Gearman <http://gearman.org/>`_ job server.
+and `Celery <https://docs.celeryq.dev/en/stable/>`_ task queue.
 
 Motivation
 ##########
