@@ -19,6 +19,7 @@ package. The name of the environment configuration file is controlled via
     file.
 
 """
+
 import os
 from typing import Any, Callable
 
@@ -31,12 +32,12 @@ from zsl.utils.warnings import deprecated
 from zsl.version import version
 
 # Name of the environment variable to be read for the profile configuration.
-SETTINGS_ENV_VAR_NAME = 'ZSL_SETTINGS'
+SETTINGS_ENV_VAR_NAME = "ZSL_SETTINGS"
 
 
 def get_settings_from_profile(profile, profile_dir=None):
     # type: (str, Any)->str
-    """"Returns the  configuration file path for the given profile.
+    """ "Returns the  configuration file path for the given profile.
 
     :param profile: Profile name to be used.
     :param profile_dir: The directory where the profile configuration file should reside. It
@@ -45,12 +46,13 @@ def get_settings_from_profile(profile, profile_dir=None):
     """
     if profile_dir is None:
         import settings
+
         profile_dir = settings
 
-    if hasattr(profile_dir, '__file__'):
+    if hasattr(profile_dir, "__file__"):
         profile_dir = os.path.dirname(profile_dir.__file__)
 
-    return os.path.join(profile_dir, '{0}.cfg'.format(profile))
+    return os.path.join(profile_dir, "{0}.cfg".format(profile))
 
 
 def set_profile(profile):
@@ -81,7 +83,7 @@ class ServiceApplication(Flask):
         modules=None,
         version=None,
         config_object=None,
-        default_settings_module='settings.default_settings'
+        default_settings_module="settings.default_settings",
     ):
         super().__init__(
             import_name,
@@ -93,7 +95,7 @@ class ServiceApplication(Flask):
             template_folder,
             instance_path,
             instance_relative_config,
-            root_path
+            root_path,
         )
         self._dependencies_initialized = False
         self._default_settings_module = default_settings_module
@@ -104,6 +106,7 @@ class ServiceApplication(Flask):
         self._app_version = version
         if not modules:
             from zsl.application.containers.core_container import CoreContainer
+
             modules = CoreContainer.modules()
         self._configure_injector(modules)
         self._initialize()
@@ -111,8 +114,8 @@ class ServiceApplication(Flask):
 
     def __str__(self):
         return "ZSL(application={0}, zsl_version={1}, app_version={2})".format(
-            self.name, self.VERSION,
-            self._app_version)
+            self.name, self.VERSION, self._app_version
+        )
 
     def _configure(self, config_object=None):
         # type: (Any) -> None
@@ -133,7 +136,12 @@ class ServiceApplication(Flask):
 
         zsl_settings = os.environ.get(SETTINGS_ENV_VAR_NAME)
         if zsl_settings is not None:
-            self.config.from_envvar(SETTINGS_ENV_VAR_NAME)
+            if os.path.exists(zsl_settings):
+                self.config.from_envvar(SETTINGS_ENV_VAR_NAME)
+            else:
+                self.logger.warning(
+                    f"Warning: The settings file '{zsl_settings}' does not exist. Using default settings."
+                )
 
     def _initialize(self):
         """Run the initializers."""
@@ -213,7 +221,7 @@ class ServiceApplication(Flask):
         return self._app_version
 
     def _create_injector(self):
-        self.logger.debug('Creating injector')
+        self.logger.debug("Creating injector")
         self._injector = Injector()
 
     def _bind_core(self):
