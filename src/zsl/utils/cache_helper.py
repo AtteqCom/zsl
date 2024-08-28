@@ -49,6 +49,11 @@ class CacheDecorator:
         key = create_key_for_data(prefix, args[1], self._key_params)
         return key
 
+    def get_data_key_wildcard(self, task: type) -> str:
+        prefix = create_key_object_prefix(task)
+        key = f"{prefix}-"
+        return key
+
     @staticmethod
     def get_decoder():
         return app_model_decoder_fn
@@ -59,6 +64,10 @@ class CacheDecorator:
 
 
 class CacheOutputDecorator(CacheDecorator):
+
+    def clear_cache(self, task: type):
+        key = self.get_data_key_wildcard(task)
+        self._id_helper.invalidate_keys_by_prefix(key)
 
     def get_wrapped_fn(self):
         def wrapped_fn(*args):
@@ -88,6 +97,13 @@ def cache_output(key_params, timeout='default'):
         return CacheOutputDecorator().decorate(key_params, timeout, fn)
 
     return decorator_fn
+
+
+def _clear_cache(task: type) -> None:
+    CacheOutputDecorator().clear_cache(task)
+
+
+cache_output.clear_cache = _clear_cache
 
 
 class CacheModelDecorator(CacheDecorator):
