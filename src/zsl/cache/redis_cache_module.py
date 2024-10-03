@@ -71,6 +71,18 @@ class RedisCacheModule(CacheModule):
         llen = self._client.llen(pkey)
         return self._client.lrange(pkey, 0, llen - 1)
 
+    def get_by_glob(self, glob):
+        """Returns all keys which match the given glob. Warning: this method can be slow for large datasets."""
+        pglob = self._prefix_key(glob)
+        keys = self._client.scan_iter(pglob)
+        return {key: self._client.get(key) for key in keys}
+
+    def contains_keys_by_glob(self, glob):
+        """Returns number of keys which match the given glob. Warning: this method can be slow for large datasets."""
+        pglob = self._prefix_key(glob)
+        keys = self._client.scan_iter(pglob)
+        return len(list(keys))
+
     def invalidate_by_glob(self, glob):
         pglob = self._prefix_key(glob)
 
