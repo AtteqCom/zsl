@@ -1,3 +1,3 @@
-FROM atteqcom/zsl:1.4.0
+FROM atteqcom/zsl:1.5.0
 
-RUN pip install zsl[celery]==1.4.0 py-postgresql
+RUN pip install zsl[celery]==1.5.0 py-postgresql
