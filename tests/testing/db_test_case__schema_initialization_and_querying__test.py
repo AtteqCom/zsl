@@ -6,7 +6,7 @@ from sqlalchemy import inspect, text
 
 from zsl import Injected, inject
 from zsl.application.containers.container import IoCContainer
-from zsl.application.modules.alchemy_module import AlchemyModule
+from zsl.application.modules.alchemy_module import AlchemyModule, EnginePool
 from zsl.application.modules.context_module import DefaultContextModule
 from zsl.application.modules.logger_module import LoggerModule
 from zsl.application.modules.task_router import TaskRouterModule
@@ -88,18 +88,18 @@ class DbTestCase_SchemaInitializationAndQuerying_Test(ZslTestCase, TestCase):
 
         cls._FOO_MODEL = None
 
-    @inject(engine=sqlalchemy.engine.Engine)
-    def setUp(self, engine=Injected):
+    @inject(engine_pool=EnginePool)
+    def setUp(self, engine_pool=Injected):
         super().setUp()
         # unfortunately we have to reset the db schema initialization to be able to test, if the schema is correctly
         # initialized. The reason is that the class `SessionFactoryForTesting` is also used in another tests and the
         # schema could already be initialized when running these tests.
-        SessionFactoryForTesting.reset_db_schema_initialization(engine)
+        SessionFactoryForTesting.reset_db_schema_initialization(engine_pool.get_engine(EnginePool._DEFAULT_ENGINE_NAME))
 
-    @inject(engine=sqlalchemy.engine.Engine)
-    def tearDown(self, engine=Injected):
+    @inject(engine_pool=EnginePool)
+    def tearDown(self, engine_pool=Injected):
         super().tearDown()
-        SessionFactoryForTesting.reset_db_schema_initialization(engine)
+        SessionFactoryForTesting.reset_db_schema_initialization(engine_pool.get_engine(EnginePool._DEFAULT_ENGINE_NAME))
 
     def test_db_schema_is_created_in_setupclass(self):
         test = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest1()
@@ -128,10 +128,11 @@ class DbTestCase_SchemaInitializationAndQuerying_Test(ZslTestCase, TestCase):
             mock_metadata.drop_all.assert_not_called()
             mock_metadata.create_all.assert_called_once_with(mock_metadata.bind)
 
-    @inject(engine=sqlalchemy.engine.Engine)
+    @inject(engine_pool=EnginePool)
     def test__when_db_contains_table__then_exception_is_raised_within_setup_and_schema_is_not_created(
-        self, engine
+        self, engine_pool
     ):
+        engine = engine_pool.get_engine(EnginePool._DEFAULT_ENGINE_NAME)
         # create a table in the database
         with engine.connect() as connection:
             connection.execute(text("CREATE TABLE bar (id INTEGER PRIMARY KEY, name TEXT)"))

@@ -4,6 +4,7 @@
 
 .. moduleauthor:: Martin Babka <babka@atteq.com>
 """
+
 from __future__ import annotations
 
 from abc import abstractmethod
@@ -30,6 +31,7 @@ class JobData(TypedDict):
     --------
     >>> job_data = JobData(path='/path/to/job', data={'name': 'John', 'age': 30})
     """
+
     path: str
     data: dict[str, Any]
 
@@ -69,7 +71,14 @@ class Job:
 class JobContext:
     """Job Context"""
 
-    def __init__(self, job: Job, task: object, task_callable: Callable):
+    def __init__(
+        self,
+        job: Job,
+        task: object,
+        task_callable: Callable,
+        *,
+        task_use_master_node: bool = True,
+    ):
         """
         Constructor
         """
@@ -77,6 +86,7 @@ class JobContext:
         self._task = task
         self._task_callable = task_callable
         self._task_data = TaskData(self.job.payload)
+        self._task_use_master_node = task_use_master_node
 
         JobContext._set_current_context(self)
 
@@ -95,6 +105,10 @@ class JobContext:
     @property
     def task_data(self) -> TaskData:
         return self._task_data
+
+    @property
+    def task_use_master_node(self) -> bool:
+        return self._task_use_master_node
 
     @classmethod
     def get_current_context(cls) -> JobContext:
@@ -152,7 +166,9 @@ class WebJobContext(JobContext):
         request: Request,
     ):
         """Constructor"""
-        super().__init__(create_job(path, data), task, task_callable)
+        super().__init__(
+            create_job(path, data), task, task_callable, task_use_master_node=False
+        )
         self._request = request
         self._responders: list[Responder] = []
 

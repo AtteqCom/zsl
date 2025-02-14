@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import Integer, String
 
-from zsl.application.modules.alchemy_module import SessionHolder
+from zsl.application.modules.alchemy_module import EnginePool, SessionHolder
 from zsl.db.model.app_model import AppModel
 from zsl.db.model.raw_model import ModelBase
 from zsl.utils.injection_helper import inject
@@ -91,8 +91,9 @@ def get_non_existent_id():
     return len(users) + 10
 
 
-@inject(engine=Engine, session_holder=SessionHolder)
-def create_resource_test_data(engine, session_holder):
+@inject(engine_pool=EnginePool, session_holder=SessionHolder)
+def create_resource_test_data(engine_pool: EnginePool, session_holder):
+    engine = engine_pool.get_engine(EnginePool._DEFAULT_ENGINE_NAME)
     Base.metadata.create_all(engine)
     session = session_holder()
 
