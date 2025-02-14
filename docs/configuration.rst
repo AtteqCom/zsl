@@ -58,6 +58,10 @@ Required fields
 Optional fields
 ---------------
 
+* ``DATABASE_MASTER_NODE_NAME```
+    The name of master node (application) of a pgpool cluster. This is used to
+    for db context to correctly connect to the master node.
+
 * ``RELOAD``
   Reload tasks on every call. Especially usable when debugging.
 

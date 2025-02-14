@@ -7,11 +7,10 @@ from unittest import TestCase
 import unittest.mock as mock
 
 from mocks import mock_db_session
-import sqlalchemy.engine
 
 from zsl import Injected, Zsl, inject
 from zsl.application.containers.web_container import WebContainer
-from zsl.application.modules.alchemy_module import TransactionHolder
+from zsl.application.modules.alchemy_module import EnginePool, TransactionHolder
 from zsl.resource.guard import Access, GuardedMixin, ResourcePolicy, transactional_guard
 from zsl.resource.model_resource import ModelResource
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DbTestCase, TestSessionFactory
@@ -22,18 +21,20 @@ class UserResource(ModelResource):
 
 
 class TransactionalGuardTest(TestCase):
-    @inject(engine=sqlalchemy.engine.Engine)
-    def setUp(self, engine = Injected):
+    @inject(engine_pool=EnginePool)
+    def setUp(self, engine_pool = Injected):
         zsl = Zsl(__name__, config_object=IN_MEMORY_DB_SETTINGS,
                   modules=WebContainer.modules())
         zsl.testing = True
+        engine = engine_pool.get_engine(EnginePool._DEFAULT_ENGINE_NAME)
         TestSessionFactory.reset_db_schema_initialization(engine)
 
         super().setUp()
 
-    @inject(engine=sqlalchemy.engine.Engine)
-    def tearDown(self, engine=Injected):
+    @inject(engine_pool=EnginePool)
+    def tearDown(self, engine_pool=Injected):
         super(TransactionalGuardTest, self).tearDown()
+        engine = engine_pool.get_engine(EnginePool._DEFAULT_ENGINE_NAME)
         TestSessionFactory.reset_db_schema_initialization(engine)
 
     def testIsInTransaction(self):
