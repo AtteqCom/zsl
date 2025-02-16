@@ -5,16 +5,17 @@
 .. moduleauthor:: Martin Babka <babka@atteq.com>,
                   Peter Morihladko <morihladko@atteq.com>
 """
+
 from contextlib import contextmanager
 from functools import wraps
 import logging
 from typing import Callable, Generator
 
-from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm.session import Session
 
-from zsl import Injected, Zsl, inject
-from zsl.application.modules.alchemy_module import EmptyTransactionalHolder, SessionFactory, TransactionHolderFactory
+from zsl import Config, Injected, Zsl, inject
+from zsl.application.modules.alchemy_module import (DbNodeContext, EmptyTransactionalHolder, SessionFactory,
+                                                    TransactionHolderFactory)
 
 _EMPTY_TX_HOLDER = EmptyTransactionalHolder()
 
@@ -34,12 +35,11 @@ class Service(TransactionalSupportMixin):
     Main service class.
     """
 
-    @inject(app=Zsl, engine=Engine)
+    @inject(app=Zsl)
     def __init__(self, app=Injected, engine=Injected):
         """Constructor - initializes and injects the needed libraries."""
         super().__init__()
         self._app = app
-        self._engine = engine
 
 
 _TX_HOLDER_ATTRIBUTE = "_tx_holder"
@@ -137,3 +137,54 @@ def transactional(f: Callable) -> Callable:
             return f(service, *args, **kwargs)
 
     return transactional_f
+
+
+def set_current_db_node_context(node_name: str) -> None:
+    """
+    Set the current database node context.
+
+    :param node_name: Name of the node.
+    """
+    context = DbNodeContext(node_name)
+
+    DbNodeContext.set_current_context(context)
+
+
+def use_db_master_node(f: Callable) -> Callable:
+    """
+    Decorator for setting thread context to force use master node for db.
+    Needs to be executed before first transactional/tx_session call.
+
+    :param f: Function to decorate.
+    :return: Decorated function.
+
+    .. code-block:: python
+
+        from zsl.service import use_db_master_node
+
+        class MyService(Service):
+            @transactional
+            @use_db_master_node
+            def my_function(self):
+                self._repository.create(self._orm, 2, 3, 4)
+    """
+
+    @wraps(f)
+    def use_db_master_node_f(service, *args, **kwargs):
+        @inject(config=Config)
+        def get_config(config):
+            return config
+
+        original_context = DbNodeContext.try_getting_current_context()
+        try:
+            config = get_config()
+
+            set_current_db_node_context(config["DATABASE_MASTER_NODE_NAME"])
+
+            return f(service, *args, **kwargs)
+        finally:
+            DbNodeContext(
+                original_context.node_name if original_context is not None else None
+            )
+
+    return use_db_master_node_f

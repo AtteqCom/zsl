@@ -29,7 +29,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm.session import Session
 
 from zsl import Injected, inject
-from zsl.application.modules.alchemy_module import TransactionHolder, TransactionHolderFactory
+from zsl.application.modules.alchemy_module import EnginePool, TransactionHolder, TransactionHolderFactory
 from zsl.db.model.sql_alchemy import metadata
 from zsl.service.service import SessionFactory
 
@@ -50,8 +50,9 @@ class TestSessionFactory(SessionFactory):
         metadata.drop_all(engine)
         cls._db_schema_initialized = False
 
-    @inject(engine=Engine)
-    def initialize_db_schema(self, engine: Engine = Injected) -> None:
+    @inject(engine_pool=EnginePool)
+    def initialize_db_schema(self, engine_pool: EnginePool = Injected) -> None:
+        engine = engine_pool.get_engine(EnginePool._DEFAULT_ENGINE_NAME)
         if not TestSessionFactory._db_schema_initialized:
             logger.info("Initialize db schema")
             metadata.bind = engine
