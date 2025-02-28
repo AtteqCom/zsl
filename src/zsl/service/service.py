@@ -6,6 +6,8 @@
                   Peter Morihladko <morihladko@atteq.com>
 """
 
+from __future__ import annotations
+
 from contextlib import contextmanager
 from functools import wraps
 import logging
@@ -139,7 +141,7 @@ def transactional(f: Callable) -> Callable:
     return transactional_f
 
 
-def set_current_db_node_context(node_name: str) -> None:
+def set_current_db_node_context(node_name: str | None) -> None:
     """
     Set the current database node context.
 
@@ -183,8 +185,6 @@ def use_db_master_node(f: Callable) -> Callable:
 
             return f(service, *args, **kwargs)
         finally:
-            DbNodeContext(
-                original_context.node_name if original_context is not None else None
-            )
+            set_current_db_node_context(original_context.node_name if original_context is not None else None)
 
     return use_db_master_node_f

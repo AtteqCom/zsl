@@ -11,7 +11,7 @@ from zsl.application.modules.context_module import DefaultContextModule
 from zsl.application.modules.logger_module import LoggerModule
 from zsl.application.modules.task_router import TaskRouterModule
 from zsl.db.model.sql_alchemy import DeclarativeBase, metadata
-from zsl.service import transactional
+from zsl.service import transactional, use_db_master_node
 from zsl.service.service import TransactionalSupportMixin
 from zsl.testing.db import IN_MEMORY_DB_SETTINGS, DatabaseSchemaInitializationException, DbTestCase, DbTestModule
 from zsl.testing.db import TestSessionFactory as SessionFactoryForTesting
@@ -61,6 +61,10 @@ class DbTestCase_SchemaInitializationAndQuerying_Test(ZslTestCase, TestCase):
             self._orm.flush()
             count = self._orm.query(DbTestCase_SchemaInitializationAndQuerying_Test._FOO_MODEL).count()
             return count
+
+        @use_db_master_node
+        def test_insert_into_foo_and_select_count__with_use_db_master_node(self):
+            return self.test_insert_into_foo_and_select_count()
 
     class DbTest2(DbTest1):
         pass
@@ -194,3 +198,21 @@ class DbTestCase_SchemaInitializationAndQuerying_Test(ZslTestCase, TestCase):
 
         self.assertEqual(count_in_first_test, 1, "There should be one row in the table foo within first test")
         self.assertEqual(count_in_second_test, 0, "There should be no rows in the table foo within second test")
+
+    def test_created_with_different_node_context__then_data_should_be_shared(self):
+        db_test = DbTestCase_SchemaInitializationAndQuerying_Test.DbTest1()
+
+        db_test.setUpClass()
+
+        db_test.setUp()
+
+        # inserting data into foo in default node context
+        count_in_default_node = db_test.test_insert_into_foo_and_select_count()
+        count_in_master_node = db_test.test_insert_into_foo_and_select_count__with_use_db_master_node()
+
+        db_test.tearDown()
+
+        db_test.tearDownClass()
+
+        self.assertEqual(count_in_default_node, 1, "There should be one row in the table foo within default node context")
+        self.assertEqual(count_in_master_node, 2, "There should be two rows in the table foo within master node context")

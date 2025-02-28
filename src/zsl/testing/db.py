@@ -21,15 +21,17 @@ The module provides class :class:`.TestSessionFactory` - it always returns
 the same session. Also one should add :class:`.DbTestModule` to the test
 container when creating Zsl instance, see :ref:`unit-testing-zsl-instance`.
 """
+
 import logging
 
 from injector import Module, provides, singleton
 from sqlalchemy import inspect
 from sqlalchemy.engine import Engine
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm.session import Session, sessionmaker
 
 from zsl import Injected, inject
-from zsl.application.modules.alchemy_module import EnginePool, TransactionHolder, TransactionHolderFactory
+from zsl.application.modules.alchemy_module import (EnginePool, SessionHolder, TransactionHolder,
+                                                    TransactionHolderFactory)
 from zsl.db.model.sql_alchemy import metadata
 from zsl.service.service import SessionFactory
 
@@ -38,6 +40,18 @@ logger = logging.getLogger(__name__)
 
 class DatabaseSchemaInitializationException(Exception):
     pass
+
+
+class TestSessionHolder(SessionHolder):
+    def __init__(self, engine_pool: EnginePool):
+        default_engine = engine_pool.get_engine(EnginePool._DEFAULT_ENGINE_NAME)
+        super().__init__(
+            sessionmaker(
+                bind=default_engine,
+                autocommit=False,
+                expire_on_commit=False,
+            )
+        )
 
 
 class TestSessionFactory(SessionFactory):
@@ -127,13 +141,22 @@ class DbTestModule(Module):
     """Module fixing the :class:`zsl.service.service.SessionFactory`
     to our :class:`.TestSessionFactory`."""
 
+    @provides(SessionHolder, scope=singleton)
+    @inject(engine_pool=EnginePool)
+    def provide_session_holder(
+        self, engine_pool: EnginePool
+    ) -> SessionHolder:
+        return TestSessionHolder(engine_pool)
+
     @provides(SessionFactory, scope=singleton)
     def get_session_factory(self) -> SessionFactory:
         return TestSessionFactory()
 
     @provides(TestSessionFactory, scope=singleton)
     @inject(session_factory=SessionFactory)
-    def get_test_session_factory(self, session_factory: SessionFactory = Injected) -> SessionFactory:
+    def get_test_session_factory(
+        self, session_factory: SessionFactory = Injected
+    ) -> SessionFactory:
         return session_factory
 
     @provides(TransactionHolderFactory, scope=singleton)
@@ -169,7 +192,8 @@ class DbTestCase:
 
 
 IN_MEMORY_DB_SETTINGS = {
-    'DATABASE_URI': 'sqlite:///:memory:',
-    'DATABASE_ENGINE_PROPS': {},
-    'JSON_AS_ASCII': False
+    "DATABASE_URI": "sqlite:///:memory:",
+    "DATABASE_MASTER_NODE_NAME": "master",
+    "DATABASE_ENGINE_PROPS": {},
+    "JSON_AS_ASCII": False,
 }
