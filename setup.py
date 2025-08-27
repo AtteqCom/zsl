@@ -15,7 +15,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(name='zsl',
-      version='1.7.3',
+      version='1.7.4',
       description='zsl application framework for web based services',
       long_description=long_description,
       long_description_content_type='text/markdown',
