@@ -201,7 +201,7 @@ def create_key_for_data(prefix, data, key_params):
     values = []
     for k in key_params:
         if k in d and type(d[k]) is list:
-            values.append("{0}:{1}".format(k, " -".join(d[k])))
+            values.append("{0}:{1}".format(k, " -".join([str(i) for i in d[k]])))
         else:
             value = d[k] if k in d else ''
             values.append("{0}:{1}".format(k, value))
