@@ -1,5 +1,5 @@
 default:
-  image: $CI_REGISTRY/atteq/z-service-layer/zsl/tox-env@sha256:b73bdde18840315fc1ac8e03ed7d1d46a0eced86bc527208be30ac65b7ab7243
+  image: $CI_REGISTRY/atteq/z-service-layer/zsl/tox-env@sha256:7462f5ed2d26df593927c0c15aa1dff2e600489b25d176aaa57af5b527b5a673
 
 stages:
   - test
